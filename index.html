@@ -171,16 +171,32 @@ let stepRan = {}; // {qid_si: bool}
 let stepOpen = {}; // {qid_si: bool}
 
 // ─── SQL.JS INIT ─────────────────────────────────────────────────
+let _sqlReadyResolve = null;
+const sqlReadyPromise = new Promise(res => { _sqlReadyResolve = res; });
+
 async function initSqlJs() {
   setDbStatus('loading','Loading SQL engine…');
+  setSidebarLoading(true);
   try {
     SQL = await initSqlJs({
       locateFile: f => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${f}`
     });
     setDbStatus('ready','SQL engine ready');
+    _sqlReadyResolve(true);
   } catch(e) {
     setDbStatus('err','Engine failed: '+e.message);
+    _sqlReadyResolve(false);
+  } finally {
+    setSidebarLoading(false);
   }
+}
+
+function setSidebarLoading(loading) {
+  document.querySelectorAll('.utab').forEach(btn => {
+    btn.disabled = loading;
+    btn.style.opacity = loading ? '0.4' : '';
+    btn.style.cursor = loading ? 'not-allowed' : '';
+  });
 }
 
 function setDbStatus(s, msg) {
@@ -190,7 +206,8 @@ function setDbStatus(s, msg) {
   lbl.textContent = msg;
 }
 
-function createDb(setupSql) {
+async function createDb(setupSql) {
+  await sqlReadyPromise;  // wait for SQL.js — fixes race condition on page load
   if (!SQL) return false;
   try {
     if (db) { db.close(); db = null; }
@@ -260,7 +277,7 @@ async function setUniverse(uid) {
   curUniverse = uid;
   const data = await loadUniverse(uid);
   if (!data) return;
-  if (!createDb(data.setup_sql)) return;
+  if (!await createDb(data.setup_sql)) return;
   setDbStatus('ready', data.label || uid + ' loaded');
   curQ = data.questions[0];
   renderSidebar();
