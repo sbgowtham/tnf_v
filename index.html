@@ -221,13 +221,39 @@ async function loadUniverse(uid) {
   setDbStatus('loading','Loading '+uid+'…');
   try {
     const r = await fetch(`/questions/${uid}.json`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const data = await r.json();
     uData[uid] = data;
     return data;
   } catch(e) {
-    setDbStatus('err','Load failed: '+e.message);
+    const isCors = location.protocol === 'file:';
+    if (isCors) {
+      showCorsError();
+    } else {
+      setDbStatus('err','Load failed: '+e.message);
+    }
     return null;
   }
+}
+
+function showCorsError() {
+  setDbStatus('err', 'CORS blocked — needs a server');
+  document.getElementById('main').innerHTML = `
+    <div style="max-width:520px;margin:4rem auto;background:#181818;border:1px solid #f97316;border-radius:12px;padding:2rem">
+      <div style="font-size:28px;margin-bottom:.75rem">🚫 CORS Error</div>
+      <div style="font-size:15px;font-weight:600;color:#f97316;margin-bottom:.75rem">Cannot load question files from <code style="background:#0f0f0f;padding:2px 6px;border-radius:4px">file://</code></div>
+      <p style="font-size:13px;color:#aaa;margin-bottom:1.25rem;line-height:1.8">
+        Browsers block local file fetches for security. You need to serve this from a local HTTP server.
+      </p>
+      <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem">Fix — run one of these in your project folder:</div>
+      <div style="background:#0a0a0a;border:1px solid #2c2c2c;border-radius:8px;padding:.875rem 1rem;font-family:'Space Mono',monospace;font-size:12px;display:flex;flex-direction:column;gap:.4rem">
+        <span style="color:#4ade80">$ python -m http.server 8080</span>
+        <span style="color:#60a5fa">$ npx serve .</span>
+        <span style="color:#f472b6">$ npx http-server .</span>
+      </div>
+      <p style="font-size:12px;color:#666;margin-top:1rem">Then open <strong style="color:#e8e8e8">http://localhost:8080</strong> in your browser.</p>
+    </div>
+  `;
 }
 
 async function setUniverse(uid) {
@@ -244,7 +270,7 @@ async function setUniverse(uid) {
 function setQuestion(uid, qid) {
   const data = uData[uid];
   if (!data) return;
-  curQ = data.questions.find(q => q.id === qid);
+  curQ = data.questions.find(q => String(q.id) === String(qid));
   renderSidebar();
   renderQuestion();
 }
@@ -277,7 +303,7 @@ function renderSidebar() {
   if (!curUniverse || !uData[curUniverse]) { ql.innerHTML=''; return; }
   const qs = uData[curUniverse].questions;
   ql.innerHTML = qs.map(q => `
-    <button class="qitem ${curQ&&curQ.id===q.id?'on':''}" onclick="setQuestion('${curUniverse}',${q.id})">
+    <button class="qitem ${curQ&&String(curQ.id)===String(q.id)?'on':''}" onclick="setQuestion('${curUniverse}','${q.id}')">
       <span class="qnum">Q${q.id}</span>
       <span class="qtitle-sb">${q.concepts.slice(0,2).join(' · ')}</span>
       <span class="diff ${DIFF_CLS[q.difficulty]}">${DIFF[q.difficulty]}</span>
