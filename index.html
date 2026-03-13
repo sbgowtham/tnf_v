@@ -195,7 +195,10 @@ function createDb(setupSql) {
   try {
     if (db) { db.close(); db = null; }
     db = new SQL.Database();
-    const stmts = setupSql.split(';').map(s=>s.trim()).filter(s=>s.length>0);
+    const stmts = setupSql
+  .split(';')
+  .map(s => s.trim())
+  .filter(s => s && s !== "");
     stmts.forEach(s => db.run(s+';'));
     return true;
   } catch(e) {
