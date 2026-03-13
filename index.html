@@ -174,7 +174,7 @@ let stepOpen = {}; // {qid_si: bool}
 let _sqlReadyResolve = null;
 const sqlReadyPromise = new Promise(res => { _sqlReadyResolve = res; });
 
-async function initSqlJs() {
+async function bootSqlEngine() {
   setDbStatus('loading','Loading SQL engine…');
   setSidebarLoading(true);
   try {
@@ -516,7 +516,7 @@ function escHtml(str) {
 
 // ─── BOOT ────────────────────────────────────────────────────────
 renderSidebar();
-initSqlJs();
+bootSqlEngine();
 </script>
 </body>
 </html>
