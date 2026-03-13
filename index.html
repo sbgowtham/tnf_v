@@ -220,7 +220,7 @@ async function loadUniverse(uid) {
   if (uData[uid]) return uData[uid];
   setDbStatus('loading','Loading '+uid+'…');
   try {
-    const r = await fetch(`./questions/${uid}.json`);
+    const r = await fetch(`/questions/${uid}.json`);
     const data = await r.json();
     uData[uid] = data;
     return data;
