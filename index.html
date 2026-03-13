@@ -473,7 +473,10 @@ function escHtml(str) {
 
 // ─── BOOT ────────────────────────────────────────────────────────
 renderSidebar();
-initSqlJs();
+
+initSqlJs().then(() => {
+  setUniverse('zipeats');
+});
 </script>
 </body>
 </html>
