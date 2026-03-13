@@ -195,10 +195,7 @@ function createDb(setupSql) {
   try {
     if (db) { db.close(); db = null; }
     db = new SQL.Database();
-    const stmts = setupSql
-  .split(';')
-  .map(s => s.trim())
-  .filter(s => s && s !== "");
+    const stmts = setupSql.split(';').map(s=>s.trim()).filter(s=>s.length>0);
     stmts.forEach(s => db.run(s+';'));
     return true;
   } catch(e) {
@@ -223,7 +220,7 @@ async function loadUniverse(uid) {
   if (uData[uid]) return uData[uid];
   setDbStatus('loading','Loading '+uid+'…');
   try {
-    const r = await fetch(`/questions/${uid}.json`);
+    const r = await fetch(`./questions/${uid}.json`);
     const data = await r.json();
     uData[uid] = data;
     return data;
@@ -475,14 +472,8 @@ function escHtml(str) {
 }
 
 // ─── BOOT ────────────────────────────────────────────────────────
-async function boot() {
-  renderSidebar();
-
-  await initSqlJs();   // wait until SQL engine loads
-  await setUniverse('zipeats'); // then load first universe
-}
-
-boot();
+renderSidebar();
+initSqlJs();
 </script>
 </body>
 </html>
