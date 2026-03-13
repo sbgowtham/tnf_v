@@ -1,0 +1,201 @@
+{
+  "id": "ridego",
+  "color": "#60a5fa",
+  "setup_sql": "\nCREATE TABLE drivers (\n  driver_id TEXT, driver_name TEXT, city TEXT, rating REAL, status TEXT\n);\nINSERT INTO drivers VALUES\n('D001','Ravi Kumar','Chennai',4.8,'active'),('D002','Anbu S','Chennai',3.9,'active'),\n('D003','Anand Raj','Chennai',4.6,'active'),('D004','Muthu K','Chennai',3.5,'inactive'),\n('D005','Siva S','Chennai',4.9,'active'),('D006','Ganesh R','Chennai',4.2,'active'),\n('D007','Preet K','Chennai',4.7,'active'),('D008','Vijay T','Chennai',4.5,'inactive'),\n('D009','Kiran M','Delhi',4.7,'active'),('D010','Suresh P','Delhi',4.6,'active'),\n('D011','Rohit D','Delhi',4.8,'active'),('D012','Amit V','Delhi',3.8,'active'),\n('D013','Sanjay B','Delhi',4.9,'active'),('D014','Raj N','Delhi',4.6,'active'),\n('D015','Mohan L','Mumbai',4.8,'active'),('D016','Sunil G','Mumbai',4.2,'active'),\n('D017','Arun F','Mumbai',3.7,'active'),('D018','Deepak H','Mumbai',4.6,'inactive'),\n('D019','Rahul J','Bangalore',4.7,'active'),('D020','Kumar S','Bangalore',3.9,'inactive'),\n('D021','Prasad K','Hyderabad',4.9,'active'),('D022','Reddy M','Hyderabad',4.8,'active'),\n('D023','Chandu V','Hyderabad',4.6,'active'),('D024','Srinu T','Hyderabad',4.7,'active'),\n('D025','Naidu B','Hyderabad',4.5,'active');\n\nCREATE TABLE daily_trips (trip_date TEXT, city TEXT, total_trips INTEGER);\nINSERT INTO daily_trips VALUES\n('2024-03-11','Chennai',3420),('2024-03-12','Chennai',3180),('2024-03-13','Chennai',3650),\n('2024-03-14','Chennai',2900),('2024-03-15','Chennai',4100),('2024-03-16','Chennai',4380),\n('2024-03-17','Chennai',2750);\n",
+  "questions": [
+    {
+      "id": 3,
+      "difficulty": "b",
+      "concepts": [
+        "WHERE",
+        "AND",
+        "GROUP BY",
+        "HAVING",
+        "COUNT"
+      ],
+      "story": {
+        "en": "RideGo operations center, Monday morning. Senior analyst Karthik drops his coffee mug on your desk. \"We need cities where we have at least 5 active drivers with a rating above 4.5. Operations is planning expansion this quarter.\" Classic HAVING problem.",
+        "ta": "RideGo operations center, Monday morning. Senior analyst Karthik ungaloda desk-la coffee mug-a dhaaaam nu vachu. \"4.5-kku mela rating irukara active drivers minimum 5 per perukkum irukara cities list venum. Quarter expansion plan panrom.\" Classic HAVING problem dhaan — try pannunga!",
+        "hi": "RideGo operations center, Monday morning. Senior analyst Karthik ne teri desk pe coffee mug pataak ke rakha. \"Hame un cities ki list chahiye jahan 4.5 se zyada rating wale active drivers kam se kam 5 hain. Is quarter expansion plan kar rahe hain.\" Classic HAVING wali problem hai yaar.",
+        "te": "RideGo operations center, Monday morning. Senior analyst Karthik meeru desk meeda coffee mug dhaaaam ani pettaadu. \"Rating 4.5 kante ekkuva unna active drivers kamse kammi 5 unna cities list kavali. Ee quarter expansion plan chestunnamu.\" Classic HAVING problem idi — try cheyyandi!"
+      },
+      "question": {
+        "en": "Find cities that have at least 5 active drivers with a rating above 4.5. Show the city name and driver count. Sort by driver count descending.",
+        "ta": "Rating 4.5-kku mela irukara active drivers minimum 5 irukara cities-a kaanu. City peyar-um driver count-um kaanu. Driver count highest-irundhu sort pannanum.",
+        "hi": "Woh cities dhundho jahan 4.5 se zyada rating wale active drivers kam se kam 5 hain. City ka naam aur driver count dikhao. Driver count se descending sort karo.",
+        "te": "Rating 4.5 kante ekkuva unna active drivers kamse kammi 5 unna cities ni kanuggonu. City peru mariyu driver count chupinchu. Driver count highest nundi sort cheyyali."
+      },
+      "schemas": [
+        {
+          "name": "drivers",
+          "cols": [
+            {
+              "n": "driver_id",
+              "t": "TEXT",
+              "e": "D001"
+            },
+            {
+              "n": "driver_name",
+              "t": "TEXT",
+              "e": "Ravi Kumar"
+            },
+            {
+              "n": "city",
+              "t": "TEXT",
+              "e": "Chennai"
+            },
+            {
+              "n": "rating",
+              "t": "REAL",
+              "e": "4.7"
+            },
+            {
+              "n": "status",
+              "t": "TEXT",
+              "e": "active/inactive"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Filter active drivers with rating above 4.5",
+            "ta": "4.5+ rating active drivers-a filter pannu",
+            "hi": "4.5+ rating wale active drivers filter karo",
+            "te": "4.5+ rating unna active drivers filter cheyyandi"
+          },
+          "sql": "SELECT *\nFROM drivers\nWHERE status = 'active'\n  AND rating > 4.5;",
+          "explain": {
+            "en": "WHERE with AND combines two conditions — both must be true. status = 'active' removes inactive drivers. rating > 4.5 removes drivers with 4.5 or lower. A row only survives if it passes both checks. This pre-filter runs before grouping.",
+            "ta": "WHERE AND nna rendu condition-a combine pannum — rendu-um true-aa irukkanum. status = 'active' inactive drivers-a hattidum. rating > 4.5 nna 4.5 or kammiya irukara drivers-a hattidum. Rendu condition pass aagaradhu dhaan row varum. Group panna mudhal idhu dhaan pre-filter.",
+            "hi": "WHERE AND do conditions ko combine karta hai — dono true hone chahiye. status = 'active' inactive drivers ko hatata hai. rating > 4.5 woh drivers hatata hai jinki rating 4.5 ya kam hai. Row tabhi bachegi jab dono conditions pass ho. Group karne se pehle yeh pre-filter hai.",
+            "te": "WHERE AND rendu conditions ni combine chestundi — rendu kuda nijam avvali. status = 'active' inactive drivers ni teeస్తుంది. rating > 4.5 ante 4.5 leda takkuva rating unna drivers ni hattiస్తుంది. Rendu conditions pass avvaali row survive avvadam ki. Group cheyyamundu ee pre-filter."
+          }
+        },
+        {
+          "title": {
+            "en": "Group by city and count drivers",
+            "ta": "City-vari group panni count pannu",
+            "hi": "City ke hisaab se group aur count karo",
+            "te": "City vari group chesi count cheyyandi"
+          },
+          "sql": "SELECT city,\n       COUNT(driver_id) AS driver_count\nFROM drivers\nWHERE status = 'active'\n  AND rating > 4.5\nGROUP BY city;",
+          "explain": {
+            "en": "GROUP BY city collapses all rows with the same city into one row. COUNT(driver_id) counts qualifying drivers per city. Notice that some cities have fewer than 5 — we cannot use WHERE to remove those because WHERE runs before GROUP BY. That is exactly why HAVING exists.",
+            "ta": "GROUP BY city same city-la irukara rows-a oru row-a collapse pannidum. COUNT(driver_id) prathi city-la yethanai drivers irukka nu count pannum. Sila cities-la 5-kku kamma irukku — adha WHERE use panninaaa GROUP BY-kku munnadi run aagidum. Adhunaala HAVING create aachchu.",
+            "hi": "GROUP BY city same city wali rows ko ek row mein compress karta hai. COUNT(driver_id) qualifying drivers count karta hai. Kuch cities mein 5 se kam dikhenge — WHERE se filter nahi kar sakte kyunki WHERE GROUP BY se pehle chalta hai. Isliye HAVING bana.",
+            "te": "GROUP BY city same city unna rows ni oka row ga compress chestundi. COUNT(driver_id) qualifying drivers count chestundi. Kొని cities lo 5 kante takkuva untundi — WHERE use cheyyalemu emi ante WHERE GROUP BY mundu run avutundi. Anduke HAVING create ayindi."
+          }
+        },
+        {
+          "title": {
+            "en": "Use HAVING to filter groups with 5+ drivers",
+            "ta": "5+ drivers irukara groups mattum HAVING use pannu",
+            "hi": "HAVING se 5+ drivers wali groups rakho",
+            "te": "5+ drivers unna groups ni HAVING tho filter cheyyandi"
+          },
+          "sql": "SELECT city,\n       COUNT(driver_id) AS driver_count\nFROM drivers\nWHERE status = 'active'\n  AND rating > 4.5\nGROUP BY city\nHAVING COUNT(driver_id) >= 5\nORDER BY driver_count DESC;",
+          "explain": {
+            "en": "HAVING filters after GROUP BY — it filters entire groups, not individual rows. The golden rule: WHERE filters rows before grouping, HAVING filters groups after grouping. HAVING COUNT(driver_id) >= 5 removes any city with fewer than 5 qualifying drivers. Karthik gets his expansion list.",
+            "ta": "HAVING GROUP BY-kku approm filter pannum — individual rows illai, entire groups-a filter pannum. Golden rule: WHERE rows-a group panna mudhal filter pannum, HAVING groups-a group pannana approm filter pannum. HAVING COUNT(driver_id) >= 5 nna 5-kku kamma irukara cities-a hattidum. Karthik-ku expansion list kedaichuchu.",
+            "hi": "HAVING GROUP BY ke baad filter karta hai — individual rows nahi, poore groups ko filter karta hai. Golden rule: WHERE grouping se pehle rows filter karta hai, HAVING grouping ke baad groups filter karta hai. HAVING COUNT(driver_id) >= 5 se 5 se kam wali cities hatt jaati hain. Karthik ko expansion list mil gayi.",
+            "te": "HAVING GROUP BY tarvata filter chestundi — individual rows kaadu, entire groups ni filter chestundi. Golden rule: WHERE grouping mundu rows filter chestundi, HAVING grouping tarvata groups filter chestundi. HAVING COUNT(driver_id) >= 5 ante 5 kante takkuva unna cities pothaayi. Karthik ki expansion list dorikindi."
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "difficulty": "a",
+      "concepts": [
+        "LAG",
+        "LEAD",
+        "WINDOW FUNCTION",
+        "OVER",
+        "ORDER BY"
+      ],
+      "story": {
+        "en": "RideGo quarterly review. You are presenting daily trip trends to the leadership team. Karthik nudges you: \"Show daily trips this week — and next to each day, show how many trips happened the day before. Leadership loves day-over-day comparisons.\" You need LAG().",
+        "ta": "RideGo quarterly review. Leadership team-ku daily trip trends present panreenga. Karthik kulunge: \"This week daily trips kaanu — prathi day-oda side-la, adhan munnadi day-la yethanai trips irundhadhu nu also kaanu. Leadership-ku day-over-day comparisons romba pidikkum.\" Neengaa LAG() use pannanum.",
+        "hi": "RideGo quarterly review. Leadership team ke saamne daily trip trends present kar rahe ho. Karthik ne dhakka diya: \"Is hafte ke daily trips dikhao — aur har din ke saath, usdin se ek din pehle ke trips bhi dikhao. Leadership ko day-over-day comparisons bahut pasand hain.\" Tumhe LAG() chahiye.",
+        "te": "RideGo quarterly review. Meeru leadership team ki daily trip trends present chestunnaru. Karthik kontallu kottaadu: \"Ee week daily trips chupinchu — prathi rojuki pakkana, adaniki mundu roju trips etni unnayo kuda chupinchu. Leadership ki day-over-day comparisons chaaala nachutaayi.\" Meeru LAG() use cheyyali."
+      },
+      "question": {
+        "en": "Show each day's trip count this week, alongside the previous day's trip count. Also calculate the day-over-day change. Order by date ascending.",
+        "ta": "This week prathi naal yethanai trips irundhadhu nu kaanu. Side-la adhan munnadi naal-oda trip count-um difference-um kaanu. Date-vari ascending sort pannanum.",
+        "hi": "Is hafte har din ke trips dikhao, saath mein pichle din ke trips aur day-over-day change bhi. Date ke hisaab se ascending sort karo.",
+        "te": "Ee week prathi roju trips chupinchu, pakkana mundu roju trips mariyu day-over-day change kuda. Date vari ascending sort cheyyali."
+      },
+      "schemas": [
+        {
+          "name": "daily_trips",
+          "cols": [
+            {
+              "n": "trip_date",
+              "t": "TEXT",
+              "e": "2024-03-11"
+            },
+            {
+              "n": "city",
+              "t": "TEXT",
+              "e": "Chennai"
+            },
+            {
+              "n": "total_trips",
+              "t": "INT",
+              "e": "3420"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Start with raw daily data",
+            "ta": "Mudhalula raw daily data paaru",
+            "hi": "Pehle raw daily data dekho",
+            "te": "Mundu raw daily data chudandi"
+          },
+          "sql": "SELECT trip_date, total_trips\nFROM daily_trips\nWHERE city = 'Chennai'\nORDER BY trip_date;",
+          "explain": {
+            "en": "Simple SELECT with ORDER BY date. Always look at your raw data first before writing complex queries. Understanding the shape of your data helps you write correct window functions.",
+            "ta": "Simple SELECT ORDER BY date. Complex query ezhudha munnadi mudhalula raw data-a paakrom — idu good habit. Data shape purinjundha window functions correct-aa ezhudha help aagidum.",
+            "hi": "Simple SELECT ORDER BY date. Complex query likhne se pehle hamesha raw data dekho — yeh good habit hai. Data ki shape samjhoge toh window functions sahi likhna aasaan hoga.",
+            "te": "Simple SELECT ORDER BY date. Complex query raayamundu eppudu mundu raw data chudandi — idi manchii habit. Data shape artham chesukuvadam window functions correct ga rayyadam ki help avutundi."
+          }
+        },
+        {
+          "title": {
+            "en": "Add LAG() to look back one day",
+            "ta": "LAG() use panni munnadi naal data paaru",
+            "hi": "LAG() se ek din peeche dekho",
+            "te": "LAG() tho oka roju venakki chudandi"
+          },
+          "sql": "SELECT\n  trip_date,\n  total_trips,\n  LAG(total_trips, 1) OVER (\n    ORDER BY trip_date\n  ) AS prev_day_trips\nFROM daily_trips\nWHERE city = 'Chennai'\nORDER BY trip_date;",
+          "explain": {
+            "en": "LAG(total_trips, 1) looks at the previous row's total_trips value. The 1 means go back 1 row. OVER (ORDER BY trip_date) tells it which order to look back in. The first row returns NULL because there is no row before it. LEAD() does the opposite — it looks forward to the next row.",
+            "ta": "LAG(total_trips, 1) munnadi row-oda total_trips value-a paarkuthu. 1 nna '1 row pinna poo' nu arththam. OVER (ORDER BY trip_date) edu order-la pinna pogaradhu nu sollurom. Mudhal row-ku NULL varum — munnadi row illai. LEAD() opposite — adhu forward-la irukara next row-a paarkuthu.",
+            "hi": "LAG(total_trips, 1) pichli row ka total_trips value dekhta hai. 1 ka matlab '1 row peeche jao'. OVER (ORDER BY trip_date) batata hai kis order mein peeche dekhna hai. Pehli row ke liye NULL aata hai — koi pehli row nahi. LEAD() ulta karta hai — yeh agle row ko aage dekhta hai.",
+            "te": "LAG(total_trips, 1) mundu row total_trips value ni chustundi. 1 ante '1 row venakki vellu'. OVER (ORDER BY trip_date) ento order lo venakki choodalo cheptundi. Modati row ki NULL vasthundi — mundu row ledi. LEAD() opposite — adhi next row ni mundu chustundi."
+          }
+        },
+        {
+          "title": {
+            "en": "Calculate day-over-day change",
+            "ta": "Day-over-day change calculate pannu",
+            "hi": "Day-over-day change calculate karo",
+            "te": "Day-over-day change calculate cheyyandi"
+          },
+          "sql": "SELECT\n  trip_date,\n  total_trips,\n  LAG(total_trips, 1) OVER (ORDER BY trip_date) AS prev_day_trips,\n  total_trips - LAG(total_trips, 1) OVER (ORDER BY trip_date)\n    AS day_over_day_change\nFROM daily_trips\nWHERE city = 'Chennai'\nORDER BY trip_date;",
+          "explain": {
+            "en": "total_trips - LAG(total_trips, 1) subtracts yesterday from today. Positive means more trips than yesterday. Negative means fewer trips. You can see Sunday dropped sharply — a pattern worth investigating. Leadership loves this view. Karthik is very pleased.",
+            "ta": "total_trips - LAG(total_trips, 1) nna innikki count-irundhu nalkku count-a kazhikkarom. Positive = nalkku mela trips. Negative = kammiya trips. Sunday-la sharp drop kaanrom — investigate pannanum pola irukku. Leadership-ku ipdi report romba pidikkum. Karthik santhoshama irukkaaru.",
+            "hi": "total_trips - LAG(total_trips, 1) aaj se kal ke trips ghatata hai. Positive = kal se zyada trips. Negative = kal se kam trips. Sunday mein sharp drop dikhta hai — pattern investigate karne wala hai. Leadership ko yeh view bahut pasand aata hai. Karthik bahut khush hai.",
+            "te": "total_trips - LAG(total_trips, 1) innikki nundi ninna trips ni teesesthundi. Positive = ninna kante ekkuva trips. Negative = ninna kante takkuva trips. Sunday lo sharp drop chustunnamu — investigate cheyyali. Leadership ki ee view chaaala nachutundi. Karthik satisfied ga unnadu."
+          }
+        }
+      ]
+    }
+  ]
+}

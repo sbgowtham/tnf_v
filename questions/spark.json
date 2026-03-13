@@ -1,0 +1,225 @@
+{
+  "id": "spark",
+  "color": "#f472b6",
+  "setup_sql": "\nCREATE TABLE users (user_id TEXT, name TEXT, age INTEGER, city TEXT, bio TEXT);\nINSERT INTO users VALUES\n('U001','Aisha Khan',24,'Mumbai','Coffee lover and weekend hiker'),\n('U002','Nikhil Rao',27,'Bangalore',NULL),\n('U003','Dev Mehta',26,'Delhi',NULL),\n('U004','Kavya Iyer',23,'Chennai','Bookworm and foodie'),\n('U005','Priya Nair',25,'Mumbai','Dog mom and beach person'),\n('U006','Arjun Singh',28,'Delhi','Musician and traveler'),\n('U007','Rohan Das',29,'Bangalore',NULL),\n('U008','Sneha Reddy',24,'Hyderabad','Dancer and adventure seeker'),\n('U009','Meera Pillai',26,'Chennai',NULL),\n('U010','Karan Malhotra',30,'Mumbai','Chef and marathon runner');\n\nCREATE TABLE matches (match_id TEXT, user_id_1 TEXT, user_id_2 TEXT, matched_at TEXT);\nINSERT INTO matches VALUES\n('M001','U001','U003','2024-03-01 10:00'),('M002','U001','U006','2024-03-02 11:30'),\n('M003','U002','U005','2024-03-02 14:00'),('M004','U003','U008','2024-03-03 09:15'),\n('M005','U004','U007','2024-03-04 16:00'),('M006','U005','U010','2024-03-05 13:00'),\n('M007','U006','U009','2024-03-05 18:00'),('M008','U001','U010','2024-03-06 10:00'),\n('M009','U002','U008','2024-03-07 12:00'),('M010','U003','U004','2024-03-08 09:00'),\n('M011','U007','U010','2024-03-09 15:00'),('M012','U001','U009','2024-03-10 11:00'),\n('M013','U002','U006','2024-03-11 14:00'),('M014','U005','U008','2024-03-12 17:00');\n\nCREATE TABLE messages (message_id TEXT, sender_id TEXT, receiver_id TEXT, sent_at TEXT, content TEXT);\nINSERT INTO messages VALUES\n('MSG001','U001','U003','2024-03-01 10:30','Hey! Great to match!'),\n('MSG002','U001','U006','2024-03-02 12:00','Hi there!'),\n('MSG003','U005','U010','2024-03-05 13:30','Hello!'),\n('MSG004','U006','U009','2024-03-05 18:30','Hey! Nice profile'),\n('MSG005','U001','U010','2024-03-06 10:45','Love your cooking pics!'),\n('MSG006','U005','U008','2024-03-12 17:30','Hi!'),\n('MSG007','U004','U007','2024-03-04 16:30','Hey there!'),\n('MSG008','U001','U009','2024-03-10 11:30','Hi Meera!');\n",
+  "questions": [
+    {
+      "id": 5,
+      "difficulty": "i",
+      "concepts": [
+        "LEFT JOIN",
+        "IS NULL",
+        "JOIN",
+        "DISTINCT"
+      ],
+      "story": {
+        "en": "Spark dating app, growth team standup. Meera pulls up a slide: \"Retention problem. Loads of users are getting matches but never sending a single message after. We are losing them silently.\" She looks at you. \"Find me those users. That is our re-engagement list.\" Classic LEFT JOIN + IS NULL.",
+        "ta": "Spark dating app, growth team standup. Meera oru slide pull up pannaa: \"Retention problem irukku. Neraya users-ku matches varuthu, aana oru message kooda anuppalla. Avangaa silently poiduvaanga.\" Ungala paakka. \"Avanga list venum. Adhudhaan re-engagement list.\" Classic LEFT JOIN + IS NULL problem!",
+        "hi": "Spark dating app, growth team standup. Meera ne ek slide dikhaya: \"Retention problem hai. Bahut saare users ko matches toh aa rahe hain, but ek bhi message nahi bhejte. Hum unhe silently kho rahe hain.\" Teri taraf dekha. \"Woh users dhundho. Wahi humari re-engagement list hai.\" Classic LEFT JOIN + IS NULL!",
+        "te": "Spark dating app, growth team standup. Meera oka slide pull up chesindi: \"Retention problem undi. Chaaala users ki matches vastunnaayi, kaani oka message kuda panttaaru. Vallu silently vellipotunnaru.\" Meeru velipottundi. \"Aa users list kavali. Adey mana re-engagement list.\" Classic LEFT JOIN + IS NULL!"
+      },
+      "question": {
+        "en": "Find all users who have at least one match but have never sent any message. Return their user_id and name.",
+        "ta": "Minimum oru match irukka, aana oru message kooda anuppalaama irukara users-a kaanu. Avangoda user_id and name return pannu.",
+        "hi": "Un users ko dhundho jinhe kam se kam ek match mila ho, but unhone kabhi koi message nahi bheja. Unka user_id aur name return karo.",
+        "te": "Kamse kammi oka match unna, kaani oka message kuda paddaaru unna users ni kanuggonu. Valladu user_id mariyu name return cheyyali."
+      },
+      "schemas": [
+        {
+          "name": "users",
+          "cols": [
+            {
+              "n": "user_id",
+              "t": "TEXT",
+              "e": "U001"
+            },
+            {
+              "n": "name",
+              "t": "TEXT",
+              "e": "Aisha"
+            },
+            {
+              "n": "bio",
+              "t": "TEXT",
+              "e": "NULL or text"
+            }
+          ]
+        },
+        {
+          "name": "matches",
+          "cols": [
+            {
+              "n": "match_id",
+              "t": "TEXT",
+              "e": "M001"
+            },
+            {
+              "n": "user_id_1",
+              "t": "TEXT",
+              "e": "U001"
+            },
+            {
+              "n": "user_id_2",
+              "t": "TEXT",
+              "e": "U005"
+            },
+            {
+              "n": "matched_at",
+              "t": "TEXT",
+              "e": "2024-03-01"
+            }
+          ]
+        },
+        {
+          "name": "messages",
+          "cols": [
+            {
+              "n": "message_id",
+              "t": "TEXT",
+              "e": "MSG001"
+            },
+            {
+              "n": "sender_id",
+              "t": "TEXT",
+              "e": "U001"
+            },
+            {
+              "n": "receiver_id",
+              "t": "TEXT",
+              "e": "U005"
+            },
+            {
+              "n": "sent_at",
+              "t": "TEXT",
+              "e": "2024-03-01 10:30"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Get all users who have at least one match",
+            "ta": "Match irukara users-a kaanu",
+            "hi": "Match wale users dhundho",
+            "te": "Match unna users ni chudandi"
+          },
+          "sql": "SELECT DISTINCT u.user_id, u.name\nFROM users u\nJOIN matches m\n  ON u.user_id = m.user_id_1\n  OR u.user_id = m.user_id_2;",
+          "explain": {
+            "en": "JOIN connects users to the matches table. A user can appear as user_id_1 OR user_id_2 in a match, so we use OR in the ON clause. DISTINCT removes duplicates — same user might appear in multiple matches. This gives everyone who has at least one match.",
+            "ta": "JOIN users-a matches table-oda connect pannum. Oru user match-la user_id_1 OR user_id_2-aa irukkalaam, adhunaala ON clause-la OR use panrom. DISTINCT duplicate rows-a remove pannum — same user multiple matches-la irukkalaam. Idhu match irukara ella users-um varum.",
+            "hi": "JOIN users ko matches table se connect karta hai. User match mein user_id_1 YA user_id_2 ho sakta hai, isliye ON mein OR use kiya. DISTINCT duplicate rows hatata hai — same user kai matches mein ho sakta hai. Isse sabhi matched users aate hain.",
+            "te": "JOIN users ni matches table tho connect chestundi. User oka match lo user_id_1 OR user_id_2 ga undi avvachu, anduke ON clause lo OR use chestunnamu. DISTINCT duplicate rows ni remove chestundi. Ee step tho match chesina anni users vastaayi."
+          }
+        },
+        {
+          "title": {
+            "en": "LEFT JOIN messages to find who never messaged",
+            "ta": "LEFT JOIN use panni message anuppalaatavanga-a kaanu",
+            "hi": "LEFT JOIN se message nahi bhejne wale dhundho",
+            "te": "LEFT JOIN use chesi message paddaaru unna vallu kanugonu"
+          },
+          "sql": "SELECT DISTINCT u.user_id, u.name\nFROM users u\nJOIN matches m\n  ON u.user_id = m.user_id_1 OR u.user_id = m.user_id_2\nLEFT JOIN messages msg\n  ON u.user_id = msg.sender_id\nWHERE msg.sender_id IS NULL\nORDER BY u.user_id;",
+          "explain": {
+            "en": "LEFT JOIN keeps all rows from the left table even when no match is found in messages. When a user never sent a message, msg.sender_id will be NULL. WHERE msg.sender_id IS NULL then keeps only those users. This LEFT JOIN + IS NULL pattern is one of the most powerful SQL techniques — use it any time you want things that exist in A but not in B.",
+            "ta": "LEFT JOIN left table-la (matched users) irukara ella rows-a vachu — messages-la match kedaikavillaaa kuda. Oru user message anuppalaama irundhaaa msg.sender_id NULL-aa irukum. WHERE msg.sender_id IS NULL adha filter pannidum. Ee LEFT JOIN + IS NULL pattern SQL-la romba powerful — 'A-la irukku aana B-la illai' nu vekkum podhu ellam ida use pannu.",
+            "hi": "LEFT JOIN left table ki saari rows rakhta hai chahe messages mein match mile ya na mile. Agar user ne kabhi message nahi bheja toh msg.sender_id NULL hoga. WHERE msg.sender_id IS NULL woh non-messaging users rakhta hai. Yeh LEFT JOIN + IS NULL pattern SQL ka sabse powerful technique mein se ek hai — jab bhi 'A mein hai but B mein nahi' type query ho yahi use karo.",
+            "te": "LEFT JOIN left table lo anni rows ni unchutundi — messages lo match dorikina dorakakpoina. Oka user message paddaru ante msg.sender_id NULL ga untundi. WHERE msg.sender_id IS NULL aa non-messaging users ni maatrame unchutundi. Ee LEFT JOIN + IS NULL pattern SQL lo chaaala powerful techniques lo okati — 'A lo undi kaani B lo ledi' ante eppudu ee technique use cheyyandi."
+          }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "difficulty": "a",
+      "concepts": [
+        "CTE",
+        "WITH",
+        "CASE WHEN",
+        "COALESCE",
+        "LEFT JOIN"
+      ],
+      "story": {
+        "en": "Product review at Spark. The team wants to segment users by engagement level. Meera defines it: Under 3 matches = Low, 3 to 6 = Medium, above 6 = High. Also flag users with incomplete profiles. Multiple conditions, clean output. CTE + CASE WHEN time.",
+        "ta": "Spark-la product review. Team users-a engagement level-la segment panna virukkanga. Meera define pannaa: 3-kku kamma matches = Low, 3 to 6 = Medium, 6-kku mela = High. Profile incomplete irukkavananga-a also flag pannum. CTE + CASE WHEN time!",
+        "hi": "Spark mein product review. Team users ko engagement level se segment karna chahti hai. Meera ne define kiya: 3 se kam matches = Low, 3 se 6 tak = Medium, 6 se zyada = High. Incomplete profile wale users ko bhi flag karo. CTE + CASE WHEN time!",
+        "te": "Spark lo product review. Team users ni engagement level vari segment cheyyali. Meera define chesindi: 3 kante takkuva matches = Low, 3 to 6 = Medium, 6 kante ekkuva = High. Incomplete profiles unna users ni kuda flag cheyyali. CTE + CASE WHEN time!"
+      },
+      "question": {
+        "en": "Classify each user by match count into Low, Medium, or High engagement. If bio is NULL, mark profile as Incomplete, else Complete. Show user name, match count, engagement level, and profile status.",
+        "ta": "Prathi user-a match count-vari Low, Medium, High engagement-la classify pannu. Bio NULL-aa irundhaaa profile Incomplete, illanaaa Complete. User name, match count, engagement level, profile status kaanu.",
+        "hi": "Har user ko match count ke hisaab se Low, Medium, High engagement mein classify karo. Bio NULL hai toh Incomplete, warna Complete. User naam, match count, engagement level, aur profile status dikhao.",
+        "te": "Prathi user ni match count vari Low, Medium, High engagement lo classify cheyyali. Bio NULL unte Incomplete, lekunte Complete. User peru, match count, engagement level, mariyu profile status chupinchu."
+      },
+      "schemas": [
+        {
+          "name": "users",
+          "cols": [
+            {
+              "n": "user_id",
+              "t": "TEXT",
+              "e": "U001"
+            },
+            {
+              "n": "name",
+              "t": "TEXT",
+              "e": "Aisha"
+            },
+            {
+              "n": "bio",
+              "t": "TEXT",
+              "e": "NULL or text"
+            }
+          ]
+        },
+        {
+          "name": "matches",
+          "cols": [
+            {
+              "n": "user_id_1",
+              "t": "TEXT",
+              "e": "U001"
+            },
+            {
+              "n": "user_id_2",
+              "t": "TEXT",
+              "e": "U005"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Build match count per user in a CTE",
+            "ta": "CTE-la prathi user-oda match count edukku",
+            "hi": "CTE mein har user ka match count nikalo",
+            "te": "CTE lo prathi user match count teesukondo"
+          },
+          "sql": "WITH match_counts AS (\n  SELECT\n    u.user_id, u.name, u.bio,\n    COUNT(m.match_id) AS total_matches\n  FROM users u\n  LEFT JOIN matches m\n    ON u.user_id = m.user_id_1 OR u.user_id = m.user_id_2\n  GROUP BY u.user_id, u.name, u.bio\n)\nSELECT * FROM match_counts\nORDER BY total_matches DESC;",
+          "explain": {
+            "en": "WITH match_counts AS (...) creates a CTE — a temporary named result set you can reference like a table. Think of it as a named intermediate query. CTEs make complex queries readable by breaking them into labeled steps. LEFT JOIN is used so users with zero matches also appear in the result.",
+            "ta": "WITH match_counts AS (...) oru CTE create pannum — oru temporary named result, table maadiri use pannaalam. Oru named intermediate query mathiri nenaippu. CTE complex queries-a labeled steps-la udaichhu readable-aa pannum. Zero matches irukara users-um varachchi LEFT JOIN use panrom.",
+            "hi": "WITH match_counts AS (...) ek CTE banata hai — ek temporary named result jise table ki tarah use kar sakte ho. Ek named intermediate query samjho. CTE complex queries ko labeled steps mein todke readable banata hai. Zero matches wale users bhi aayein isliye LEFT JOIN use kiya.",
+            "te": "WITH match_counts AS (...) oka CTE create chestundi — oka temporary named result, table laga use cheyyavacchu. Oka named intermediate query laga anipistundi. CTE complex queries ni labeled steps lo todicchi readable ga chestundi. Zero matches unna users kuda vastuundeli LEFT JOIN use chesaamu."
+          }
+        },
+        {
+          "title": {
+            "en": "Apply CASE WHEN and COALESCE on top",
+            "ta": "CASE WHEN and COALESCE use pannuvom",
+            "hi": "CASE WHEN aur COALESCE lagao",
+            "te": "CASE WHEN mariyu COALESCE apply cheyyandi"
+          },
+          "sql": "WITH match_counts AS (\n  SELECT u.user_id, u.name, u.bio,\n    COUNT(m.match_id) AS total_matches\n  FROM users u\n  LEFT JOIN matches m\n    ON u.user_id = m.user_id_1 OR u.user_id = m.user_id_2\n  GROUP BY u.user_id, u.name, u.bio\n)\nSELECT\n  name,\n  total_matches,\n  CASE\n    WHEN total_matches < 3  THEN 'Low'\n    WHEN total_matches <= 6 THEN 'Medium'\n    ELSE 'High'\n  END AS engagement_level,\n  COALESCE(bio, 'Incomplete') AS profile_status\nFROM match_counts\nORDER BY total_matches DESC;",
+          "explain": {
+            "en": "CASE WHEN is SQL's if-else. It evaluates conditions top to bottom and returns the first match. Once a condition matches, the rest are skipped. COALESCE(bio, 'Incomplete') returns bio if it is not NULL — if bio IS NULL, it returns 'Incomplete'. COALESCE always returns the first non-NULL value from its list. Together these two turn raw data into a business-ready segment report.",
+            "ta": "CASE WHEN SQL-oda if-else. Conditions-a top to bottom evaluate pannum, first match aaradhukku result return pannum. Oru condition match aanaa, matha conditions skip aagidum. COALESCE(bio, 'Incomplete') bio NULL illaalanaa bio return pannum — NULL-aa irundhaaa 'Incomplete' return pannum. COALESCE list-la irukara first non-NULL value-a always return pannum. Rendu serndhu raw data-a business-ready segment report-aa maattum.",
+            "hi": "CASE WHEN SQL ka if-else hai. Conditions upar se neeche evaluate karta hai, pehli match hone wali condition ka result return karta hai. Ek condition match ho gayi toh baaki skip ho jaati hain. COALESCE(bio, 'Incomplete') bio return karta hai agar NULL nahi — agar bio NULL hai toh 'Incomplete' return karta hai. COALESCE list mein se pehla non-NULL value hamesha return karta hai.",
+            "te": "CASE WHEN SQL lo if-else laga. Conditions ni top to bottom evaluate chestundi, first match avvina condition result return chestundi. Oka condition match avvadam tho, tarvata conditions skip avutaayi. COALESCE(bio, 'Incomplete') bio NULL kakunte bio return chestundi — NULL unte 'Incomplete' return chestundi. COALESCE list lo first non-NULL value ni eppudu return chestundi."
+          }
+        }
+      ]
+    }
+  ]
+}
