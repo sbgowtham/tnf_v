@@ -475,11 +475,14 @@ function escHtml(str) {
 }
 
 // ─── BOOT ────────────────────────────────────────────────────────
-renderSidebar();
+async function boot() {
+  renderSidebar();
 
-initSqlJs().then(() => {
-  setUniverse('zipeats');
-});
+  await initSqlJs();   // wait until SQL engine loads
+  await setUniverse('zipeats'); // then load first universe
+}
+
+boot();
 </script>
 </body>
 </html>
