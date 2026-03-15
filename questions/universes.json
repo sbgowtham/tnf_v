@@ -1,3 +1,4 @@
 [
-  { "id": "tinder",      "color": "#f472b6", "label": "Tinder",      "sub": "Dating App"      }
+  { "id": "tinder",      "color": "#f472b6", "label": "Tinder",      "sub": "Dating App"      },
+  { "id": "uber",        "color": "#000000", "label": "Uber",        "sub": "Cab Booking"      }
 ]
