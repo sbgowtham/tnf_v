@@ -1,0 +1,155 @@
+{
+  "id": "tinder",
+  "label": "Tinder",
+  "color": "#f472b6",
+  "setup_sql": "CREATE TABLE users (user_id TEXT, name TEXT, age INTEGER, city TEXT, gender TEXT, premium INTEGER, joined_date TEXT);\nCREATE TABLE swipes (swipe_id INTEGER, swiper_id TEXT, swiped_id TEXT, direction TEXT, swiped_at TEXT);\nCREATE TABLE matches (match_id INTEGER, user1_id TEXT, user2_id TEXT, matched_at TEXT, chatted INTEGER);\nINSERT INTO users VALUES ('U001','Aditya',26,'Chennai','M',0,'2024-01-10'),('U002','Meera',24,'Chennai','F',1,'2024-01-12'),('U003','Karthik',29,'Chennai','M',1,'2024-01-15'),('U004','Divya',27,'Chennai','F',0,'2024-01-18'),('U005','Rahul',25,'Mumbai','M',0,'2024-02-01'),('U006','Priya',23,'Mumbai','F',1,'2024-02-03'),('U007','Arjun',31,'Mumbai','M',0,'2024-02-05'),('U008','Sneha',28,'Mumbai','F',0,'2024-02-07'),('U009','Vikram',27,'Bangalore','M',1,'2024-02-10'),('U010','Ananya',25,'Bangalore','F',1,'2024-02-12'),('U011','Rohan',24,'Bangalore','M',0,'2024-02-14'),('U012','Kavya',26,'Bangalore','F',0,'2024-02-15'),('U013','Siddharth',30,'Chennai','M',1,'2024-02-20'),('U014','Nithya',24,'Chennai','F',0,'2024-02-22'),('U015','Arun',28,'Mumbai','M',0,'2024-03-01');\nINSERT INTO swipes VALUES (1,'U001','U002','right','2024-03-01 10:00:00'),(2,'U002','U001','right','2024-03-01 10:30:00'),(3,'U001','U004','right','2024-03-01 11:00:00'),(4,'U004','U001','left','2024-03-01 11:05:00'),(5,'U003','U002','right','2024-03-01 12:00:00'),(6,'U002','U003','right','2024-03-01 12:10:00'),(7,'U005','U006','right','2024-03-02 09:00:00'),(8,'U006','U005','right','2024-03-02 09:15:00'),(9,'U007','U006','right','2024-03-02 10:00:00'),(10,'U006','U007','left','2024-03-02 10:05:00'),(11,'U009','U010','right','2024-03-02 11:00:00'),(12,'U010','U009','right','2024-03-02 11:20:00'),(13,'U011','U010','right','2024-03-02 12:00:00'),(14,'U010','U011','left','2024-03-02 12:05:00'),(15,'U013','U014','right','2024-03-03 09:00:00'),(16,'U014','U013','right','2024-03-03 09:30:00'),(17,'U001','U014','right','2024-03-03 10:00:00'),(18,'U014','U001','left','2024-03-03 10:10:00'),(19,'U003','U004','right','2024-03-03 11:00:00'),(20,'U004','U003','right','2024-03-03 11:15:00'),(21,'U015','U006','right','2024-03-04 09:00:00'),(22,'U006','U015','right','2024-03-04 09:20:00'),(23,'U009','U012','right','2024-03-04 10:00:00'),(24,'U012','U009','right','2024-03-04 10:15:00');\nINSERT INTO matches VALUES (1,'U001','U002','2024-03-01 10:30:00',1),(2,'U003','U002','2024-03-01 12:10:00',0),(3,'U005','U006','2024-03-02 09:15:00',1),(4,'U009','U010','2024-03-02 11:20:00',1),(5,'U013','U014','2024-03-03 09:30:00',0),(6,'U003','U004','2024-03-03 11:15:00',1),(7,'U015','U006','2024-03-04 09:20:00',0),(8,'U009','U012','2024-03-04 10:15:00',1);",
+  "questions": [
+    {
+      "id": 1,
+      "difficulty": "b",
+      "concepts": ["SELECT", "WHERE", "COUNT", "GROUP BY", "ORDER BY"],
+      "story": {
+        "en": "You just joined Tinder's data team in Bangalore. Your manager Neha drops a Slack message at 9am: 'Product wants to know which cities have the most active users. Stand-up is in 20 minutes.' You crack your knuckles. Users table is right there. Let's go.",
+        "ta": "Tinder-oda data team-la ungaloda first week da. Manager Neha Slack-la message pottaa — '9am-la stand-up, city-wise active users count venum.' 20 minutes dhaan irukku. Panic aagaadha — users table open panni query adikkalaam. Simple-aa irukku, nee handle pannuviya?",
+        "hi": "Tinder ke data team mein join kiya abhi. Manager Neha ne Slack pe message diya — 'Stand-up se pehle city-wise active users count chahiye.' Sirf 20 minute hain. Ghabra mat yaar — users table saamne hai, query likhna simple hai. Kar de!",
+        "te": "Tinder data team lo join chesina first week ra. Manager Neha Slack lo message pettindi — 'Stand-up ki mundu city-wise active users count kavali.' 20 minutes matrame unnaayi. Tension padakandi — users table mundule undi, simple query rasthe avutundi. Cheyagalava?"
+      },
+      "question": {
+        "en": "Find the total number of users in each city. Show city name and user count. Sort by highest user count first.",
+        "ta": "Oru oru city-la evvalavu users irukkaanga nu kaanu. City name-um, user count-um show pannanum. Most users irukara city munnaadi varaanum.",
+        "hi": "Har city mein kitne users hain woh nikalo. City ka naam aur user count dikhao. Sabse zyada users wali city pehle aaye.",
+        "te": "Prathi city lo entha mandi users unnaro chudandi. City peru mariyu user count chupinchu. Ekkuva users unna city mundu vasthundi."
+      },
+      "schemas": [
+        {
+          "name": "users",
+          "cols": [
+            { "n": "user_id", "t": "TEXT", "e": "U001" },
+            { "n": "name", "t": "TEXT", "e": "Aditya" },
+            { "n": "age", "t": "INT", "e": "26" },
+            { "n": "city", "t": "TEXT", "e": "Chennai" },
+            { "n": "gender", "t": "TEXT", "e": "M/F" },
+            { "n": "premium", "t": "INT", "e": "0 or 1" },
+            { "n": "joined_date", "t": "TEXT", "e": "2024-01-10" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at all users first",
+            "ta": "Munnaadi ella users-ayum paaru",
+            "hi": "Pehle saare users dekho",
+            "te": "Mundu anni users ni chudandi"
+          },
+          "sql": "SELECT *\nFROM users;",
+          "explain": {
+            "en": "Before writing any query, always look at the raw data first. SELECT * gives you every column in every row — no filters, nothing hidden. You can see the structure: user_id, city, gender, premium. This is your starting point. Never skip this step.",
+            "ta": "Edhaavadhu query ezhudha munnaadi, table-la irukara data-a full paakkaanum da. SELECT * nna ella columns, ella rows — filter illai, hide illai. City, gender, premium — structure puriyum. Idhu ungaloda starting point. Itha skip pannidhaadha.",
+            "hi": "Koi bhi query likhne se pehle raw data dekh lo yaar. SELECT * matlab har column, har row — koi filter nahi, kuch chhupa nahi. City, gender, premium — poora structure samajh aayega. Yahi tumhara starting point hai. Yeh step kabhi skip mat karo.",
+            "te": "Yedaina query raasthamu mundu, table lo unna raw data chudaali ra. SELECT * ante anni columns, anni rows — filter ledi, emee doragaledu. City, gender, premium — structure artham avutundi. Idi mee starting point. Ee step skip cheyyakandi evvaroo."
+          }
+        },
+        {
+          "title": {
+            "en": "Count users per city with GROUP BY",
+            "ta": "GROUP BY tho city-vari users count pannу",
+            "hi": "GROUP BY se city-wise users count karo",
+            "te": "GROUP BY tho city-vari users count cheyyandi"
+          },
+          "sql": "SELECT city, COUNT(*) AS user_count\nFROM users\nGROUP BY city\nORDER BY user_count DESC;",
+          "explain": {
+            "en": "GROUP BY city puts all rows with the same city into one bucket. COUNT(*) then counts how many rows are in each bucket. AS user_count gives that number a readable name. ORDER BY user_count DESC puts the city with most users at the top. This is the most used pattern in data analytics — group, count, sort.",
+            "ta": "GROUP BY city nna same city-la irukara users ellam oru bucket-la poituvaanga. COUNT(*) adha bucket-la evvalavu users irukkaanga nu count pannum. AS user_count nna aa number-ku oru peyar kudukkurom. ORDER BY DESC nna most users irukara city munnaadi varum. Group pannи, count pannи, sort pannи — data analytics-la idhu thaan most used pattern da.",
+            "hi": "GROUP BY city ek hi city ke saare users ko ek bucket mein daal deta hai. COUNT(*) us bucket mein kitne log hain woh count karta hai. AS user_count us number ko ek readable naam deta hai. ORDER BY DESC sabse zyada users wali city pehle laata hai. Group karo, count karo, sort karo — data analytics ka sabse common pattern yahi hai yaar.",
+            "te": "GROUP BY city ante same city users andarna oka bucket lo pettindi. COUNT(*) aa bucket lo entha mandi unnaro count chestundi. AS user_count aa number ki oka peru istundi. ORDER BY DESC ante ekkuva users unna city mundu vasthundi. Group cheyyi, count cheyyi, sort cheyyi — data analytics lo idi most used pattern ra."
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "difficulty": "i",
+      "concepts": ["JOIN", "WHERE", "COUNT", "GROUP BY", "HAVING"],
+      "story": {
+        "en": "Week 2. You have settled in. The product manager walks over: 'We need to find ghost users — people who got matches but never started a conversation. It is killing our engagement numbers.' This needs two tables, a JOIN, and some sharp filtering. Time to step up.",
+        "ta": "Rendu vaaram achu. Nee ipo comfortable-aa feel panra. Product manager vandhu solla — 'Match aana users irukkaanga, aana oru message kooda pesa maataangaada — ghost users. Engagement drop aaguthu.' Ithukku two tables JOIN pannanum, filtering venum. Simple illai — aana nee handle pannuviya?",
+        "hi": "Do hafte ho gaye. Ab thoda comfortable ho gaye ho. Product manager aake bola — 'Match toh ho gaya par ek bhi message nahi bheja — ghost users. Engagement girr raha hai.' Iske liye do tables JOIN karne padenge, filtering bhi chahiye. Easy nahi hai — par tu kar sakta hai yaar.",
+        "te": "Rendu vaaram avvaindi. Ipo kaastaanta comfortable ga unnaav. Product manager vachi cheppindi — 'Match ayyindi kaani oka message kooda cheyyaledu — ghost users. Engagement padipotundi.' Daniki rendu tables JOIN cheyyaali, filtering kooda kavali. Simple kaadu — kaani nuvvu cheseyagalav ra."
+      },
+      "question": {
+        "en": "Find all users who have at least one match but have never chatted. Show their name, city, and total match count. Sort by match count descending.",
+        "ta": "Oru match aanalum oru chatkooda pesa maattengraa users-a kaanu. Avanga name, city, evvalavu matches nu show pannanum. Most matches irundhu sort pannanum.",
+        "hi": "Woh users nikalo jinhe kam se kam ek match mila ho lekin unhone kabhi chat nahi ki. Unka naam, city, aur total match count dikhao. Sabse zyada matches wale pehle.",
+        "te": "Kanapadam okka match ayyindi kaani evvaritho kooda chat cheyyani users ni chupinchu. Vari peru, city, mariyu total match count chupinchu. Ekkuva matches unna vaallu mundu."
+      },
+      "schemas": [
+        {
+          "name": "users",
+          "cols": [
+            { "n": "user_id", "t": "TEXT", "e": "U001" },
+            { "n": "name", "t": "TEXT", "e": "Aditya" },
+            { "n": "city", "t": "TEXT", "e": "Chennai" }
+          ]
+        },
+        {
+          "name": "matches",
+          "cols": [
+            { "n": "match_id", "t": "INT", "e": "1,2,3" },
+            { "n": "user1_id", "t": "TEXT", "e": "U001" },
+            { "n": "user2_id", "t": "TEXT", "e": "U002" },
+            { "n": "matched_at", "t": "TEXT", "e": "2024-03-01" },
+            { "n": "chatted", "t": "INT", "e": "0 or 1" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Find all matches where chatted = 0",
+            "ta": "Chatted illaa matches-a paaru",
+            "hi": "Chatted = 0 wale matches dekho",
+            "te": "Chat cheyyani matches chudandi"
+          },
+          "sql": "SELECT *\nFROM matches\nWHERE chatted = 0;",
+          "explain": {
+            "en": "Start simple — filter the matches table for rows where chatted = 0. These are the matches where nobody sent the first message. In Tinder's world, this is a dead match. You are building up to the full answer one clause at a time. Always start with the simplest filter first.",
+            "ta": "Simple-aa start pannuvom — matches table-la chatted = 0 irukara rows mattum vachchu. Idhu match aana aana, oru message kooda poga villa. Tinder-la idhu dead match-nu solluvaanga. Full query oru shot-la ezhudha vaendaam — step by step build pannuvom da.",
+            "hi": "Simple se shuru karo — matches table mein chatted = 0 wali rows filter karo. Yeh woh matches hain jahan kisi ne pehla message nahi bheja. Tinder ki duniya mein inhe dead matches kehte hain. Poora query ek baar mein mat likho — step by step build karo yaar.",
+            "te": "Simple ga start cheyyali — matches table lo chatted = 0 unna rows filter cheyyandi. Ivvi match ayyayi kaani okka message kooda velledu. Tinder lo ivvatni dead matches antaaru. Full query oka saari raayakandi — step by step build cheyyandi ra."
+          }
+        },
+        {
+          "title": {
+            "en": "JOIN users to get name and city",
+            "ta": "Users table JOIN pannி name, city edukku",
+            "hi": "Users table JOIN karke naam aur city lo",
+            "te": "Users table JOIN chesi name, city teesukopandi"
+          },
+          "sql": "SELECT u.name, u.city, m.match_id\nFROM matches m\nJOIN users u ON u.user_id = m.user1_id\nWHERE m.chatted = 0;",
+          "explain": {
+            "en": "JOIN connects two tables using a common column. Here matches.user1_id links to users.user_id. This lets you pull name and city from the users table while reading data from matches. Think of it as a lookup — for each match row, go find the matching user row and bring their details over.",
+            "ta": "JOIN nna rendu tables-a oru common column vachchu connect pannum. Inga matches.user1_id, users.user_id-oda link aaguthu. Idha vachchu users table-la irundhu name, city-a edukkalaam. Oru lookup maadiri think pannu — every match row paathhu, corresponding user row-a kandupudichu, avanga details-a kooptu vaa.",
+            "hi": "JOIN do tables ko ek common column se jodta hai. Yahan matches.user1_id, users.user_id se link hota hai. Isse users table se naam aur city kheench sakte hain matches padhte waqt. Ek lookup ki tarah sochna — har match row ke liye jaake matching user row dhundho aur unki details laao yaar.",
+            "te": "JOIN rendu tables ni oka common column tho connect chestundi. Ikkade matches.user1_id, users.user_id tho link avutundi. Daani valla users table nundi name, city teesukovachu matches chaduvuthu. Oka lookup laga anipinchu — prathi match row ki, corresponding user row ni kanugooni, vari details teesukorani."
+          }
+        },
+        {
+          "title": {
+            "en": "Count matches per user and filter with HAVING",
+            "ta": "User-vari match count pannி HAVING tho filter pannу",
+            "hi": "User-wise match count karo aur HAVING se filter karo",
+            "te": "User-vari match count cheyyi mariyu HAVING tho filter cheyyandi"
+          },
+          "sql": "SELECT u.name, u.city, COUNT(m.match_id) AS total_matches\nFROM matches m\nJOIN users u ON u.user_id = m.user1_id\nWHERE m.chatted = 0\nGROUP BY u.user_id, u.name, u.city\nHAVING COUNT(m.match_id) >= 1\nORDER BY total_matches DESC;",
+          "explain": {
+            "en": "GROUP BY groups all match rows per user so COUNT gives a per-user total. HAVING filters after grouping — it is like WHERE but for aggregated results. Here HAVING COUNT >= 1 ensures we only see users with at least one silent match. WHERE filters rows before grouping, HAVING filters groups after. That difference is critical.",
+            "ta": "GROUP BY user-vari match rows-a group pannuvaanga, so COUNT per-user total kudukkum. HAVING nna grouping aana apparam filter pannum — WHERE maadiri dhaan, aana aggregated results-ku use pannuvom. Inga HAVING COUNT >= 1 nna kammida oru match irukara users mattum varum. WHERE rows-a filter pannum grouping-ku munnaadi, HAVING groups-a filter pannum grouping-ku apparam. Ithu miku theriyaadha difference — itha remember panniko da.",
+            "hi": "GROUP BY har user ke match rows ko group karta hai, toh COUNT per-user total deta hai. HAVING grouping ke baad filter karta hai — WHERE jaisa hai, lekin aggregated results ke liye. Yahan HAVING COUNT >= 1 matlab sirf woh users dikhao jinka kam se kam ek silent match ho. WHERE grouping se pehle rows filter karta hai, HAVING grouping ke baad groups filter karta hai. Yeh difference bahut zaroori hai yaar — yaad rakhna.",
+            "te": "GROUP BY prathi user matches rows group chestundi, so COUNT per-user total istundi. HAVING grouping tarvata filter chestundi — WHERE laaga untundi kaani aggregated results ki. Ikkade HAVING COUNT >= 1 ante kanapadam okka silent match unna users matrame chupinchu. WHERE grouping mundu rows filter chestundi, HAVING grouping tarvata groups filter chestundi. Ee difference chala important ra — gurtupettukopandi."
+          }
+        }
+      ]
+    }
+  ]
+}
