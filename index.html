@@ -149,13 +149,7 @@ body{background:var(--bg);color:var(--txt);font-family:var(--font);min-height:10
 
 <script>
 // ─── CONFIG ─────────────────────────────────────────────────────
-const UNIVERSES = [
-  {id:'zipeats',  color:'#f97316', label:'ZipEats',     sub:'Food Delivery'},
-  {id:'ridego',   color:'#60a5fa', label:'RideGo',      sub:'Ride Hailing'},
-  {id:'spark',    color:'#f472b6', label:'Spark',        sub:'Dating App'},
-  {id:'connectbook',color:'#818cf8',label:'ConnectBook', sub:'Social Network'},
-  {id:'routeiq',  color:'#34d399', label:'RouteIQ',      sub:'Maps & Navigation'},
-];
+let UNIVERSES = []; // loaded from /questions/universes.json
 const LANG_LABELS = {en:'English',ta:'Tanglish',hi:'Hinglish',te:'Tenglish'};
 const DIFF = {b:'Beginner',i:'Intermediate',a:'Advanced'};
 const DIFF_CLS = {b:'b',i:'i',a:'a'};
@@ -515,8 +509,17 @@ function escHtml(str) {
 }
 
 // ─── BOOT ────────────────────────────────────────────────────────
-renderSidebar();
-bootSqlEngine();
+async function boot() {
+  try {
+    const r = await fetch('/questions/universes.json');
+    UNIVERSES = await r.json();
+  } catch(e) {
+    console.error('Failed to load universes.json', e);
+  }
+  renderSidebar();
+  bootSqlEngine();
+}
+boot();
 </script>
 </body>
 </html>
