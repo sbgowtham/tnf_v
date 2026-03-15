@@ -1,0 +1,181 @@
+{
+  "id": "uber",
+  "label": "Uber",
+  "color": "#000000",
+  "setup_sql": "CREATE TABLE drivers (driver_id TEXT, name TEXT, city TEXT, vehicle_type TEXT, rating REAL, active INTEGER, joined_date TEXT);\nCREATE TABLE trips (trip_id INTEGER, driver_id TEXT, rider_id TEXT, city TEXT, pickup TEXT, dropoff TEXT, fare REAL, distance_km REAL, status TEXT, trip_date TEXT);\nCREATE TABLE riders (rider_id TEXT, name TEXT, city TEXT, premium INTEGER, joined_date TEXT);\nINSERT INTO drivers VALUES ('D001','Murugan','Chennai','Auto',4.8,1,'2023-01-10'),('D002','Selvam','Chennai','Mini',4.5,1,'2023-02-15'),('D003','Ravi','Chennai','Sedan',4.9,1,'2023-03-01'),('D004','Kumar','Chennai','Mini',4.2,0,'2023-04-10'),('D005','Suresh','Mumbai','Auto',4.7,1,'2023-01-20'),('D006','Ramesh','Mumbai','Sedan',4.6,1,'2023-02-28'),('D007','Ganesh','Mumbai','Mini',4.3,1,'2023-05-15'),('D008','Prakash','Bangalore','Sedan',4.9,1,'2023-01-05'),('D009','Venkat','Bangalore','Mini',4.4,1,'2023-03-20'),('D010','Arun','Bangalore','Auto',4.1,0,'2023-06-01');\nINSERT INTO riders VALUES ('R001','Ananya','Chennai',0,'2023-06-01'),('R002','Priya','Chennai',1,'2023-06-15'),('R003','Karthik','Chennai',0,'2023-07-01'),('R004','Meera','Mumbai',1,'2023-06-10'),('R005','Rahul','Mumbai',0,'2023-07-20'),('R006','Sneha','Bangalore',1,'2023-06-05'),('R007','Vikram','Bangalore',0,'2023-08-01'),('R008','Divya','Chennai',0,'2023-09-10'),('R009','Arjun','Mumbai',1,'2023-07-15'),('R010','Kavya','Bangalore',0,'2023-08-20');\nINSERT INTO trips VALUES (1,'D001','R001','Chennai','T Nagar','Anna Nagar',120.00,8.5,'completed','2024-03-01'),(2,'D001','R002','Chennai','Adyar','OMR',210.00,15.2,'completed','2024-03-01'),(3,'D002','R003','Chennai','Velachery','Tambaram',185.00,12.0,'completed','2024-03-02'),(4,'D003','R001','Chennai','Anna Nagar','Airport',450.00,28.0,'completed','2024-03-02'),(5,'D002','R002','Chennai','T Nagar','Egmore',95.00,6.5,'cancelled','2024-03-03'),(6,'D003','R008','Chennai','Mylapore','Guindy',160.00,10.2,'completed','2024-03-03'),(7,'D005','R004','Mumbai','Bandra','Andheri',230.00,14.0,'completed','2024-03-01'),(8,'D006','R005','Mumbai','Dadar','Kurla',175.00,11.5,'completed','2024-03-02'),(9,'D007','R004','Mumbai','Andheri','BKC',310.00,18.0,'completed','2024-03-03'),(10,'D005','R009','Mumbai','Colaba','Bandra',420.00,25.5,'completed','2024-03-03'),(11,'D006','R005','Mumbai','Kurla','Airport',380.00,22.0,'cancelled','2024-03-04'),(12,'D008','R006','Bangalore','Koramangala','Whitefield',520.00,32.0,'completed','2024-03-01'),(13,'D009','R007','Bangalore','HSR Layout','Electronic City',290.00,18.5,'completed','2024-03-02'),(14,'D008','R010','Bangalore','Indiranagar','Airport',680.00,42.0,'completed','2024-03-03'),(15,'D009','R006','Bangalore','Whitefield','MG Road',340.00,21.0,'completed','2024-03-04'),(16,'D001','R003','Chennai','Guindy','T Nagar',140.00,9.0,'completed','2024-03-04'),(17,'D003','R002','Chennai','OMR','Velachery',195.00,13.5,'completed','2024-03-05'),(18,'D006','R009','Mumbai','BKC','Juhu',260.00,16.0,'completed','2024-03-05'),(19,'D008','R007','Bangalore','MG Road','Koramangala',180.00,11.0,'completed','2024-03-05'),(20,'D007','R004','Mumbai','Juhu','Colaba',390.00,24.0,'completed','2024-03-06');",
+  "questions": [
+    {
+      "id": 1,
+      "difficulty": "b",
+      "concepts": ["SELECT", "WHERE", "SUM", "COUNT", "GROUP BY", "ORDER BY"],
+      "story": {
+        "en": "Monday morning at Uber's Chennai office. Your lead Deepa pulls you aside before standup: 'Operations wants a driver performance report — total trips and total earnings for each driver this month. Five minutes.' The trips table is right there. This is your moment.",
+        "ta": "Chennai Uber office-la Monday morning da. Standup-ku munnaadi lead Deepa ungala side-la koopiduvaanga — 'Operations-ku driver performance report venum, this month each driver evvalavu trips panna, evvalavu earn panna nu. Five minutes-la venum.' Trips table ready-aa irukku. Ippovey query adikkanum.",
+        "hi": "Monday morning, Uber ke Chennai office mein. Standup se pehle lead Deepa ne side mein bulaya — 'Operations ko driver performance report chahiye — is mahine har driver ne kitne trips kiye aur kitna kamaya. Paanch minute mein chahiye.' Trips table saamne hai. Abhi karo.",
+        "te": "Monday morning, Uber Chennai office lo. Standup ki mundu lead Deepa meeru ni side ki pilichindi — 'Operations ki driver performance report kavali — ee month prathi driver enni trips chesaaro, entha earn chesaaro. Five minutes lo kavali.' Trips table mundule undi. Ippude query rayyandi."
+      },
+      "question": {
+        "en": "Find each driver's total completed trips and total fare earned this month. Show driver name, city, trip count and total fare rounded to 2 decimals. Sort by total fare highest first.",
+        "ta": "This month complete aana trips-la each driver evvalavu trips pannaanga, evvalavu fare earn pannaanga nu kaanu. Driver name, city, trip count, total fare (2 decimals) show pannanum. Highest fare first-aa sort pannanum.",
+        "hi": "Is mahine complete hue trips mein har driver ne kitne trips kiye aur kitna fare kamaya woh nikalo. Driver naam, city, trip count aur total fare 2 decimals mein dikhao. Sabse zyada fare wale pehle.",
+        "te": "Ee month complete ayyina trips lo prathi driver enni trips chesaaro, entha fare saMpaadincharo chudandi. Driver peru, city, trip count mariyu total fare 2 decimals lo chupinchu. Highest fare mundu vasthundi."
+      },
+      "schemas": [
+        {
+          "name": "drivers",
+          "cols": [
+            { "n": "driver_id", "t": "TEXT", "e": "D001" },
+            { "n": "name",      "t": "TEXT", "e": "Murugan" },
+            { "n": "city",      "t": "TEXT", "e": "Chennai" },
+            { "n": "vehicle_type", "t": "TEXT", "e": "Auto/Mini/Sedan" },
+            { "n": "rating",    "t": "REAL", "e": "4.8" },
+            { "n": "active",    "t": "INT",  "e": "0 or 1" }
+          ]
+        },
+        {
+          "name": "trips",
+          "cols": [
+            { "n": "trip_id",   "t": "INT",  "e": "1,2,3" },
+            { "n": "driver_id", "t": "TEXT", "e": "D001" },
+            { "n": "city",      "t": "TEXT", "e": "Chennai" },
+            { "n": "fare",      "t": "REAL", "e": "120.00" },
+            { "n": "status",    "t": "TEXT", "e": "completed/cancelled" },
+            { "n": "trip_date", "t": "TEXT", "e": "2024-03-01" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at the trips table first",
+            "ta": "Munnaadi trips table-a paaru",
+            "hi": "Pehle trips table dekho",
+            "te": "Mundu trips table chudandi"
+          },
+          "sql": "SELECT *\nFROM trips;",
+          "explain": {
+            "en": "Always start by understanding the raw data. You can see each row is one trip — driver_id, fare, status, trip_date. Notice status has both 'completed' and 'cancelled'. You only want completed trips in your report, so that filter is coming next. Never skip this step — it saves you from wrong assumptions.",
+            "ta": "Edhaavadhu ezhudha munnaadi data-a full paaru da. Oru row = oru trip — driver_id, fare, status, trip_date ellam irukku. Status-la 'completed' and 'cancelled' rendu type irukku nu theriyuthu. Report-la completed trips mattum venum, so next step-la filter pannuvom. Itha skip pannidhaadha — wrong assumption-la pooiduvaanga.",
+            "hi": "Kuch bhi likhne se pehle raw data dekh lo yaar. Har row ek trip hai — driver_id, fare, status, trip_date sab dikh raha hai. Status mein 'completed' aur 'cancelled' dono hain. Report mein sirf completed trips chahiye, toh filter agle step mein aayega. Yeh step skip mat karna — galat assumption se bacho.",
+            "te": "Emaina raasthamu mundu raw data full chudandi ra. Okka row = okka trip — driver_id, fare, status, trip_date anni untaayi. Status lo 'completed' mariyu 'cancelled' rendu types unnaayi. Report lo completed trips matrame kavali, so next step lo filter chestaamu. Ee step skip cheyyakandi — tappudu assumptions nundi baachukuntaaru."
+          }
+        },
+        {
+          "title": {
+            "en": "Filter completed trips and JOIN drivers",
+            "ta": "Completed trips filter pannி drivers JOIN pannу",
+            "hi": "Completed trips filter karo aur drivers JOIN karo",
+            "te": "Completed trips filter cheyyi mariyu drivers JOIN cheyyandi"
+          },
+          "sql": "SELECT d.name, d.city, t.fare\nFROM trips t\nJOIN drivers d ON d.driver_id = t.driver_id\nWHERE t.status = 'completed';",
+          "explain": {
+            "en": "JOIN connects trips to drivers using driver_id as the bridge. Now each trip row carries the driver's name and city too. WHERE status = 'completed' removes all cancelled trips before any aggregation happens. Always filter early — it reduces the data you are working with and makes GROUP BY faster.",
+            "ta": "JOIN nna driver_id-a bridge-aa use pannி trips-a drivers-oda connect pannuthu. Ippo every trip row-la driver name, city kooda varuthu. WHERE status = 'completed' nna cancelled trips ellam poidum, group pannа munnaadi. Eppovum early-aa filter pannu da — data kammiyaagum, GROUP BY faster-aa work pannum.",
+            "hi": "JOIN driver_id ko bridge ki tarah use karke trips ko drivers se jodata hai. Ab har trip row mein driver ka naam aur city bhi aa jaata hai. WHERE status = 'completed' grouping se pehle cancelled trips hata deta hai. Hamesha pehle filter karo yaar — data kam hoga, GROUP BY tezi se chalega.",
+            "te": "JOIN driver_id ni bridge laga vaadukooni trips ni drivers tho connect chestundi. Ippudu prathi trip row lo driver peru, city kooda vasthaayi. WHERE status = 'completed' ante grouping mundu cancelled trips anni pothaayi. Eppudu early ga filter cheyyandi ra — data takkuva avutundi, GROUP BY vegalga pani chestundi."
+          }
+        },
+        {
+          "title": {
+            "en": "GROUP BY driver and calculate totals",
+            "ta": "Driver-vari GROUP BY pannி totals calculate pannу",
+            "hi": "Driver-wise GROUP BY karke totals calculate karo",
+            "te": "Driver-vari GROUP BY cheyyi mariyu totals calculate cheyyandi"
+          },
+          "sql": "SELECT d.name, d.city,\n  COUNT(t.trip_id) AS total_trips,\n  ROUND(SUM(t.fare), 2) AS total_fare\nFROM trips t\nJOIN drivers d ON d.driver_id = t.driver_id\nWHERE t.status = 'completed'\nGROUP BY d.driver_id, d.name, d.city\nORDER BY total_fare DESC;",
+          "explain": {
+            "en": "GROUP BY driver_id collapses all trip rows for the same driver into one row. COUNT(trip_id) counts their trips. SUM(fare) adds all their earnings. ROUND(...,2) keeps it clean. We GROUP BY driver_id not just name — two drivers could have the same name but different IDs, and grouping by name alone would wrongly merge them.",
+            "ta": "GROUP BY driver_id nna same driver-oda trips ellam oru row-la collapse aagum. COUNT(trip_id) avanga trips count pannum. SUM(fare) avanga total earnings add pannum. ROUND(...,2) clean-aa vachchu. Name mattum GROUP BY pannaadha da — rendu drivers-ku same name irukkalaamu, aana different IDs irukkaanga. Name-la group panna wrong merge aagiidum.",
+            "hi": "GROUP BY driver_id ek hi driver ke saare trip rows ko ek row mein collapse karta hai. COUNT(trip_id) unke trips count karta hai. SUM(fare) unki saari kamaai jodta hai. ROUND(...,2) clean rakhta hai. Sirf name se GROUP BY mat karo yaar — do drivers ka naam same ho sakta hai lekin IDs alag honge. Name se group kiya toh galat merge ho jaayega.",
+            "te": "GROUP BY driver_id ante same driver trips anni oka row lo collapse avutaayi. COUNT(trip_id) vari trips count chestundi. SUM(fare) vari total earnings add chestundi. ROUND(...,2) clean ga untundi. Sirf name tho GROUP BY cheyyakandi ra — rendu drivers ki same peru untundi kaani different IDs untaayi. Name tho group cheste tappudu merge avutundi."
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "difficulty": "i",
+      "concepts": ["JOIN", "GROUP BY", "HAVING", "AVG", "ROUND", "ORDER BY"],
+      "story": {
+        "en": "Week 3. You are no longer the new person. Deepa drops a harder ask: 'Complaints are coming in about low-rated drivers still getting rides. Pull me a list of active drivers whose average fare per trip is above 200 but their rating is below 4.5. These are the high-earning low-quality drivers.' This needs aggregation, filtering on aggregates, and a join. Real analytics work.",
+        "ta": "Moonu vaaram achu. Nee ippo new person illai. Deepa oru tough question kekkaanga — 'Low rating irukara drivers still rides edukkaanga, complaints varuthu. Active drivers-la average fare 200-ku melayum, rating 4.5-ku kezhayum irukkaavanga yaar nu kaanu. Avangalaa high-earning low-quality drivers.' Idhu aggregation, HAVING, JOIN ellam venum. Real work idu da.",
+        "hi": "Teen hafte ho gaye. Ab tu naya nahi raha. Deepa ne mushkil sawaal diya — 'Low rating wale drivers abhi bhi rides le rahe hain, complaints aa rahi hain. Active drivers mein se woh nikalo jinki average fare 200 se zyada ho lekin rating 4.5 se kam ho. Yeh high-earning low-quality drivers hain.' Iske liye aggregation, HAVING, JOIN sab chahiye. Real analytics ka kaam hai yaar.",
+        "te": "Moodu vaaram avvaindi. Nuvvu ippudu new person kaavu. Deepa oka tough question adigindi — 'Low rating unna drivers ippudu kooda rides teesukuntunnaru, complaints vasthunnaayi. Active drivers lo average fare 200 paina, rating 4.5 kinda unna vallani chupinchu. Vaallni high-earning low-quality drivers antaaru.' Daniki aggregation, HAVING, JOIN anni kavali. Idi real analytics work ra."
+      },
+      "question": {
+        "en": "Find active drivers who have completed at least 2 trips, have an average fare above 200, and a rating below 4.5. Show driver name, city, rating, total trips and average fare rounded to 2 decimals. Sort by rating ascending.",
+        "ta": "Kammida 2 trips complete panna, average fare 200-ku melay, rating 4.5-ku kezhay irukara active drivers-a kaanu. Driver name, city, rating, total trips, average fare (2 decimals) show pannanum. Rating lowest first sort pannanum.",
+        "hi": "Woh active drivers nikalo jinhone kam se kam 2 trips complete ki hoon, average fare 200 se zyada ho, aur rating 4.5 se kam ho. Driver naam, city, rating, total trips aur average fare 2 decimals mein dikhao. Rating lowest pehle sort karo.",
+        "te": "Kanapadam 2 trips complete chesina, average fare 200 paina, rating 4.5 kinda unna active drivers ni chupinchu. Driver peru, city, rating, total trips mariyu average fare 2 decimals lo chupinchu. Rating lowest mundu sort cheyyandi."
+      },
+      "schemas": [
+        {
+          "name": "drivers",
+          "cols": [
+            { "n": "driver_id",    "t": "TEXT", "e": "D001" },
+            { "n": "name",         "t": "TEXT", "e": "Murugan" },
+            { "n": "city",         "t": "TEXT", "e": "Chennai" },
+            { "n": "rating",       "t": "REAL", "e": "4.8" },
+            { "n": "active",       "t": "INT",  "e": "0 or 1" }
+          ]
+        },
+        {
+          "name": "trips",
+          "cols": [
+            { "n": "trip_id",   "t": "INT",  "e": "1,2,3" },
+            { "n": "driver_id", "t": "TEXT", "e": "D001" },
+            { "n": "fare",      "t": "REAL", "e": "120.00" },
+            { "n": "status",    "t": "TEXT", "e": "completed/cancelled" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Start with active drivers only",
+            "ta": "Active drivers mattum edukku",
+            "hi": "Sirf active drivers lo",
+            "te": "Active drivers matrame teesukopandi"
+          },
+          "sql": "SELECT *\nFROM drivers\nWHERE active = 1;",
+          "explain": {
+            "en": "Filter active = 1 first so all subsequent work is only on drivers currently on the platform. This is a good habit — eliminate irrelevant rows as early as possible. Inactive drivers showing up in a performance report would be misleading and confusing for operations.",
+            "ta": "Munnaadi active = 1 filter pannuvom, so baaki ellaa work-um active drivers-ku mattum nadakkum. Idhu oru nalla habit da — irrelevant rows-a early-aa eliminate pannu. Inactive drivers performance report-la vanthaaa operations-ku confuse aagiidum.",
+            "hi": "Pehle active = 1 filter karo taaki baaki sab kaam sirf active drivers pe ho. Yeh ek achhi aadat hai yaar — irrelevant rows jitna jaldi ho sake hata do. Inactive drivers performance report mein aa gaye toh operations confuse ho jaayega.",
+            "te": "Mundu active = 1 filter cheyyandi, so tarvata anni pani active drivers ki matrame jarigindi. Idi oka manchhi habit ra — irrelevant rows ni early ga eliminate cheyyandi. Inactive drivers performance report lo vaste operations ki confuse avutundi."
+          }
+        },
+        {
+          "title": {
+            "en": "JOIN trips and aggregate per driver",
+            "ta": "Trips JOIN pannி driver-vari aggregate pannу",
+            "hi": "Trips JOIN karo aur driver-wise aggregate karo",
+            "te": "Trips JOIN cheyyi mariyu driver-vari aggregate cheyyandi"
+          },
+          "sql": "SELECT d.name, d.city, d.rating,\n  COUNT(t.trip_id) AS total_trips,\n  ROUND(AVG(t.fare), 2) AS avg_fare\nFROM drivers d\nJOIN trips t ON t.driver_id = d.driver_id\nWHERE d.active = 1\n  AND t.status = 'completed'\nGROUP BY d.driver_id, d.name, d.city, d.rating;",
+          "explain": {
+            "en": "AVG(fare) calculates the mean fare across all completed trips for each driver. COUNT(trip_id) gives total trips. We keep d.rating in the GROUP BY because it is a non-aggregated column in the SELECT — SQL requires every non-aggregated column in SELECT to also appear in GROUP BY. This is one of the most common errors beginners make.",
+            "ta": "AVG(fare) nna prathi driver-oda ella completed trips-oda average fare calculate pannum. COUNT(trip_id) total trips kudukkum. d.rating-a GROUP BY-la vaikkurom because SELECT-la irukara non-aggregated columns ellam GROUP BY-la irukkanum — idhu SQL rule. Itha miss pannina error varum. Beginners most commonly itha dhaan miss pannaanga da.",
+            "hi": "AVG(fare) har driver ke saare completed trips ka average fare calculate karta hai. COUNT(trip_id) total trips deta hai. d.rating ko GROUP BY mein rakhna zaroori hai kyunki SELECT mein jo non-aggregated columns hain woh sab GROUP BY mein bhi hone chahiye — yeh SQL ka rule hai. Yeh beginners ki sabse common galti hai yaar.",
+            "te": "AVG(fare) prathi driver completed trips anni average fare calculate chestundi. COUNT(trip_id) total trips istundi. d.rating ni GROUP BY lo pettaadam mandatory — SELECT lo unna non-aggregated columns anni GROUP BY lo kooda undaali — idi SQL rule. Itha miss cheste error vasthundi. Beginners chesina most common mistake idi ra."
+          }
+        },
+        {
+          "title": {
+            "en": "Apply HAVING to filter on aggregates",
+            "ta": "HAVING tho aggregate filter pannу",
+            "hi": "HAVING se aggregates filter karo",
+            "te": "HAVING tho aggregates filter cheyyandi"
+          },
+          "sql": "SELECT d.name, d.city, d.rating,\n  COUNT(t.trip_id) AS total_trips,\n  ROUND(AVG(t.fare), 2) AS avg_fare\nFROM drivers d\nJOIN trips t ON t.driver_id = d.driver_id\nWHERE d.active = 1\n  AND t.status = 'completed'\nGROUP BY d.driver_id, d.name, d.city, d.rating\nHAVING COUNT(t.trip_id) >= 2\n  AND AVG(t.fare) > 200\n  AND d.rating < 4.5\nORDER BY d.rating ASC;",
+          "explain": {
+            "en": "HAVING is WHERE for aggregated results. You cannot write WHERE AVG(fare) > 200 because WHERE runs before grouping — the average does not exist yet at that point. HAVING runs after GROUP BY when the aggregates are ready. Three conditions here: at least 2 trips, average fare over 200, and rating below 4.5. These are your problem drivers. Deepa gets her list.",
+            "ta": "HAVING nna aggregated results-ku WHERE maadiri. WHERE AVG(fare) > 200 nu ezhuda mudiyaadhu — WHERE grouping-ku munnaadi run aaguthu, appa average exist-ay illai. HAVING GROUP BY apparam run aaguthu, aggregates ready-aa irukkaanga. Moonu conditions: kammida 2 trips, average fare 200-ku melay, rating 4.5-ku kezhay. Ithaan problem drivers. Deepa-ku list kedaichuchu da.",
+            "hi": "HAVING aggregated results ke liye WHERE hai. WHERE AVG(fare) > 200 nahi likh sakte kyunki WHERE grouping se pehle chalta hai — us waqt average exist hi nahi karta. HAVING GROUP BY ke baad chalta hai jab aggregates ready hain. Teen conditions: kam se kam 2 trips, average fare 200 se zyada, rating 4.5 se kam. Yahi hain tumhare problem drivers. Deepa ko list mil gayi yaar.",
+            "te": "HAVING ante aggregated results ki WHERE laantidi. WHERE AVG(fare) > 200 raayaledu — WHERE grouping mundu run avutundi, appatiki average exist avvadu. HAVING GROUP BY tarvata run avutundi, aggregates ready ga untaayi. Moodu conditions: kanapadam 2 trips, average fare 200 paina, rating 4.5 kinda. Vallne problem drivers. Deepa ki list dorikindi ra."
+          }
+        }
+      ]
+    }
+  ]
+}
