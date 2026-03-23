@@ -290,13 +290,7 @@ td{padding:14px 16px;vertical-align:middle}
 
 <script>
 /* ── UNIVERSE CONFIG ── */
-const UM = [
-  {id:'zipeats',     name:'Swiggy',      sub:'Food Delivery',        c:'#f97316'},
-  {id:'ridego',      name:'Uber',         sub:'Ride Hailing',         c:'#3b82f6'},
-  {id:'spark',       name:'Bumble',       sub:'Dating App',           c:'#ec4899'},
-  {id:'connectbook', name:'LinkedIn',     sub:'Professional Network', c:'#0077b5'},
-  {id:'routeiq',     name:'Google Maps',  sub:'Maps & Navigation',    c:'#10b981'},
-];
+let UM = []; // loaded dynamically from /questions/index.json
 
 /* ── DB SEED SQL ── */
 const DB = {
@@ -318,6 +312,10 @@ CREATE TABLE likes(like_id TEXT,user_id TEXT,post_id TEXT,liked_at TEXT);
 INSERT INTO likes VALUES('L001','U002','P001','2024-03-10 09:30'),('L002','U003','P001','2024-03-10 10:00'),('L003','U001','P003','2024-03-10 12:00'),('L004','U004','P004','2024-03-11 07:30'),('L005','U001','P005','2024-03-11 20:30'),('L006','U005','P003','2024-03-10 12:30');
 CREATE TABLE comments(comment_id TEXT,user_id TEXT,post_id TEXT,content TEXT,commented_at TEXT);
 INSERT INTO comments VALUES('C001','U003','P001','Great recommendation!','2024-03-10 09:45'),('C002','U004','P003','Perfect reading weather','2024-03-10 12:15'),('C003','U002','P004','Congrats! Amazing!','2024-03-11 07:45'),('C004','U001','P005','Coorg is beautiful!','2024-03-11 21:30');`,
+uber:`CREATE TABLE drivers(driver_id TEXT,driver_name TEXT,city TEXT);
+INSERT INTO drivers VALUES('D001','Ravi Kumar','Chennai'),('D002','Anbu S','Chennai'),('D003','Anand Raj','Chennai'),('D004','Siva S','Chennai'),('D005','Ganesh R','Chennai'),('D006','Preet K','Chennai'),('D007','Kiran M','Delhi'),('D008','Suresh P','Delhi'),('D009','Rohit D','Delhi'),('D010','Sanjay B','Delhi'),('D011','Mohan L','Mumbai'),('D012','Sunil G','Mumbai'),('D013','Rahul J','Bangalore'),('D014','Prasad K','Hyderabad'),('D015','Reddy M','Hyderabad');
+CREATE TABLE trips(trip_id TEXT,driver_id TEXT,fare REAL);
+INSERT INTO trips VALUES('T101','D001',250.50),('T102','D001',180.00),('T103','D001',320.75),('T104','D002',150.00),('T105','D002',200.50),('T106','D002',175.25),('T107','D003',400.00),('T108','D003',350.50),('T109','D004',280.00),('T110','D004',195.75),('T111','D005',150.00),('T112','D005',220.00),('T113','D006',310.50),('T114','D007',420.00),('T115','D007',380.25),('T116','D007',290.50),('T117','D008',350.00),('T118','D008',410.75),('T119','D009',280.00),('T120','D009',195.50),('T121','D010',450.00),('T122','D010',380.00),('T123','D011',520.50),('T124','D011',480.25),('T125','D012',390.00),('T126','D013',310.75),('T127','D014',560.00),('T128','D014',490.50),('T129','D015',420.00),('T130','D015',380.75);`,
 routeiq:`CREATE TABLE route_logs(log_id INT,route_name TEXT,travel_time_mins INT,travel_date TEXT);
 INSERT INTO route_logs VALUES(1,'Chennai - Bangalore',180,'2024-03-01'),(2,'Chennai - Bangalore',195,'2024-03-02'),(3,'Chennai - Bangalore',210,'2024-03-03'),(4,'Chennai - Bangalore',225,'2024-03-04'),(5,'Chennai - Bangalore',215,'2024-03-05'),(6,'Mumbai - Pune',90,'2024-03-01'),(7,'Mumbai - Pune',105,'2024-03-02'),(8,'Mumbai - Pune',98,'2024-03-03'),(9,'Mumbai - Pune',120,'2024-03-04'),(10,'Mumbai - Pune',110,'2024-03-05'),(11,'Delhi - Agra',180,'2024-03-01'),(12,'Delhi - Agra',195,'2024-03-02'),(13,'Delhi - Agra',210,'2024-03-03'),(14,'Chennai - Delhi',360,'2024-03-01'),(15,'Chennai - Delhi',380,'2024-03-02'),(16,'Chennai - Delhi',370,'2024-03-03'),(17,'Hyderabad - Vijayawada',180,'2024-03-01'),(18,'Hyderabad - Vijayawada',165,'2024-03-02'),(19,'Hyderabad - Vijayawada',175,'2024-03-03'),(20,'Mumbai - Goa',480,'2024-03-01');
 CREATE TABLE trip_logs(trip_id INT,city TEXT,hour_of_day INT,delay_mins INT,trip_date TEXT);
@@ -405,6 +403,20 @@ async function boot(){
   document.getElementById('tbody').innerHTML =
     '<tr><td colspan="5" class="tbl-msg">Loading questions…</td></tr>';
 
+  // Step 1: load universe list from questions/index.json
+  try{
+    const r = await fetch('/questions/index.json');
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    UM = await r.json();
+  }catch(e){
+    document.getElementById('tbody').innerHTML =
+      '<tr><td colspan="5" class="tbl-msg" style="color:#dc2626">'+
+      '❌ Could not load <strong>questions/index.json</strong>. Make sure it exists in your GitHub repo.</td></tr>';
+    await initEngine();
+    return;
+  }
+
+  // Step 2: fetch each universe's questions in parallel
   await Promise.all(UM.map(u => fetchQ(u.id)));
 
   ALL = [];
