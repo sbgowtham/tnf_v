@@ -1,0 +1,26 @@
+[
+  {
+    "title": "SQL JOINs Animated",
+    "file": "sql-joins.html",
+    "category": "SQL",
+    "description": "Visual walkthrough of INNER, LEFT, RIGHT and FULL JOINs"
+  },
+  {
+    "title": "Window Functions Visualizer",
+    "file": "window-functions.html",
+    "category": "SQL",
+    "description": "RANK, ROW_NUMBER, LAG, LEAD explained with animations"
+  },
+  {
+    "title": "Uber System Design",
+    "file": "system-design-uber.html",
+    "category": "System Design",
+    "description": "How Uber's backend handles millions of ride requests"
+  },
+  {
+    "title": "Python Loops Visualizer",
+    "file": "python-loops.html",
+    "category": "Python",
+    "description": "For loops, while loops and list comprehensions visualized"
+  }
+]
