@@ -292,6 +292,7 @@ CREATE TABLE trip_logs(trip_id INT,city TEXT,hour_of_day INT,delay_mins INT,trip
 INSERT INTO trip_logs VALUES(1,'Chennai',8,22,'2024-03-11'),(2,'Chennai',9,35,'2024-03-11'),(3,'Chennai',10,28,'2024-03-11'),(4,'Chennai',13,8,'2024-03-11'),(5,'Chennai',15,5,'2024-03-11'),(6,'Chennai',18,42,'2024-03-11'),(7,'Chennai',19,55,'2024-03-11'),(8,'Chennai',20,38,'2024-03-11'),(9,'Chennai',2,3,'2024-03-11'),(10,'Chennai',23,4,'2024-03-11'),(11,'Mumbai',7,38,'2024-03-11'),(12,'Mumbai',8,52,'2024-03-11'),(13,'Mumbai',9,45,'2024-03-11'),(14,'Mumbai',14,12,'2024-03-11'),(15,'Mumbai',16,9,'2024-03-11'),(16,'Mumbai',17,58,'2024-03-11'),(17,'Mumbai',18,72,'2024-03-11'),(18,'Mumbai',20,48,'2024-03-11');`
 };
 
+
 /* ── STATE ── */
 let SQL=null, db=null, lang='en';
 let aU=null, aQ=null;
@@ -331,11 +332,10 @@ function runSQL(sql){
 /* ── FETCH QUESTIONS ── */
 async function fetchQ(uid){
   if(CACHE[uid])return CACHE[uid];
-  try{
-    const r=await fetch(`./questions/${uid}.json`);
-    CACHE[uid]=await r.json();
-    return CACHE[uid];
-  }catch(e){CACHE[uid]=[];return[];}
+  const r=await fetch(`/questions/${uid}.json`);
+  if(!r.ok)throw new Error(`Failed to load questions/${uid}.json — HTTP ${r.status}`);
+  CACHE[uid]=await r.json();
+  return CACHE[uid];
 }
 
 /* ── LANG ── */
@@ -353,7 +353,18 @@ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g
 /* ── LOAD ALL & BUILD TABLE ── */
 async function boot(){
   setOrb('spin','Loading questions…');
-  await Promise.all(UM.map(u=>fetchQ(u.id)));
+  try{
+    await Promise.all(UM.map(u=>fetchQ(u.id)));
+  }catch(e){
+    document.getElementById('tbody').innerHTML=
+      `<tr><td colspan="5" class="tbl-msg" style="color:#dc2626">
+        ❌ Could not load questions — make sure the <strong>questions/</strong> folder is in your GitHub repo.<br>
+        <small style="font-family:monospace">${e.message}</small>
+      </td></tr>`;
+    document.getElementById('tstat').textContent='Error';
+    await initEngine();
+    return;
+  }
   ALL=[];
   UM.forEach(uni=>{
     (CACHE[uni.id]||[]).forEach(q=>ALL.push({q,uid:uni.id,uni}));
