@@ -301,6 +301,7 @@ let SQL=null, db=null, lang='en';
 let aU=null, aQ=null;
 const SS={};        // step state
 const CACHE={};     // uid → questions[]
+const SETUP_CACHE={};// uid → setup SQL string
 let ALL=[];         // flat: {q, uid, uni}
 let activeFilter='all';
 
@@ -321,7 +322,7 @@ function loadDb(uid){
     if(db){try{db.close()}catch(e){} db=null;}
     db=new SQL.Database();
     // setup SQL comes from the JSON file's "setup" field
-    const setup = (CACHE[uid]||[])[0]?.__setup__ || '';
+    const setup = SETUP_CACHE[uid] || '';
     setup.split(';').map(s=>s.trim()).filter(Boolean).forEach(s=>db.run(s+';'));
   }catch(e){setOrb('','DB error: '+e.message);}
 }
@@ -344,8 +345,7 @@ async function fetchQ(uid){
     // extract setup SQL and store it on a sentinel object, remove from questions array
     const setup = data.setup || '';
     const questions = Array.isArray(data) ? data : (data.questions || []);
-    // store setup so loadDb can find it
-    if(setup) questions.__setup__ = setup;
+    SETUP_CACHE[uid] = setup;   // store separately — not on the array
     CACHE[uid] = questions;
   }catch(e){
     console.error('fetch failed for '+uid+'.json: '+e.message);
