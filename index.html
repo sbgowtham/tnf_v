@@ -293,34 +293,7 @@ td{padding:14px 16px;vertical-align:middle}
 let UM = []; // loaded dynamically from /questions/index.json
 
 /* ── DB SEED SQL ── */
-const DB = {
-zipeats:`CREATE TABLE orders(order_id INT,restaurant_name TEXT,city TEXT,customer_id TEXT,order_date TEXT,amount REAL,status TEXT);
-INSERT INTO orders VALUES(1,'Murugan Idli Shop','Chennai','C001','2024-03-01',120,'delivered'),(2,'Saravana Bhavan','Chennai','C002','2024-03-02',350,'delivered'),(3,'Murugan Idli Shop','Chennai','C003','2024-03-03',145,'cancelled'),(4,'KFC','Chennai','C004','2024-03-04',480,'delivered'),(5,'Junior Kuppanna','Chennai','C005','2024-03-05',620,'delivered'),(6,'Pizza Corner','Chennai','C006','2024-03-06',290,'delivered'),(7,'Murugan Idli Shop','Chennai','C007','2024-03-07',165,'delivered'),(8,'Saravana Bhavan','Chennai','C008','2024-03-08',420,'delivered'),(9,'Anjappar','Chennai','C009','2024-03-09',380,'delivered'),(10,'Pizza Corner','Chennai','C010','2024-03-10',310,'delivered'),(11,'Junior Kuppanna','Chennai','C001','2024-03-12',580,'delivered'),(12,'Murugan Idli Shop','Chennai','C003','2024-03-13',140,'delivered'),(13,'Burger King','Chennai','C006','2024-03-16',340,'delivered'),(14,'Saravana Bhavan','Chennai','C008','2024-03-18',460,'delivered'),(15,'Junior Kuppanna','Chennai','C009','2024-03-19',590,'delivered'),(16,'Bademiya','Mumbai','M001','2024-03-01',450,'delivered'),(17,'Trishna','Mumbai','M002','2024-03-02',680,'delivered'),(18,'Leopold Cafe','Mumbai','M003','2024-03-03',520,'delivered'),(19,'Bademiya','Mumbai','M004','2024-03-04',410,'delivered'),(20,'Trishna','Mumbai','M005','2024-03-05',720,'delivered'),(21,'Leopold Cafe','Mumbai','M006','2024-03-06',490,'delivered');`,
-ridego:`CREATE TABLE drivers(driver_id TEXT,driver_name TEXT,city TEXT,rating REAL,status TEXT);
-INSERT INTO drivers VALUES('D001','Ravi Kumar','Chennai',4.8,'active'),('D002','Anbu S','Chennai',3.9,'active'),('D003','Anand Raj','Chennai',4.6,'active'),('D004','Muthu K','Chennai',3.5,'inactive'),('D005','Siva S','Chennai',4.9,'active'),('D006','Ganesh R','Chennai',4.2,'active'),('D007','Preet K','Chennai',4.7,'active'),('D009','Kiran M','Delhi',4.7,'active'),('D010','Suresh P','Delhi',4.6,'active'),('D011','Rohit D','Delhi',4.8,'active'),('D012','Amit V','Delhi',3.8,'active'),('D013','Sanjay B','Delhi',4.9,'active'),('D014','Raj N','Delhi',4.6,'active'),('D015','Mohan L','Mumbai',4.8,'active'),('D016','Sunil G','Mumbai',4.2,'active'),('D019','Rahul J','Bangalore',4.7,'active'),('D020','Kumar S','Bangalore',3.9,'inactive'),('D021','Prasad K','Hyderabad',4.9,'active'),('D022','Reddy M','Hyderabad',4.8,'active'),('D023','Chandu V','Hyderabad',4.6,'active'),('D024','Srinu T','Hyderabad',4.7,'active'),('D025','Naidu B','Hyderabad',4.5,'active');
-CREATE TABLE daily_trips(trip_date TEXT,city TEXT,total_trips INT);
-INSERT INTO daily_trips VALUES('2024-03-11','Chennai',3420),('2024-03-12','Chennai',3180),('2024-03-13','Chennai',3650),('2024-03-14','Chennai',2900),('2024-03-15','Chennai',4100),('2024-03-16','Chennai',4380),('2024-03-17','Chennai',2750);`,
-spark:`CREATE TABLE users(user_id TEXT,name TEXT,age INT,city TEXT,bio TEXT);
-INSERT INTO users VALUES('U001','Aisha Khan',24,'Mumbai','Coffee lover and weekend hiker'),('U002','Nikhil Rao',27,'Bangalore',NULL),('U003','Dev Mehta',26,'Delhi',NULL),('U004','Kavya Iyer',23,'Chennai','Bookworm and foodie'),('U005','Priya Nair',25,'Mumbai','Dog mom and beach person'),('U006','Arjun Singh',28,'Delhi','Musician and traveler'),('U007','Rohan Das',29,'Bangalore',NULL),('U008','Sneha Reddy',24,'Hyderabad','Dancer and adventure seeker'),('U009','Meera Pillai',26,'Chennai',NULL),('U010','Karan Malhotra',30,'Mumbai','Chef and marathon runner');
-CREATE TABLE matches(match_id TEXT,user_id_1 TEXT,user_id_2 TEXT,matched_at TEXT);
-INSERT INTO matches VALUES('M001','U001','U003','2024-03-01 10:00'),('M002','U001','U006','2024-03-02 11:30'),('M003','U002','U005','2024-03-02 14:00'),('M004','U003','U008','2024-03-03 09:15'),('M005','U004','U007','2024-03-04 16:00'),('M006','U005','U010','2024-03-05 13:00'),('M007','U006','U009','2024-03-05 18:00'),('M008','U001','U010','2024-03-06 10:00'),('M009','U002','U008','2024-03-07 12:00'),('M010','U003','U004','2024-03-08 09:00');
-CREATE TABLE messages(message_id TEXT,sender_id TEXT,receiver_id TEXT,sent_at TEXT);
-INSERT INTO messages VALUES('MSG001','U001','U003','2024-03-01 10:30'),('MSG002','U001','U006','2024-03-02 12:00'),('MSG003','U005','U010','2024-03-05 13:30'),('MSG004','U006','U009','2024-03-05 18:30'),('MSG005','U001','U010','2024-03-06 10:45'),('MSG006','U004','U007','2024-03-04 16:30');`,
-connectbook:`CREATE TABLE posts(post_id TEXT,user_id TEXT,content TEXT,posted_at TEXT);
-INSERT INTO posts VALUES('P001','U001','Amazing dosa at new place!','2024-03-10 09:00'),('P002','U001','Amazing dosa at new place!','2024-03-10 09:00'),('P003','U002','Rainy day vibes and a good book','2024-03-10 11:30'),('P004','U003','First 10k run completed!','2024-03-11 07:00'),('P005','U004','Weekend trip to Coorg','2024-03-11 20:00'),('P006','U005','First 10k run completed!','2024-03-11 07:00'),('P007','U005','First 10k run completed!','2024-03-11 07:00');
-CREATE TABLE likes(like_id TEXT,user_id TEXT,post_id TEXT,liked_at TEXT);
-INSERT INTO likes VALUES('L001','U002','P001','2024-03-10 09:30'),('L002','U003','P001','2024-03-10 10:00'),('L003','U001','P003','2024-03-10 12:00'),('L004','U004','P004','2024-03-11 07:30'),('L005','U001','P005','2024-03-11 20:30'),('L006','U005','P003','2024-03-10 12:30');
-CREATE TABLE comments(comment_id TEXT,user_id TEXT,post_id TEXT,content TEXT,commented_at TEXT);
-INSERT INTO comments VALUES('C001','U003','P001','Great recommendation!','2024-03-10 09:45'),('C002','U004','P003','Perfect reading weather','2024-03-10 12:15'),('C003','U002','P004','Congrats! Amazing!','2024-03-11 07:45'),('C004','U001','P005','Coorg is beautiful!','2024-03-11 21:30');`,
-uber:`CREATE TABLE drivers(driver_id TEXT,driver_name TEXT,city TEXT);
-INSERT INTO drivers VALUES('D001','Ravi Kumar','Chennai'),('D002','Anbu S','Chennai'),('D003','Anand Raj','Chennai'),('D004','Siva S','Chennai'),('D005','Ganesh R','Chennai'),('D006','Preet K','Chennai'),('D007','Kiran M','Delhi'),('D008','Suresh P','Delhi'),('D009','Rohit D','Delhi'),('D010','Sanjay B','Delhi'),('D011','Mohan L','Mumbai'),('D012','Sunil G','Mumbai'),('D013','Rahul J','Bangalore'),('D014','Prasad K','Hyderabad'),('D015','Reddy M','Hyderabad');
-CREATE TABLE trips(trip_id TEXT,driver_id TEXT,fare REAL);
-INSERT INTO trips VALUES('T101','D001',250.50),('T102','D001',180.00),('T103','D001',320.75),('T104','D002',150.00),('T105','D002',200.50),('T106','D002',175.25),('T107','D003',400.00),('T108','D003',350.50),('T109','D004',280.00),('T110','D004',195.75),('T111','D005',150.00),('T112','D005',220.00),('T113','D006',310.50),('T114','D007',420.00),('T115','D007',380.25),('T116','D007',290.50),('T117','D008',350.00),('T118','D008',410.75),('T119','D009',280.00),('T120','D009',195.50),('T121','D010',450.00),('T122','D010',380.00),('T123','D011',520.50),('T124','D011',480.25),('T125','D012',390.00),('T126','D013',310.75),('T127','D014',560.00),('T128','D014',490.50),('T129','D015',420.00),('T130','D015',380.75);`,
-routeiq:`CREATE TABLE route_logs(log_id INT,route_name TEXT,travel_time_mins INT,travel_date TEXT);
-INSERT INTO route_logs VALUES(1,'Chennai - Bangalore',180,'2024-03-01'),(2,'Chennai - Bangalore',195,'2024-03-02'),(3,'Chennai - Bangalore',210,'2024-03-03'),(4,'Chennai - Bangalore',225,'2024-03-04'),(5,'Chennai - Bangalore',215,'2024-03-05'),(6,'Mumbai - Pune',90,'2024-03-01'),(7,'Mumbai - Pune',105,'2024-03-02'),(8,'Mumbai - Pune',98,'2024-03-03'),(9,'Mumbai - Pune',120,'2024-03-04'),(10,'Mumbai - Pune',110,'2024-03-05'),(11,'Delhi - Agra',180,'2024-03-01'),(12,'Delhi - Agra',195,'2024-03-02'),(13,'Delhi - Agra',210,'2024-03-03'),(14,'Chennai - Delhi',360,'2024-03-01'),(15,'Chennai - Delhi',380,'2024-03-02'),(16,'Chennai - Delhi',370,'2024-03-03'),(17,'Hyderabad - Vijayawada',180,'2024-03-01'),(18,'Hyderabad - Vijayawada',165,'2024-03-02'),(19,'Hyderabad - Vijayawada',175,'2024-03-03'),(20,'Mumbai - Goa',480,'2024-03-01');
-CREATE TABLE trip_logs(trip_id INT,city TEXT,hour_of_day INT,delay_mins INT,trip_date TEXT);
-INSERT INTO trip_logs VALUES(1,'Chennai',8,22,'2024-03-11'),(2,'Chennai',9,35,'2024-03-11'),(3,'Chennai',10,28,'2024-03-11'),(4,'Chennai',13,8,'2024-03-11'),(5,'Chennai',15,5,'2024-03-11'),(6,'Chennai',18,42,'2024-03-11'),(7,'Chennai',19,55,'2024-03-11'),(8,'Chennai',20,38,'2024-03-11'),(9,'Chennai',2,3,'2024-03-11'),(10,'Chennai',23,4,'2024-03-11'),(11,'Mumbai',7,38,'2024-03-11'),(12,'Mumbai',8,52,'2024-03-11'),(13,'Mumbai',9,45,'2024-03-11'),(14,'Mumbai',14,12,'2024-03-11'),(15,'Mumbai',16,9,'2024-03-11'),(16,'Mumbai',17,58,'2024-03-11'),(17,'Mumbai',18,72,'2024-03-11'),(18,'Mumbai',20,48,'2024-03-11');`
-};
+/* DB setup now lives inside each questions JSON file as "setup" field */
 
 
 /* ── STATE ── */
@@ -347,8 +320,10 @@ function loadDb(uid){
   try{
     if(db){try{db.close()}catch(e){} db=null;}
     db=new SQL.Database();
-    (DB[uid]||'').split(';').map(s=>s.trim()).filter(Boolean).forEach(s=>db.run(s+';'));
-  }catch(e){setOrb('','DB error');}
+    // setup SQL comes from the JSON file's "setup" field
+    const setup = (CACHE[uid]||[])[0]?.__setup__ || '';
+    setup.split(';').map(s=>s.trim()).filter(Boolean).forEach(s=>db.run(s+';'));
+  }catch(e){setOrb('','DB error: '+e.message);}
 }
 function runSQL(sql){
   if(!db)return{error:'No database loaded'};
@@ -365,9 +340,13 @@ async function fetchQ(uid){
   try{
     const r = await fetch('/questions/'+uid+'.json');
     if(!r.ok){ CACHE[uid]=[]; return []; }
-    const text = await r.text();
-    try{ CACHE[uid]=JSON.parse(text); }
-    catch(e){ console.error(uid+'.json not valid JSON'); CACHE[uid]=[]; }
+    const data = await r.json();
+    // extract setup SQL and store it on a sentinel object, remove from questions array
+    const setup = data.setup || '';
+    const questions = Array.isArray(data) ? data : (data.questions || []);
+    // store setup so loadDb can find it
+    if(setup) questions.__setup__ = setup;
+    CACHE[uid] = questions;
   }catch(e){
     console.error('fetch failed for '+uid+'.json: '+e.message);
     CACHE[uid]=[];
