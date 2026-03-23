@@ -332,10 +332,33 @@ function runSQL(sql){
 /* ── FETCH QUESTIONS ── */
 async function fetchQ(uid){
   if(CACHE[uid])return CACHE[uid];
-  const r=await fetch(`/questions/${uid}.json`);
-  if(!r.ok)throw new Error(`Failed to load questions/${uid}.json — HTTP ${r.status}`);
-  CACHE[uid]=await r.json();
+  try{
+    const r = await fetch(`/questions/${uid}.json`);
+    const text = await r.text();
+    try{
+      CACHE[uid] = JSON.parse(text);
+    }catch(parseErr){
+      // Response was HTML not JSON — show what we got for debugging
+      console.error(`${uid}.json parse failed. First 200 chars:`, text.slice(0,200));
+      showFetchError(`${uid}.json returned non-JSON. Vercel may be intercepting the request.`);
+      CACHE[uid] = [];
+    }
+  }catch(netErr){
+    console.error(`Network error fetching ${uid}.json:`, netErr);
+    showFetchError(`Network error: ${netErr.message}`);
+    CACHE[uid] = [];
+  }
   return CACHE[uid];
+}
+
+function showFetchError(msg){
+  document.getElementById('tbody').innerHTML =
+    `<tr><td colspan="5" class="tbl-msg" style="color:#dc2626;text-align:left;padding:1.5rem">
+      ❌ <strong>Could not load questions.</strong><br><br>
+      <span style="font-family:monospace;font-size:12px">${msg}</span><br><br>
+      Check browser Console (F12) for details.
+    </td></tr>`;
+  document.getElementById('tstat').textContent = 'Error loading questions';
 }
 
 /* ── LANG ── */
@@ -353,24 +376,23 @@ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g
 /* ── LOAD ALL & BUILD TABLE ── */
 async function boot(){
   setOrb('spin','Loading questions…');
-  try{
-    await Promise.all(UM.map(u=>fetchQ(u.id)));
-  }catch(e){
-    document.getElementById('tbody').innerHTML=
-      `<tr><td colspan="5" class="tbl-msg" style="color:#dc2626">
-        ❌ Could not load questions — make sure the <strong>questions/</strong> folder is in your GitHub repo.<br>
-        <small style="font-family:monospace">${e.message}</small>
-      </td></tr>`;
-    document.getElementById('tstat').textContent='Error';
-    await initEngine();
+  document.getElementById('tbody').innerHTML =
+    '<tr><td colspan="5" class="tbl-msg">Loading questions…</td></tr>';
+
+  // fetch all universes — each fetchQ handles its own errors
+  await Promise.all(UM.map(u => fetchQ(u.id)));
+
+  ALL = [];
+  UM.forEach(uni => {
+    (CACHE[uni.id] || []).forEach(q => ALL.push({q, uid:uni.id, uni}));
+  });
+
+  await initEngine();
+
+  if(ALL.length === 0){
+    showFetchError('All JSON files returned empty or failed. Check the Console (F12) for details.');
     return;
   }
-  ALL=[];
-  UM.forEach(uni=>{
-    (CACHE[uni.id]||[]).forEach(q=>ALL.push({q,uid:uni.id,uni}));
-  });
-  setOrb('spin','Starting engine…');
-  await initEngine();
   renderTable();
 }
 
