@@ -331,22 +331,16 @@ function runSQL(sql){
 
 /* ── FETCH QUESTIONS ── */
 async function fetchQ(uid){
-  if(CACHE[uid])return CACHE[uid];
+  if(Array.isArray(CACHE[uid]))return CACHE[uid];
   try{
-    const r = await fetch(`/questions/${uid}.json`);
+    const r = await fetch('/questions/'+uid+'.json');
+    if(!r.ok){ CACHE[uid]=[]; return []; }
     const text = await r.text();
-    try{
-      CACHE[uid] = JSON.parse(text);
-    }catch(parseErr){
-      // Response was HTML not JSON — show what we got for debugging
-      console.error(`${uid}.json parse failed. First 200 chars:`, text.slice(0,200));
-      showFetchError(`${uid}.json returned non-JSON. Vercel may be intercepting the request.`);
-      CACHE[uid] = [];
-    }
-  }catch(netErr){
-    console.error(`Network error fetching ${uid}.json:`, netErr);
-    showFetchError(`Network error: ${netErr.message}`);
-    CACHE[uid] = [];
+    try{ CACHE[uid]=JSON.parse(text); }
+    catch(e){ console.error(uid+'.json not valid JSON'); CACHE[uid]=[]; }
+  }catch(e){
+    console.error('fetch failed for '+uid+'.json: '+e.message);
+    CACHE[uid]=[];
   }
   return CACHE[uid];
 }
@@ -379,18 +373,22 @@ async function boot(){
   document.getElementById('tbody').innerHTML =
     '<tr><td colspan="5" class="tbl-msg">Loading questions…</td></tr>';
 
-  // fetch all universes — each fetchQ handles its own errors
   await Promise.all(UM.map(u => fetchQ(u.id)));
 
   ALL = [];
   UM.forEach(uni => {
-    (CACHE[uni.id] || []).forEach(q => ALL.push({q, uid:uni.id, uni}));
+    const qs = CACHE[uni.id];
+    if(Array.isArray(qs)) qs.forEach(q => ALL.push({q, uid:uni.id, uni}));
   });
 
   await initEngine();
 
   if(ALL.length === 0){
-    showFetchError('All JSON files returned empty or failed. Check the Console (F12) for details.');
+    document.getElementById('tbody').innerHTML =
+      '<tr><td colspan="5" class="tbl-msg" style="color:#dc2626">'+
+      '❌ Questions not found. Check that the <strong>questions/</strong> folder is deployed on Vercel.'+
+      '</td></tr>';
+    document.getElementById('tstat').textContent = '0 questions';
     return;
   }
   renderTable();
