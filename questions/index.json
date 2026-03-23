@@ -1,0 +1,8 @@
+[
+  { "id": "zipeats",      "name": "Swiggy",       "sub": "Food Delivery",        "c": "#f97316" },
+  { "id": "ridego",       "name": "Uber",          "sub": "Ride Hailing",         "c": "#3b82f6" },
+  { "id": "uber",         "name": "Uber",          "sub": "Driver Earnings",      "c": "#1d4ed8" },
+  { "id": "spark",        "name": "Bumble",        "sub": "Dating App",           "c": "#ec4899" },
+  { "id": "connectbook",  "name": "LinkedIn",      "sub": "Professional Network", "c": "#0077b5" },
+  { "id": "routeiq",      "name": "Google Maps",   "sub": "Maps & Navigation",    "c": "#10b981" }
+]
