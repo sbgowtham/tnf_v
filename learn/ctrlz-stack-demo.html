@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Ctrl+Z Works — Stack Demo</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f9f9f7;
+    --bg2: #f1f0eb;
+    --bg3: #e8e7e1;
+    --card: #ffffff;
+    --border: rgba(0,0,0,0.1);
+    --border2: rgba(0,0,0,0.18);
+    --text: #1a1a18;
+    --text2: #6b6b66;
+    --text3: #9b9b96;
+    --purple-bg: #EEEDFE;
+    --purple-text: #3C3489;
+    --purple-border: #AFA9EC;
+    --purple-btn: #534AB7;
+    --purple-btn-h: #3C3489;
+    --teal-bg: #E1F5EE;
+    --teal-text: #085041;
+    --teal-border: #5DCAA5;
+    --teal-btn: #0F6E56;
+    --teal-btn-h: #085041;
+    --radius: 10px;
+    --radius-sm: 6px;
+    --mono: 'Courier New', monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg2: #242422;
+      --bg3: #2c2c2a;
+      --card: #242422;
+      --border: rgba(255,255,255,0.1);
+      --border2: rgba(255,255,255,0.18);
+      --text: #e8e7e1;
+      --text2: #9b9b96;
+      --text3: #6b6b66;
+      --purple-bg: #26215C;
+      --purple-text: #CECBF6;
+      --purple-border: #534AB7;
+      --purple-btn: #534AB7;
+      --teal-bg: #04342C;
+      --teal-text: #9FE1CB;
+      --teal-border: #0F6E56;
+      --teal-btn: #0F6E56;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 2rem;
+  }
+  .header h1 {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .header p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--purple-bg);
+    color: var(--purple-text);
+    border: 0.5px solid var(--purple-border);
+    margin-bottom: 14px;
+    letter-spacing: .04em;
+  }
+
+  /* Action buttons */
+  .action-area {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 18px;
+  }
+  .action-area .hint {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 12px;
+  }
+  .btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .btn {
+    padding: 8px 15px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 0.5px solid var(--border2);
+    background: var(--card);
+    color: var(--text);
+    transition: background .15s, transform .1s, opacity .2s;
+  }
+  .btn:hover { background: var(--bg3); }
+  .btn:active { transform: scale(.97); }
+  .btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+
+  .btn-action {
+    background: var(--purple-btn);
+    color: #EEEDFE;
+    border-color: var(--purple-btn);
+  }
+  .btn-action:hover { background: var(--purple-btn-h); }
+
+  .btn-undo {
+    background: var(--purple-btn);
+    color: #EEEDFE;
+    border-color: var(--purple-btn);
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+  .btn-undo:hover:not(:disabled) { background: var(--purple-btn-h); }
+
+  .btn-redo {
+    background: var(--teal-btn);
+    color: #E1F5EE;
+    border-color: var(--teal-btn);
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+  .btn-redo:hover:not(:disabled) { background: var(--teal-btn-h); }
+
+  .btn-reset {
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+
+  /* Stack section */
+  .stacks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 500px) {
+    .stacks { grid-template-columns: 1fr; }
+  }
+
+  .stack-card {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .stack-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .stack-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--text2);
+  }
+  .count-badge {
+    font-size: 11px;
+    background: var(--card);
+    border: 0.5px solid var(--border2);
+    color: var(--text2);
+    padding: 1px 8px;
+    border-radius: 999px;
+  }
+  .stack-pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 999px;
+    margin-right: 6px;
+  }
+  .pill-purple { background: var(--purple-bg); color: var(--purple-text); border: 0.5px solid var(--purple-border); }
+  .pill-teal   { background: var(--teal-bg);   color: var(--teal-text);   border: 0.5px solid var(--teal-border); }
+
+  .stack-well {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .empty-msg {
+    font-size: 12px;
+    color: var(--text3);
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .plate {
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: plateIn .22s ease;
+  }
+  @keyframes plateIn {
+    from { opacity:0; transform: translateY(-10px) scale(.97); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+  }
+  .plate-undo { background: var(--purple-bg); color: var(--purple-text); border: 0.5px solid var(--purple-border); }
+  .plate-redo { background: var(--teal-bg);   color: var(--teal-text);   border: 0.5px solid var(--teal-border); }
+
+  .top-tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: var(--purple-btn);
+    color: #EEEDFE;
+    flex-shrink: 0;
+  }
+  .top-tag-teal { background: var(--teal-btn); color: #E1F5EE; }
+
+  .stack-hint {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 8px;
+  }
+
+  /* Control row */
+  .ctrl-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* Explain box */
+  .explain {
+    background: var(--card);
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.65;
+    min-height: 50px;
+    margin-bottom: 1.5rem;
+    transition: background .2s;
+  }
+  .explain strong { color: var(--text); font-weight: 600; }
+
+  /* Divider */
+  hr { border: none; border-top: 0.5px solid var(--border); margin: 1.5rem 0; }
+
+  /* Concepts */
+  .concepts-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .concepts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 480px) {
+    .concepts { grid-template-columns: 1fr; }
+  }
+  .concept-card {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    text-align: center;
+  }
+  .concept-card .big { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .concept-card .sm  { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+  /* Code line */
+  .code-line {
+    background: var(--bg2);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.8;
+    border: 0.5px solid var(--border);
+  }
+  code {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    background: var(--bg3);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  /* Flows */
+  .flows { display: flex; flex-direction: column; gap: 7px; margin-bottom: 1.5rem; }
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    padding: 9px 13px;
+    background: var(--bg2);
+    border-radius: var(--radius-sm);
+    color: var(--text2);
+    border: 0.5px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .flow strong { color: var(--text); font-weight: 600; }
+  .flow .arrow { color: var(--text3); }
+  kbd {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--card);
+    border: 0.5px solid var(--border2);
+    color: var(--text);
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 2rem;
+    font-size: 12px;
+    color: var(--text3);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="badge">Data Structures</div>
+    <h1>How Ctrl+Z works internally</h1>
+    <p>Command Pattern + Two Stacks — interactive demo. The data structure is a <strong>Stack</strong> (LIFO — Last In, First Out).</p>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="action-area">
+    <div class="hint">Step 1 — do some actions to push plates onto the Undo Stack</div>
+    <div class="btn-row">
+      <button class="btn btn-action" onclick="doAction('Typed &quot;Hello&quot;')">Type "Hello"</button>
+      <button class="btn btn-action" onclick="doAction('Typed &quot;World&quot;')">Type "World"</button>
+      <button class="btn btn-action" onclick="doAction('Applied bold')">Bold</button>
+      <button class="btn btn-action" onclick="doAction('Deleted word')">Delete</button>
+      <button class="btn btn-action" onclick="doAction('Inserted image')">Insert image</button>
+    </div>
+  </div>
+
+  <!-- Stacks -->
+  <div class="stacks">
+    <div class="stack-card">
+      <div class="stack-header">
+        <div class="stack-title"><span class="stack-pill pill-purple">Undo Stack</span></div>
+        <span class="count-badge" id="undo-count">0</span>
+      </div>
+      <div class="stack-well" id="undo-well">
+        <div class="empty-msg">Do an action above</div>
+      </div>
+      <div class="stack-hint">
+        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 2v8M3 7l3 3 3-3" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Top plate = most recent action
+      </div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-header">
+        <div class="stack-title"><span class="stack-pill pill-teal">Redo Stack</span></div>
+        <span class="count-badge" id="redo-count">0</span>
+      </div>
+      <div class="stack-well" id="redo-well">
+        <div class="empty-msg">Press Ctrl+Z to fill this</div>
+      </div>
+      <div class="stack-hint">
+        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 10V2M3 5l3-3 3 3" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Ctrl+Y pops from here
+      </div>
+    </div>
+  </div>
+
+  <!-- Ctrl buttons -->
+  <div class="ctrl-row">
+    <button class="btn btn-undo" id="btn-undo" onclick="doUndo()" disabled>Ctrl + Z — Undo</button>
+    <button class="btn btn-reset" onclick="doReset()">Reset</button>
+    <button class="btn btn-redo" id="btn-redo" onclick="doRedo()" disabled>Ctrl + Y — Redo</button>
+  </div>
+
+  <!-- Explain -->
+  <div class="explain" id="explain">Do an action above — watch the plate get pushed onto the Undo Stack.</div>
+
+  <hr>
+
+  <!-- The 3 flows -->
+  <div class="concepts-title">The 3 flows — that's the entire system</div>
+  <div class="flows">
+    <div class="flow"><strong>Do action</strong><span class="arrow">→</span> <code>push()</code> to Undo Stack <span class="arrow">→</span> Redo Stack gets wiped</div>
+    <div class="flow"><strong><kbd>Ctrl+Z</kbd></strong><span class="arrow">→</span> <code>pop()</code> from Undo <span class="arrow">→</span> <code>push()</code> to Redo Stack</div>
+    <div class="flow"><strong><kbd>Ctrl+Y</kbd></strong><span class="arrow">→</span> <code>pop()</code> from Redo <span class="arrow">→</span> <code>push()</code> back to Undo Stack</div>
+  </div>
+
+  <!-- 3 Concepts -->
+  <div class="concepts-title">The only 3 operations Ctrl+Z needs</div>
+  <div class="concepts">
+    <div class="concept-card">
+      <div class="big">Push</div>
+      <div class="sm">Add on top. Happens every time you do an action.</div>
+    </div>
+    <div class="concept-card">
+      <div class="big">Pop</div>
+      <div class="sm">Remove from top. Happens on every Ctrl+Z.</div>
+    </div>
+    <div class="concept-card">
+      <div class="big">LIFO</div>
+      <div class="sm">Last In, First Out. Like a stack of plates.</div>
+    </div>
+  </div>
+
+  <div class="code-line">
+    In code: &nbsp;<code>undoStack.push(action)</code> when you act &nbsp;|&nbsp;
+    <code>undoStack.pop()</code> on Ctrl+Z &nbsp;|&nbsp;
+    Implemented using an Array or LinkedList
+  </div>
+
+  <div class="footer">tablenotfound.com &nbsp;·&nbsp; Built for students who want to understand, not just memorize</div>
+</div>
+
+<script>
+  const undoStack = [];
+  const redoStack = [];
+  const MAX = 7;
+
+  function renderStack(wellId, countId, arr, cls, emptyMsg) {
+    const well = document.getElementById(wellId);
+    document.getElementById(countId).textContent = arr.length;
+    well.innerHTML = '';
+    if (arr.length === 0) {
+      well.innerHTML = '<div class="empty-msg">' + emptyMsg + '</div>';
+      return;
+    }
+    [...arr].reverse().forEach((item, i) => {
+      const plate = document.createElement('div');
+      plate.className = 'plate ' + cls;
+      const isTop = i === 0;
+      const tagClass = cls === 'plate-redo' ? 'top-tag top-tag-teal' : 'top-tag';
+      plate.innerHTML = '<span>' + item + '</span>' + (isTop ? '<span class="' + tagClass + '">top</span>' : '');
+      well.appendChild(plate);
+    });
+  }
+
+  function update() {
+    renderStack('undo-well', 'undo-count', undoStack, 'plate-undo', 'Do an action above');
+    renderStack('redo-well', 'redo-count', redoStack, 'plate-redo', 'Press Ctrl+Z to fill this');
+    document.getElementById('btn-undo').disabled = undoStack.length === 0;
+    document.getElementById('btn-redo').disabled = redoStack.length === 0;
+  }
+
+  function setExplain(msg) {
+    document.getElementById('explain').innerHTML = msg;
+  }
+
+  function doAction(label) {
+    if (undoStack.length >= MAX) undoStack.shift();
+    undoStack.push(label);
+    redoStack.length = 0;
+    update();
+    setExplain('<strong>Push!</strong> "' + label + '" was added on top of the Undo Stack. Redo Stack is cleared — a new action always breaks redo history.');
+  }
+
+  function doUndo() {
+    if (!undoStack.length) return;
+    const item = undoStack.pop();
+    redoStack.push(item);
+    update();
+    setExplain('<strong>Pop from Undo → Push to Redo.</strong> "' + item + '" was removed from the top of the Undo Stack and moved to the Redo Stack. This is exactly what Ctrl+Z does.');
+  }
+
+  function doRedo() {
+    if (!redoStack.length) return;
+    const item = redoStack.pop();
+    undoStack.push(item);
+    update();
+    setExplain('<strong>Pop from Redo → Push to Undo.</strong> "' + item + '" came back! Ctrl+Y reverses the undo by moving the plate back to the Undo Stack.');
+  }
+
+  function doReset() {
+    undoStack.length = 0;
+    redoStack.length = 0;
+    update();
+    setExplain('Reset done. Both stacks are empty. Start fresh!');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); doUndo(); }
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); doRedo(); }
+  });
+
+  update();
+</script>
+</body>
+</html>
