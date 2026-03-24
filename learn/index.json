@@ -1,22 +1,8 @@
 [
   {
-    "title": "SQL JOIN Visualizer",
-    "desc": "Animated guide to INNER, LEFT, RIGHT joins",
-    "file": "sql-joins.html",
-    "icon": "🔗",
-    "color": "#e0f2fe"
-  },
-  {
-    "title": "Window Functions",
-    "desc": "RANK, ROW_NUMBER, LAG, LEAD explained",
-    "file": "window-functions.html",
-    "icon": "🪟",
-    "color": "#f3e8ff"
-  },
-  {
-    "title": "System Design Basics",
-    "desc": "Data engineering architecture overview",
-    "file": "system-design.html",
+    "title": "System Design ctrlz",
+    "desc": "How ctrlz works",
+    "file": "ctrlz-stack-demo.html",
     "icon": "🏗️",
     "color": "#fef3c7"
   }
