@@ -1,164 +1,171 @@
-[
-  {
-    "id": 4,
-    "diff": "medium",
-    "cc": ["JOIN", "GROUP BY", "SUM", "ROW_NUMBER"],
-    "story": {
-      "en": "Uber HQ, Friday evening. Product manager Sneha says: \"We need top earning drivers per city for bonus distribution.\"",
-      "ta": "Uber HQ, Friday evening. Sneha sollraanga: \"City-ku top earning drivers venum — bonus kudukanum.\"",
-      "hi": "Uber HQ, Friday shaam. Sneha bolti hai: \"Har city ke top earning drivers chahiye — bonus dena hai.\"",
-      "te": "Uber HQ, Friday evening. Sneha cheppindi: \"City-wise top earning drivers kavali — bonus ivvali.\""
-    },
-    "question": {
-      "en": "Find total earnings of each driver and show top 3 earning drivers per city.",
-      "ta": "Oru driver total evlo earn pannirukkaan nu calculate panni, city-ku top 3 drivers kaatu.",
-      "hi": "Har driver ka total earning nikalo aur har city ke top 3 drivers dikhao.",
-      "te": "Prathi driver total earnings calculate chesi, prathi city lo top 3 drivers chupinchu."
-    },
-    "schemas": [
-      {
-        "name": "drivers",
-        "cols": [
-          { "n": "driver_id", "t": "TEXT" },
-          { "n": "driver_name", "t": "TEXT" },
-          { "n": "city", "t": "TEXT" }
-        ]
+{
+  "setup": "CREATE TABLE drivers(driver_id TEXT,driver_name TEXT,city TEXT); ...",
+  "questions": [
+    {
+      "id": 4,
+      "diff": "mid",
+      "cc": ["JOIN", "GROUP BY", "SUM", "ORDER BY"],
+      "story": {
+        "en": "Uber HQ, Friday evening. Product manager Sneha walks in: \"We need top earning drivers per city for bonus distribution.\"",
+        "ta": "Uber HQ, Friday evening. Sneha sollraanga: \"City-ku top earning drivers venum — bonus kudukanum.\"",
+        "hi": "Uber HQ, Friday shaam. Sneha bolti hai: \"Har city ke top earning drivers chahiye — bonus dena hai.\"",
+        "te": "Uber HQ, Friday evening. Sneha cheppindi: \"City-wise top earning drivers kavali — bonus ivvali.\""
       },
-      {
-        "name": "trips",
-        "cols": [
-          { "n": "trip_id", "t": "TEXT" },
-          { "n": "driver_id", "t": "TEXT" },
-          { "n": "fare", "t": "REAL" }
-        ]
-      }
-    ],
-    "steps": [
-      {
-        "title": {
-          "en": "Join drivers and trips",
-          "ta": "Drivers-um trips-um join pannuvom",
-          "hi": "Drivers aur trips ko join karte hain",
-          "te": "Drivers mariyu trips ni join cheddam"
-        },
-        "sql": "SELECT d.driver_id, d.driver_name, d.city, t.fare\nFROM drivers d\nJOIN trips t\n  ON d.driver_id = t.driver_id;",
-        "explain": {
-          "en": [
-            "SELECT chooses which columns to display.",
-            "d.driver_id, d.driver_name, d.city → taken from drivers table.",
-            "t.fare → taken from trips table.",
-            "FROM drivers d → base table, 'd' is alias.",
-            "JOIN trips t → second table, 't' is alias.",
-            "ON d.driver_id = t.driver_id → matching condition.",
-            "Only rows where driver_id matches in both tables will appear."
-          ],
-          "ta": [
-            "SELECT → endha columns display panna venum nu sollum.",
-            "d.driver_id, d.driver_name, d.city → drivers table-lendhu varudhu.",
-            "t.fare → trips table-lendhu varudhu.",
-            "FROM drivers d → main table, 'd' nu short name kuduthom.",
-            "JOIN trips t → innum oru table join pannrom.",
-            "ON d.driver_id = t.driver_id → rendu table connect aagum condition.",
-            "Match aana rows dhaan result-la varum."
-          ],
-          "hi": [
-            "SELECT decide karta hai kaunse columns dikhane hain.",
-            "d.driver_id, d.driver_name, d.city → drivers table se.",
-            "t.fare → trips table se.",
-            "FROM drivers d → main table hai.",
-            "JOIN trips t → dusri table connect kar rahe hain.",
-            "ON condition → dono tables ka connection rule hai.",
-            "Sirf matching rows hi result mein aayengi."
-          ],
-          "te": [
-            "SELECT → ye columns chupinchalo ani decide chestundi.",
-            "d.driver_id, d.driver_name, d.city → drivers table nundi.",
-            "t.fare → trips table nundi.",
-            "FROM drivers d → main table.",
-            "JOIN trips t → second table join chestunnam.",
-            "ON condition → rendu tables ela connect avvalo cheptundi.",
-            "Match aina rows maatrame result lo vastayi."
-          ]
-        }
+
+      "question": {
+        "en": "Find total earnings of each driver and show top 3 earning drivers per city.",
+        "ta": "Oru driver total evlo earn pannirukkaan nu calculate panni, city-ku top 3 drivers kaatu.",
+        "hi": "Har driver ka total earning nikalo aur har city ke top 3 drivers dikhao.",
+        "te": "Prathi driver total earnings calculate chesi, prathi city lo top 3 drivers chupinchu."
       },
-      {
-        "title": {
-          "en": "Calculate total earnings per driver",
-          "ta": "Driver-wise total earnings calculate pannuvom",
-          "hi": "Driver-wise total earnings nikalte hain",
-          "te": "Driver-wise total earnings calculate cheddam"
+
+      "schemas": [...],
+
+      "steps": [
+        {
+          "title": {
+            "en": "Join drivers and trips",
+            "ta": "Drivers-um trips-um join pannuvom",
+            "hi": "Drivers aur trips ko join karte hain",
+            "te": "Drivers mariyu trips ni join cheddam"
+          },
+          "sql": "SELECT d.driver_id, d.driver_name, d.city, t.fare\nFROM drivers d\nJOIN trips t ON d.driver_id = t.driver_id;",
+          "explain": {
+            "en": [
+              "SELECT → defines which columns will be shown in output.",
+              "d.driver_id → driver id from drivers table.",
+              "d.driver_name → driver name from drivers table.",
+              "d.city → city from drivers table.",
+              "t.fare → fare from trips table.",
+              "FROM drivers d → drivers is main table, alias 'd' is used for short reference.",
+              "JOIN trips t → joining second table trips with alias 't'.",
+              "ON d.driver_id = t.driver_id → join condition, matching both tables.",
+              "Only matching records between drivers and trips will be returned."
+            ],
+            "ta": [
+              "SELECT → output-la varanum columns decide pannum.",
+              "d.driver_id → drivers table-lendhu driver id.",
+              "d.driver_name → driver name.",
+              "d.city → driver city.",
+              "t.fare → trips table-lendhu fare.",
+              "FROM drivers d → main table, 'd' nu alias kuduthom.",
+              "JOIN trips t → trips table join pannrom, 't' nu alias.",
+              "ON d.driver_id = t.driver_id → rendu table connect aagum condition.",
+              "Match aana rows dhaan result-la varum."
+            ],
+            "hi": [
+              "SELECT → output mein kaunse columns dikhane hain.",
+              "d.driver_id → drivers table ka id.",
+              "d.driver_name → driver ka naam.",
+              "d.city → driver ka city.",
+              "t.fare → trips table ka fare.",
+              "FROM drivers d → main table hai, 'd' alias hai.",
+              "JOIN trips t → trips table ko join kar rahe hain.",
+              "ON condition → dono tables ka connection rule.",
+              "Sirf matching rows hi result mein aayengi."
+            ],
+            "te": [
+              "SELECT → output lo ye columns chupinchalo decide chestundi.",
+              "d.driver_id → drivers table nundi id.",
+              "d.driver_name → driver peru.",
+              "d.city → driver city.",
+              "t.fare → trips table nundi fare.",
+              "FROM drivers d → main table, 'd' alias.",
+              "JOIN trips t → trips table join chestunnam.",
+              "ON condition → rendu tables connect avvadam.",
+              "Match aina rows maatrame result lo vastayi."
+            ]
+          }
         },
-        "sql": "SELECT d.driver_id,\n       d.driver_name,\n       d.city,\n       SUM(t.fare) AS total_earnings\nFROM drivers d\nJOIN trips t\n  ON d.driver_id = t.driver_id\nGROUP BY d.driver_id, d.driver_name, d.city;",
-        "explain": {
-          "en": [
-            "SUM(t.fare) → adds all fares for a driver.",
-            "AS total_earnings → gives a name to the result column.",
-            "GROUP BY → groups rows based on driver.",
-            "Each driver will have one row after grouping.",
-            "Without GROUP BY, SUM will calculate for entire table."
-          ],
-          "ta": [
-            "SUM(t.fare) → oru driver oda ella trip fare-um add pannum.",
-            "AS total_earnings → result-ku oru column name kudukkrom.",
-            "GROUP BY → driver-wise grouping pannum.",
-            "Oru driver-ku oru row dhaan varum.",
-            "GROUP BY illa-na full table-ku oru sum dhaan varum."
-          ],
-          "hi": [
-            "SUM(t.fare) → ek driver ke saare fares add karta hai.",
-            "AS total_earnings → column ka naam set karta hai.",
-            "GROUP BY → driver ke hisaab se grouping hoti hai.",
-            "Har driver ka ek hi row aayega.",
-            "GROUP BY nahi hoga toh poora table ka sum aayega."
-          ],
-          "te": [
-            "SUM(t.fare) → oka driver ki anni fares kalipi total isthundi.",
-            "AS total_earnings → column ki name ivvadam.",
-            "GROUP BY → driver-wise grouping chestundi.",
-            "Prathi driver ki oka row vastundi.",
-            "GROUP BY lekunda full table ki okate sum vastundi."
-          ]
-        }
-      },
-      {
-        "title": {
-          "en": "Find top 3 drivers per city",
-          "ta": "City-ku top 3 drivers eduthuvom",
-          "hi": "Har city ke top 3 drivers nikalte hain",
-          "te": "Prathi city lo top 3 drivers kanukundam"
+
+        {
+          "title": {
+            "en": "Calculate total earnings per driver",
+            "ta": "Driver-wise earnings calculate pannuvom",
+            "hi": "Driver-wise total earnings nikalte hain",
+            "te": "Driver-wise total earnings calculate cheddam"
+          },
+          "sql": "SELECT d.driver_id,\n       d.driver_name,\n       d.city,\n       SUM(t.fare) AS total_earnings\nFROM drivers d\nJOIN trips t ON d.driver_id = t.driver_id\nGROUP BY d.driver_id, d.driver_name, d.city\nORDER BY total_earnings DESC;",
+          "explain": {
+            "en": [
+              "SUM(t.fare) → adds all fares for each driver.",
+              "AS total_earnings → gives a readable name to result column.",
+              "GROUP BY d.driver_id → groups data per driver.",
+              "GROUP BY d.driver_name, d.city → ensures proper grouping without SQL error.",
+              "Each driver will have one row after grouping.",
+              "ORDER BY total_earnings DESC → sorts from highest earning to lowest."
+            ],
+            "ta": [
+              "SUM(t.fare) → oru driver-oda ella trips fare-um add pannum.",
+              "AS total_earnings → column-ku peru kudukkrom.",
+              "GROUP BY driver_id → driver-wise group pannum.",
+              "driver_name, city add pannradhu SQL error avoid panna.",
+              "Oru driver-ku oru row dhaan varum.",
+              "ORDER BY DESC → highest earning mudhal varum."
+            ],
+            "hi": [
+              "SUM(t.fare) → har driver ke saare fares add karta hai.",
+              "AS total_earnings → column ka naam set karta hai.",
+              "GROUP BY driver_id → driver ke hisaab se grouping.",
+              "driver_name, city bhi include karna zaroori hai.",
+              "Har driver ka ek hi row aayega.",
+              "ORDER BY DESC → highest earning pehle."
+            ],
+            "te": [
+              "SUM(t.fare) → oka driver ki anni fares kalipi total isthundi.",
+              "AS total_earnings → column ki peru ivvadam.",
+              "GROUP BY driver_id → driver-wise grouping.",
+              "driver_name, city include cheyyali SQL correct undadaniki.",
+              "Prathi driver ki oka row vastundi.",
+              "ORDER BY DESC → highest mundu vastundi."
+            ]
+          }
         },
-        "sql": "SELECT *\nFROM (\n  SELECT d.driver_id,\n         d.driver_name,\n         d.city,\n         SUM(t.fare) AS total_earnings,\n         ROW_NUMBER() OVER (PARTITION BY d.city ORDER BY SUM(t.fare) DESC) AS rn\n  FROM drivers d\n  JOIN trips t\n    ON d.driver_id = t.driver_id\n  GROUP BY d.driver_id, d.driver_name, d.city\n) ranked\nWHERE rn <= 3;",
-        "explain": {
-          "en": [
-            "ROW_NUMBER() → gives ranking number.",
-            "PARTITION BY d.city → resets ranking for each city.",
-            "ORDER BY SUM(t.fare) DESC → highest earning first.",
-            "Subquery → used to apply ranking first.",
-            "WHERE rn <= 3 → picks top 3 drivers per city."
-          ],
-          "ta": [
-            "ROW_NUMBER() → ranking number kudukkum.",
-            "PARTITION BY city → ovvoru city-kum separate ranking.",
-            "ORDER BY earnings DESC → highest first varum.",
-            "Subquery → first ranking calculate pannrom.",
-            "WHERE rn <= 3 → top 3 drivers mattum edukkrom."
-          ],
-          "hi": [
-            "ROW_NUMBER() → ranking deta hai.",
-            "PARTITION BY city → har city ke liye alag ranking.",
-            "ORDER BY DESC → highest earning pehle.",
-            "Subquery → pehle ranking calculate karte hain.",
-            "WHERE rn <= 3 → top 3 drivers select karte hain."
-          ],
-          "te": [
-            "ROW_NUMBER() → ranking number istundi.",
-            "PARTITION BY city → prathi city ki separate ranking.",
-            "ORDER BY DESC → highest earning mundu.",
-            "Subquery → mundu ranking calculate chestam.",
-            "WHERE rn <= 3 → top 3 drivers select chestam."
-          ]
+
+        {
+          "title": {
+            "en": "Get top 3 drivers per city",
+            "ta": "City-ku top 3 drivers eduthuvom",
+            "hi": "Har city ke top 3 drivers nikalte hain",
+            "te": "Prathi city lo top 3 drivers kanukundam"
+          },
+          "sql": "SELECT driver_id, driver_name, city, total_earnings\nFROM (\n  SELECT d.driver_id,\n         d.driver_name,\n         d.city,\n         SUM(t.fare) AS total_earnings,\n         ROW_NUMBER() OVER (\n           PARTITION BY d.city\n           ORDER BY SUM(t.fare) DESC\n         ) AS rn\n  FROM drivers d\n  JOIN trips t ON d.driver_id = t.driver_id\n  GROUP BY d.driver_id, d.driver_name, d.city\n) ranked\nWHERE rn <= 3;",
+          "explain": {
+            "en": [
+              "ROW_NUMBER() → assigns ranking number.",
+              "OVER() → defines window function behavior.",
+              "PARTITION BY d.city → resets ranking for each city.",
+              "ORDER BY SUM(fare) DESC → highest earning gets rank 1.",
+              "Subquery → needed because we filter using rn.",
+              "WHERE rn <= 3 → selects top 3 drivers per city."
+            ],
+            "ta": [
+              "ROW_NUMBER() → rank number kudukkum.",
+              "OVER() → window function epdi work aagum nu define pannum.",
+              "PARTITION BY city → ovvoru city-kum separate ranking.",
+              "ORDER BY DESC → highest earner rank 1.",
+              "Subquery → first ranking calculate panna use pannrom.",
+              "WHERE rn <= 3 → top 3 mattum edukkrom."
+            ],
+            "hi": [
+              "ROW_NUMBER() → ranking deta hai.",
+              "OVER() → window function ka behavior define karta hai.",
+              "PARTITION BY city → har city ke liye alag ranking.",
+              "ORDER BY DESC → highest earning rank 1.",
+              "Subquery → pehle ranking calculate karna zaroori hai.",
+              "WHERE rn <= 3 → top 3 drivers select."
+            ],
+            "te": [
+              "ROW_NUMBER() → ranking number istundi.",
+              "OVER() → window function ela pani chestundo define chestundi.",
+              "PARTITION BY city → prathi city ki separate ranking.",
+              "ORDER BY DESC → highest ki rank 1.",
+              "Subquery → mundu ranking calculate cheyyali.",
+              "WHERE rn <= 3 → top 3 drivers select chestam."
+            ]
+          }
         }
-      }
-    ]
-  }
-]
+      ]
+    }
+  ]
+}
