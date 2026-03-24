@@ -466,6 +466,85 @@
     Implemented using an Array or LinkedList
   </div>
 
+  <hr>
+
+  <!-- Traditional plate stack example -->
+  <div class="concepts-title">The classic analogy — a real plate stack</div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6;">This is how every CS textbook explains a Stack. You can only add or remove from the <strong style="color:var(--text)">top</strong>. No touching the bottom or middle.</p>
+
+  <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;">
+
+    <!-- The plate tower -->
+    <div style="flex:1;min-width:200px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;align-items:center;">
+
+      <div style="font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text2);margin-bottom:12px;align-self:flex-start;">Stack of plates</div>
+
+      <!-- Arrow pointing down at top -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;margin-bottom:8px;" id="push-indicator">
+        <div style="font-size:11px;font-weight:600;color:var(--purple-text);background:var(--purple-bg);padding:2px 10px;border-radius:999px;border:0.5px solid var(--purple-border);">Push here</div>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M3 8l4 4 4-4" stroke="#534AB7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <!-- Plate tower container -->
+      <div id="plate-tower" style="width:100%;display:flex;flex-direction:column;gap:4px;min-height:180px;justify-content:flex-end;">
+        <div style="font-size:12px;color:var(--text3);text-align:center;padding:20px 0;" id="tower-empty">Stack is empty</div>
+      </div>
+
+      <!-- Base -->
+      <div style="width:100%;height:10px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:4px;margin-top:4px;"></div>
+      <div style="width:80%;height:6px;background:var(--border);border-radius:0 0 6px 6px;"></div>
+
+      <!-- Pop indicator at bottom -->
+      <div style="margin-top:10px;font-size:11px;color:var(--text3);">Bottom — cannot access directly</div>
+    </div>
+
+    <!-- Controls + state -->
+    <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:10px;">
+
+      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text2);margin-bottom:10px;">Add a plate</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-action" style="font-size:12px;padding:7px 12px;" onclick="platePush('Plate A')">Plate A</button>
+          <button class="btn btn-action" style="font-size:12px;padding:7px 12px;" onclick="platePush('Plate B')">Plate B</button>
+          <button class="btn btn-action" style="font-size:12px;padding:7px 12px;" onclick="platePush('Plate C')">Plate C</button>
+          <button class="btn btn-action" style="font-size:12px;padding:7px 12px;" onclick="platePush('Plate D')">Plate D</button>
+        </div>
+      </div>
+
+      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text2);margin-bottom:10px;">Remove a plate</div>
+        <button class="btn btn-undo" id="plate-pop-btn" style="font-size:13px;width:100%;" onclick="platePop()" disabled>Pop — remove top plate</button>
+      </div>
+
+      <div style="background:var(--card);border:0.5px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text2);margin-bottom:6px;">State</div>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--text2);">Plates in stack</span>
+            <span style="font-weight:600;color:var(--text);" id="plate-count">0</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--text2);">Top plate</span>
+            <span style="font-weight:600;color:var(--purple-text);" id="plate-top">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:var(--text2);">Last operation</span>
+            <span style="font-weight:600;color:var(--text);" id="plate-last-op">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.65;" id="plate-explain">
+        Push a plate to start. You can only ever touch the top.
+      </div>
+    </div>
+  </div>
+
+  <!-- LIFO rule callout -->
+  <div style="margin-top:14px;background:var(--purple-bg);border:0.5px solid var(--purple-border);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:var(--purple-text);line-height:1.65;">
+    <strong>LIFO rule:</strong> The plate you added <em>last</em> is the one you must remove <em>first</em>. Push A → Push B → Push C → Pop gives you C, not A.
+  </div>
+
   <div class="footer">tablenotfound.com &nbsp;·&nbsp; Built for students who want to understand, not just memorize</div>
 </div>
 
@@ -533,6 +612,64 @@
     update();
     setExplain('Reset done. Both stacks are empty. Start fresh!');
   }
+
+  const plateColors = [
+    { bg:'#EEEDFE', text:'#3C3489', border:'#AFA9EC' },
+    { bg:'#E1F5EE', text:'#085041', border:'#5DCAA5' },
+    { bg:'#FAEEDA', text:'#633806', border:'#EF9F27' },
+    { bg:'#FAECE7', text:'#712B13', border:'#F0997B' },
+    { bg:'#EAF3DE', text:'#27500A', border:'#97C459' },
+  ];
+  const plateStack = [];
+  const MAX_PLATES = 6;
+
+  function renderPlates() {
+    const tower = document.getElementById('plate-tower');
+    const empty = document.getElementById('tower-empty');
+    const count = document.getElementById('plate-count');
+    const topEl = document.getElementById('plate-top');
+    const popBtn = document.getElementById('plate-pop-btn');
+
+    tower.innerHTML = '';
+    count.textContent = plateStack.length;
+    topEl.textContent = plateStack.length ? plateStack[plateStack.length - 1].label : '—';
+    popBtn.disabled = plateStack.length === 0;
+
+    if (plateStack.length === 0) {
+      tower.innerHTML = '<div style="font-size:12px;color:var(--text3);text-align:center;padding:20px 0;" id="tower-empty">Stack is empty</div>';
+      return;
+    }
+
+    [...plateStack].reverse().forEach((p, i) => {
+      const div = document.createElement('div');
+      const isTop = i === 0;
+      div.style.cssText = 'border-radius:6px;padding:9px 14px;font-size:13px;font-weight:600;text-align:center;background:' + p.color.bg + ';color:' + p.color.text + ';border:0.5px solid ' + p.color.border + ';display:flex;align-items:center;justify-content:space-between;animation:plateIn .22s ease;';
+      div.innerHTML = '<span>' + p.label + '</span>' + (isTop ? '<span style="font-size:10px;font-weight:600;padding:1px 7px;border-radius:999px;background:' + p.color.text + ';color:' + p.color.bg + ';">top</span>' : '');
+      tower.appendChild(div);
+    });
+  }
+
+  function platePush(label) {
+    if (plateStack.length >= MAX_PLATES) {
+      document.getElementById('plate-explain').innerHTML = '<strong>Stack is full!</strong> In real systems, a full stack throws a StackOverflowError. Remove a plate first.';
+      return;
+    }
+    const color = plateColors[plateStack.length % plateColors.length];
+    plateStack.push({ label, color });
+    renderPlates();
+    document.getElementById('plate-last-op').textContent = 'push("' + label + '")';
+    document.getElementById('plate-explain').innerHTML = '<strong>Push!</strong> "' + label + '" landed on top. You can only see and touch the top plate — everything below is hidden.';
+  }
+
+  function platePop() {
+    if (!plateStack.length) return;
+    const p = plateStack.pop();
+    renderPlates();
+    document.getElementById('plate-last-op').textContent = 'pop() → "' + p.label + '"';
+    document.getElementById('plate-explain').innerHTML = '<strong>Pop!</strong> "' + p.label + '" was removed from the top. The plate below it is now the new top. You cannot pop from the middle — LIFO enforces this.';
+  }
+
+  renderPlates();
 
   document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); doUndo(); }
