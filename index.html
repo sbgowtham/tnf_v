@@ -177,10 +177,46 @@ td{padding:14px 16px;vertical-align:middle}
 .nv{color:#ccc;font-style:italic}
 .err-b{background:rgba(254,226,226,.7);border:1px solid rgba(239,68,68,.22);border-radius:10px;padding:.75rem 1rem;font-family:var(--fm);font-size:12px;color:#dc2626;line-height:1.7;backdrop-filter:blur(8px)}
 .ok-b{background:rgba(220,252,231,.7);border:1px solid rgba(34,197,94,.22);border-radius:10px;padding:.75rem 1rem;font-family:var(--fm);font-size:12px;color:#15803d;line-height:1.7;backdrop-filter:blur(8px)}
-/* explain */
+
+/* ── EXPLAIN — supports both string and array ── */
 .xpl{display:none;border-top:var(--bdr);padding:1rem 1.25rem;background:rgba(255,255,255,.28)}
 .step-card.done .xpl{display:block}
-.xpl-text{font-size:13.5px;line-height:1.9;color:var(--t2);border-left:3px solid color-mix(in srgb,var(--uc) 55%,transparent);padding-left:.875rem}
+
+/* legacy single-string explain */
+.xpl-text{
+  font-size:13.5px;line-height:1.9;color:var(--t2);
+  border-left:3px solid color-mix(in srgb,var(--uc) 55%,transparent);
+  padding-left:.875rem;
+}
+
+/* new array-based explain — point-by-point */
+.xpl-label{
+  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--t3);margin-bottom:.75rem;display:flex;align-items:center;gap:6px;
+}
+.xpl-label::before{
+  content:'';display:inline-block;width:16px;height:2px;
+  background:linear-gradient(90deg,var(--uc),color-mix(in srgb,var(--uc) 50%,#fc5c9c));
+  border-radius:2px;
+}
+.xpl-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.5rem}
+.xpl-point{
+  font-size:13.5px;line-height:1.85;color:var(--t2);
+  padding:.6rem 1rem .6rem 1.25rem;
+  border-left:3px solid color-mix(in srgb,var(--uc) 45%,transparent);
+  background:rgba(255,255,255,.32);
+  border-radius:0 10px 10px 0;
+  position:relative;
+  transition:background .15s;
+}
+.xpl-point:hover{background:rgba(255,255,255,.52)}
+.xpl-point::before{
+  content:'→';
+  position:absolute;left:-1.15rem;top:.65rem;
+  color:color-mix(in srgb,var(--uc) 70%,transparent);
+  font-weight:800;font-size:12px;
+}
+
 /* win */
 .win{border-radius:var(--r);padding:2.25rem;text-align:center;margin-top:1.25rem;position:relative;overflow:hidden;box-shadow:0 10px 36px color-mix(in srgb,var(--uc) 32%,transparent)}
 .win-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--uc),color-mix(in srgb,var(--uc) 55%,#fc5c9c))}
@@ -216,7 +252,13 @@ td{padding:14px 16px;vertical-align:middle}
 .di-title{font-size:12px;font-weight:700;display:block}
 .di-sub{font-size:10px;color:var(--t3)}
 .dropdown-empty{padding:1rem;font-size:12px;color:var(--t3);text-align:center}
-@media(max-width:640px){.wrap{padding:1.25rem 1rem 5rem}.hero-h{font-size:28px}.nav{padding:0 1rem;gap:.875rem}th:nth-child(4),td:nth-child(4){display:none}.menu-btn span{display:none}}
+@media(max-width:640px){
+  .wrap{padding:1.25rem 1rem 5rem}
+  .hero-h{font-size:28px}
+  .nav{padding:0 1rem;gap:.875rem}
+  th:nth-child(4),td:nth-child(4){display:none}
+  .menu-btn span{display:none}
+}
 </style>
 </head>
 <body>
@@ -292,10 +334,6 @@ td{padding:14px 16px;vertical-align:middle}
 /* ── UNIVERSE CONFIG ── */
 let UM = []; // loaded dynamically from /questions/index.json
 
-/* ── DB SEED SQL ── */
-/* DB setup now lives inside each questions JSON file as "setup" field */
-
-
 /* ── STATE ── */
 let SQL=null, db=null, lang='en';
 let aU=null, aQ=null;
@@ -321,7 +359,6 @@ function loadDb(uid){
   try{
     if(db){try{db.close()}catch(e){} db=null;}
     db=new SQL.Database();
-    // setup SQL comes from the JSON file's "setup" field
     const setup = SETUP_CACHE[uid] || '';
     setup.split(';').map(s=>s.trim()).filter(Boolean).forEach(s=>db.run(s+';'));
   }catch(e){setOrb('','DB error: '+e.message);}
@@ -342,26 +379,15 @@ async function fetchQ(uid){
     const r = await fetch('/questions/'+uid+'.json');
     if(!r.ok){ CACHE[uid]=[]; return []; }
     const data = await r.json();
-    // extract setup SQL and store it on a sentinel object, remove from questions array
     const setup = data.setup || '';
     const questions = Array.isArray(data) ? data : (data.questions || []);
-    SETUP_CACHE[uid] = setup;   // store separately — not on the array
+    SETUP_CACHE[uid] = setup;
     CACHE[uid] = questions;
   }catch(e){
     console.error('fetch failed for '+uid+'.json: '+e.message);
     CACHE[uid]=[];
   }
   return CACHE[uid];
-}
-
-function showFetchError(msg){
-  document.getElementById('tbody').innerHTML =
-    `<tr><td colspan="5" class="tbl-msg" style="color:#dc2626;text-align:left;padding:1.5rem">
-      ❌ <strong>Could not load questions.</strong><br><br>
-      <span style="font-family:monospace;font-size:12px">${msg}</span><br><br>
-      Check browser Console (F12) for details.
-    </td></tr>`;
-  document.getElementById('tstat').textContent = 'Error loading questions';
 }
 
 /* ── LANG ── */
@@ -373,8 +399,32 @@ function setLang(l){
   });
   if(aQ)renderQV();
 }
-function tx(o){return typeof o==='string'?o:(o&&(o[lang]||o.en)||'');}
+
+/**
+ * tx() — smart text extractor
+ * Handles: plain string | {en,ta,hi,te} string map | {en,ta,hi,te} array map
+ * Returns: string (for simple text) | string[] (for point-by-point explain arrays)
+ */
+function tx(o){
+  if(typeof o==='string') return o;
+  const val = o && (o[lang] || o.en);
+  if(Array.isArray(val)) return val;   // ← array of points
+  return val || '';
+}
+
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+/**
+ * renderExplain() — renders explain as point list (array) or paragraph (string)
+ */
+function renderExplain(step){
+  const exp = tx(step.explain);
+  if(Array.isArray(exp)){
+    const points = exp.map(p=>`<li class="xpl-point">${p}</li>`).join('');
+    return `<div class="xpl-label">💡 Explanation</div><ul class="xpl-list">${points}</ul>`;
+  }
+  return `<div class="xpl-text">${exp}</div>`;
+}
 
 /* ── LOAD ALL & BUILD TABLE ── */
 async function boot(){
@@ -382,7 +432,6 @@ async function boot(){
   document.getElementById('tbody').innerHTML =
     '<tr><td colspan="5" class="tbl-msg">Loading questions…</td></tr>';
 
-  // Step 1: load universe list from questions/index.json
   try{
     const r = await fetch('/questions/index.json');
     if(!r.ok) throw new Error('HTTP '+r.status);
@@ -395,7 +444,6 @@ async function boot(){
     return;
   }
 
-  // Step 2: fetch each universe's questions in parallel
   await Promise.all(UM.map(u => fetchQ(u.id)));
 
   ALL = [];
@@ -553,7 +601,7 @@ function renderQV(){
         </div>
         <div id="rs_${key}"></div>
         <div class="xpl" id="xp_${key}">
-          <div class="xpl-text">${tx(step.explain)}</div>
+          ${renderExplain(step)}
         </div>
       </div>
     </div>`;
@@ -620,8 +668,8 @@ function runS(key,si){
           n.style.background=`linear-gradient(135deg,${uc},color-mix(in srgb,${uc} 60%,#fc5c9c))`;
           n.style.color='#fff';n.style.borderColor='transparent';n.textContent='✓';
         }
-        const h=sc.querySelector('.step-hint');
-        if(h){h.textContent='✅ Done — try editing the query!';h.style.color='#22c55e';}
+        const hint=sc.querySelector('.step-hint');
+        if(hint){hint.textContent='✅ Done — try editing the query!';hint.style.color='#22c55e';}
       }
       if(xp)xp.style.display='block';
       burst();
@@ -674,27 +722,20 @@ boot();
 
 /* ── LEARN MENU ── */
 function toggleMenu(){
-  const m = document.getElementById('navmenu');
-  m.classList.toggle('open');
+  document.getElementById('navmenu').classList.toggle('open');
 }
-// close when clicking outside
 document.addEventListener('click', e => {
-  const m = document.getElementById('navmenu');
-  if(m && !m.contains(e.target)) m.classList.remove('open');
+  const m=document.getElementById('navmenu');
+  if(m&&!m.contains(e.target))m.classList.remove('open');
 });
-
-// Load learn/index.json to populate the dropdown
 async function loadLearnLinks(){
   try{
-    const r = await fetch('/learn/index.json');
-    if(!r.ok) return; // no learn folder yet — menu stays empty
-    const items = await r.json();
-    const container = document.getElementById('learn-links');
-    if(!items.length){
-      container.innerHTML = '<div class="dropdown-empty">No items yet</div>';
-      return;
-    }
-    container.innerHTML = items.map(item => `
+    const r=await fetch('/learn/index.json');
+    if(!r.ok)return;
+    const items=await r.json();
+    const container=document.getElementById('learn-links');
+    if(!items.length){container.innerHTML='<div class="dropdown-empty">No items yet</div>';return;}
+    container.innerHTML=items.map(item=>`
       <a class="dropdown-item" href="/learn/${item.file}" target="_blank">
         <div class="di-icon" style="background:${item.color||'#f3f0ff'}">${item.icon||'📄'}</div>
         <div class="di-text">
@@ -702,9 +743,7 @@ async function loadLearnLinks(){
           <span class="di-sub">${item.desc||''}</span>
         </div>
       </a>`).join('');
-  }catch(e){
-    // learn folder doesn't exist yet — that's fine
-  }
+  }catch(e){}
 }
 loadLearnLinks();
 </script>
