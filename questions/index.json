@@ -4,5 +4,11 @@
   { "id": "uber",         "name": "Uber",          "sub": "Driver Earnings",      "c": "#1d4ed8" },
   { "id": "spark",        "name": "Bumble",        "sub": "Dating App",           "c": "#ec4899" },
   { "id": "connectbook",  "name": "LinkedIn",      "sub": "Professional Network", "c": "#0077b5" },
-  { "id": "routeiq",      "name": "Google Maps",   "sub": "Maps & Navigation",    "c": "#10b981" }
+  { "id": "routeiq",      "name": "Google Maps",   "sub": "Maps & Navigation",    "c": "#10b981" },
+  {
+    "id": "snapchat",
+    "name": "Snapchat",
+    "sub": "Engagement Analytics",
+    "c": "#FFFC00"
+  }
 ]
