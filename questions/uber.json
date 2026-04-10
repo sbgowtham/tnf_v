@@ -45,10 +45,34 @@
           },
           "sql": "SELECT d.driver_id, d.driver_name, d.city, t.fare\nFROM drivers d\nJOIN trips t ON d.driver_id = t.driver_id;",
           "explain": {
-            "en": "JOIN combines rows from both tables using driver_id as the key. Without join, trips and drivers stay disconnected — you can see trip amounts but don't know which city they belong to.",
-            "ta": "JOIN rendu tables-a driver_id use panni connect pannum. Join panna marandha trips-um drivers-um separate-aa dhaan irukkum — amount theriyum aana city theriyaadhu.",
-            "hi": "JOIN driver_id ke basis pe dono tables ko connect karta hai. Join nahi kiya toh trips aur drivers alag-alag rehte hain — fare toh dikh raha hai lekin city nahi pata.",
-            "te": "JOIN driver_id base meeda rendu tables ni connect chestundi. Join cheyyakapoina trips mariyu drivers separate ga untaayi — fare kanapadutundi kaani city telusukoledu."
+            "en": [
+              "The drivers table has name and city — but no fare. The trips table has fare amounts — but no city or driver name. The only link between them is driver_id.",
+              "JOIN finds matching rows in both tables using the condition d.driver_id = t.driver_id. Every trip row gets paired with the correct driver row.",
+              "We use aliases: d for drivers, t for trips. This shortens the query and avoids repeating full table names every time.",
+              "Without JOIN, you'd have to run two separate queries and manually match rows by driver_id — JOIN does this automatically in one shot.",
+              "The result of this step: each row now has driver_id, driver_name, city, and fare together in one place — ready for the next aggregation step."
+            ],
+            "ta": [
+              "drivers table-la driver peru, city irukku — aaana fare illai. trips table-la fare irukku — aaana city, driver peru theriyaadhu. Rendu tables-um driver_id-la mattum connect aaguthu.",
+              "JOIN panna, d.driver_id = t.driver_id match aana oda rendu tables-oda rows combine aagum. Oru driver-oda ella trips-um avan row-oda join aagum.",
+              "d nu drivers-ku alias, t nu trips-ku alias. Ithunala query short-a irukum, oru table peru repeat panna thaevaillai.",
+              "JOIN panna marandha, neenga rendu separate queries poda vendum, manually driver_id match panna try panum — JOIN ithay automatically oru query-la panniduthey.",
+              "Indha step-oda result: oru row-la driver_id, driver_name, city, fare ellam onra varum — next step-ku ready."
+            ],
+            "hi": [
+              "drivers table mein naam aur city hai — lekin fare nahi. trips table mein fare hai — lekin city ya driver naam nahi. Dono tables sirf driver_id se connected hain.",
+              "JOIN karte waqt, jahan d.driver_id = t.driver_id match karta hai, wahan dono tables ki rows ek saath combine ho jaati hain. Har trip apne sahi driver ke saath pair ho jaata hai.",
+              "d drivers ka alias hai, t trips ka alias hai. Isse query chhoti rehti hai aur baar baar poora table naam likhna nahi padta.",
+              "JOIN nahi kiya toh do alag queries chalani padti aur manually driver_id se match karna padta — JOIN yeh kaam ek hi query mein automatically karta hai.",
+              "Is step ka result: ab ek row mein driver_id, driver_name, city, aur fare — sab ek jagah aa gaye. Agle step ke liye taiyaar."
+            ],
+            "te": [
+              "drivers table lo driver peru, city undi — kaani fare ledu. trips table lo fare undi — kaani city, driver peru ledu. Rendu tables ni connect cheyyedhi driver_id matrame.",
+              "JOIN chesina tarvata, d.driver_id = t.driver_id match ayyina chota rendu tables rows combine avutaayi. Prathi trip correct driver row tho pair avutundi.",
+              "d ante drivers alias, t ante trips alias. Daantalla query chinna ga untundi, prathi sariki full table peru rayyakkarledu.",
+              "JOIN cheyyakapoina, rendu separate queries run cheyyali, manually driver_id match cheyyali — JOIN idi oka query lo automatic ga chestundi.",
+              "Ee step result: oka row lo driver_id, driver_name, city, fare anni oka saari vastunayi — next step ki ready."
+            ]
           }
         },
         {
@@ -60,10 +84,38 @@
           },
           "sql": "SELECT d.driver_id,\n       d.driver_name,\n       d.city,\n       SUM(t.fare) AS total_earnings\nFROM drivers d\nJOIN trips t ON d.driver_id = t.driver_id\nGROUP BY d.driver_id, d.driver_name, d.city\nORDER BY total_earnings DESC;",
           "explain": {
-            "en": "SUM(fare) adds up all trip fares per driver. GROUP BY ensures the sum is calculated separately for each driver. ORDER BY total_earnings DESC shows highest earner first.",
-            "ta": "SUM(fare) oru driver-oda ella trips-oda fare-a add pannum. GROUP BY driver-wise calculate pannum. ORDER BY DESC highest earner mudhal varum.",
-            "hi": "SUM(fare) har driver ke saare trips ka fare jod deta hai. GROUP BY har driver ke liye alag calculate karta hai. ORDER BY DESC sabse zyada earning wala pehle.",
-            "te": "SUM(fare) oka driver anni trips fares ni add chestundi. GROUP BY prathi driver ki alagugaa calculate chestundi. ORDER BY DESC highest earner mundu vasthadu."
+            "en": [
+              "SUM(t.fare) adds up all fare values for each driver across all their trips. For example, driver D001 has 3 trips: 250.50 + 180.00 + 320.75 = 751.25 total.",
+              "GROUP BY d.driver_id, d.driver_name, d.city tells SQL: group all rows with the same driver_id together, then calculate SUM separately for each group.",
+              "Why include driver_name and city in GROUP BY? SQL rule: every column in SELECT that is NOT inside an aggregate function (like SUM) must also appear in GROUP BY.",
+              "AS total_earnings gives a clean, readable name to the calculated column. Without it, the output column header would literally say SUM(t.fare) — confusing.",
+              "ORDER BY total_earnings DESC sorts results from highest earner to lowest. This makes it easy to spot the top drivers at a glance.",
+              "At this point you have one row per driver with their total earnings — but you still cannot filter top 3 per city. For that, you need ranking logic in the next step."
+            ],
+            "ta": [
+              "SUM(t.fare) oru driver-oda ella trips-oda fare-a add pannum. Example: D001-ku 3 trips irukku — 250.50 + 180.00 + 320.75 = 751.25 total.",
+              "GROUP BY d.driver_id, d.driver_name, d.city — SQL-ku solluchu: same driver_id-oda ella rows-a oru group-a potu, prathi group-ku alag SUM calculate pannu.",
+              "Yen driver_name-um city-um GROUP BY-la varuthu? SQL rule: SELECT-la aggregate function (SUM) inside illatha ella column-um GROUP BY-la varanumnu mandatory.",
+              "AS total_earnings — calculated column-ku oru clean name kudukuthu. Illana output header literally 'SUM(t.fare)' nu varum — confusing-a irukum.",
+              "ORDER BY total_earnings DESC — highest earner mudhal, lowest last. Oru paarthale yaar top driver nu theriyum.",
+              "Ippo oru driver-ku oru row irukku total earnings-oda — aaana city-wise top 3 filter panna innum oru step venum. Adhu next-la."
+            ],
+            "hi": [
+              "SUM(t.fare) ek driver ke saare trips ke fares jod deta hai. Example: D001 ke 3 trips hain — 250.50 + 180.00 + 320.75 = 751.25 total.",
+              "GROUP BY d.driver_id, d.driver_name, d.city — SQL ko bolta hai: same driver_id wali saari rows ko ek group mein daalo, phir har group ke liye alag SUM nikalo.",
+              "driver_name aur city GROUP BY mein kyun? SQL ka rule: SELECT mein jo column kisi aggregate function (jaise SUM) ke andar nahi hai, woh GROUP BY mein bhi hona chahiye.",
+              "AS total_earnings — calculated column ko ek samajhne wala naam deta hai. Warna output header literally 'SUM(t.fare)' dikhega — confusing lagega.",
+              "ORDER BY total_earnings DESC — sabse zyada kamaane wala pehle, sabse kum wala last. Ek nazar mein top drivers dikh jaate hain.",
+              "Ab har driver ki ek row hai total earnings ke saath — lekin abhi bhi har city ke top 3 filter nahi kar sakte. Uske liye ranking logic chahiye — woh agla step hai."
+            ],
+            "te": [
+              "SUM(t.fare) oka driver anni trips fares ni add chestundi. Example: D001 ki 3 trips unnaayi — 250.50 + 180.00 + 320.75 = 751.25 total.",
+              "GROUP BY d.driver_id, d.driver_name, d.city — SQL ki cheppistundi: same driver_id unna anni rows ni oka group lo petto, prathi group ki alagugaa SUM calculate cheyyali.",
+              "driver_name mariyu city kuda GROUP BY lo endhuku? SQL rule: SELECT lo unna column edi aggregate function (SUM) lota lekapoina, adi GROUP BY lo kuda undaali — mandatory.",
+              "AS total_earnings — calculated column ki clean name isthundi. Lekapoina output header literally 'SUM(t.fare)' ani kanipistundi — confusing ga untundi.",
+              "ORDER BY total_earnings DESC — highest earner mundu, lowest last. Oka chupulo top drivers ardam avutundi.",
+              "Ipudu prathi driver ki oka row total earnings tho undi — kaani city-wise top 3 filter cheyyataniki inko step kavali. Adhi tarvata lo unnadi."
+            ]
           }
         },
         {
@@ -75,10 +127,46 @@
           },
           "sql": "SELECT driver_id, driver_name, city, total_earnings\nFROM (\n  SELECT d.driver_id,\n         d.driver_name,\n         d.city,\n         SUM(t.fare) AS total_earnings,\n         ROW_NUMBER() OVER (\n           PARTITION BY d.city\n           ORDER BY SUM(t.fare) DESC\n         ) AS rn\n  FROM drivers d\n  JOIN trips t ON d.driver_id = t.driver_id\n  GROUP BY d.driver_id, d.driver_name, d.city\n) ranked\nWHERE rn <= 3;",
           "explain": {
-            "en": "ROW_NUMBER() OVER (PARTITION BY city ORDER BY earnings DESC) assigns rank 1 to the highest earner in each city, rank 2 to the second, and so on. PARTITION BY city means ranking restarts for every new city. WHERE rn <= 3 keeps only the top 3 per city.",
-            "ta": "ROW_NUMBER() OVER (PARTITION BY city ORDER BY earnings DESC) prathi city-la highest earner-ku rank 1, next-ku rank 2 kudukum. PARTITION BY city = prathi city-ku ranking restart. WHERE rn <= 3 = top 3 mattum vachu.",
-            "hi": "ROW_NUMBER() OVER (PARTITION BY city ORDER BY earnings DESC) har city mein highest earner ko rank 1, uske baad rank 2 deta hai. PARTITION BY city matlab ranking har city ke liye restart. WHERE rn <= 3 sirf top 3 rakhta hai.",
-            "te": "ROW_NUMBER() OVER (PARTITION BY city ORDER BY earnings DESC) prathi city lo highest earner ki rank 1, tarvata rank 2 isthundi. PARTITION BY city ante ranking prathi city ki restart avutundi. WHERE rn <= 3 ante top 3 maatrame."
+            "en": [
+              "The previous step gave total earnings per driver — but we need top 3 per city, not overall top 3. For that, we must rank drivers within each city separately.",
+              "ROW_NUMBER() is a window function. Unlike GROUP BY which collapses multiple rows into one, window functions add a new column to existing rows without removing any rows.",
+              "OVER (...) defines the 'window' — the rules for how ROW_NUMBER should group and sort. Think of OVER as: 'apply this ranking logic inside this specific window of rows'.",
+              "PARTITION BY d.city splits drivers into groups by city before ranking. Chennai drivers get ranked among themselves. Delhi drivers get ranked among themselves. Each city is independent.",
+              "ORDER BY SUM(t.fare) DESC inside OVER means: within each city group, assign rank 1 to the highest earner, rank 2 to the second highest, rank 3 to third, and so on.",
+              "The inner query is wrapped in a subquery (aliased as 'ranked') because SQL evaluates WHERE before window functions. You cannot write WHERE rn <= 3 in the same query — it must be in an outer query.",
+              "WHERE rn <= 3 in the outer query keeps only rows where the rank is 1, 2, or 3 — meaning the top 3 earners from each city partition.",
+              "Why not just use LIMIT 3? LIMIT 3 would give the top 3 drivers globally across all cities. ROW_NUMBER with PARTITION BY is the correct approach when you need top-N within each group."
+            ],
+            "ta": [
+              "Previous step-la driver-wise total kitechu — aaana overall top 3 illai, city-ku top 3 venum. Adhanala prathi city-la separately rank kodukanum.",
+              "ROW_NUMBER() oru window function. GROUP BY rows-a collapse pannum (merge pannum) — aaana window functions existing rows-la oru new column mattum add pannum, rows pogaadhu.",
+              "OVER (...) 'window'-a define pannum — ROW_NUMBER-ku how to group, how to sort nu solluchu. 'Indha window-la indha ranking logic apply pannu' nu think pannu.",
+              "PARTITION BY d.city — rank kudukka munnaadi drivers-a city-wise split pannum. Chennai drivers Chennai-la rank aaguvaaanga, Delhi drivers Delhi-la — prathi city independent.",
+              "OVER-la ORDER BY SUM(t.fare) DESC — prathi city-la highest earner-ku rank 1, next-ku rank 2, ippadi continue aagum.",
+              "Inner query-a subquery-la (ranked nu alias) wrap panna karanam — SQL WHERE-a window functions-ku munnaadi evaluate pannum. Athey query-la WHERE rn <= 3 elutha mudiyaadhu — outer query-la mattum elutha mudiyum.",
+              "Outer query-la WHERE rn <= 3 — rn 1, 2, 3 ulla rows mattum varum, meaning prathi city-la top 3 earners mattum output-la varum.",
+              "Yen LIMIT 3 use panna koodaadhu? LIMIT 3 overall global top 3 kudukum — city-wise illai. Per-city top-N-ku ROW_NUMBER with PARTITION BY dhaan sari aana way."
+            ],
+            "hi": [
+              "Pichle step mein driver-wise total mila — lekin overall top 3 nahi, har city ke top 3 chahiye. Isliye har city ke andar drivers ko alag se rank dena hoga.",
+              "ROW_NUMBER() ek window function hai. GROUP BY rows ko collapse (merge) kar deta hai — lekin window functions existing rows mein sirf ek naya column add karte hain, rows nahi hatate.",
+              "OVER (...) 'window' define karta hai — ROW_NUMBER ko batata hai ki kaise group aur sort karna hai. Sochiye: 'is window ke andar yeh ranking logic lagao'.",
+              "PARTITION BY d.city — rank dene se pehle drivers ko city ke hisaab se group karta hai. Chennai ke drivers apas mein rank hote hain, Delhi ke apas mein — har city independent hai.",
+              "OVER ke andar ORDER BY SUM(t.fare) DESC — har city ke group mein highest earner ko rank 1, usse kam wale ko rank 2, aur aage aise.",
+              "Inner query ko subquery (alias: ranked) mein wrap karna padta hai kyunki SQL WHERE clause ko window functions se pehle process karta hai. Usi query mein WHERE rn <= 3 nahi likh sakte — yeh bahar wali query mein likhna zaroori hai.",
+              "Outer query mein WHERE rn <= 3 — sirf woh rows rakhta hai jahan rank 1, 2, ya 3 hai, yani har city ke top 3 earners hi output mein aate hain.",
+              "LIMIT 3 kyun nahi chalega? LIMIT 3 globally sabse upar ke 3 drivers dega — city-wise nahi. Har group mein top-N chahiye toh ROW_NUMBER with PARTITION BY hi sahi tarika hai."
+            ],
+            "te": [
+              "Mundu step lo driver-wise total vasindi — kaani overall top 3 kaadu, prathi city ki top 3 kavali. Kaabatti prathi city lo drivers ni separately rank cheyyaali.",
+              "ROW_NUMBER() oka window function. GROUP BY rows ni collapse (merge) chestundi — kaani window functions existing rows lo oka new column matrame add chestaayi, rows teyyavu.",
+              "OVER (...) 'window' ni define chestundi — ROW_NUMBER ki ela group cheyyaalo, ela sort cheyyaalo cheppistundi. 'Ee window lo ee ranking logic apply cheyyali' ani alochinchu.",
+              "PARTITION BY d.city — rank ivvataniki mundu drivers ni city wise split chestundi. Chennai drivers Chennai lo rank avutaaru, Delhi drivers Delhi lo — prathi city independent.",
+              "OVER lo ORDER BY SUM(t.fare) DESC — prathi city group lo highest earner ki rank 1, tarvata rank 2, ila continue avutundi.",
+              "Inner query ni subquery (alias: ranked) lo wrap cheyyali, endukante SQL WHERE ni window functions kanna mundu process chestundi. Aye query lo WHERE rn <= 3 rayyaledu — baita query lo rayyali.",
+              "Outer query lo WHERE rn <= 3 — rank 1, 2, 3 unna rows matrame filter avutaayi, ante prathi city top 3 earners matrame output lo vastunayi.",
+              "LIMIT 3 endhuku pani cheyyadu? LIMIT 3 globally top 3 isthundi — city-wise kaadu. Prathi group lo top-N kavali ante ROW_NUMBER with PARTITION BY e correct approach."
+            ]
           }
         }
       ]
