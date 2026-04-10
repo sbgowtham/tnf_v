@@ -1,0 +1,168 @@
+{
+  "setup": "CREATE TABLE activities(activity_id INTEGER,user_id INTEGER,activity_type TEXT,time_spent REAL,activity_date TEXT);INSERT INTO activities VALUES(1001,101,'send',4.50,'2022-06-10'),(1002,101,'send',3.20,'2022-06-11'),(1003,101,'open',5.10,'2022-06-11'),(1004,101,'open',2.30,'2022-06-12'),(1005,101,'chat',8.00,'2022-06-12'),(1006,102,'send',6.00,'2022-06-10'),(1007,102,'open',4.50,'2022-06-13'),(1008,102,'chat',5.50,'2022-06-14'),(1009,103,'send',2.80,'2022-06-15'),(1010,103,'open',3.20,'2022-06-15'),(1011,201,'send',7.50,'2022-06-10'),(1012,201,'send',4.20,'2022-06-12'),(1013,201,'open',2.80,'2022-06-13'),(1014,201,'chat',6.00,'2022-06-14'),(1015,202,'send',5.00,'2022-06-10'),(1016,202,'open',3.50,'2022-06-11'),(1017,202,'chat',4.00,'2022-06-15'),(1018,203,'send',3.80,'2022-06-12'),(1019,203,'open',1.50,'2022-06-13'),(1020,301,'send',3.00,'2022-06-10'),(1021,301,'send',2.50,'2022-06-11'),(1022,301,'open',6.80,'2022-06-12'),(1023,301,'open',4.20,'2022-06-13'),(1024,301,'chat',7.50,'2022-06-14'),(1025,302,'send',4.00,'2022-06-10'),(1026,302,'open',5.50,'2022-06-15'),(1027,303,'send',1.50,'2022-06-11'),(1028,303,'open',3.80,'2022-06-12');CREATE TABLE age_breakdown(user_id INTEGER,age_bucket TEXT);INSERT INTO age_breakdown VALUES(101,'21-25'),(102,'21-25'),(103,'21-25'),(201,'26-30'),(202,'26-30'),(203,'26-30'),(301,'31-35'),(302,'31-35'),(303,'31-35')",
+  "questions": [
+    {
+      "id": 5,
+      "diff": "mid",
+      "cc": ["JOIN", "WHERE IN", "GROUP BY", "CASE WHEN", "SUM", "ROUND"],
+      "story": {
+        "en": "Snapchat HQ, product review Monday. The growth team pulls up the dashboard: 'We're seeing different engagement patterns across age groups — but are users spending more time sending snaps or opening them?' Analyst Priya has the activities log and user age data. Time to find out.",
+        "ta": "Snapchat HQ, Monday product review. Growth team dashboard pull up pannaaanga: 'Different age groups-la different engagement patterns — but users snap send panrathula time more spend panraangala, open panrathula-a?' Analyst Priya-kita activities log-um user age data-um irukku. Kaandum.",
+        "hi": "Snapchat HQ, Monday product review. Growth team ne dashboard khola: 'Alag age groups mein alag engagement pattern dikh raha hai — par users zyada time snap bhejne mein lagaate hain ya kholne mein?' Analyst Priya ke paas activities log aur user age data hai. Dekhte hain.",
+        "te": "Snapchat HQ, Monday product review. Growth team dashboard tipiindi: 'Veru veru age groups lo veru engagement patterns kanipistunnaayi — kaani users snap pamputaniki ekkuva time spend chestunnaara, telupataniki-a?' Analyst Priya daggara activities log mariyu user age data undi. Chuddam."
+      },
+      "question": {
+        "en": "For each age group, calculate the percentage of time spent sending snaps vs opening snaps out of total send+open time. Round to 2 decimal places.",
+        "ta": "Prathi age group-ku, total send+open time-la send-ku evlo percentage, open-ku evlo percentage nu calculate pannu. 2 decimal places-ku round pannu.",
+        "hi": "Har age group ke liye, total send+open time mein se snaps bhejne aur kholne ka percentage nikalo. 2 decimal places mein round karo.",
+        "te": "Prathi age group ki, total send+open time lo snap pamputaniki evvari percentage, telupataniki evvari percentage calculate cheyyali. 2 decimal places ki round cheyyali."
+      },
+      "schemas": [
+        {
+          "name": "activities",
+          "cols": [
+            { "n": "activity_id",   "t": "INTEGER", "e": "1001" },
+            { "n": "user_id",       "t": "INTEGER", "e": "101" },
+            { "n": "activity_type", "t": "TEXT",    "e": "send" },
+            { "n": "time_spent",    "t": "REAL",    "e": "4.50" },
+            { "n": "activity_date", "t": "TEXT",    "e": "2022-06-10" }
+          ]
+        },
+        {
+          "name": "age_breakdown",
+          "cols": [
+            { "n": "user_id",    "t": "INTEGER", "e": "101" },
+            { "n": "age_bucket", "t": "TEXT",    "e": "21-25" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Join tables and filter out 'chat'",
+            "ta": "Tables join panni 'chat'-a filter out pannu",
+            "hi": "Tables join karo aur 'chat' ko filter karo",
+            "te": "Tables join chesi 'chat' ni filter out cheyyali"
+          },
+          "sql": "SELECT a.user_id,\n       ab.age_bucket,\n       a.activity_type,\n       a.time_spent\nFROM activities a\nJOIN age_breakdown ab ON a.user_id = ab.user_id\nWHERE a.activity_type IN ('send', 'open');",
+          "explain": {
+            "en": [
+              "Two separate tables hold the data we need: activities has every user action (send, open, chat) with time spent, while age_breakdown maps each user to their age group. Neither table alone can answer the question.",
+              "JOIN activities a JOIN age_breakdown ab ON a.user_id = ab.user_id — this links every activity row to the age bucket of the user who performed it. Alias a = activities, ab = age_breakdown.",
+              "WHERE a.activity_type IN ('send', 'open') — this removes all 'chat' rows entirely. The question only asks about sending vs opening, so chat time must not enter any calculation.",
+              "Why filter this early? If chat rows survive into the aggregation step, SUM(time_spent) will include chat time in the denominator — and the percentages will be completely wrong.",
+              "Result of this step: a clean joined dataset with only send and open rows, each tagged with the user's age bucket — ready for grouping."
+            ],
+            "ta": [
+              "Rendu separate tables-la data irukku: activities-la prathi user action (send, open, chat) time-oda irukku. age_breakdown-la user-ku age group mapping irukku. Rendu tables-um venum.",
+              "JOIN activities a JOIN age_breakdown ab ON a.user_id = ab.user_id — prathi activity row-ku antha user-oda age bucket link aagum. a = activities alias, ab = age_breakdown alias.",
+              "WHERE a.activity_type IN ('send', 'open') — 'chat' rows-a completely remove panrom. Question-la send vs open mattum venum, so chat time calculation-la varakoodathu.",
+              "Yen early filter? Chat rows survive aagittna aggregation-la SUM(time_spent) denominator-la chat time kooduthum — percentage completely wrong aagum.",
+              "Indha step result: only send, open rows — prathi row-oda age bucket theriyum. Next step-ku ready."
+            ],
+            "hi": [
+              "Do alag tables mein data hai: activities mein har user ki action (send, open, chat) aur time_spent hai. age_breakdown mein user ka age group mapping hai. Dono tables chahiye.",
+              "JOIN activities a JOIN age_breakdown ab ON a.user_id = ab.user_id — har activity row ke saath us user ka age bucket jud jaata hai. a = activities alias, ab = age_breakdown alias.",
+              "WHERE a.activity_type IN ('send', 'open') — 'chat' rows ko poori tarah hata dete hain. Question sirf send vs open ke baare mein hai, chat time kisi bhi calculation mein nahi aana chahiye.",
+              "Pehle filter kyun? Agar chat rows aggregation tak pahunch gayi toh SUM(time_spent) mein chat time aa jaayega — percentages bilkul galat ho jaayenge.",
+              "Is step ka result: sirf send aur open rows ka joined dataset — har row ke saath age bucket bhi hai. Agla step ke liye taiyaar."
+            ],
+            "te": [
+              "Rendu separate tables lo data undi: activities lo prathi user action (send, open, chat) time_spent tho undi. age_breakdown lo user ki age group mapping undi. Rendu tables kavali.",
+              "JOIN activities a JOIN age_breakdown ab ON a.user_id = ab.user_id — prathi activity row ki antha user age bucket link avutundi. a = activities alias, ab = age_breakdown alias.",
+              "WHERE a.activity_type IN ('send', 'open') — 'chat' rows ni completely teyyali. Question lo send vs open matrame kavali, chat time ee calculation lo ravakoodadu.",
+              "Mundu filter endhuku? Chat rows aggregation varaku vasthe SUM(time_spent) denominator lo chat time vasthundi — percentages poortiga tappu avutaayi.",
+              "Ee step result: only send, open rows — prathi row tho age bucket kuda undi. Next step ki ready."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Group by age and split send vs open time using CASE WHEN",
+            "ta": "Age-wise group panni CASE WHEN use panni send vs open time split pannu",
+            "hi": "Age ke hisaab se group karo aur CASE WHEN se send vs open time alag karo",
+            "te": "Age wise group chesi CASE WHEN use chesi send vs open time split cheyyali"
+          },
+          "sql": "SELECT ab.age_bucket,\n       SUM(CASE WHEN a.activity_type = 'send'\n               THEN a.time_spent ELSE 0 END) AS send_time,\n       SUM(CASE WHEN a.activity_type = 'open'\n               THEN a.time_spent ELSE 0 END) AS open_time\nFROM activities a\nJOIN age_breakdown ab ON a.user_id = ab.user_id\nWHERE a.activity_type IN ('send', 'open')\nGROUP BY ab.age_bucket\nORDER BY ab.age_bucket;",
+          "explain": {
+            "en": [
+              "GROUP BY ab.age_bucket collapses all rows of the same age group into a single row. All three 21-25 users become one row, all 26-30 become one row, and so on.",
+              "CASE WHEN a.activity_type = 'send' THEN a.time_spent ELSE 0 END — for each row, if it is a send activity, use its time_spent value; otherwise contribute 0. SUM() then adds all these values together per group.",
+              "This technique is called conditional aggregation — splitting a single column's values into multiple output columns based on a condition, all within one GROUP BY query. No subquery or JOIN needed.",
+              "The same logic applies for open: SUM(CASE WHEN activity_type = 'open' THEN time_spent ELSE 0 END) gives total open time per age group.",
+              "Run this step to verify: for 21-25 you should see send_time = 16.50, open_time = 15.10. For 26-30: send = 20.50, open = 7.80. For 31-35: send = 11.00, open = 20.30.",
+              "These are raw totals, not percentages yet. The next step converts them into rounded percentages."
+            ],
+            "ta": [
+              "GROUP BY ab.age_bucket — same age group-oda ella rows-a oru single row-a collapse pannum. 21-25 users ellam oru row, 26-30 ellam oru row, ippadi.",
+              "CASE WHEN a.activity_type = 'send' THEN a.time_spent ELSE 0 END — prathi row-ku: activity 'send'-a? time_spent use pannu. Illana 0 kudukku. SUM() prathi group-la indha values-a ellam add pannum.",
+              "Ithu conditional aggregation technique — oru column-oda values-a condition based-a multiple output columns-a split panra method. Oru GROUP BY query-la pannalam, subquery veiyaadhu.",
+              "Same logic open-ku: SUM(CASE WHEN activity_type = 'open' THEN time_spent ELSE 0 END) — age group-wise total open time kitechu.",
+              "Indha step run panni verify pannu: 21-25-ku send_time = 16.50, open_time = 15.10. 26-30: send = 20.50, open = 7.80. 31-35: send = 11.00, open = 20.30.",
+              "Ivi raw totals — percentage illai. Next step-la convert pannuvom."
+            ],
+            "hi": [
+              "GROUP BY ab.age_bucket — same age group ki saari rows ek single row mein collapse ho jaati hain. 21-25 ke teeno users ek row, 26-30 ke ek row, aur aage aise.",
+              "CASE WHEN a.activity_type = 'send' THEN a.time_spent ELSE 0 END — har row ke liye: agar 'send' hai toh time_spent lo, warna 0 do. SUM() har group ke andar ye saari values jod deta hai.",
+              "Yeh technique conditional aggregation kehlati hai — ek column ki values ko condition ke basis pe alag-alag output columns mein split karna, sirf ek GROUP BY query mein. Koi subquery nahi chahiye.",
+              "Yahi logic 'open' pe bhi: SUM(CASE WHEN activity_type = 'open' THEN time_spent ELSE 0 END) — har age group ka total open time mil jaata hai.",
+              "Is step ko run karo aur verify karo: 21-25 ke liye send_time = 16.50, open_time = 15.10. 26-30: send = 20.50, open = 7.80. 31-35: send = 11.00, open = 20.30.",
+              "Ye sirf raw totals hain, percentage nahi. Agla step inhe rounded percentages mein convert karega."
+            ],
+            "te": [
+              "GROUP BY ab.age_bucket — same age group anni rows ni oka single row lo collapse chestundi. 21-25 users andaru oka row, 26-30 oka row, ila.",
+              "CASE WHEN a.activity_type = 'send' THEN a.time_spent ELSE 0 END — prathi row ki: 'send' aite time_spent teesuko; lekapoina 0 issu. SUM() prathi group lo ee values anni add chestundi.",
+              "Ee technique conditional aggregation antaaru — oka column values ni condition base meeda multiple output columns lo split cheyyatam. Oka GROUP BY query lo cheseyavacchu, subquery avasaram ledu.",
+              "Same logic 'open' ki: SUM(CASE WHEN activity_type = 'open' THEN time_spent ELSE 0 END) — age group-wise total open time vasthundi.",
+              "Ee step run chesi verify cheyyali: 21-25 ki send_time = 16.50, open_time = 15.10. 26-30: send = 20.50, open = 7.80. 31-35: send = 11.00, open = 20.30.",
+              "Ivi raw totals — percentages kaadu. Next step lo convert chestaam."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Calculate percentages and round to 2 decimal places",
+            "ta": "Percentage calculate panni 2 decimal places-ku round pannu",
+            "hi": "Percentages calculate karo aur 2 decimal places mein round karo",
+            "te": "Percentages calculate chesi 2 decimal places ki round cheyyali"
+          },
+          "sql": "SELECT ab.age_bucket,\n       ROUND(\n         SUM(CASE WHEN a.activity_type = 'send'\n                 THEN a.time_spent ELSE 0 END) * 100.0\n         / SUM(a.time_spent), 2\n       ) AS send_perc,\n       ROUND(\n         SUM(CASE WHEN a.activity_type = 'open'\n                 THEN a.time_spent ELSE 0 END) * 100.0\n         / SUM(a.time_spent), 2\n       ) AS open_perc\nFROM activities a\nJOIN age_breakdown ab ON a.user_id = ab.user_id\nWHERE a.activity_type IN ('send', 'open')\nGROUP BY ab.age_bucket\nORDER BY ab.age_bucket;",
+          "explain": {
+            "en": [
+              "Percentage formula: send_perc = send_time / (send_time + open_time) × 100. Since we already filtered out chat with WHERE IN ('send','open'), SUM(a.time_spent) is automatically equal to send_time + open_time. No need to write them separately in the denominator.",
+              "Why multiply by 100.0 and NOT 100? SQL integer division truncates: 11 / 31 = 0, not 0.35. Writing 100.0 forces the division result to be a decimal (float). Without this, every percentage would come out as 0.",
+              "ROUND(expression, 2) wraps the entire percentage formula and trims the result to exactly 2 decimal places. The second argument is the precision — how many digits after the decimal point you want.",
+              "The same formula works for open_perc: SUM(CASE WHEN 'open') * 100.0 / SUM(time_spent). For every age group, send_perc + open_perc will always add up to exactly 100.00.",
+              "ORDER BY ab.age_bucket sorts the output alphabetically by age group — 21-25 first, then 26-30, then 31-35.",
+              "Expected result: 21-25 → send 52.22%, open 47.78% | 26-30 → send 72.44%, open 27.56% | 31-35 → send 35.14%, open 64.86%. Older users open more, younger users send more."
+            ],
+            "ta": [
+              "Percentage formula: send_perc = send_time / (send_time + open_time) × 100. WHERE IN ('send','open') use panni chat filter pannittom, so SUM(a.time_spent) = send_time + open_time automatically. Denominator-la separately elutha veiyaadhu.",
+              "Yen 100.0, 100 illai? SQL integer division truncate pannum: 11 / 31 = 0, 0.35 illai. 100.0 eludhina result decimal (float) aagum. Illana every percentage 0-a varum.",
+              "ROUND(expression, 2) — percentage formula-a fully wrap panni, result-a exactly 2 decimal places-ku round pannum. 2nd argument precision — decimal-ku appuram evlo digits nu solluchu.",
+              "Same formula open_perc-ku: SUM(CASE WHEN 'open') * 100.0 / SUM(time_spent). Prathi age group-ku send_perc + open_perc = exactly 100.00 varum.",
+              "ORDER BY ab.age_bucket — age group alphabetically sort aagum. 21-25 mudhal, 26-30, appuram 31-35.",
+              "Expected result: 21-25 → send 52.22%, open 47.78% | 26-30 → send 72.44%, open 27.56% | 31-35 → send 35.14%, open 64.86%. Age kooduthaloda users more open pannuvaaanga, young users more send pannuvaaanga."
+            ],
+            "hi": [
+              "Percentage formula: send_perc = send_time / (send_time + open_time) × 100. WHERE IN ('send','open') se chat filter ho gaya, isliye SUM(a.time_spent) automatically = send_time + open_time. Denominator mein alag likhne ki zaroorat nahi.",
+              "100.0 kyun, 100 nahi? SQL integer division truncate karta hai: 11 / 31 = 0, 0.35 nahi. 100.0 likhne se result decimal (float) ban jaata hai. Warna har percentage 0 aayega.",
+              "ROUND(expression, 2) — poori percentage formula ko wrap karo aur result ko exactly 2 decimal places pe round karo. Doosra argument precision hai — decimal ke baad kitne digits chahiye.",
+              "Yahi formula open_perc pe bhi: SUM(CASE WHEN 'open') * 100.0 / SUM(time_spent). Har age group ke liye send_perc + open_perc hamesha exactly 100.00 hoga.",
+              "ORDER BY ab.age_bucket — age group alphabetically sort hoga. Pehle 21-25, phir 26-30, phir 31-35.",
+              "Expected result: 21-25 → send 52.22%, open 47.78% | 26-30 → send 72.44%, open 27.56% | 31-35 → send 35.14%, open 64.86%. Umar ke saath opening zyada, young users mein sending zyada."
+            ],
+            "te": [
+              "Percentage formula: send_perc = send_time / (send_time + open_time) × 100. WHERE IN ('send','open') tho chat filter chesaam, kaabatti SUM(a.time_spent) automatically = send_time + open_time. Denominator lo alagugaa rayyakkarledu.",
+              "100.0 endhuku, 100 kaadu? SQL integer division truncate chestundi: 11 / 31 = 0, 0.35 kaadu. 100.0 rasthe result decimal (float) avutundi. Lekapoina prathi percentage 0 vasthundi.",
+              "ROUND(expression, 2) — meeru percentage formula ni poortiga wrap chesi, result ni exactly 2 decimal places ki round chestundi. Rendu argument precision — decimal tarvata evvari digits kavalo.",
+              "Same formula open_perc ki kuda: SUM(CASE WHEN 'open') * 100.0 / SUM(time_spent). Prathi age group ki send_perc + open_perc = exactly 100.00 vasthundi.",
+              "ORDER BY ab.age_bucket — age group alphabetically sort avutundi. Mundu 21-25, tarvata 26-30, tarvata 31-35.",
+              "Expected result: 21-25 → send 52.22%, open 47.78% | 26-30 → send 72.44%, open 27.56% | 31-35 → send 35.14%, open 64.86%. Peda users ekkuva open chestaru, young users ekkuva send chestaru."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
