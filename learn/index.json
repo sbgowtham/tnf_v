@@ -5,5 +5,12 @@
     "file": "ctrlz-stack-demo.html",
     "icon": "🏗️",
     "color": "#fef3c7"
+  },
+  {
+    "title": "Data Engineering Road Map",
+    "desc": "DE Road Map",
+    "file": "de_road_map.html",
+    "icon": "🏗️",
+    "color": "#fef3c7"
   }
 ]
