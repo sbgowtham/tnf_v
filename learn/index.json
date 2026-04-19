@@ -12,5 +12,12 @@
     "file": "de_road_map.html",
     "icon": "🏗️",
     "color": "#fef3c7"
+  },
+  {
+    "title": "Data Layers",
+    "desc": "DataLayers",
+    "file": "datalayers.html",
+    "icon": "🏗️",
+    "color": "#fef3c7"
   }
 ]
