@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Engineering Layers</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,800;0,9..144,900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07101f;
+    --card: #0c1828;
+    --card-hover: #101f33;
+    --border: #162236;
+    --text: #dde6f0;
+    --muted: #546a82;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  #stars {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .star {
+    position: absolute; border-radius: 50%; background: #fff;
+    animation: twinkle var(--d) ease-in-out infinite var(--delay);
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0.05; transform: scale(1); }
+    50%      { opacity: 0.5;  transform: scale(1.5); }
+  }
+
+  #grid {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+      linear-gradient(rgba(0,180,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,180,255,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    animation: gridScroll 24s linear infinite;
+  }
+  @keyframes gridScroll {
+    from { background-position: 0 0; }
+    to   { background-position: 0 48px; }
+  }
+
+  /* ── HEADER ── */
+  .header {
+    position: relative; z-index: 2;
+    text-align: center;
+    padding: 72px 20px 52px;
+  }
+  .header-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase;
+    color: #00b4ff;
+    border: 1px solid rgba(0,180,255,0.3);
+    border-radius: 100px; padding: 5px 16px; margin-bottom: 20px;
+    background: rgba(0,180,255,0.05);
+    animation: fadeUp 0.6s ease both;
+  }
+  .header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 900; line-height: 1.1; letter-spacing: -2px;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+  .header h1 span {
+    display: block;
+    background: linear-gradient(120deg, #00b4ff 0%, #7c3aed 50%, #10b981 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; background-size: 200% auto;
+    animation: shimmer 4s linear infinite;
+  }
+  @keyframes shimmer {
+    from { background-position: 0% center; }
+    to   { background-position: 200% center; }
+  }
+  .header p {
+    margin-top: 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem; color: var(--muted); letter-spacing: 2px;
+    animation: fadeUp 0.7s 0.2s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PIPELINE ── */
+  .pipeline {
+    max-width: 900px; margin: 0 auto;
+    padding: 0 24px 100px;
+    position: relative; z-index: 2;
+  }
+
+  .spine {
+    position: absolute; left: 50%; top: 0; bottom: 0;
+    width: 2px; transform: translateX(-50%);
+    background: linear-gradient(to bottom,
+      #00b4ff, #4f8ef7, #7c3aed, #c026d3,
+      #ef4444, #f59e0b, #10b981, #00b4ff);
+    opacity: 0.2;
+  }
+
+  .packet {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    width: 4px; border-radius: 2px;
+    animation: packetFlow linear infinite; opacity: 0;
+  }
+  .packet:nth-child(1){ height:55px; background:linear-gradient(#00b4ff,transparent); animation-duration:4s;   animation-delay:0s;   }
+  .packet:nth-child(2){ height:75px; background:linear-gradient(#7c3aed,transparent); animation-duration:5.2s; animation-delay:1.6s; }
+  .packet:nth-child(3){ height:45px; background:linear-gradient(#10b981,transparent); animation-duration:3.6s; animation-delay:3.1s; }
+  .packet:nth-child(4){ height:65px; background:linear-gradient(#f59e0b,transparent); animation-duration:4.8s; animation-delay:0.9s; }
+  @keyframes packetFlow {
+    0%   { top:-5%; opacity:0; }
+    5%   { opacity:1; }
+    95%  { opacity:1; }
+    100% { top:105%; opacity:0; }
+  }
+
+  /* ── ROW ── */
+  .layer {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr;
+    align-items: center;
+    margin-bottom: 14px;
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .layer.visible { opacity: 1; transform: translateY(0); }
+
+  .layer-left  { padding-right: 20px; }
+  .layer-right { padding-left:  20px; }
+  .layer-mid   { display: flex; justify-content: center; }
+
+  .layer.is-left  .layer-right { visibility: hidden; }
+  .layer.is-right .layer-left  { visibility: hidden; }
+
+  /* ── NODE ── */
+  .node {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--nc);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--nc) 20%, transparent),
+                0 0 16px var(--nc);
+    position: relative; z-index: 3; flex-shrink: 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .node::after {
+    content: ''; position: absolute; inset: -6px;
+    border-radius: 50%;
+    border: 1.5px solid var(--nc);
+    opacity: 0.4;
+    animation: ring 2.5s ease-in-out infinite;
+  }
+  @keyframes ring {
+    0%,100% { transform: scale(1); opacity: 0.4; }
+    50%      { transform: scale(1.6); opacity: 0; }
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 20px;
+    position: relative; overflow: hidden; cursor: default;
+    transition: transform 0.3s ease, border-color 0.3s ease,
+                box-shadow 0.3s ease, background 0.3s ease;
+  }
+  /* top bar */
+  .card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 2.5px;
+    background: var(--c);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  /* sweep */
+  .card::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(105deg,
+      transparent 40%,
+      color-mix(in srgb, var(--c) 8%, transparent) 50%,
+      transparent 60%);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+    pointer-events: none;
+  }
+  .card:hover {
+    transform: translateY(-4px) scale(1.015);
+    background: var(--card-hover);
+    border-color: color-mix(in srgb, var(--c) 50%, transparent);
+    box-shadow: 0 12px 36px -8px color-mix(in srgb, var(--c) 35%, transparent),
+                0 0 0 1px color-mix(in srgb, var(--c) 20%, transparent);
+  }
+  .card:hover::before { transform: scaleX(1); }
+  .card:hover::after  { transform: translateX(100%); }
+
+  .card-top {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+  }
+  .num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.66rem; font-weight: 500; letter-spacing: 1px;
+    color: var(--c);
+    background: color-mix(in srgb, var(--c) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c) 28%, transparent);
+    border-radius: 6px; padding: 2px 8px; flex-shrink: 0;
+  }
+  .title {
+    font-family: 'Fraunces', serif;
+    font-size: 0.9rem; font-weight: 700; color: var(--text);
+  }
+  .arrow-desc {
+    display: flex; align-items: flex-start; gap: 8px; margin-top: 4px;
+  }
+  .arrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem; color: var(--c); opacity: 0.9;
+    margin-top: 1px; flex-shrink: 0;
+  }
+  .desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+  .tags {
+    display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;
+  }
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.61rem; letter-spacing: 0.5px;
+    color: var(--c);
+    background: color-mix(in srgb, var(--c) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c) 20%, transparent);
+    border-radius: 100px; padding: 2px 8px; opacity: 0.8;
+    transition: opacity 0.2s, background 0.2s;
+  }
+  .card:hover .tag { opacity: 1; background: color-mix(in srgb, var(--c) 14%, transparent); }
+
+  /* ── FOOTER ── */
+  .footer {
+    position: relative; z-index: 2;
+    text-align: center; padding: 40px 20px 70px;
+  }
+  .footer-inner {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem; color: var(--muted); letter-spacing: 1.5px;
+    border: 1px solid var(--border); border-radius: 100px;
+    padding: 10px 24px; background: var(--card);
+  }
+  .fdot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #00b4ff; box-shadow: 0 0 8px #00b4ff;
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.15;} }
+
+  @media (max-width: 640px) {
+    .layer { grid-template-columns: 1fr; }
+    .layer-mid, .spine, .packet { display: none; }
+    .layer-left, .layer-right { padding: 0; visibility: visible !important; }
+    .layer.is-right .layer-left { display: none; }
+    .layer.is-left  .layer-right { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+<div id="grid"></div>
+
+<div class="header">
+  <div class="header-badge">End-to-End Architecture</div>
+  <h1>Data Engineering<span>Layers</span></h1>
+  <p>16 Layers · Complete Pipeline Reference</p>
+</div>
+
+<div class="pipeline" id="pipeline">
+  <div class="spine"></div>
+  <div class="packet"></div>
+  <div class="packet"></div>
+  <div class="packet"></div>
+  <div class="packet"></div>
+</div>
+
+<div class="footer">
+  <div class="footer-inner">
+    <div class="fdot"></div>
+    SOURCE → INGEST → STORE → PROCESS → SERVE
+    <div class="fdot"></div>
+  </div>
+</div>
+
+<script>
+// Stars
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 90; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() * 2 + 0.5;
+  s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--delay:-${Math.random()*6}s;`;
+  starsEl.appendChild(s);
+}
+
+// Data
+const layers = [
+  { num:"01", title:"Data Source Layer",        desc:"Where data is generated (apps, databases, APIs, logs, IoT)",                tags:["Apps","Databases","APIs","Logs","IoT"],              color:"#00b4ff" },
+  { num:"02", title:"Data Ingestion Layer",      desc:"Moves data from sources to storage (batch or real-time)",                   tags:["Batch","Real-time","Kafka","Pub/Sub"],              color:"#38b2f8" },
+  { num:"03", title:"Data Validation Layer",     desc:"Ensures data quality and correctness before processing",                    tags:["Schema Check","Null Check","Quality"],              color:"#818cf8" },
+  { num:"04", title:"Data Storage Layer",        desc:"Stores raw and processed data (data lake / warehouse)",                     tags:["Data Lake","Warehouse","S3","BigQuery"],            color:"#7c3aed" },
+  { num:"05", title:"Data Processing Layer",     desc:"Cleans, processes, and prepares data (ETL/ELT)",                           tags:["ETL","ELT","Spark","Dataflow"],                     color:"#a855f7" },
+  { num:"06", title:"Data Transformation Layer", desc:"Applies business logic to make data usable",                               tags:["dbt","SQL","Business Logic"],                       color:"#c026d3" },
+  { num:"07", title:"Data Orchestration Layer",  desc:"Manages workflow execution and dependencies",                              tags:["Airflow","Prefect","DAGs","Dagster"],               color:"#f472b6" },
+  { num:"08", title:"Data Scheduling Layer",     desc:"Determines when jobs should run (time/event-based)",                       tags:["Cron","Event-based","Triggers"],                    color:"#fb7185" },
+  { num:"09", title:"Data Pipeline Layer",       desc:"Connects all components into an end-to-end data flow",                     tags:["End-to-End","Integration","Flow"],                  color:"#f87171" },
+  { num:"10", title:"Data Visualization Layer",  desc:"Represents data through dashboards and reports",                           tags:["Looker","Tableau","Power BI","Dashboards"],         color:"#fb923c" },
+  { num:"11", title:"Data Security Layer",       desc:"Protects data using encryption and access control",                        tags:["Encryption","RBAC","Masking","IAM"],                color:"#fbbf24" },
+  { num:"12", title:"Data Governance Layer",     desc:"Defines policies, standards, and compliance rules",                        tags:["Policies","Compliance","Standards","Catalog"],      color:"#a3e635" },
+  { num:"13", title:"Metadata Management Layer", desc:"Stores information about data (schema, structure, details)",                tags:["Schema","Catalog","Discovery","Details"],           color:"#34d399" },
+  { num:"14", title:"Data Lineage Layer",        desc:"Tracks data flow from source to final output",                              tags:["Tracking","Impact Analysis","Audit"],               color:"#10b981" },
+  { num:"15", title:"Data Monitoring Layer",     desc:"Monitors pipeline performance and data reliability",                        tags:["Alerts","SLA","Health Checks","Anomaly"],           color:"#06b6d4" },
+  { num:"16", title:"Machine Learning Layer",    desc:"Uses data for training and inference of models",                            tags:["Training","Inference","MLOps","Feature Store"],     color:"#6366f1" },
+];
+
+const pipeline = document.getElementById('pipeline');
+
+layers.forEach((l, i) => {
+  const isLeft = i % 2 === 0;
+  const card = `
+    <div class="card" style="--c:${l.color}">
+      <div class="card-top">
+        <span class="num">${l.num}</span>
+        <span class="title">${l.title}</span>
+      </div>
+      <div class="arrow-desc">
+        <span class="arrow">→</span>
+        <span class="desc">${l.desc}</span>
+      </div>
+      <div class="tags">${l.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    </div>`;
+
+  const row = document.createElement('div');
+  row.className = 'layer ' + (isLeft ? 'is-left' : 'is-right');
+  row.innerHTML = `
+    <div class="layer-left">${isLeft ? card : ''}</div>
+    <div class="layer-mid"><div class="node" style="--nc:${l.color}"></div></div>
+    <div class="layer-right">${!isLeft ? card : ''}</div>
+  `;
+  pipeline.appendChild(row);
+});
+
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = [...document.querySelectorAll('.layer')].indexOf(entry.target);
+      setTimeout(() => entry.target.classList.add('visible'), idx * 70);
+      obs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.layer').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
