@@ -75,4 +75,120 @@
               "Indha step-oda mudivu: ella users-um, avanga vaangina total likes-oda kaaNbom; ore oru like kooda vaangaadha yaarukkum 0-nu sariyaana ennikkai varum."
             ],
             "hi": [
-              "Yahan do tables shaamil hain: users mein app ke saare profile hain, likes mein ek user ne doosre ko bheja har 'like' hai. Final report mein har user chahiye,
+              "Yahan do tables shaamil hain: users mein app ke saare profile hain, likes mein ek user ne doosre ko bheja har 'like' hai. Final report mein har user chahiye, chahe usse ek bhi like na mila ho.",
+              "LEFT JOIN users u LEFT JOIN likes l ON u.user_id = l.to_user_id — yeh users se shuru hota hai, isliye har profile guarantee se result mein aati hai, aur us user ke matching likes rows jud jaate hain jahan woh recipient (to_user_id) hai.",
+              "LEFT JOIN kyun, plain JOIN kyun nahi? Plain JOIN sirf wahi rows rakhta hai jo dono taraf match karti hain. Jis user ko kabhi like nahi mila, uski likes mein koi matching row nahi hogi aur woh result se chupchaap gayab ho jaayega.",
+              "COUNT(l.like_id) — har group ke andar sirf non-null like_id values ginta hai. Yeh isliye zaroori hai kyunki bina like wale user ke liye bhi LEFT JOIN ek row banata hai (jahan l.like_id NULL hoga), aur COUNT(l.like_id) sahi se 0 dikhata hai, 1 nahi.",
+              "GROUP BY u.user_id, u.name same recipient ki saari like rows ko ek single summary row mein badal deta hai.",
+              "GROUP BY hata do toh query har like ke liye ek row degi, har user ke liye ek summary nahi — yeh like-by-like log ban jaayega, Product team ne jo maanga hai woh nahi.",
+              "Is step ka natija: har user apne total likes ke saath, aur jinhe kabhi like nahi mila unke liye bhi sahi se 0 dikhega."
+            ],
+            "te": [
+              "Ikkada rendu tables mukhyam: users lō app lō unna prathi profile untundi, likes lō oka user inko user ki pampina prathi 'like' untundi. Final report lō prathi user kavali, okka like kuda raani vaallu kuda.",
+              "LEFT JOIN users u LEFT JOIN likes l ON u.user_id = l.to_user_id — ee query users table nunchi modalavutundi, kaabatti prathi profile result lō tappakunda untundi; ee user recipient (to_user_id) gā unna likes rows matrame attach avutayi.",
+              "Endhuku plain JOIN kaadu, LEFT JOIN? Plain JOIN rendu vaipulā match ayye rows matrame petukuntundi. Okka like kuda raani user ki likes lō matching row undadu, aa user result nunchi గమనించకుండా మాయమవుతాడు.",
+              "COUNT(l.like_id) — prathi group lōpala NULL kaani like_id values matrame count chestundi. Idi enduku mukhyam ante, like ledani user ki kuda LEFT JOIN oka row istundi (l.like_id NULL gā untundi), కాని COUNT(l.like_id) correct gā 0 chuputundi, 1 kaadu.",
+              "GROUP BY u.user_id, u.name — same recipient ki chendina prathi like row ni, prathi user ki oka single summary row gā marustundi.",
+              "GROUP BY lekapothe, output lō prathi like ki vēru row vastundi, user vāri summary radu — idi like-by-like log lāగా untundi, Product team అడిగిన per-user summary kaadu.",
+              "Ee step phalitam: prathi user tō vāri total likes vachina lekka; okka like kuda raani vāriki kuda correct gā 0 vastundi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Find total mutual matches per user",
+            "ta": "Ovvoru user-oda total mutual matches-a kandupidi",
+            "hi": "Har user ke total mutual matches nikalo",
+            "te": "Prathi user ki total mutual matches kanukkondi"
+          },
+          "sql": "SELECT u.user_id,\n       u.name,\n       COUNT(DISTINCT m.match_id) AS total_matches\nFROM users u\nLEFT JOIN matches m ON u.user_id = m.user1_id OR u.user_id = m.user2_id\nGROUP BY u.user_id, u.name\nORDER BY u.user_id;",
+          "explain": {
+            "en": [
+              "matches stores each mutual match exactly once, but a user's id can land in either user1_id or user2_id depending on who liked whom first — there's no single fixed 'this column always means the current user' column like in likes.",
+              "LEFT JOIN matches m ON u.user_id = m.user1_id OR u.user_id = m.user2_id — the OR condition lets a single join catch the match row no matter which side the current user happens to sit on.",
+              "Why LEFT JOIN again? Some users, like Rahul (user 12), have sent likes but have zero mutual matches. A plain JOIN would drop them from the report entirely, which hides exactly the kind of user the Product team wants to see.",
+              "COUNT(DISTINCT m.match_id) — DISTINCT matters here because an OR condition can, depending on the data, create more than one path to the same match row for a user; DISTINCT guarantees each match_id is only counted once per user.",
+              "GROUP BY u.user_id, u.name again turns individual match rows into one summary count per user, same principle as the previous step.",
+              "Without GROUP BY, the output would show one row per match a user is part of, not a running total — useful for a match log, not for this summary metric.",
+              "Result of this step: every user paired with how many mutual matches they currently have, including 0 for users like Rahul who like a lot but never get liked back."
+            ],
+            "ta": [
+              "matches-la ovvoru mutual match-um ore oru murai mattum store aagum, aana user-oda id user1_id-la irukkalaam, illaana user2_id-la irukkalaam — yaar mudhalla like pannaanga nu adhu depend aagum. likes maadhiri 'idhu column-na eppovum indha user-thaan' nu fixed-aana column illai.",
+              "LEFT JOIN matches m ON u.user_id = m.user1_id OR u.user_id = m.user2_id — indha OR condition, current user endha side-la irundhaalum, oru single join-la andha match row-a kandupidikkum.",
+              "Yen marupadiyum LEFT JOIN? Rahul (user 12) maadhiri sila users likes anupinaanga aana avangaLukku ore oru mutual match kooda illai. Plain JOIN indha users-a report-la irundhu mudhalaa neekkividum, Product team paakka virumbura maadhiri users-a idhu maraikkum.",
+              "COUNT(DISTINCT m.match_id) — OR condition irukkuradhaala, data-a poruthu oru user-kku same match row-kku pala vazhi (paths) varalaam. DISTINCT ovvoru match_id-um oru user-kku ore oru murai mattum count aagum nu urudhi pannum.",
+              "GROUP BY u.user_id, u.name mudhal step maadhiri, individual match rows-a oru summary count-aaga maarum.",
+              "GROUP BY illaama vittaal, output-la ovvoru match-kkum thanikkoru row varum, running total varaadhu — idhu match log-kku pyanuLLadhu, indha summary metric-kku alla.",
+              "Indha step-oda mudivu: ovvoru user-kkum, avanga ippozhudhu evlo mutual matches vachirukkanga nu theriyum; Rahul maadhiri neraiya like pannuvaanga aana thirumba yaarum like pannaadha user-kku 0-nu sariyaa varum."
+            ],
+            "hi": [
+              "matches mein har mutual match sirf ek baar store hota hai, par user ka id user1_id mein ho sakta hai ya user2_id mein, ye is baat pe depend karta hai ki pehle kisne kisko like kiya. likes ki tarah koi ek fixed column nahi hai jo hamesha 'current user' ko dikhaaye.",
+              "LEFT JOIN matches m ON u.user_id = m.user1_id OR u.user_id = m.user2_id — yeh OR condition ek hi join se match row pakad leta hai, chahe current user kisi bhi side pe ho.",
+              "LEFT JOIN phir se kyun? Rahul (user 12) jaise kuch users ne likes bheje hain lekin unka ek bhi mutual match nahi hai. Plain JOIN unhe report se poori tarah hata dega, jabki Product team ko exactly aise users dekhna hai.",
+              "COUNT(DISTINCT m.match_id) — DISTINCT yahan zaroori hai kyunki OR condition, data ke hisaab se, ek hi match row tak ek user ke liye ek se zyada raste bana sakta hai. DISTINCT guarantee karta hai ki har match_id ek user ke liye sirf ek baar gina jaaye.",
+              "GROUP BY u.user_id, u.name pichhle step ki tarah individual match rows ko ek summary count mein badal deta hai.",
+              "GROUP BY ke bina, output mein har match ke liye ek row aayegi, running total nahi — ye match log ke liye theek hai, is summary metric ke liye nahi.",
+              "Is step ka natija: har user ke saath uske abhi tak ke mutual matches, aur Rahul jaise users jo bahut like karte hain par kabhi wapas like nahi milta, unke liye 0."
+            ],
+            "te": [
+              "matches lō prathi mutual match okka sāri matrame store avutundi, kāni user id user1_id lō undochu leda user2_id lō undochu — evaru mundu evarini like chesaro dāni meeda ఆధారపడి untundi. likes lāగా 'ee column ante eppudū current user' ani fixed column ikkada ledu.",
+              "LEFT JOIN matches m ON u.user_id = m.user1_id OR u.user_id = m.user2_id — ee OR condition, current user e side lō unna, oka single join tō aa match row ni pattukuntundi.",
+              "Malli enduku LEFT JOIN? Rahul (user 12) laanti konni users likes pampinaru kāni vāriki okka mutual match kuda ledu. Plain JOIN vāllani report nunchi poortiga tesestundi, idi exactly Product team chudalanukune users ni dāchi pettadam avutundi.",
+              "COUNT(DISTINCT m.match_id) — OR condition unnadi kaabatti, data batti oka user ki same match row ki okatikanna ekkuva paths raavachu. DISTINCT prathi match_id oka user ki okka sāri matrame count avutundi ani guarantee chestundi.",
+              "GROUP BY u.user_id, u.name mundu step lāగానే individual match rows ni oka summary count గా marustundi.",
+              "GROUP BY lekapothe, output lō prathi match ki vēru row vastundi, running total kaadu — idi match log ki useful, ee summary metric ki kaadu.",
+              "Ee step phalitam: prathi user tō, ippudu vāriki entha mutual matches unnayo teliustundi; Rahul lāగా chala likes pampi tirigi evaru like cheయyani vāriki kuda correct గా 0 vastundi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Combine likes and matches to calculate conversion percentage",
+            "ta": "Likes-um matches-um serthu conversion percentage-a kandupidi",
+            "hi": "Likes aur matches ko jodkar conversion percentage nikalo",
+            "te": "Likes mariyu matches kalipi conversion percentage kanukkondi"
+          },
+          "sql": "SELECT u.user_id,\n       u.name,\n       COUNT(DISTINCT l.like_id) AS likes_received,\n       COUNT(DISTINCT m.match_id) AS total_matches,\n       CASE WHEN COUNT(DISTINCT l.like_id) = 0 THEN 0\n            ELSE ROUND(\n              COUNT(DISTINCT m.match_id) * 100.0\n              / COUNT(DISTINCT l.like_id), 2\n            )\n       END AS conversion_percentage\nFROM users u\nLEFT JOIN likes l ON u.user_id = l.to_user_id\nLEFT JOIN matches m ON u.user_id = m.user1_id OR u.user_id = m.user2_id\nGROUP BY u.user_id, u.name\nHAVING COUNT(DISTINCT l.like_id) >= 2\nORDER BY conversion_percentage DESC, likes_received DESC;",
+          "explain": {
+            "en": [
+              "This step joins users to BOTH likes and matches at once. Because two LEFT JOINs are stacked on the same base table, every one of a user's like rows gets paired with every one of their match rows internally — a user with 3 likes and 2 matches would temporarily generate 3 × 2 = 6 rows before aggregation.",
+              "That fan-out is exactly why COUNT(DISTINCT l.like_id) and COUNT(DISTINCT m.match_id) are used instead of plain COUNT(). DISTINCT strips out the duplicate combinations created by the double join and gives the true, non-inflated count for each metric separately.",
+              "CASE WHEN COUNT(DISTINCT l.like_id) = 0 THEN 0 ELSE ... END guards the formula against dividing by zero. HAVING will remove zero-like users at the very end anyway, but defensive SQL never assumes a later clause will always save you — the CASE WHEN keeps the calculation itself safe.",
+              "ROUND(... * 100.0 / ..., 2) — multiplying by 100.0 instead of 100 forces the division to happen in decimals instead of truncating integers, and ROUND(..., 2) trims the result to exactly 2 decimal places, as the Product team asked.",
+              "HAVING COUNT(DISTINCT l.like_id) >= 2 filters AFTER the grouping and aggregation happen, unlike WHERE which filters raw rows before grouping. We need the already-aggregated likes_received number to decide who qualifies, so it has to be HAVING, not WHERE.",
+              "Skip HAVING and users with 0 or 1 like would clutter the report with meaningless 100% or 0% conversion numbers built on a single data point — not a reliable signal for the business.",
+              "ORDER BY conversion_percentage DESC, likes_received DESC puts the best-converting users on top; the second sort key breaks ties by favoring the user with more total likes, since that's a stronger signal of genuine popularity than a percentage alone."
+            ],
+            "ta": [
+              "Indha step users-a likes-um matches-um irandaiyum onnaaga serthu join pannum. Rendu LEFT JOIN same base table-mela stack aaguradhaala, oru user-oda ovvoru like row-um, avanga ovvoru match row-oda uLLuraiyaaga (internally) pair aagum — 3 likes, 2 matches vachirukkura user-kku aggregation-kku munnaadi 3×2=6 rows thaatkaalikamaa varum.",
+              "Idhu maadhiri rows perukiperugi varuvadhaal-thaan COUNT(DISTINCT l.like_id), COUNT(DISTINCT m.match_id) use pannuvom, plain COUNT() illai. DISTINCT, rendu join sernthu undaakina duplicate combinations-a neekkividum, ovvoru metric-kkum unmaiyaana, athigapadaadha (non-inflated) count kudukkum.",
+              "CASE WHEN COUNT(DISTINCT l.like_id) = 0 THEN 0 ELSE ... END — formula-a poojjiyathaal(zero) vaguthiduvadhaala irundhu kaakkum. HAVING kadaisila zero-like users-a neekkividum-thaan, aana nallamuraiyaana (defensive) SQL, adhukku appuram varum clause thaan-a kaappaathum-nu ne nambaadhu — CASE WHEN calculation-a thanaiyaa suraksithamaa vaikkum.",
+              "ROUND(... * 100.0 / ..., 2) — 100-kku pathila 100.0-a perukkuvadhu, vaguthal decimal-aaga nadakka vaikkum, integer-aa mottamaa vettapadaadhu; ROUND(...,2) mudivai sariyaaga 2 decimal places-kku vettum, Product team ketta maadhiri.",
+              "HAVING COUNT(DISTINCT l.like_id) >= 2 — grouping-um aggregation-um mudinjadhukku APPURAM filter pannum, WHERE maadhiri raw rows-a grouping-kku munnaadi filter pannaadhu. Yaar qualify aagalaam-nu mudivu seiya, already-kootu sernedha (aggregated) likes_received ennikkai thaan venum, atharaal HAVING thaan, WHERE alla.",
+              "HAVING-a vittuduthaa, 0 illaana 1 like vaangina users report-a kulappuvaargal, oru thanippattu data point vachu artham illaadha 100% illaana 0% conversion ennikkaigaLai kaattividuvom — business-kku nambakamaana signal illai.",
+              "ORDER BY conversion_percentage DESC, likes_received DESC — nallamuraiyaaga convert aagira users-a mel vaikkum; irandaavadhu sort key, samamaana thagavugaLai (tie) urudhiseiya adhigamaana total likes vachirukkura user-a mudhalilvaikkum, enendraal athu percentage mattum vida unmaiyaana pirapalyathukku (genuine popularity) valiyamaana signal."
+            ],
+            "hi": [
+              "Yeh step users ko likes aur matches dono se ek saath jodta hai. Do LEFT JOIN same base table pe stack hone ki wajah se, user ki har like row uski har match row ke saath andar hi andar pair ho jaati hai — 3 likes aur 2 matches wale user ke liye aggregation se pehle 3×2=6 rows temporarily ban jaati hain.",
+              "Isi wajah se COUNT(DISTINCT l.like_id) aur COUNT(DISTINCT m.match_id) use kiya jaata hai, plain COUNT() nahi. DISTINCT double join se bane duplicate combinations ko hata deta hai aur har metric ke liye sahi, bina badhaya hua (non-inflated) count deta hai.",
+              "CASE WHEN COUNT(DISTINCT l.like_id) = 0 THEN 0 ELSE ... END formula ko zero se bhaag hone se bachata hai. HAVING aakhir mein zero-like users ko hata dega zaroor, lekin savdhaan (defensive) SQL kabhi yeh maan kar nahi chalta ki baad ka koi clause hamesha bacha lega — CASE WHEN calculation ko khud surakshit rakhta hai.",
+              "ROUND(... * 100.0 / ..., 2) — 100 ki jagah 100.0 se guna karna bhaag ko dashamlav (decimal) mein karwaata hai, poornaank (integer) mein kaat-chhaant nahi hoti, aur ROUND(...,2) natije ko theek 2 dashamlav sthaan tak samet deta hai, jaisa Product team ne maanga.",
+              "HAVING COUNT(DISTINCT l.like_id) >= 2 samuhikaran (grouping) aur jod (aggregation) ke BAAD chhaanta hai, WHERE ki tarah kachchi (raw) rows ko grouping se pehle nahi. Humein pehle se juda hua likes_received ank chahiye ye tay karne ke liye ki kaun yogya hai, isliye HAVING chahiye, WHERE nahi.",
+              "HAVING hata do toh 0 ya 1 like wale users report ko bhar denge, ek akele data point pe based bemaani 100% ya 0% conversion sankhyaon se — business ke liye ye bharosemand sanket (signal) nahi.",
+              "ORDER BY conversion_percentage DESC, likes_received DESC sabse achhe convert karne wale users ko sabse upar rakhta hai; doosri sort key baraabari todti hai un users ko tarjeeh dekar jinke total likes zyada hain, kyunki yeh akele percentage se zyada mazboot sanket hai asli lokpriyata (genuine popularity) ka."
+            ],
+            "te": [
+              "Ee step users ni likes mariyu matches rendintitō oke sāri join chestundi. Rendu LEFT JOIN same base table meeda pేరుకుపోవడం valla, oka user ki unna prathi like row, vāri prathi match row tō lōpala internally pair avutundi — 3 likes, 2 matches unna user ki aggregation ki mundu 3×2=6 rows tāత్kālikamgā vastāyi.",
+              "Ilāగా rows perigipovadam valle COUNT(DISTINCT l.like_id), COUNT(DISTINCT m.match_id) vāḍutunnāmu, plain COUNT() kaadu. DISTINCT, rendu join వల్ల ఏర్పడ్డ duplicate combinations ni tesesi, prathi metric ki nijamaina, perakunda unna (non-inflated) count istundi.",
+              "CASE WHEN COUNT(DISTINCT l.like_id) = 0 THEN 0 ELSE ... END — formula ni sunna (zero) tō bhaగించడం nunchi kāpāḍutundi. HAVING chivarlō zero-like users ni tప్పకుండా తీసేస్తుంది, kāni jāgrattagā rāసిన (defensive) SQL, ā tarvatha vachche clause eppudu kāpāḍutundi ani ūhinchadu — CASE WHEN calculation ni tanantatanugā surakshitangā uంచుతుంది.",
+              "ROUND(... * 100.0 / ..., 2) — 100 kaadu 100.0 tō gunakaram cheయyడం valla bhāగaహāram dashāamsam (decimal) lō jarugutundi, poorna sankhya (integer) lā trunkeట్ avvadu; ROUND(...,2) phalitāanni ఖచ్చితంగా 2 dashamsa sthānāla varaku kuduస్తుంది, Product team అడిగినట్టు.",
+              "HAVING COUNT(DISTINCT l.like_id) >= 2 — grouping, aggregation aiyaka filter chestundi, WHERE lāగా mūla (raw) rows ni grouping ki mundu కాదు. Evaru qualify avutāro nirṇayincuḍāniki, mundే kūḍina (aggregated) likes_received sankhya kavali, kaabatti HAVING kavali, WHERE kaadu.",
+              "HAVING lekapothe, 0 leda 1 like unna users report ni artham lేని 100% leda 0% conversion sankhyala tō nimpestāru — idi business ki nammakamaina sankethamu (signal) kaadu.",
+              "ORDER BY conversion_percentage DESC, likes_received DESC — bāగā convert ayye users ni pైన pettadam avutundi; rendo sort key samānamaina viluvalanu (tie) ekkuva total likes unna user ki priority istū vidudala chestundi, endukante adi percentage okatiye kanna nijamaina jనaprijata (genuine popularity) ki balamaina sanketham."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
