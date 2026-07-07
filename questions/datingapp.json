@@ -1,0 +1,116 @@
+{
+  "id": 101,
+  "diff": "mid",
+  "cc": [
+    "JOIN",
+    "GROUP BY",
+    "COUNT",
+    "HAVING",
+    "ORDER BY"
+  ],
+  "story": {
+    "en": "Monday morning at Tinder HQ. The product team notices that some users receive lots of likes but hardly match with anyone. Product Manager Emma asks the analytics team to identify users who have received the most likes and how many of those became mutual matches.",
+    "ta": "Monday morning Tinder HQ-la product meeting nadakkuthu. Sila users-ku neraya likes varudhu, aana matches romba kammi. Product Manager Emma analytics team-kitta, yaaruku evlo likes vandhurukku, athula evlo mutual match aayiduchu nu report kekkaraanga.",
+    "hi": "Monday morning Tinder HQ mein product meeting chal rahi hai. Kuch users ko bahut saare likes mil rahe hain, lekin matches bahut kam hain. Product Manager Emma analytics team se poochti hain ki kis user ko kitne likes mile aur unmein se kitne mutual matches bane.",
+    "te": "Monday morning Tinder HQ lo product meeting jarugutundi. Kontha mandi users ki chala likes vastunnayi kani matches takkuvaga unnayi. Product Manager Emma analytics team ni adugutundi, evariki enni likes vachchayi mariyu vatilo enni mutual matches ayyayo report ivvamani."
+  },
+  "question": {
+    "en": "For every user, find the total number of likes received and the number of mutual matches. Display only users who received at least 2 likes. Order the result by likes received in descending order.",
+    "ta": "Prathi user-ku total received likes count-um, mutual matches count-um calculate pannu. Minimum 2 likes vangirukkanum. Result-a likes received descending order-la kaatu.",
+    "hi": "Har user ke liye total received likes aur mutual matches ki count nikalo. Sirf wahi users dikhao jinko kam se kam 2 likes mile hain. Result ko likes received ke descending order mein dikhao.",
+    "te": "Prathi user ki total received likes mariyu mutual matches count calculate cheyyandi. Kanisam 2 likes vachchina users matrame chupinchandi. Result ni likes received descending order lo chupinchandi."
+  },
+  "schemas": [
+    {
+      "name": "likes",
+      "cols": [
+        {
+          "n": "like_id",
+          "t": "INTEGER",
+          "e": "1001"
+        },
+        {
+          "n": "sender_id",
+          "t": "INTEGER",
+          "e": "101"
+        },
+        {
+          "n": "receiver_id",
+          "t": "INTEGER",
+          "e": "205"
+        },
+        {
+          "n": "liked_at",
+          "t": "DATE",
+          "e": "2026-05-01"
+        }
+      ]
+    },
+    {
+      "name": "matches",
+      "cols": [
+        {
+          "n": "match_id",
+          "t": "INTEGER",
+          "e": "1"
+        },
+        {
+          "n": "user1_id",
+          "t": "INTEGER",
+          "e": "101"
+        },
+        {
+          "n": "user2_id",
+          "t": "INTEGER",
+          "e": "205"
+        },
+        {
+          "n": "matched_at",
+          "t": "DATE",
+          "e": "2026-05-02"
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "title": {
+        "en": "Count likes received for every user"
+      },
+      "sql": "SELECT receiver_id,\n       COUNT(*) AS likes_received\nFROM likes\nGROUP BY receiver_id;",
+      "explain": {
+        "en": [
+          "Every row in the likes table represents one incoming like.",
+          "GROUP BY receiver_id creates one row per user.",
+          "COUNT(*) calculates how many likes each user received."
+        ]
+      }
+    },
+    {
+      "title": {
+        "en": "Join with matches to count mutual matches"
+      },
+      "sql": "SELECT l.receiver_id,\n       COUNT(*) AS likes_received,\n       COUNT(m.match_id) AS mutual_matches\nFROM likes l\nLEFT JOIN matches m\nON (l.sender_id = m.user1_id AND l.receiver_id = m.user2_id)\nOR (l.sender_id = m.user2_id AND l.receiver_id = m.user1_id)\nGROUP BY l.receiver_id;",
+      "explain": {
+        "en": [
+          "A match can be stored in either user order.",
+          "The OR condition checks both possibilities.",
+          "LEFT JOIN ensures users without matches are still included."
+        ]
+      }
+    },
+    {
+      "title": {
+        "en": "Filter users and sort the report"
+      },
+      "sql": "SELECT l.receiver_id,\n       COUNT(*) AS likes_received,\n       COUNT(m.match_id) AS mutual_matches\nFROM likes l\nLEFT JOIN matches m\nON (l.sender_id = m.user1_id AND l.receiver_id = m.user2_id)\nOR (l.sender_id = m.user2_id AND l.receiver_id = m.user1_id)\nGROUP BY l.receiver_id\nHAVING COUNT(*) >= 2\nORDER BY likes_received DESC;",
+      "explain": {
+        "en": [
+          "HAVING filters groups after aggregation.",
+          "Only users with at least two received likes remain.",
+          "ORDER BY sorts the most popular profiles first."
+        ]
+      }
+    }
+  ]
+}
