@@ -1,116 +1,182 @@
 {
-  "id": 101,
-  "diff": "mid",
-  "cc": [
-    "JOIN",
-    "GROUP BY",
-    "COUNT",
-    "HAVING",
-    "ORDER BY"
-  ],
-  "story": {
-    "en": "Monday morning at Tinder HQ. The product team notices that some users receive lots of likes but hardly match with anyone. Product Manager Emma asks the analytics team to identify users who have received the most likes and how many of those became mutual matches.",
-    "ta": "Monday morning Tinder HQ-la product meeting nadakkuthu. Sila users-ku neraya likes varudhu, aana matches romba kammi. Product Manager Emma analytics team-kitta, yaaruku evlo likes vandhurukku, athula evlo mutual match aayiduchu nu report kekkaraanga.",
-    "hi": "Monday morning Tinder HQ mein product meeting chal rahi hai. Kuch users ko bahut saare likes mil rahe hain, lekin matches bahut kam hain. Product Manager Emma analytics team se poochti hain ki kis user ko kitne likes mile aur unmein se kitne mutual matches bane.",
-    "te": "Monday morning Tinder HQ lo product meeting jarugutundi. Kontha mandi users ki chala likes vastunnayi kani matches takkuvaga unnayi. Product Manager Emma analytics team ni adugutundi, evariki enni likes vachchayi mariyu vatilo enni mutual matches ayyayo report ivvamani."
-  },
-  "question": {
-    "en": "For every user, find the total number of likes received and the number of mutual matches. Display only users who received at least 2 likes. Order the result by likes received in descending order.",
-    "ta": "Prathi user-ku total received likes count-um, mutual matches count-um calculate pannu. Minimum 2 likes vangirukkanum. Result-a likes received descending order-la kaatu.",
-    "hi": "Har user ke liye total received likes aur mutual matches ki count nikalo. Sirf wahi users dikhao jinko kam se kam 2 likes mile hain. Result ko likes received ke descending order mein dikhao.",
-    "te": "Prathi user ki total received likes mariyu mutual matches count calculate cheyyandi. Kanisam 2 likes vachchina users matrame chupinchandi. Result ni likes received descending order lo chupinchandi."
-  },
-  "schemas": [
+  "setup": "CREATE TABLE users(user_id INTEGER,user_name TEXT,gender TEXT,age INTEGER,city TEXT);INSERT INTO users VALUES(101,'Aarav','Male',24,'Chennai'),(102,'Rahul','Male',27,'Bangalore'),(103,'Vikram','Male',30,'Hyderabad'),(104,'Karan','Male',26,'Mumbai'),(105,'Arjun','Male',29,'Delhi'),(201,'Ananya','Female',23,'Chennai'),(202,'Priya','Female',25,'Bangalore'),(203,'Sneha','Female',28,'Hyderabad'),(204,'Diya','Female',24,'Mumbai'),(205,'Meera','Female',27,'Delhi');
+
+CREATE TABLE likes(like_id INTEGER,sender_id INTEGER,receiver_id INTEGER,liked_at TEXT);INSERT INTO likes VALUES
+(1,101,201,'2026-06-01'),
+(2,101,202,'2026-06-01'),
+(3,102,201,'2026-06-02'),
+(4,102,203,'2026-06-02'),
+(5,103,202,'2026-06-03'),
+(6,103,205,'2026-06-03'),
+(7,104,201,'2026-06-04'),
+(8,104,204,'2026-06-04'),
+(9,105,202,'2026-06-05'),
+(10,105,205,'2026-06-05'),
+(11,201,101,'2026-06-06'),
+(12,201,102,'2026-06-06'),
+(13,202,101,'2026-06-06'),
+(14,202,103,'2026-06-07'),
+(15,203,102,'2026-06-07'),
+(16,203,105,'2026-06-07'),
+(17,204,104,'2026-06-08'),
+(18,205,103,'2026-06-08'),
+(19,205,105,'2026-06-08'),
+(20,204,101,'2026-06-09');
+
+CREATE TABLE matches(match_id INTEGER,user1_id INTEGER,user2_id INTEGER,matched_at TEXT);INSERT INTO matches VALUES
+(1,101,201,'2026-06-06'),
+(2,101,202,'2026-06-06'),
+(3,102,201,'2026-06-06'),
+(4,102,203,'2026-06-07'),
+(5,103,202,'2026-06-07'),
+(6,103,205,'2026-06-08'),
+(7,104,204,'2026-06-08'),
+(8,105,205,'2026-06-08');",
+
+  "questions":[
+
     {
-      "name": "likes",
-      "cols": [
+      "id": 1,
+      "diff": "mid",
+      "cc": [
+        "JOIN",
+        "GROUP BY",
+        "COUNT",
+        "LEFT JOIN",
+        "HAVING",
+        "ORDER BY"
+      ],
+      "story": {
+        "en": "Monday morning at Tinder HQ. The product team notices that some profiles receive lots of likes but only a few of those likes become mutual matches. Product Manager Emma asks the analytics team to identify which users are attracting attention and how effectively those likes are converting into matches.",
+        "ta": "Monday morning Tinder HQ-la product meeting nadakkuthu. Sila profiles-ku neraya likes varudhu, aana athula konjam dhaan mutual match aagudhu. Product Manager Emma analytics team-kitta, yaaruku evlo likes vandhurukku, athula evlo matches aayiduchu nu report kekkaraanga.",
+        "hi": "Monday morning Tinder HQ mein product review chal raha hai. Kuch profiles ko bahut saare likes mil rahe hain, lekin unmein se sirf kuch hi mutual matches ban rahe hain. Product Manager Emma analytics team se report maangti hain ki kis user ko kitne likes mile aur unmein se kitne matches bane.",
+        "te": "Monday morning Tinder HQ lo product review jarugutundi. Konni profiles ki chala likes vastunnayi kani vatilo konni matrame mutual matches avutunnayi. Product Manager Emma analytics team ni, evariki enni likes vachchayi mariyu vatilo enni matches ayyayo report ivvamani adaguthundi."
+      },
+      "question": {
+        "en": "For every user, calculate the total number of likes received and the number of mutual matches. Display only users who received at least 2 likes. Sort the result by likes received in descending order.",
+        "ta": "Prathi user-ku total received likes count-um, mutual matches count-um calculate pannu. Minimum 2 likes vangirukkanum. Result-a likes received descending order-la kaatu.",
+        "hi": "Har user ke liye total received likes aur mutual matches ki count nikalo. Sirf wahi users dikhao jinko kam se kam 2 likes mile hain. Result ko likes received ke descending order mein dikhao.",
+        "te": "Prathi user ki total received likes mariyu mutual matches count calculate cheyyandi. Kanisam 2 likes vachchina users matrame chupinchandi. Result ni likes received descending order lo chupinchandi."
+      },
+      "schemas": [
         {
-          "n": "like_id",
-          "t": "INTEGER",
-          "e": "1001"
+          "name": "users",
+          "cols": [
+            {
+              "n": "user_id",
+              "t": "INTEGER",
+              "e": "101"
+            },
+            {
+              "n": "user_name",
+              "t": "TEXT",
+              "e": "Aarav"
+            },
+            {
+              "n": "gender",
+              "t": "TEXT",
+              "e": "Male"
+            },
+            {
+              "n": "age",
+              "t": "INTEGER",
+              "e": "24"
+            },
+            {
+              "n": "city",
+              "t": "TEXT",
+              "e": "Chennai"
+            }
+          ]
         },
         {
-          "n": "sender_id",
-          "t": "INTEGER",
-          "e": "101"
+          "name": "likes",
+          "cols": [
+            {
+              "n": "like_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "sender_id",
+              "t": "INTEGER",
+              "e": "101"
+            },
+            {
+              "n": "receiver_id",
+              "t": "INTEGER",
+              "e": "201"
+            },
+            {
+              "n": "liked_at",
+              "t": "TEXT",
+              "e": "2026-06-01"
+            }
+          ]
         },
         {
-          "n": "receiver_id",
-          "t": "INTEGER",
-          "e": "205"
-        },
-        {
-          "n": "liked_at",
-          "t": "DATE",
-          "e": "2026-05-01"
+          "name": "matches",
+          "cols": [
+            {
+              "n": "match_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "user1_id",
+              "t": "INTEGER",
+              "e": "101"
+            },
+            {
+              "n": "user2_id",
+              "t": "INTEGER",
+              "e": "201"
+            },
+            {
+              "n": "matched_at",
+              "t": "TEXT",
+              "e": "2026-06-06"
+            }
+          ]
         }
-      ]
-    },
-    {
-      "name": "matches",
-      "cols": [
+      ],
+      "steps": [
         {
-          "n": "match_id",
-          "t": "INTEGER",
-          "e": "1"
-        },
-        {
-          "n": "user1_id",
-          "t": "INTEGER",
-          "e": "101"
-        },
-        {
-          "n": "user2_id",
-          "t": "INTEGER",
-          "e": "205"
-        },
-        {
-          "n": "matched_at",
-          "t": "DATE",
-          "e": "2026-05-02"
-        }
-      ]
-    }
-  ],
-  "steps": [
-    {
-      "title": {
-        "en": "Count likes received for every user"
-      },
-      "sql": "SELECT receiver_id,\n       COUNT(*) AS likes_received\nFROM likes\nGROUP BY receiver_id;",
-      "explain": {
-        "en": [
-          "Every row in the likes table represents one incoming like.",
-          "GROUP BY receiver_id creates one row per user.",
-          "COUNT(*) calculates how many likes each user received."
-        ]
-      }
-    },
-    {
-      "title": {
-        "en": "Join with matches to count mutual matches"
-      },
-      "sql": "SELECT l.receiver_id,\n       COUNT(*) AS likes_received,\n       COUNT(m.match_id) AS mutual_matches\nFROM likes l\nLEFT JOIN matches m\nON (l.sender_id = m.user1_id AND l.receiver_id = m.user2_id)\nOR (l.sender_id = m.user2_id AND l.receiver_id = m.user1_id)\nGROUP BY l.receiver_id;",
-      "explain": {
-        "en": [
-          "A match can be stored in either user order.",
-          "The OR condition checks both possibilities.",
-          "LEFT JOIN ensures users without matches are still included."
-        ]
-      }
-    },
-    {
-      "title": {
-        "en": "Filter users and sort the report"
-      },
-      "sql": "SELECT l.receiver_id,\n       COUNT(*) AS likes_received,\n       COUNT(m.match_id) AS mutual_matches\nFROM likes l\nLEFT JOIN matches m\nON (l.sender_id = m.user1_id AND l.receiver_id = m.user2_id)\nOR (l.sender_id = m.user2_id AND l.receiver_id = m.user1_id)\nGROUP BY l.receiver_id\nHAVING COUNT(*) >= 2\nORDER BY likes_received DESC;",
-      "explain": {
-        "en": [
-          "HAVING filters groups after aggregation.",
-          "Only users with at least two received likes remain.",
-          "ORDER BY sorts the most popular profiles first."
-        ]
-      }
-    }
-  ]
+  "title": {
+    "en": "Count the total likes received by every user",
+    "ta": "Prathi user-ku vandha total likes-a count pannu",
+    "hi": "Har user ko mile total likes count karo",
+    "te": "Prathi user ki vachchina total likes count cheyyali"
+  },
+  "sql": "SELECT receiver_id,\n       COUNT(*) AS likes_received\nFROM likes\nGROUP BY receiver_id\nORDER BY receiver_id;",
+  "explain": {
+    "en": [
+      "Every row in the likes table represents one user liking another user's profile. If the same user receives multiple likes from different people, multiple rows will exist for that receiver.",
+      "GROUP BY receiver_id combines all rows belonging to the same receiver into one group. Instead of seeing one row per like, we'll see one row per user who received likes.",
+      "COUNT(*) counts how many rows exist inside each receiver's group. Since every row represents one incoming like, this becomes the total number of likes received by that user.",
+      "At this stage we're only interested in incoming likes. We are not looking at matches yet because matches are stored in a separate table.",
+      "Running this query gives a leaderboard of users based on how many likes they received. This will become the foundation for the next step where we'll compare likes against actual matches."
+    ],
+    "ta": [
+      "likes table-la irukkura ovvoru row-um oru user innoru user profile-a like panninadha represent pannum. Oru user-ku pala per like panninaa, antha receiver-ku multiple rows irukkum.",
+      "GROUP BY receiver_id use pannumbodhu, same receiver-oda ella rows-um oru single group-a merge aagum. Ippo oru like-ku oru row illa, oru user-ku oru row dhaan varum.",
+      "COUNT(*) antha group-la irukkura rows-a count pannum. Ovvoru row-um oru like represent pannradhunaala, result total likes received aagidum.",
+      "Indha step-la incoming likes mattum dhaan paakrom. Matches pathi innum calculate pannala, yenna matches separate table-la store pannirukkaanga.",
+      "Indha query run panninaa, yaar profile-ku adhigama likes vandhurukku nu easy-a paakalaam. Idhu next step-ku base aagum."
+    ],
+    "hi": [
+      "likes table ki har row ek user ke doosre user ko like karne ko represent karti hai. Agar kisi user ko kai log like karte hain, toh us receiver ke liye multiple rows hongi.",
+      "GROUP BY receiver_id same receiver ki saari rows ko ek group mein combine kar deta hai. Ab har like ke liye alag row nahi, har receiver ke liye ek row milegi.",
+      "COUNT(*) har group ke andar kitni rows hain unhe count karta hai. Kyunki har row ek incoming like ko represent karti hai, result total likes received ban jaata hai.",
+      "Is step mein hum sirf received likes dekh rahe hain. Matches abhi include nahi kiye ja rahe kyunki woh alag table mein store hote hain.",
+      "Ye query ek popularity report deti hai jo batati hai kis profile ko sabse zyada likes mile. Agle step mein isi data ko matches ke saath compare karenge."
+    ],
+    "te": [
+      "likes table lo prathi row oka user inkoka user profile ni like chesinattu chupisthundi. Oka user ki chala mandi likes iste, aa receiver ki multiple rows untayi.",
+      "GROUP BY receiver_id use chesthe, ade receiver ki sambandhinchina anni rows oka group ga marutayi. Ippudu prathi like ki oka row kaadu, prathi receiver ki oka row untundi.",
+      "COUNT(*) aa group lo unna rows anni count chestundi. Prathi row oka incoming like kabatti, result total likes received avutundi.",
+      "Ee step lo manam received likes matrame chustunnam. Matches ni inka include cheyyaledu endukante avi vere table lo store chestaru.",
+      "Ee query run chesthe, e profile ki ekkuva likes vachchayo telustundi. Next step lo ee data ni matches table tho compare chestam."
+    ]
+  }
 }
