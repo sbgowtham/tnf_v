@@ -1,5 +1,4 @@
 [
   { "id": "uber",         "name": "Uber",          "sub": "Driver Earnings",      "c": "#1d4ed8" },
-  { "id": "snapchat",     "name": "Snapchat",      "sub": "Engagement Analytics", "c": "#f7b731" },
-  { "id": "tinder",        "name": "tinder",      "sub": "Engagement Analytics", "c": "#f7b731" }
+  { "id": "snapchat",     "name": "Snapchat",      "sub": "Engagement Analytics", "c": "#f7b731" }
 ]
