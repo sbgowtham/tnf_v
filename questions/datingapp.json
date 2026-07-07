@@ -1,37 +1,6 @@
 {
-  "setup": "CREATE TABLE users(user_id INTEGER,user_name TEXT,gender TEXT,age INTEGER,city TEXT);INSERT INTO users VALUES(101,'Aarav','Male',24,'Chennai'),(102,'Rahul','Male',27,'Bangalore'),(103,'Vikram','Male',30,'Hyderabad'),(104,'Karan','Male',26,'Mumbai'),(105,'Arjun','Male',29,'Delhi'),(201,'Ananya','Female',23,'Chennai'),(202,'Priya','Female',25,'Bangalore'),(203,'Sneha','Female',28,'Hyderabad'),(204,'Diya','Female',24,'Mumbai'),(205,'Meera','Female',27,'Delhi');
-
-CREATE TABLE likes(like_id INTEGER,sender_id INTEGER,receiver_id INTEGER,liked_at TEXT);INSERT INTO likes VALUES
-(1,101,201,'2026-06-01'),
-(2,101,202,'2026-06-01'),
-(3,102,201,'2026-06-02'),
-(4,102,203,'2026-06-02'),
-(5,103,202,'2026-06-03'),
-(6,103,205,'2026-06-03'),
-(7,104,201,'2026-06-04'),
-(8,104,204,'2026-06-04'),
-(9,105,202,'2026-06-05'),
-(10,105,205,'2026-06-05'),
-(11,201,101,'2026-06-06'),
-(12,201,102,'2026-06-06'),
-(13,202,101,'2026-06-06'),
-(14,202,103,'2026-06-07'),
-(15,203,102,'2026-06-07'),
-(16,203,105,'2026-06-07'),
-(17,204,104,'2026-06-08'),
-(18,205,103,'2026-06-08'),
-(19,205,105,'2026-06-08'),
-(20,204,101,'2026-06-09');
-
-CREATE TABLE matches(match_id INTEGER,user1_id INTEGER,user2_id INTEGER,matched_at TEXT);INSERT INTO matches VALUES
-(1,101,201,'2026-06-06'),
-(2,101,202,'2026-06-06'),
-(3,102,201,'2026-06-06'),
-(4,102,203,'2026-06-07'),
-(5,103,202,'2026-06-07'),
-(6,103,205,'2026-06-08'),
-(7,104,204,'2026-06-08'),
-(8,105,205,'2026-06-08');",
+  "setup":"CREATE TABLE users(user_id INTEGER,user_name TEXT,gender TEXT,age INTEGER,city TEXT);INSERT INTO users VALUES(101,'Aarav','Male',24,'Chennai'),(102,'Rahul','Male',27,'Bangalore'),(103,'Vikram','Male',30,'Hyderabad'),(104,'Karan','Male',26,'Mumbai'),(105,'Arjun','Male',29,'Delhi'),(201,'Ananya','Female',23,'Chennai'),(202,'Priya','Female',25,'Bangalore'),(203,'Sneha','Female',28,'Hyderabad'),(204,'Diya','Female',24,'Mumbai'),(205,'Meera','Female',27,'Delhi');CREATE TABLE likes(like_id INTEGER,sender_id INTEGER,receiver_id INTEGER,liked_at TEXT);INSERT INTO likes VALUES(1,101,201,'2026-06-01'),(2,101,202,'2026-06-01'),(3,102,201,'2026-06-02'),(4,102,203,'2026-06-02'),(5,103,202,'2026-06-03'),(6,103,205,'2026-06-03'),(7,104,201,'2026-06-04'),(8,104,204,'2026-06-04'),(9,105,202,'2026-06-05'),(10,105,205,'2026-06-05'),(11,201,101,'2026-06-06'),(12,201,102,'2026-06-06'),(13,202,101,'2026-06-06'),(14,202,103,'2026-06-07'),(15,203,102,'2026-06-07'),(16,203,105,'2026-06-07'),(17,204,104,'2026-06-08'),(18,205,103,'2026-06-08'),(19,205,105,'2026-06-08'),(20,204,101,'2026-06-09');CREATE TABLE matches(match_id INTEGER,user1_id INTEGER,user2_id INTEGER,matched_at TEXT);INSERT INTO matches VALUES(1,101,201,'2026-06-06'),(2,101,202,'2026-06-06'),(3,102,201,'2026-06-06'),(4,102,203,'2026-06-07'),(5,103,202,'2026-06-07'),(6,103,205,'2026-06-08'),(7,104,204,'2026-06-08'),(8,105,205,'2026-06-08');",
+  
 
   "questions":[
 
