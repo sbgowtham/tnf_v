@@ -1,0 +1,165 @@
+{
+  "setup": "CREATE TABLE users(user_id INTEGER,name TEXT,gender TEXT,city TEXT);INSERT INTO users VALUES(1,'Aditi','Female','Mumbai'),(2,'Rohan','Male','Delhi'),(3,'Meera','Female','Bangalore'),(4,'Karan','Male','Mumbai'),(5,'Priya','Female','Pune'),(6,'Arjun','Male','Delhi'),(7,'Sneha','Female','Hyderabad'),(8,'Vikram','Male','Bangalore'),(9,'Isha','Female','Chennai'),(10,'Dev','Male','Mumbai'),(11,'Ananya','Female','Pune'),(12,'Rahul','Male','Delhi');CREATE TABLE likes(like_id INTEGER,from_user_id INTEGER,to_user_id INTEGER,like_date TEXT);INSERT INTO likes VALUES(1,1,2,'2024-05-01'),(2,2,1,'2024-05-02'),(3,1,3,'2024-05-01'),(4,3,1,'2024-05-03'),(5,2,4,'2024-05-02'),(6,4,2,'2024-05-04'),(7,3,5,'2024-05-03'),(8,5,3,'2024-05-05'),(9,4,6,'2024-05-04'),(10,6,4,'2024-05-06'),(11,5,7,'2024-05-05'),(12,7,5,'2024-05-07'),(13,6,8,'2024-05-06'),(14,8,6,'2024-05-08'),(15,7,9,'2024-05-07'),(16,9,7,'2024-05-09'),(17,8,10,'2024-05-08'),(18,10,8,'2024-05-10'),(19,9,11,'2024-05-09'),(20,11,9,'2024-05-11'),(21,12,1,'2024-05-12'),(22,12,2,'2024-05-12'),(23,12,4,'2024-05-13'),(24,12,6,'2024-05-13'),(25,12,8,'2024-05-14'),(26,12,10,'2024-05-14');CREATE TABLE matches(match_id INTEGER,user1_id INTEGER,user2_id INTEGER,match_date TEXT);INSERT INTO matches VALUES(1,1,2,'2024-05-02'),(2,1,3,'2024-05-03'),(3,2,4,'2024-05-04'),(4,3,5,'2024-05-05'),(5,4,6,'2024-05-06'),(6,5,7,'2024-05-07'),(7,6,8,'2024-05-08'),(8,7,9,'2024-05-09'),(9,8,10,'2024-05-10'),(10,9,11,'2024-05-11')",
+  "questions": [
+    {
+      "id": 7,
+      "diff": "easy",
+      "cc": ["JOIN", "GROUP BY", "COUNT", "ORDER BY"],
+      "story": {
+        "en": "Tuesday afternoon, Tinder HQ. Intern Kabir is shadowing the analytics team and gets his first real task: 'Just tell me which users are the most active swipers — who's sending out the most likes?' Simple question, but Kabir needs the users and likes tables to answer it properly.",
+        "ta": "Sevvai maalai, Tinder HQ-la. Intern Kabir analytics team-oda kooda vela paakuraan, avanukku mudhal real task kidaikkudhu: 'Yaar romba active-a swipe pandranga nu solllu — yaar adhigama likes anupranga?' Simple kelvi-thaan, aana Kabir-kku sariyaa answer solla users, likes rendu tables-um venum.",
+        "hi": "Mangalvaar dopahar, Tinder HQ mein. Intern Kabir analytics team ke saath kaam sikh raha hai, usse pehla real task milta hai: 'Bas ye batao kaun se users sabse zyada active swiper hain — kaun sabse zyada likes bhej raha hai?' Sawaal simple hai, par Kabir ko sahi jawaab dene ke liye users aur likes dono tables chahiye.",
+        "te": "Mangalavaram madhyahnam, Tinder HQ lo. Intern Kabir analytics team tho panicheystunnadu, atanikki modati real task vastundi: 'Evaru ekkuva active swipers ani cheppu — evaru ekkuva likes pampistunnaru?' Question simple ne, kaani Kabir ki correct answer cheppataniki users, likes rendu tables kavali."
+      },
+      "question": {
+        "en": "For each user, count the total number of likes they have sent to others. Show user name along with the count, sorted by count in descending order.",
+        "ta": "Ovvoru user-kkum, avanga vera yaarukkum anupina total likes ennikkai-a kandupidi. User name-oda andha count-a kaatu, count adhigamaana adhu mudhal-la varum padi (descending) sort pannu.",
+        "hi": "Har user ke liye, unhone doosron ko bheje total likes ki ginti nikalo. User ka naam aur uske saath count dikhao, count ko zyada se kam (descending) order mein sort karo.",
+        "te": "Prathi user ki, varu itharulaki pampina total likes count kanugonandi. User name tho paatu count chupinchandi, count ekkuva nunchi takkuva ki (descending) sort cheyandi."
+      },
+      "schemas": [
+        {
+          "name": "users",
+          "cols": [
+            { "n": "user_id", "t": "INTEGER", "e": "1" },
+            { "n": "name",    "t": "TEXT",    "e": "Aditi" },
+            { "n": "gender",  "t": "TEXT",    "e": "Female" },
+            { "n": "city",    "t": "TEXT",    "e": "Mumbai" }
+          ]
+        },
+        {
+          "name": "likes",
+          "cols": [
+            { "n": "like_id",      "t": "INTEGER", "e": "1" },
+            { "n": "from_user_id", "t": "INTEGER", "e": "1" },
+            { "n": "to_user_id",   "t": "INTEGER", "e": "2" },
+            { "n": "like_date",    "t": "TEXT",    "e": "2024-05-01" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Join users with likes on the sender side",
+            "ta": "Sender side vachu users-a likes-oda join pannu",
+            "hi": "Sender side pe users ko likes se join karo",
+            "te": "Sender side lo users ni likes tho join cheyandi"
+          },
+          "sql": "SELECT u.user_id,\n       u.name,\n       l.like_id\nFROM users u\nJOIN likes l ON u.user_id = l.from_user_id;",
+          "explain": {
+            "en": [
+              "We need to connect each like to the user who sent it, not the user who received it. The from_user_id column in likes is what tells us who initiated the like.",
+              "JOIN users u JOIN likes l ON u.user_id = l.from_user_id — this matches every like row to the user in the users table who has that same id as from_user_id.",
+              "A plain JOIN (not LEFT JOIN) is fine here because we specifically want to look at like activity, and any user who exists will still show up once we group later — plain JOIN is used since this is just a warm-up step to see the raw connection.",
+              "Notice we did NOT use to_user_id here. That column tells us who received the like, which is a completely different question from who sent it.",
+              "Result of this step: one row per like, tagged with the name of the user who sent that like — the raw material we'll count in the next step."
+            ],
+            "ta": [
+              "Ovvoru like-a, adhai anupina user-oda connect pannanum, vaangina user-oda alla. likes table-la irukkura from_user_id column-thaan yaar like anupanaanga nu sollum.",
+              "JOIN users u JOIN likes l ON u.user_id = l.from_user_id — ovvoru like row-um, users table-la anda id from_user_id-a match aagira user-oda serkkum.",
+              "Plain JOIN (LEFT JOIN alla) inga sari-thaan, enendraal namba specific-a like activity mattum paakkuram, group panna apparam existing user ella row-la varum — idhu warm-up step-aana raw connection paakka mattum.",
+              "Inga to_user_id use pannalai nu paar. Andha column yaar like vaangaanga nu sollum, adhu vera vidhamaana kelvi, yaar anupinaanga nu illai.",
+              "Indha step result: oru like-kku oru row, andha like anupina user peru-oda varum — adhu next step-la count panna venum raw material."
+            ],
+            "hi": [
+              "Har like ko us user se jodna hai jisne like bheja, na ki jisne receive kiya. likes table ka from_user_id column yehi batata hai ki like kisne shuru kiya.",
+              "JOIN users u JOIN likes l ON u.user_id = l.from_user_id — har like row us user se match hoti hai jiska id, from_user_id ke barabar hai.",
+              "Plain JOIN (LEFT JOIN nahi) yahan theek hai, kyunki hum specifically like activity dekhna chahte hain, aur group karne ke baad existing user apne aap aa jaayega — ye sirf raw connection dekhne ka warm-up step hai.",
+              "Dhyan do ki humne yahan to_user_id use nahi kiya. Woh column batata hai kisko like mila, jo bilkul alag sawaal hai, kisne bheja usse nahi.",
+              "Is step ka natija: ek like ek row, us like ko bhejne wale user ke naam ke saath — agla step mein isi ko ginenge."
+            ],
+            "te": [
+              "Prathi like ni, adhi pampina user tho connect cheyali, andukunna user tho kaadu. likes table lo unna from_user_id column ye evaru like start chesaro cheputundi.",
+              "JOIN users u JOIN likes l ON u.user_id = l.from_user_id — prathi like row, users table lo aa id from_user_id ki match ayye user tho kalustundi.",
+              "Plain JOIN (LEFT JOIN kaadu) ikkada sarigane, endukante manam specific ga like activity matrame chustunnam, group chesaka existing users anta vastharu — idi raw connection chudataniki warm-up step matrame.",
+              "Ikkada to_user_id vadaledu ani gamaninchandi. Aa column evariki like vachindo cheputundi, adi veru question, evaru pampincharo adi kaadu.",
+              "Ee step result: oka like ki oka row, aa like pampina user peru tho vastundi — idi next step lo count cheyataniki raw material."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Group by user and count total likes sent",
+            "ta": "User vachu group panni, total likes sent-a count pannu",
+            "hi": "User ke hisaab se group karo aur total likes sent ginti karo",
+            "te": "User batti group chesi, total likes sent count cheyandi"
+          },
+          "sql": "SELECT u.user_id,\n       u.name,\n       COUNT(l.like_id) AS likes_sent\nFROM users u\nJOIN likes l ON u.user_id = l.from_user_id\nGROUP BY u.user_id, u.name\nORDER BY likes_sent DESC;",
+          "explain": {
+            "en": [
+              "GROUP BY u.user_id, u.name takes all the individual like rows from the previous step and collapses the ones belonging to the same sender into a single row per user.",
+              "COUNT(l.like_id) counts how many like rows landed inside each group — that number is exactly how many likes that user sent out in total.",
+              "Why COUNT(l.like_id) and not COUNT(*)? Both give the same answer here since we used a plain JOIN, but COUNT(l.like_id) is a good habit because it always counts only actual like records, staying accurate even if the query structure changes later.",
+              "ORDER BY likes_sent DESC puts the most active swipers at the top of the list, which is exactly what Kabir's task asked for — 'who's sending out the most likes.'",
+              "If we skipped GROUP BY entirely, we'd be back to one row per like with no summary at all — the count column wouldn't even make sense without it.",
+              "Notice this query only lists users who have sent at least one like. Anyone who never sent a like simply won't appear, because we used JOIN, not LEFT JOIN, in the previous step."
+            ],
+            "ta": [
+              "GROUP BY u.user_id, u.name — munnadi step-la irundha ovvoru like row-um edukkum, oru sender-kku sernthirukkura ella row-um oru single row-aa serkkum.",
+              "COUNT(l.like_id) — ovvoru group-kkulla evlo like rows irukku nu count pannum, andha ennikkai-thaan andha user total-a evlo likes anupinaanga nu.",
+              "Yen COUNT(l.like_id), COUNT(*) illai? Rendum inga same answer thaan kudukkum, plain JOIN use panna nu, aana COUNT(l.like_id) nallavidhamaana habit, enendraal adhu actual like records mattum count pannum, query structure change aanaalum sariyaa irukkum.",
+              "ORDER BY likes_sent DESC — adhigamaana active-a swipe pannura users-a top-la vaikkum, ithu-thaan Kabir-oda task ketta kelvi — 'yaar adhigama likes anupranga.'",
+              "GROUP BY-a mudhalla vittuduthaal, thirumba oru like-kku oru row-va irukkum, summary onnum irukkaadhu — count column-kku ye artham iruakaadhu adhu illama.",
+              "Idhu ore oru like-yaavadhu anupina users mattum-thaan kaattum. Ore oru like kooda anupaadha yaarum varaadhu, enendraal munnadi step-la namba JOIN use panom, LEFT JOIN illai."
+            ],
+            "hi": [
+              "GROUP BY u.user_id, u.name — pichhle step ki har individual like row ko leta hai, aur ek hi sender ki saari rows ko ek single row mein badal deta hai.",
+              "COUNT(l.like_id) — har group ke andar kitni like rows aayin, ye ginta hai — wahi number batata hai us user ne total kitne likes bheje.",
+              "COUNT(l.like_id) kyun, COUNT(*) kyun nahi? Dono yahan same answer denge kyunki humne plain JOIN use kiya hai, par COUNT(l.like_id) achhi aadat hai, kyunki ye hamesha sirf actual like records ginta hai, chahe baad mein query structure badal jaaye.",
+              "ORDER BY likes_sent DESC sabse zyada active swipers ko list ke top pe le aata hai, jo bilkul wahi hai jo Kabir ke task mein poocha gaya tha — 'kaun sabse zyada likes bhej raha hai.'",
+              "Agar hum GROUP BY chhod dete, toh phir se ek like ek row wapas aa jaata, koi summary nahi hoti — count column ka koi matlab hi nahi rehta uske bina.",
+              "Dhyan do ye query sirf un users ko dikhati hai jinhone kam se kam ek like bheja hai. Jisne kabhi like nahi bheja woh bilkul nahi dikhega, kyunki pichhle step mein humne JOIN use kiya, LEFT JOIN nahi."
+            ],
+            "te": [
+              "GROUP BY u.user_id, u.name — mundu step lo unna prathi individual like row ni teesukoni, oka sender ki chendina anni rows ni oka single row ga marustundi.",
+              "COUNT(l.like_id) — prathi group lo entha like rows unnayo count chestundi — aa number ye aa user total ga entha likes pampincharo cheputundi.",
+              "Enduku COUNT(l.like_id), COUNT(*) kaadu? Rendu ikkada same answer istayi endukante manam plain JOIN vadamu, kaani COUNT(l.like_id) manchi habit, endukante adi eppudu actual like records ni matrame count chestundi, query structure marina kuda accurate ga untundi.",
+              "ORDER BY likes_sent DESC ekkuva active ga swipe chese users ni top lo pettistundi, idi exact ga Kabir task adigindi — 'evaru ekkuva likes pampistunnaru.'",
+              "GROUP BY ni skip chesthe, malli oka like ki oka row vastundi, summary emi undadu — count column ki ee row lekapothe artham undadu.",
+              "Ee query kanisham oka like ayina pampina users ni matrame chupistundi ani గమనించండి. Okka like kuda pampani vallu evaru kanipincharu, endukante mundu step lo manam JOIN vadamu, LEFT JOIN kaadu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Final query with clean output",
+            "ta": "Final query, clean output-oda",
+            "hi": "Final query, saaf output ke saath",
+            "te": "Final query, clean output tho"
+          },
+          "sql": "SELECT u.name AS user_name,\n       COUNT(l.like_id) AS likes_sent\nFROM users u\nJOIN likes l ON u.user_id = l.from_user_id\nGROUP BY u.user_id, u.name\nORDER BY likes_sent DESC;",
+          "explain": {
+            "en": [
+              "This final version is functionally identical to the previous step — the only change is we drop u.user_id from the SELECT list since Kabir only needs the name, not the internal id, in his report.",
+              "We still GROUP BY u.user_id, u.name even though user_id isn't shown, because grouping by name alone is risky — two different users could theoretically share the same name, and grouping only by name would wrongly merge their counts together.",
+              "AS user_name and AS likes_sent give the output columns clean, readable labels instead of raw SQL expressions — good practice for any report that a non-technical person like Kabir's manager will read.",
+              "Expected output (top rows): Rahul → 5 likes sent, then a mix of users around 2-3 likes sent each, since Rahul liked six different people while most others liked one or two.",
+              "This is a good example of 'clean up the final SELECT' — the underlying logic (JOIN, GROUP BY, COUNT, ORDER BY) doesn't change from step 2 to step 3, only the columns we choose to expose to the reader change."
+            ],
+            "ta": [
+              "Indha final version, munnadi step-oda velaiya-la ore maadhiri, oru maatram thaan — Kabir report-la peru mattum-thaan venum, internal id venaam, atharaal SELECT list-la irundhu u.user_id-a neekkividom.",
+              "user_id kaattaadhu-nu irundhaalum, namba innamum GROUP BY u.user_id, u.name pannuvom, enendraal peru mattum vachu group pannuradhu risk-aanadhu — rendu vera users-kku same peru irukkalaam, peru mattum vachu group pannina avangaLoda count thappaaga onnaa serkka vaipom.",
+              "AS user_name, AS likes_sent — output columns-kku clean-aana, padikka easy-aana labels kudukkum, raw SQL expressions illai — Kabir-oda manager maadhiri technical-a theriyaadha yaarum padikkalaam-nu nallamuraiyaana practice.",
+              "Expected output (top rows): Rahul → 5 likes anupinaan, appuram pala users 2-3 likes anupina range-la varuvaanga, enendraal Rahul aaru vera users-a like pannaan, aana pala per oru rendu pannaanga.",
+              "Idhu 'final SELECT-a clean pannu' nu oru nalla example — mudhal logic (JOIN, GROUP BY, COUNT, ORDER BY) step 2-la irundhu step 3-kku maarala, aana reader-kku kaattura columns mattum maarum."
+            ],
+            "hi": [
+              "Ye final version pichhle step ke jaisa hi kaam karta hai — sirf ek badlav hai, hum SELECT list se u.user_id hata dete hain, kyunki Kabir ke report mein sirf naam chahiye, internal id nahi.",
+              "user_id dikh nahi raha hoga tab bhi hum GROUP BY u.user_id, u.name karte hain, kyunki sirf naam se group karna risky hai — do alag users ka naam theoretically same ho sakta hai, aur sirf naam se group karne se unke counts galat tarike se mix ho jaayenge.",
+              "AS user_name, AS likes_sent — output columns ko saaf, padhne mein aasaan naam dete hain, raw SQL expressions ki jagah — ye achhi practice hai kisi bhi report ke liye jise Kabir ke manager jaisa non-technical insaan padhega.",
+              "Expected output (top rows): Rahul → 5 likes bheje, phir kai users 2-3 likes bhejne wale range mein aayenge, kyunki Rahul ne chhe alag logon ko like kiya, jabki zyadatar ne ek ya do hi kiya.",
+              "Ye 'final SELECT ko saaf karo' ka accha example hai — asal logic (JOIN, GROUP BY, COUNT, ORDER BY) step 2 se step 3 tak nahi badalta, sirf reader ko dikhaaye jaane wale columns badalte hain."
+            ],
+            "te": [
+              "Ee final version mundu step la laganē pani chestundi — okate marpu, manam SELECT list nunchi u.user_id ni teesestamu, endukante Kabir report lo peru matrame kavali, internal id kaadu.",
+              "user_id kanipinchakapoina, manam ippatiki GROUP BY u.user_id, u.name chestamu, endukante peru matrame batti group cheyadam risky — rendu different users ki same peru undachu theoretically, peru matrame batti group chesthe vaari counts tappuga kalisi potayi.",
+              "AS user_name, AS likes_sent — output columns ki clean ga, chaduvutuna easy ga unde labels istayi, raw SQL expressions kaadu — Kabir manager laanti non-technical vyakti chadive report ki idi manchi practice.",
+              "Expected output (top rows): Rahul → 5 likes pampincharu, tarvata konni users 2-3 likes range lo untaru, endukante Rahul aaru different vallaki like chesaru, kaani cheyyaru migata anduru okati rendu matrame chesaru.",
+              "Idi 'final SELECT ni clean cheyyi' ki manchi example — original logic (JOIN, GROUP BY, COUNT, ORDER BY) step 2 nunchi step 3 varaku marradu, reader ki chupinche columns matrame marutayi."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
