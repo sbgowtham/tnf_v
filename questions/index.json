@@ -2,5 +2,6 @@
   { "id": "uber",         "name": "Uber",          "sub": "Driver Earnings",      "c": "#1d4ed8" },
   { "id": "snapchat",     "name": "Snapchat",      "sub": "Engagement Analytics", "c": "#f7b731" },
   { "id": "tinder",     "name": "tinder",      "sub": "Engagement Analytics", "c": "#f7b731" },
-  { "id": "netflix",     "name": "netflix",      "sub": "Engagement Analytics", "c": "#1d4ed8" }
+  { "id": "netflix",     "name": "netflix",      "sub": "Engagement Analytics", "c": "#1d4ed8" },
+  { "id": "youtube",     "name": "youtube",      "sub": "Engagement Analytics", "c": "#1d4ed8" }
 ]
