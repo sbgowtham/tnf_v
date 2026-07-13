@@ -1,0 +1,209 @@
+{
+  "setup":"CREATE TABLE shows(show_id INTEGER,title TEXT,total_episodes INTEGER);INSERT INTO shows VALUES(101,'Dark Secrets',8),(102,'Campus Days',6),(103,'Galaxy Wars',10);CREATE TABLE watch_history(watch_id INTEGER,user_id INTEGER,show_id INTEGER,episode_no INTEGER,watch_date TEXT);INSERT INTO watch_history VALUES(1001,1,101,1,'2024-05-01'),(1002,1,101,8,'2024-05-04'),(1003,2,101,1,'2024-05-02'),(1004,2,101,2,'2024-05-03'),(1005,3,101,1,'2024-05-01'),(1006,3,101,8,'2024-05-05'),(1007,4,101,1,'2024-05-02'),(1008,5,101,1,'2024-05-03'),(1009,5,101,8,'2024-05-07'),(1010,6,101,1,'2024-05-02'),(1011,1,102,1,'2024-05-08'),(1012,1,102,6,'2024-05-10'),(1013,2,102,1,'2024-05-08'),(1014,2,102,6,'2024-05-10'),(1015,3,102,1,'2024-05-09'),(1016,4,102,1,'2024-05-09'),(1017,5,102,1,'2024-05-10'),(1018,5,102,6,'2024-05-12'),(1019,2,103,1,'2024-05-11'),(1020,2,103,10,'2024-05-20'),(1021,3,103,1,'2024-05-11'),(1022,4,103,1,'2024-05-12'),(1023,5,103,1,'2024-05-13'),(1024,5,103,10,'2024-05-22'),(1025,6,103,1,'2024-05-14');",
+  "questions":[
+    {
+      "id":1,
+      "diff":"mid",
+      "cc":[
+        "JOIN",
+        "WHERE IN",
+        "GROUP BY",
+        "CASE WHEN",
+        "COUNT(DISTINCT)",
+        "ROUND"
+      ],
+      "story":{
+        "en":"Netflix HQ, Monday content review. The Content Analytics team notices that while some TV shows attract lots of viewers, not everyone reaches the final episode. The VP of Content wants to know which shows keep viewers engaged until the end before deciding which ones deserve another season.",
+        "ta":"Netflix HQ, Monday content review. Content Analytics team paakumbodhu sila TV shows-ku neraya viewers irundhaalum, ellarum final episode varaikkum paakala. VP of Content-ku endha shows audience-a last episode varaikkum engage pannudhu nu theriyanum. Adha base panni next season renew panna decide panna poraanga.",
+        "hi":"Netflix HQ, Monday content review. Content Analytics team ne dekha ki kuch TV shows bahut saare viewers ko attract karte hain, lekin sabhi log final episode tak nahi pahunchte. VP of Content jaana chahte hain ki kaun se shows audience ko aakhir tak engage rakhte hain taaki renewal ka decision liya ja sake.",
+        "te":"Netflix HQ, Monday content review. Content Analytics team gamaninchindi entante konni TV shows ki chala mandi viewers unna kuda, andaroo final episode varaku choodatledu. VP of Content e shows audience ni chivari episode varaku engage chestunnayo telusukoni next season renew cheyyalo decide cheyyali anukuntunnaru."
+      },
+      "question":{
+        "en":"For each TV show, calculate the completion percentage based on users who started Episode 1 versus users who watched the final episode. Round the result to 2 decimal places.",
+        "ta":"Prathi TV show-ku Episode 1 start pannina users-um final episode paatha users-um base panni completion percentage calculate pannu. Result-a 2 decimal places-ku round pannu.",
+        "hi":"Har TV show ke liye Episode 1 shuru karne wale users aur final episode dekhne wale users ke basis par completion percentage nikalo. Result ko 2 decimal places tak round karo.",
+        "te":"Prathi TV show ki Episode 1 start chesina users mariyu final episode chusina users base meeda completion percentage calculate cheyyandi. Result ni 2 decimal places ki round cheyyandi."
+      },
+      "schemas":[
+        {
+          "name":"shows",
+          "cols":[
+            {
+              "n":"show_id",
+              "t":"INTEGER",
+              "e":"101"
+            },
+            {
+              "n":"title",
+              "t":"TEXT",
+              "e":"Dark Secrets"
+            },
+            {
+              "n":"total_episodes",
+              "t":"INTEGER",
+              "e":"8"
+            }
+          ]
+        },
+        {
+          "name":"watch_history",
+          "cols":[
+            {
+              "n":"watch_id",
+              "t":"INTEGER",
+              "e":"1001"
+            },
+            {
+              "n":"user_id",
+              "t":"INTEGER",
+              "e":"1"
+            },
+            {
+              "n":"show_id",
+              "t":"INTEGER",
+              "e":"101"
+            },
+            {
+              "n":"episode_no",
+              "t":"INTEGER",
+              "e":"1"
+            },
+            {
+              "n":"watch_date",
+              "t":"TEXT",
+              "e":"2024-05-01"
+            }
+          ]
+        }
+      ],
+      "steps":[
+        {
+  "title": {
+    "en": "Join tables and keep only Episode 1 and Final Episode",
+    "ta": "Tables join panni Episode 1 mattum Final Episode-a retain pannu",
+    "hi": "Tables join karo aur sirf Episode 1 aur Final Episode rakho",
+    "te": "Tables join chesi Episode 1 mariyu Final Episode matrame retain cheyyali"
+  },
+  "sql": "SELECT w.user_id,\n       s.title,\n       s.total_episodes,\n       w.episode_no\nFROM watch_history w\nJOIN shows s\nON w.show_id = s.show_id\nWHERE w.episode_no IN (1, s.total_episodes);",
+  "explain": {
+    "en": [
+      "The information we need is stored across two tables. watch_history tells us which episode each user watched, while shows tells us how many episodes exist in every TV show. Neither table alone is enough to calculate the completion percentage.",
+      "JOIN shows s ON w.show_id = s.show_id links every watch record to its TV show. This allows us to compare the watched episode with the total number of episodes in that show.",
+      "WHERE w.episode_no IN (1, s.total_episodes) keeps only two important events: users who started the show by watching Episode 1 and users who reached the final episode.",
+      "Why filter this early? Intermediate episodes do not help us calculate completion percentage. Keeping Episodes 2, 3, 4, and so on would only increase the amount of data that GROUP BY has to process in the next step.",
+      "The result of this step is a clean dataset containing only Episode 1 and Final Episode records for every show. This makes the aggregation step much simpler."
+    ],
+    "ta": [
+      "Namakku thevaiyana data rendu tables-la irukku. watch_history-la user endha episode paathaaru nu irukku, shows-la antha show-ku motham evlo episodes irukku nu irukku. Rendu tables-um join pannina dhaan completion percentage calculate panna mudiyum.",
+      "JOIN shows s ON w.show_id = s.show_id use pannumbodhu, ovvoru watch record-um corresponding show-oda total episodes-oda link aagum.",
+      "WHERE w.episode_no IN (1, s.total_episodes) Episode 1 mattum Final Episode rows-a retain pannum. Indha rendu dhaan namma calculation-ku mukkiyam.",
+      "Yen early filter? Episode 2, 3, 4 madhiri intermediate episodes completion percentage calculate panna use aagadhu. Avanga irundha next aggregation unnecessary-a perusaagum.",
+      "Indha step result-la Episode 1 and Final Episode records mattum irukkum. Next GROUP BY romba easy aagum."
+    ],
+    "hi": [
+      "Humein zaroori information do tables mein milti hai. watch_history batata hai user ne kaunsa episode dekha, jabki shows batata hai us TV show mein total kitne episodes hain. Dono tables ko join karna zaroori hai.",
+      "JOIN shows s ON w.show_id = s.show_id har watch record ko us TV show ke saath jodta hai, jisse hum final episode identify kar sakte hain.",
+      "WHERE w.episode_no IN (1, s.total_episodes) sirf Episode 1 aur Final Episode ki rows rakhta hai. Humein completion percentage ke liye sirf yehi records chahiye.",
+      "Pehle filter kyun? Beech ke episodes calculation mein kaam nahi aate. Unhe hata dene se agla GROUP BY chhota aur efficient ho jaata hai.",
+      "Is step ke baad hamare paas sirf start aur completion records bachte hain, jo agle aggregation ke liye perfect dataset hai."
+    ],
+    "te": [
+      "Manaki kavalsina information rendu tables lo untundi. watch_history user e episode chusado chupisthundi, shows table aa show lo total enni episodes unnayo chupisthundi. Completion percentage calculate cheyyadaniki rendu tables kavali.",
+      "JOIN shows s ON w.show_id = s.show_id prathi watch record ni corresponding TV show tho link chestundi.",
+      "WHERE w.episode_no IN (1, s.total_episodes) Episode 1 mariyu Final Episode records matrame retain chestundi. Mana calculation ki ive mukhyam.",
+      "Mundu filter enduku? Madhyalo unna episodes completion percentage ki avasaram ledu. Vatini remove chesthe next GROUP BY chala simple avutundi.",
+      "Ee step result lo Episode 1 mariyu Final Episode records matrame untayi. Next aggregation ki dataset ready avutundi."
+    ]
+  }
+},
+
+      {
+  "title": {
+    "en": "Group by TV show and count started vs completed viewers using CASE WHEN",
+    "ta": "TV show-wise group panni CASE WHEN use panni started vs completed viewers-a count pannu",
+    "hi": "TV show ke hisaab se group karo aur CASE WHEN se started aur completed viewers count karo",
+    "te": "TV show wise group chesi CASE WHEN use chesi started mariyu completed viewers ni count cheyyali"
+  },
+  "sql": "SELECT s.title,\n       COUNT(DISTINCT CASE\n                        WHEN w.episode_no = 1\n                        THEN w.user_id\n                      END) AS started_viewers,\n       COUNT(DISTINCT CASE\n                        WHEN w.episode_no = s.total_episodes\n                        THEN w.user_id\n                      END) AS completed_viewers\nFROM watch_history w\nJOIN shows s\nON w.show_id = s.show_id\nWHERE w.episode_no IN (1, s.total_episodes)\nGROUP BY s.title\nORDER BY s.title;",
+  "explain": {
+    "en": [
+      "GROUP BY s.title combines all rows belonging to the same TV show into a single row. Instead of seeing one row per viewing activity, we'll see one row per show.",
+      "CASE WHEN w.episode_no = 1 THEN w.user_id END keeps only users who started the show. COUNT(DISTINCT) counts each viewer only once, even if duplicate watch records exist.",
+      "The second CASE WHEN checks whether the watched episode is the show's final episode. COUNT(DISTINCT) then gives the total number of viewers who completed the series.",
+      "This technique is called conditional aggregation. It allows us to calculate multiple metrics from a single dataset within one GROUP BY query, without writing multiple queries.",
+      "Run this step to verify that every show has two raw numbers: started_viewers and completed_viewers. These are counts only, not percentages yet.",
+      "The next step converts these raw counts into completion percentages."
+    ],
+    "ta": [
+      "GROUP BY s.title use pannumbodhu, orae TV show-oda ella rows-um oru single row-a merge aagum. Ippo ovvoru viewing activity-ku oru row illa, ovvoru show-ku oru row dhaan varum.",
+      "CASE WHEN w.episode_no = 1 THEN w.user_id END show start pannina users-a mattum retain pannum. COUNT(DISTINCT) use pannradhunaala duplicate watch records irundhaalum user oru thadava dhaan count aaguvaar.",
+      "Second CASE WHEN final episode paatha users-a identify pannum. COUNT(DISTINCT) final episode reach pannina unique viewers count kudukkum.",
+      "Idhu conditional aggregation technique. Oru GROUP BY query-la multiple metrics calculate panna use aagum. Separate queries thevai illa.",
+      "Indha step run panninaa ovvoru show-kum started_viewers, completed_viewers nu rendu raw counts varum.",
+      "Ithu percentage illa. Next step-la completion percentage calculate pannuvom."
+    ],
+    "hi": [
+      "GROUP BY s.title same TV show ki saari rows ko ek row mein combine karta hai. Ab har viewing activity ki jagah har show ke liye ek row milegi.",
+      "CASE WHEN w.episode_no = 1 THEN w.user_id END sirf un users ko rakhta hai jinhone show shuru kiya. COUNT(DISTINCT) duplicate records hone par bhi user ko ek hi baar count karta hai.",
+      "Doosra CASE WHEN final episode dekhne wale users ko identify karta hai. COUNT(DISTINCT) completed viewers ki sankhya deta hai.",
+      "Is technique ko conditional aggregation kehte hain. Isse ek hi GROUP BY query mein multiple metrics calculate kiye ja sakte hain.",
+      "Is step ko run karne par har show ke liye started_viewers aur completed_viewers milenge.",
+      "Ye sirf raw counts hain. Agle step mein inhe completion percentage mein badlenge."
+    ],
+    "te": [
+      "GROUP BY s.title use chesthe ade TV show ki sambandhinchina anni rows oka row ga marutayi. Ippudu prathi viewing activity ki kaakunda prathi show ki oka row untundi.",
+      "CASE WHEN w.episode_no = 1 THEN w.user_id END show start chesina users ni matrame retain chestundi. COUNT(DISTINCT) duplicate watch records unna kuda user ni okkasari matrame count chestundi.",
+      "Rendo CASE WHEN final episode chusina users ni identify chestundi. COUNT(DISTINCT) completed viewers count ni istundi.",
+      "Ee technique ni conditional aggregation antaru. Oka GROUP BY query lone multiple metrics calculate cheyyachu.",
+      "Ee step run chesthe prathi show ki started_viewers mariyu completed_viewers ane rendu raw counts vasthayi.",
+      "Ivi percentages kaavu. Next step lo completion percentage calculate chestam."
+    ]
+  }
+},
+        {
+  "title": {
+    "en": "Calculate completion percentage and round to 2 decimal places",
+    "ta": "Completion percentage calculate panni 2 decimal places-ku round pannu",
+    "hi": "Completion percentage calculate karo aur 2 decimal places mein round karo",
+    "te": "Completion percentage calculate chesi 2 decimal places ki round cheyyali"
+  },
+  "sql": "SELECT s.title,\n       ROUND(\n         COUNT(DISTINCT CASE\n                          WHEN w.episode_no = s.total_episodes\n                          THEN w.user_id\n                        END) * 100.0\n         /\n         COUNT(DISTINCT CASE\n                          WHEN w.episode_no = 1\n                          THEN w.user_id\n                        END), 2\n       ) AS completion_percentage\nFROM watch_history w\nJOIN shows s\nON w.show_id = s.show_id\nWHERE w.episode_no IN (1, s.total_episodes)\nGROUP BY s.title\nORDER BY completion_percentage DESC;",
+  "explain": {
+    "en": [
+      "Completion Percentage follows a simple business formula: Completed Viewers ÷ Started Viewers × 100. Since Step 2 already calculated both values, we simply apply the formula here.",
+      "Why multiply by 100.0 instead of 100? SQL performs integer division when both values are integers. Using 100.0 forces decimal arithmetic, giving an accurate percentage instead of truncating the value.",
+      "ROUND(expression, 2) trims the calculated percentage to exactly two decimal places. The second argument tells SQL how many digits should appear after the decimal point.",
+      "Notice that we reuse the same CASE WHEN expressions from Step 2. We are not introducing any new aggregation logic, only converting the raw counts into a business metric.",
+      "ORDER BY completion_percentage DESC ranks the TV shows from the highest completion rate to the lowest, making it easy for the Content team to identify shows that keep viewers engaged until the finale.",
+      "Expected result: Campus Days → 60.00%, Dark Secrets → 50.00%, Galaxy Wars → 33.33%. Shows with higher completion percentages generally have stronger viewer retention."
+    ],
+    "ta": [
+      "Completion Percentage formula romba simple: Completed Viewers ÷ Started Viewers × 100. Step 2-la rendu counts-um calculate pannittom. Ippo adha percentage-a convert pannrom.",
+      "Yen 100.0 use pannrom? SQL integer division pannumbodhu decimal values truncate aagidum. 100.0 use panninaa decimal arithmetic use pannum, correct percentage varum.",
+      "ROUND(expression, 2) result-a exactly rendu decimal places-ku round pannum. Second argument decimal-ku appuram evlo digits venumnu solludhu.",
+      "Step 2-la use pannina adhe CASE WHEN expressions dhaan inga reuse pannrom. Pudhusa aggregation edhuvum introduce pannala; raw counts-a business metric-a convert pannrom.",
+      "ORDER BY completion_percentage DESC highest completion percentage irukkura shows first varum. Idhu Content team-ku best performing shows identify panna help pannum.",
+      "Expected result: Campus Days → 60.00%, Dark Secrets → 50.00%, Galaxy Wars → 33.33%."
+    ],
+    "hi": [
+      "Completion Percentage ka formula simple hai: Completed Viewers ÷ Started Viewers × 100. Step 2 mein dono counts mil chuke hain. Ab unhe percentage mein badalte hain.",
+      "100.0 kyun? Agar 100 use karenge toh SQL integer division karega aur decimal value truncate ho sakti hai. 100.0 likhne se decimal calculation hoti hai.",
+      "ROUND(expression, 2) result ko do decimal places tak round karta hai. Doosra argument decimal ke baad kitne digits chahiye batata hai.",
+      "Dhyan dijiye ki Step 2 wale CASE WHEN expressions hi yahan reuse kiye gaye hain. Nayi aggregation nahi likh rahe, sirf raw counts ko business metric mein convert kar rahe hain.",
+      "ORDER BY completion_percentage DESC shows ko sabse zyada completion rate se sabse kam completion rate tak arrange karta hai.",
+      "Expected result: Campus Days → 60.00%, Dark Secrets → 50.00%, Galaxy Wars → 33.33%."
+    ],
+    "te": [
+      "Completion Percentage formula simple: Completed Viewers ÷ Started Viewers × 100. Step 2 lo rendu counts calculate chesam. Ippudu vatini percentage ga marchutunnam.",
+      "100.0 enduku? SQL integer division cheste decimal value truncate avutundi. 100.0 use chesthe decimal arithmetic jarugutundi mariyu correct percentage vasthundi.",
+      "ROUND(expression, 2) result ni rendu decimal places ki round chestundi. Rendo argument decimal tarvata enni digits kavalo cheptundi.",
+      "Step 2 lo use chesina ade CASE WHEN expressions ikkada reuse chestunnam. Kotha aggregation rayatledu; raw counts ni business metric ga marchutunnam.",
+      "ORDER BY completion_percentage DESC highest completion rate unna shows ni mundu chupisthundi. Content team ki best performing shows identify cheyyadam easy avutundi.",
+      "Expected result: Campus Days → 60.00%, Dark Secrets → 50.00%, Galaxy Wars → 33.33%."
+    ]
+  }
+}
+        ]
+    }
+  ]
+}
