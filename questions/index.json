@@ -1,9 +1,4 @@
-{
-  "totalQuestions": 10,
-  "totalPages": 1,
-  "currentPage": 1,
-  "questionsPerPage": 10,
-  "questions": [
+[
     { 
       "id": "uber",
       "name": "Uber",
@@ -74,12 +69,4 @@
       "c": "#0077b5",
       "difficulty": "hard"
     }
-  ],
-  "pagination": {
-    "hasNextPage": false,
-    "hasPrevPage": false,
-    "nextPageUrl": null,
-    "prevPageUrl": null,
-    "pageInfo": "Page 1 of 1 - Showing 10 questions"
-  }
-}
+  ]
