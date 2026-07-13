@@ -1,0 +1,224 @@
+{
+  "setup":"CREATE TABLE employees(employee_id INTEGER,employee_name TEXT,department TEXT,hire_date TEXT,salary INTEGER);INSERT INTO employees VALUES(1001,'Rajesh Kumar','Sales','2020-03-15',45000),(1002,'Priya Singh','Sales','2019-05-20',52000),(1003,'Amit Patel','IT','2021-01-10',65000),(1004,'Sneha Reddy','IT','2020-08-12',68000),(1005,'Vikram Nair','HR','2022-02-05',42000),(1006,'Deepa Sharma','Sales','2021-06-18',48000),(1007,'Arjun Das','IT','2019-11-30',72000),(1008,'Neha Kapoor','HR','2020-09-22',44000);CREATE TABLE performance(performance_id INTEGER,employee_id INTEGER,review_date TEXT,rating DECIMAL);INSERT INTO performance VALUES(1,1001,'2024-01-15',3.5),(2,1001,'2024-07-15',4.2),(3,1002,'2024-01-20',4.0),(4,1002,'2024-07-20',4.5),(5,1003,'2024-02-10',4.3),(6,1003,'2024-08-10',4.7),(7,1004,'2024-02-15',4.6),(8,1004,'2024-08-15',4.8),(9,1005,'2024-03-05',3.8),(10,1005,'2024-09-05',4.1),(11,1006,'2024-03-18',3.9),(12,1006,'2024-09-18',4.0),(13,1007,'2024-01-25',4.9),(14,1007,'2024-07-25',4.8),(15,1008,'2024-03-22',3.6),(16,1008,'2024-09-22',3.9);",
+  "questions":[
+    {
+      "id":1,
+      "diff":"mid",
+      "cc":[
+        "Window Functions",
+        "ROW_NUMBER",
+        "RANK",
+        "DENSE_RANK",
+        "LAG",
+        "LEAD",
+        "AVG OVER",
+        "ORDER BY"
+      ],
+      "story":{
+        "en":"Friday morning at TechCorp's HR department. The HR Manager is preparing the quarterly performance review and compensation analysis. She needs to identify top performers within each department, track their performance improvement over time, and compare individual performance against department averages. Using window functions, she can rank employees, compare their current ratings with previous reviews, and identify those performing above their department's average.",
+        "ta":"Friday morning TechCorp HR department-la HR Manager quarterly performance review matrum compensation analysis prepare pannitu irukkaanga. Employee-ia ovvoru department-la rank panna vendum, adhe time-la performance improvement track panna vendum, matrum individual performance-a department average-oda compare panna vendum. Window functions use pannumbodhu employees-a rank panna mudiyum, current rating-a previous review-oda compare panna mudiyum, matrum department average vita adhigama perform pannura employees identify panna mudiyum.",
+        "hi":"Friday morning TechCorp ke HR department mein HR Manager quarterly performance review aur compensation analysis tayyar kar rahi hai. Ushe har department mein top performers identify karne hain, unke performance improvement ko track karna hai, aur individual performance ko department average se compare karna hai. Window functions use karke employees ko rank kar sakti hai, current ratings ko previous reviews se compare kar sakti hai, aur wo employees find kar sakti hai jo department average se zyada perform kar rahe hain.",
+        "te":"Friday morning TechCorp HR department lo HR Manager quarterly performance review mariyu compensation analysis prepare chestondi. Employees ni prathi department lo rank cheyyali, unke performance improvement track cheyyali, mariyu individual performance ni department average tho compare cheyyali. Window functions use chesthe employees ni rank cheyyadaniki, current ratings ni previous reviews tho compare cheyyadaniki, mariyu department average kanna adhigama perform chestunna employees find cheyyadaniki help chestundi."
+      },
+      "question":{
+        "en":"For each employee, display their name, department, latest performance rating, the previous performance rating (to track improvement), their ranking within the department, and whether their latest rating is above or below their department's average. Sort by department and ranking.",
+        "ta":"Ovvoru employee-kum name, department, latest performance rating, previous performance rating (improvement track panna), department-la ranking, matrum department average vita above/below irukka nu display pannu. Department matrum ranking ku munnaadi sort pannu.",
+        "hi":"Har employee ke liye name, department, latest performance rating, previous performance rating (improvement track karne ke liye), department mein ranking, aur department average se upar ya neeche hai yeh dikhao. Department aur ranking ke hisaab se sort karo.",
+        "te":"Prathi employee ki name, department, latest performance rating, previous performance rating (improvement track cheyyadaniki), department lo ranking, mariyu department average kanna upar leda neeche anto chupinchandi. Department mariyu ranking tho sort cheyyandi."
+      },
+      "schemas":[
+        {
+          "name":"employees",
+          "cols":[
+            {
+              "n":"employee_id",
+              "t":"INTEGER",
+              "e":"1001"
+            },
+            {
+              "n":"employee_name",
+              "t":"TEXT",
+              "e":"Rajesh Kumar"
+            },
+            {
+              "n":"department",
+              "t":"TEXT",
+              "e":"Sales"
+            },
+            {
+              "n":"hire_date",
+              "t":"TEXT",
+              "e":"2020-03-15"
+            },
+            {
+              "n":"salary",
+              "t":"INTEGER",
+              "e":"45000"
+            }
+          ]
+        },
+        {
+          "name":"performance",
+          "cols":[
+            {
+              "n":"performance_id",
+              "t":"INTEGER",
+              "e":"1"
+            },
+            {
+              "n":"employee_id",
+              "t":"INTEGER",
+              "e":"1001"
+            },
+            {
+              "n":"review_date",
+              "t":"TEXT",
+              "e":"2024-01-15"
+            },
+            {
+              "n":"rating",
+              "t":"DECIMAL",
+              "e":"3.5"
+            }
+          ]
+        }
+      ],
+      "steps":[
+        {
+          "title": {
+            "en": "Get the latest performance rating for each employee",
+            "ta": "Ovvoru employee-kum latest performance rating get pannu",
+            "hi": "Har employee ke liye latest performance rating le aao",
+            "te": "Prathi employee yokka latest performance rating get cheyyandi"
+          },
+          "sql": "WITH latest_ratings AS (\n  SELECT e.employee_id,\n         e.employee_name,\n         e.department,\n         p.rating AS latest_rating,\n         p.review_date,\n         ROW_NUMBER() OVER (PARTITION BY e.employee_id ORDER BY p.review_date DESC) AS rn\n  FROM employees e\n  JOIN performance p ON e.employee_id = p.employee_id\n)\nSELECT employee_id,\n       employee_name,\n       department,\n       latest_rating,\n       review_date\nFROM latest_ratings\nWHERE rn = 1;",
+          "explain": {
+            "en": [
+              "The employees table stores employee information, while the performance table contains multiple performance reviews for each employee. To get the latest rating for each employee, we use a window function approach.",
+              "ROW_NUMBER() OVER (PARTITION BY e.employee_id ORDER BY p.review_date DESC) assigns a unique number to each performance review within an employee partition, ordered by review date in descending order. The most recent review gets rn=1.",
+              "PARTITION BY e.employee_id divides the performance records into separate groups for each employee. Each partition is ordered independently.",
+              "ORDER BY p.review_date DESC ensures that within each employee's partition, the most recent review gets row number 1.",
+              "WHERE rn = 1 filters to keep only the latest performance record for each employee.",
+              "This step prepares the foundation for the next steps where we'll compare current ratings with previous ratings and calculate rankings."
+            ],
+            "ta": [
+              "employees table-la employee information store pannirukku. performance table-la prathi employee-kum multiple performance reviews irukku. Latest rating get panna ROW_NUMBER() window function use pannuvom.",
+              "ROW_NUMBER() OVER (PARTITION BY e.employee_id ORDER BY p.review_date DESC) use pannumbodhu prathi employee-oda partition-la unique number assign aagum, review_date descending order-la order panni. Most recent review rn=1 get pannuthandu.",
+              "PARTITION BY e.employee_id use pannumbodhu performance records separate groups-aa partition aagum prathi employee-kum.",
+              "ORDER BY p.review_date DESC use pannumbodhu prathi employee partition-la most recent review rn=1 nikalam.",
+              "WHERE rn = 1 use pannumbodhu latest performance record filter aagum prathi employee-kum.",
+              "Indha step appadi latest ratings prepare pannrom. Next steps-la current ratings-a previous ratings-oda compare pannum matrum rankings calculate pannum."
+            ],
+            "hi": [
+              "employees table mein employee information hai aur performance table mein har employee ke multiple performance reviews hain. Latest rating nikalne ke liye ROW_NUMBER() window function use karenge.",
+              "ROW_NUMBER() OVER (PARTITION BY e.employee_id ORDER BY p.review_date DESC) har employee ke partition mein unique number assign karta hai, review date ke reverse order mein. Sabse recent review ko rn=1 milta hai.",
+              "PARTITION BY e.employee_id se performance records separate groups mein divide ho jaate hain har employee ke liye.",
+              "ORDER BY p.review_date DESC ensure karta hai ki har employee ke partition mein sabse recent review ko rn=1 milta hai.",
+              "WHERE rn = 1 se har employee ka sirf latest performance record bacha rehta hai.",
+              "Ye step latest ratings tayyar karta hai. Agle steps mein hum current ratings ko previous ratings se compare karenge aur rankings calculate karenge."
+            ],
+            "te": [
+              "employees table lo employee information untundi. performance table lo prathi employee ki multiple performance reviews untayi. Latest rating get cheyyadaniki ROW_NUMBER() window function use chestam.",
+              "ROW_NUMBER() OVER (PARTITION BY e.employee_id ORDER BY p.review_date DESC) use chesthe prathi employee partition lo unique number assign avutundi, review_date reverse order lo. Sambandhinchina recent review rn=1 untundi.",
+              "PARTITION BY e.employee_id use chesthe performance records separate groups ga divide avutayi prathi employee kosam.",
+              "ORDER BY p.review_date DESC use chesthe prathi employee partition lo recent review rn=1 padukuntundi.",
+              "WHERE rn = 1 use chesthe prathi employee yokka latest performance record matrame untundi.",
+              "Ee step latest ratings prepare chestundi. Next steps lo current ratings ni previous ratings tho compare chestam mariyu rankings calculate chestam."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Get both latest and previous performance ratings using LAG window function",
+            "ta": "LAG window function use pannumbodhu latest matrum previous performance ratings get pannu",
+            "hi": "LAG window function use karke latest aur previous performance ratings get karo",
+            "te": "LAG window function use chesthe latest mariyu previous performance ratings get cheyyandi"
+          },
+          "sql": "WITH all_ratings AS (\n  SELECT e.employee_id,\n         e.employee_name,\n         e.department,\n         p.rating,\n         p.review_date,\n         LAG(p.rating) OVER (PARTITION BY e.employee_id ORDER BY p.review_date) AS previous_rating,\n         ROW_NUMBER() OVER (PARTITION BY e.employee_id ORDER BY p.review_date DESC) AS rn\n  FROM employees e\n  JOIN performance p ON e.employee_id = p.employee_id\n)\nSELECT employee_id,\n       employee_name,\n       department,\n       rating AS latest_rating,\n       previous_rating,\n       ROUND(rating - COALESCE(previous_rating, 0), 2) AS improvement\nFROM all_ratings\nWHERE rn = 1;",
+          "explain": {
+            "en": [
+              "LAG() is a window function that accesses the previous row's value within the same partition. In this case, it retrieves the rating from the employee's previous performance review.",
+              "LAG(p.rating) OVER (PARTITION BY e.employee_id ORDER BY p.review_date) gets the rating from the chronologically previous review for each employee. For the first review of an employee, LAG returns NULL.",
+              "By using PARTITION BY e.employee_id and ORDER BY p.review_date (in ascending order, not descending), we ensure that LAG correctly identifies the previous review in chronological order.",
+              "COALESCE(previous_rating, 0) handles the case where there is no previous review (first review), replacing NULL with 0 for calculation purposes.",
+              "ROUND(rating - COALESCE(previous_rating, 0), 2) calculates the improvement: the difference between the latest rating and the previous rating.",
+              "WHERE rn = 1 filters to keep only the latest performance review for each employee, now enriched with previous rating and improvement metrics."
+            ],
+            "ta": [
+              "LAG() window function use pannumbodhu previous row-oda value access panna mudiyum partition-la. Indha case-la employee-oda previous performance review-oda rating get pannuthandu.",
+              "LAG(p.rating) OVER (PARTITION BY e.employee_id ORDER BY p.review_date) use pannumbodhu prathi employee-kum chronologically previous review-oda rating nikalam. Employee-oda first review-kum LAG NULL return pannuthandu.",
+              "PARTITION BY e.employee_id mariyu ORDER BY p.review_date (ascending order) use pannumbodhu LAG correctly previous review identify pannuthandu chronological order-la.",
+              "COALESCE(previous_rating, 0) use pannumbodhu case-la handle pannrom, indha appadi previous review illa-na (first review), NULL-a 0-a replace pannrom calculation kosam.",
+              "ROUND(rating - COALESCE(previous_rating, 0), 2) use pannumbodhu improvement calculate pannrom: latest rating matrum previous rating-oda difference.",
+              "WHERE rn = 1 use pannumbodhu latest performance review filter pannrom prathi employee-kum, enriched previous rating matrum improvement metrics-oda."
+            ],
+            "hi": [
+              "LAG() window function se previous row ki value access kar sakte hain same partition mein. Iss case mein employee ke pichle performance review ki rating milti hai.",
+              "LAG(p.rating) OVER (PARTITION BY e.employee_id ORDER BY p.review_date) se har employee ke chronologically previous review ki rating milti hai. Agar employee ka pehla review hai, toh LAG NULL return karta hai.",
+              "PARTITION BY e.employee_id aur ORDER BY p.review_date (ascending order mein) use karke LAG correctly pichle review ko chronological order mein identify karta hai.",
+              "COALESCE(previous_rating, 0) se yeh handle karte hain ki agar previous review nahi hai (pehla review), toh NULL ki jagh 0 use karte hain calculation ke liye.",
+              "ROUND(rating - COALESCE(previous_rating, 0), 2) se improvement calculate hota hai: latest rating minus previous rating.",
+              "WHERE rn = 1 se har employee ka sirf latest performance review bacha rehta hai, ab previous rating aur improvement metrics ke saath."
+            ],
+            "te": [
+              "LAG() window function use chesthe partition lo previous row value access cheyyadaniki help chestundi. Ee case lo employee pichla performance review rating mil avutundi.",
+              "LAG(p.rating) OVER (PARTITION BY e.employee_id ORDER BY p.review_date) use chesthe prathi employee ki chronologically previous review rating mil avutundi. Agar employee pehla review unte LAG NULL return chestundi.",
+              "PARTITION BY e.employee_id mariyu ORDER BY p.review_date (ascending order) use chesthe LAG correctly pichla review identify chestundi chronological order lo.",
+              "COALESCE(previous_rating, 0) use chesthe agar previous review lekapothe (pehla review), NULL place-lo 0 use chestam calculation kosam.",
+              "ROUND(rating - COALESCE(previous_rating, 0), 2) use chesthe improvement calculate avutundi: latest rating minus previous rating.",
+              "WHERE rn = 1 use chesthe prathi employee yokka latest performance review matrame untundi, enriched previous rating mariyu improvement metrics tho."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Rank employees within their department and compare against department average",
+            "ta": "Department-la employees-a rank pannu matrum department average-oda compare pannu",
+            "hi": "Department mein employees ko rank karo aur department average se compare karo",
+            "te": "Department lo employees ni rank cheyyandi mariyu department average tho compare cheyyandi"
+          },
+          "sql": "WITH employee_performance AS (\n  SELECT e.employee_id,\n         e.employee_name,\n         e.department,\n         p.rating AS latest_rating,\n         LAG(p.rating) OVER (PARTITION BY e.employee_id ORDER BY p.review_date) AS previous_rating,\n         ROW_NUMBER() OVER (PARTITION BY e.employee_id ORDER BY p.review_date DESC) AS rn,\n         RANK() OVER (PARTITION BY e.department ORDER BY p.rating DESC) AS dept_rank,\n         ROUND(AVG(p.rating) OVER (PARTITION BY e.department), 2) AS dept_avg_rating\n  FROM employees e\n  JOIN performance p ON e.employee_id = p.employee_id\n)\nSELECT employee_id,\n       employee_name,\n       department,\n       latest_rating,\n       COALESCE(previous_rating, 0) AS previous_rating,\n       ROUND(latest_rating - COALESCE(previous_rating, 0), 2) AS improvement,\n       dept_rank,\n       dept_avg_rating,\n       CASE WHEN latest_rating > dept_avg_rating THEN 'Above Average' \n            WHEN latest_rating = dept_avg_rating THEN 'At Average'\n            ELSE 'Below Average' \n       END AS performance_vs_dept\nFROM employee_performance\nWHERE rn = 1\nORDER BY department, dept_rank;",
+          "explain": {
+            "en": [
+              "This step combines multiple window functions to provide a comprehensive performance analysis for each employee.",
+              "RANK() OVER (PARTITION BY e.department ORDER BY p.rating DESC) ranks employees within their department based on their latest rating. Employees with the same rating get the same rank, and the next rank skips accordingly.",
+              "AVG(p.rating) OVER (PARTITION BY e.department) calculates the average rating for each department. This window function operates on all rows within each department partition.",
+              "The window frame includes all rows in the partition by default, so this calculates the average of all performance ratings in that department.",
+              "LAG() is used again to get the previous rating for improvement tracking.",
+              "The CASE statement compares each employee's latest rating against their department's average to classify them as 'Above Average', 'At Average', or 'Below Average'.",
+              "WHERE rn = 1 ensures we're working with the latest performance record for each employee.",
+              "ORDER BY department, dept_rank organizes the output by department and then by ranking within that department."
+            ],
+            "ta": [
+              "Indha step multiple window functions combine pannumbodhu comprehensive performance analysis provide pannuthandu prathi employee-kum.",
+              "RANK() OVER (PARTITION BY e.department ORDER BY p.rating DESC) use pannumbodhu employees-a rank pannum adhe department-la, latest rating base pannumbodhu. Same rating irukkura employees-kum same rank varum.",
+              "AVG(p.rating) OVER (PARTITION BY e.department) use pannumbodhu average rating calculate pannrum prathi department-kum. Window function operate pannuthandu all rows-la adhe department partition-la.",
+              "LAG() again use pannumbodhu previous rating get pannum improvement tracking-kum.",
+              "CASE statement use pannumbodhu prathi employee-oda latest rating compare pannum department average-oda, classify pannum 'Above Average', 'At Average' illa 'Below Average'-nu.",
+              "WHERE rn = 1 ensure pannuthandu latest performance record use pannurom prathi employee-kum.",
+              "ORDER BY department, dept_rank organize pannuthandu output department-la, adhukku apram rank-la adhe department-la."
+            ],
+            "hi": [
+              "Ye step multiple window functions ko combine karke har employee ke liye comprehensive performance analysis provide karta hai.",
+              "RANK() OVER (PARTITION BY e.department ORDER BY p.rating DESC) har department mein employees ko rank karta hai unke latest rating ke base par. Same rating wale employees ko same rank milta hai.",
+              "AVG(p.rating) OVER (PARTITION BY e.department) har department ka average rating calculate karta hai. Ye window function us department ke sabhi rows pe operate karta hai.",
+              "LAG() dobara use hota hai previous rating nikalne ke liye improvement tracking ke liye.",
+              "CASE statement se har employee ke latest rating ko department average se compare karke 'Above Average', 'At Average', ya 'Below Average' classify karte hain.",
+              "WHERE rn = 1 ensure karta hai ki hum har employee ke latest performance record se kaam kar rahe hain.",
+              "ORDER BY department, dept_rank se output ko department aur phir us department mein ranking ke hisaab se organize karte hain."
+            ],
+            "te": [
+              "Ee step multiple window functions combine chesi prathi employee kosam comprehensive performance analysis provide chestundi.",
+              "RANK() OVER (PARTITION BY e.department ORDER BY p.rating DESC) use chesthe department lo employees ni rank chestundi unke latest rating base lo. Same rating unna employees kune same rank padutaru.",
+              "AVG(p.rating) OVER (PARTITION BY e.department) use chesthe prathi department average rating calculate avutundi. Window function us department lo anni rows tho operate chestundi.",
+              "LAG() malli use chestunnam previous rating get cheyyadaniki improvement tracking kosam.",
+              "CASE statement use chesthe prathi employee latest rating ni department average tho compare chesi 'Above Average', 'At Average', leda 'Below Average' ani classify chestam.",
+              "WHERE rn = 1 ensure chestundi prathi employee yokka latest performance record use chestunnamo ani.",
+              "ORDER BY department, dept_rank use chesthe output ni department tho, tarvata us department lo ranking tho organize chestam."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
