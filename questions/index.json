@@ -3,13 +3,12 @@
   "totalPages": 1,
   "currentPage": 1,
   "questionsPerPage": 10,
-  "questionsList": [
+  "questions": [
     { 
       "id": "uber",
       "name": "Uber",
       "sub": "Driver Earnings",
       "c": "#1d4ed8",
-      "file": "uber.json",
       "difficulty": "mid"
     },
     { 
@@ -17,7 +16,6 @@
       "name": "Snapchat",
       "sub": "Engagement Analytics",
       "c": "#f7b731",
-      "file": "snapchat.json",
       "difficulty": "mid"
     },
     { 
@@ -25,7 +23,6 @@
       "name": "tinder",
       "sub": "Engagement Analytics",
       "c": "#f7b731",
-      "file": "tinder.json",
       "difficulty": "mid"
     },
     { 
@@ -33,7 +30,6 @@
       "name": "netflix",
       "sub": "Engagement Analytics",
       "c": "#1d4ed8",
-      "file": "netflix.json",
       "difficulty": "mid"
     },
     { 
@@ -41,7 +37,6 @@
       "name": "youtube",
       "sub": "Engagement Analytics",
       "c": "#1d4ed8",
-      "file": "youtube.json",
       "difficulty": "mid"
     },
     { 
@@ -49,7 +44,6 @@
       "name": "myntra",
       "sub": "Engagement Analytics",
       "c": "#1d4ed8",
-      "file": "myntra.json",
       "difficulty": "mid"
     },
     { 
@@ -57,7 +51,6 @@
       "name": "flipkart",
       "sub": "Supplier Analytics",
       "c": "#ff9800",
-      "file": "flipkart.json",
       "difficulty": "mid"
     },
     { 
@@ -65,7 +58,6 @@
       "name": "techcorp",
       "sub": "Performance Ranking",
       "c": "#9c27b0",
-      "file": "techcorp.json",
       "difficulty": "mid"
     },
     { 
@@ -73,7 +65,6 @@
       "name": "amazon",
       "sub": "Customer Segmentation",
       "c": "#ff9900",
-      "file": "amazon.json",
       "difficulty": "hard"
     },
     { 
@@ -81,7 +72,6 @@
       "name": "linkedin",
       "sub": "Org Hierarchy",
       "c": "#0077b5",
-      "file": "linkedin.json",
       "difficulty": "hard"
     }
   ],
