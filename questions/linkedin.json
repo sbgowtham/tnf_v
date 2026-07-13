@@ -1,0 +1,166 @@
+{
+  "setup":"CREATE TABLE employees(emp_id INTEGER,emp_name TEXT,department TEXT,manager_id INTEGER,salary INTEGER,hire_date TEXT);INSERT INTO employees VALUES(1,'CEO Office','Management',NULL,150000,'2015-01-01'),(2,'Rajesh Kumar','Sales',1,65000,'2018-03-15'),(3,'Priya Singh','Sales',1,68000,'2018-05-20'),(4,'Amit Patel','IT',1,75000,'2017-01-10'),(5,'Sneha Reddy','IT',4,70000,'2019-08-12'),(6,'Vikram Nair','IT',4,72000,'2018-11-30'),(7,'Deepa Sharma','HR',1,62000,'2019-02-05'),(8,'Arjun Das','Sales',2,58000,'2020-06-18'),(9,'Neha Kapoor','HR',7,60000,'2020-09-22'),(10,'Rahul Gupta','Finance',1,80000,'2017-07-14');CREATE TABLE performance_reviews(review_id INTEGER,emp_id INTEGER,review_date TEXT,comments TEXT,rating DECIMAL);INSERT INTO performance_reviews VALUES(1,2,'2024-01-15','Excellent sales numbers achieved excellent rapport with clients','4.8'),(2,3,'2024-01-20','Strong performer consistent high-quality work delivery','4.7'),(3,4,'2024-02-10','Technical expertise outstanding problem-solving skills demonstrated','4.9'),(4,5,'2024-02-15','Good progress needs minor improvements in time management','4.2'),(5,6,'2024-03-05','Exceptional technical skills peer mentor high-performer','4.8'),(6,7,'2024-03-18','HR initiatives well-coordinated employee relations excellent','4.6'),(7,8,'2024-04-05','Promising talent needs more client engagement focus','3.9'),(8,9,'2024-04-22','Strong administrative support team management potential shown','4.3'),(9,10,'2024-05-10','Financial accuracy excellent audit-ready records maintained','4.7');",
+  "questions":[
+    {
+      "id":1,
+      "diff":"hard",
+      "cc":[
+        "Recursive CTE",
+        "String Functions",
+        "Self Join",
+        "Hierarchical Queries",
+        "SUBSTRING",
+        "Complex Aggregation",
+        "Path Construction"
+      ],
+      "story":{
+        "en":"Wednesday at LinkedIn's Organizational Development team. The VP of People is analyzing the company hierarchy to understand reporting structures, identify high-performing teams, and plan succession strategies. She needs to extract insights from performance reviews using text analysis, trace employee reporting lines from individual contributors up to the CEO, calculate department performance metrics, and identify key talent gaps. Using recursive CTEs to traverse the organizational hierarchy and string functions to analyze review comments, she can build a comprehensive organizational chart with performance insights.",
+        "ta":"Wednesday LinkedIn Organizational Development team-la VP of People company hierarchy analyze pannitu irukkaanga reporting structures understand panna, high-performing teams identify panna, matrum succession strategies plan panna. Performance reviews-nindha text analysis use pannumbodhu insights extract panna vendum, employee reporting lines trace panna CEO-ku poridu individual contributors-nindha, department performance metrics calculate panna, matrum key talent gaps identify panna. Recursive CTEs use pannumbodhu organizational hierarchy traverse panna matrum string functions use pannumbodhu review comments analyze panna, comprehensive organizational chart build panna mudiyum performance insights-oda.",
+        "hi":"Wednesday ko LinkedIn ke Organizational Development team mein VP of People company hierarchy analyze kar rahi hai reporting structures samajhne, high-performing teams identify karne, aur succession strategies plan karne ke liye. Performance reviews se text analysis use karke insights nikalne hain, employee reporting lines trace karne hain CEO tak individual contributors se, department performance metrics calculate karne hain, aur key talent gaps identify karne hain. Recursive CTEs use karke organizational hierarchy traverse kar sakti hai aur string functions use karke review comments analyze kar sakti hai, isse comprehensive organizational chart build kar sakti hai performance insights ke saath.",
+        "te":"Wednesday LinkedIn Organizational Development team lo VP of People company hierarchy analyze chestondi reporting structures understand cheyyadaniki, high-performing teams identify cheyyadaniki, mariyu succession strategies plan cheyyadaniki. Performance reviews nundi text analysis use chesi insights extract cheyyali, employee reporting lines trace cheyyali CEO-ku individual contributors nundi, department performance metrics calculate cheyyali, mariyu key talent gaps identify cheyyali. Recursive CTEs use chesi organizational hierarchy traverse cheyyadaniki mariyu string functions use chesi review comments analyze cheyyadaniki, comprehensive organizational chart build cheyyadaniki performance insights tho."
+      },
+      "question":{
+        "en":"Build an organizational hierarchy showing each employee's name, department, direct manager, full reporting path from employee to CEO, department performance rating (average of employee ratings), and key skills extracted from performance comments. Extract skills using text patterns (e.g., 'sales', 'technical', 'leadership', 'management'). Show reporting chain depth and identify top performers per department.",
+        "ta":"Organizational hierarchy build pannu, employee name, department, direct manager, full reporting path employee-nindha CEO-ku, department performance rating (employee ratings average), matrum key skills extract pannumbodhu performance comments-nindha. Text patterns use pannumbodhu skills extract pannu (e.g., 'sales', 'technical', 'leadership', 'management'). Reporting chain depth show pannu matrum top performers identify pannu per department.",
+        "hi":"Organizational hierarchy build karo jo har employee ke name, department, direct manager, full reporting path employee se CEO tak, department performance rating (employee ratings ka average), aur key skills extracted from performance comments dikhaye. Text patterns use karke skills extract karo (e.g., 'sales', 'technical', 'leadership', 'management'). Reporting chain depth dikhao aur top performers identify karo har department mein.",
+        "te":"Organizational hierarchy build cheyyandi prathi employee name, department, direct manager, full reporting path employee nundi CEO-ku, department performance rating (employee ratings average), mariyu key skills extract cheyyadaniki performance comments nundi. Text patterns use chesi skills extract cheyyandi (e.g., 'sales', 'technical', 'leadership', 'management'). Reporting chain depth chupinchandi mariyu top performers identify cheyyandi prathi department lo."
+      },
+      "schemas":[
+        {
+          "name":"employees",
+          "cols":[
+            {"n":"emp_id","t":"INTEGER","e":"1"},
+            {"n":"emp_name","t":"TEXT","e":"CEO Office"},
+            {"n":"department","t":"TEXT","e":"Management"},
+            {"n":"manager_id","t":"INTEGER","e":"NULL"},
+            {"n":"salary","t":"INTEGER","e":"150000"},
+            {"n":"hire_date","t":"TEXT","e":"2015-01-01"}
+          ]
+        },
+        {
+          "name":"performance_reviews",
+          "cols":[
+            {"n":"review_id","t":"INTEGER","e":"1"},
+            {"n":"emp_id","t":"INTEGER","e":"2"},
+            {"n":"review_date","t":"TEXT","e":"2024-01-15"},
+            {"n":"comments","t":"TEXT","e":"Excellent sales numbers achieved..."},
+            {"n":"rating","t":"DECIMAL","e":"4.8"}
+          ]
+        }
+      ],
+      "steps":[
+        {
+          "title": {
+            "en": "Extract skills from performance review comments using pattern matching",
+            "ta": "Performance review comments-nindha pattern matching use pannumbodhu skills extract pannu",
+            "hi": "Performance review comments se pattern matching use karke skills extract karo",
+            "te": "Performance review comments nundi pattern matching use chesi skills extract cheyyandi"
+          },
+          "sql": "WITH skill_extraction AS (\n  SELECT pr.emp_id,\n         pr.comments,\n         pr.rating,\n         CASE\n           WHEN LOWER(pr.comments) REGEXP 'sales|client|rapport' THEN 'Sales'\n           ELSE NULL\n         END AS skill1,\n         CASE\n           WHEN LOWER(pr.comments) REGEXP 'technical|expertise|problem-solving|coding' THEN 'Technical'\n           ELSE NULL\n         END AS skill2,\n         CASE\n           WHEN LOWER(pr.comments) REGEXP 'leadership|mentor|manager|coordination' THEN 'Leadership'\n           ELSE NULL\n         END AS skill3,\n         CASE\n           WHEN LOWER(pr.comments) REGEXP 'quality|consistent|reliable|excellence' THEN 'Quality Focus'\n           ELSE NULL\n         END AS skill4\n  FROM performance_reviews pr\n)\nSELECT emp_id,\n       CONCAT_WS(', ', \n                 NULLIF(skill1, NULL),\n                 NULLIF(skill2, NULL),\n                 NULLIF(skill3, NULL),\n                 NULLIF(skill4, NULL)) AS extracted_skills,\n       rating\nFROM skill_extraction\nWHERE extracted_skills IS NOT NULL;",
+          "explain": {
+            "en": [
+              "String pattern matching using REGEXP identifies key skills mentioned in review comments.",
+              "LOWER() converts comments to lowercase for case-insensitive pattern matching.",
+              "Multiple CASE WHEN statements check for different skill keywords using regex patterns. The pipe symbol (|) acts as OR operator in regex.",
+              "CONCAT_WS() (Concatenate With Separator) joins non-null skill values with commas, automatically handling NULL values.",
+              "NULLIF() compares a value with NULL - if skill is not found, it returns NULL; otherwise returns the skill name.",
+              "This step extracts structured skill data from unstructured text comments for further analysis.",
+              "The WHERE clause filters results to show only employees with detected skills."
+            ],
+            "ta": [
+              "String pattern matching REGEXP use pannumbodhu key skills identify pannuthandu review comments-la mention pannina.",
+              "LOWER() comments-a lowercase-aa convert pannuthandu case-insensitive pattern matching-kum.",
+              "Multiple CASE WHEN statements different skill keywords check pannuthandu regex patterns use pannumbodhu. Pipe symbol (|) regex-la OR operator-aaka work pannuthandu.",
+              "CONCAT_WS() non-null skill values join pannuthandu commas-oda, NULL values automatic-aaka handle pannuthandu.",
+              "NULLIF() value-a NULL-oda compare pannuthandu - skill find illa-na NULL return pannuthandu; illa skill name return pannuthandu.",
+              "Indha step unstructured text comments-nindha structured skill data extract pannuthandu further analysis-kum.",
+              "WHERE clause results filter pannuthandu detected skills irukkura employees mattum show panna."
+            ],
+            "hi": [
+              "String pattern matching REGEXP use karke key skills identify hote hain jo review comments mein mention ho rahe hain.",
+              "LOWER() comments ko lowercase mein convert karta hai case-insensitive pattern matching ke liye.",
+              "Multiple CASE WHEN statements different skill keywords check karte hain regex patterns use karke. Pipe symbol (|) regex mein OR operator ka kaam karta hai.",
+              "CONCAT_WS() non-null skill values ko commas se join karta hai, NULL values ko automatically handle karte hue.",
+              "NULLIF() value ko NULL se compare karta hai - agar skill nahi mila toh NULL return hota hai; otherwise skill name return hota hai.",
+              "Ye step unstructured text comments se structured skill data extract karta hai further analysis ke liye.",
+              "WHERE clause results ko filter karta hai taaki sirf employees jinke paas detected skills hain vo dikhen."
+            ],
+            "te": [
+              "String pattern matching REGEXP use chesi key skills identify avutayi review comments lo mention avutunna.",
+              "LOWER() comments ni lowercase lo convert chestundi case-insensitive pattern matching kosam.",
+              "Multiple CASE WHEN statements different skill keywords check chestunnayi regex patterns use chesi. Pipe symbol (|) regex lo OR operator ga work chestundi.",
+              "CONCAT_WS() non-null skill values ni commas tho join chestundi, NULL values automatically handle chesi.",
+              "NULLIF() value ni NULL tho compare chestundi - skill find lekapothe NULL return chestundi; otherwise skill name return chestundi.",
+              "Ee step unstructured text comments nundi structured skill data extract chestundi further analysis kosam.",
+              "WHERE clause results ni filter chestundi detected skills unna employees matrame chupistunnadi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Build recursive organizational hierarchy with reporting path",
+            "ta": "Recursive organizational hierarchy build pannu reporting path-oda",
+            "hi": "Recursive organizational hierarchy build karo reporting path ke saath",
+            "te": "Recursive organizational hierarchy build cheyyandi reporting path tho"
+          },
+          "sql": "WITH RECURSIVE org_hierarchy AS (\n  -- Base case: Start with CEO\n  SELECT e.emp_id,\n         e.emp_name,\n         e.department,\n         e.manager_id,\n         1 AS depth,\n         CAST(e.emp_name AS CHAR(500)) AS reporting_path\n  FROM employees e\n  WHERE e.manager_id IS NULL\n  \n  UNION ALL\n  \n  -- Recursive case: Join with manager to build path\n  SELECT e.emp_id,\n         e.emp_name,\n         e.department,\n         e.manager_id,\n         oh.depth + 1 AS depth,\n         CONCAT(oh.reporting_path, ' -> ', e.emp_name) AS reporting_path\n  FROM employees e\n  JOIN org_hierarchy oh ON e.manager_id = oh.emp_id\n)\nSELECT emp_id,\n       emp_name,\n       department,\n       manager_id,\n       depth,\n       reporting_path\nFROM org_hierarchy\nORDER BY depth, emp_id;",
+          "explain": {
+            "en": [
+              "Recursive CTEs are powerful for hierarchical data. They have two parts: a base case and a recursive case.",
+              "The base case selects the root employee (CEO) where manager_id IS NULL. This is the starting point of the recursion.",
+              "depth is initialized to 1 for the CEO, and reporting_path starts with just the CEO's name.",
+              "CAST(e.emp_name AS CHAR(500)) converts the name to a fixed-length character string for path building.",
+              "The recursive case uses UNION ALL to combine results and adds one level to the hierarchy.",
+              "It joins employees with the previous level using JOIN org_hierarchy, where the employee's manager_id matches org_hierarchy.emp_id.",
+              "depth increments by 1 for each recursion level, tracking how deep we are in the hierarchy.",
+              "CONCAT builds the reporting path by appending each employee name with ' -> ' separator.",
+              "ORDER BY depth ensures the results are displayed level by level, from CEO down."
+            ],
+            "ta": [
+              "Recursive CTEs hierarchical data-kum powerful. Base case matrum recursive case nu rendu parts irukku.",
+              "Base case root employee (CEO) select pannuthandu manager_id IS NULL. Recursion-oda starting point indha.",
+              "depth 1-aa initialize aagum CEO-kum, matrum reporting_path CEO-oda name mattum start aagum.",
+              "CAST() name-a fixed-length character string-aaka convert pannuthandu path building-kum.",
+              "Recursive case UNION ALL use panni results combine panni hierarchy-ku oru level add pannuthandu.",
+              "Employee-ia join pannuthandu previous level-oda employee's manager_id match pannumbodhu org_hierarchy.emp_id-oda.",
+              "depth increment aagum 1 recursion level-kum, hierarchy-la depth track panna.",
+              "CONCAT reporting path build pannuthandu employee name append panni ' -> ' separator-oda.",
+              "ORDER BY depth results display pannuthandu level by level, CEO-nindha down-kum."
+            ],
+            "hi": [
+              "Recursive CTEs hierarchical data ke liye bahut powerful hain. Base case aur recursive case dono hote hain.",
+              "Base case root employee (CEO) select karta hai jaha manager_id IS NULL ho. Ye recursion ke starting point hain.",
+              "depth ko 1 initialize karte hain CEO ke liye, aur reporting_path sirf CEO se start hota hai.",
+              "CAST() name ko fixed-length character string mein convert karta hai path building ke liye.",
+              "Recursive case UNION ALL use karte hain results ko combine karne ke liye aur ek level hierarchy mein add karte hain.",
+              "Employee ko previous level se join karte hain jaha employee ka manager_id org_hierarchy.emp_id se match kare.",
+              "depth har recursion level pe 1 se increment hota hai, taaki we can track hierarchy ki depth.",
+              "CONCAT reporting path build karta hai har employee name ko append karke ' -> ' separator ke saath.",
+              "ORDER BY depth se results level by level display hote hain, CEO se neeche tak."
+            ],
+            "te": [
+              "Recursive CTEs hierarchical data kosam powerful. Base case mariyu recursive case doni untayi.",
+              "Base case root employee (CEO) select chestundi manager_id IS NULL unte. Ee recursion starting point.",
+              "depth 1 initialize avutundi CEO kosam, mariyu reporting_path CEO name matram start avutundi.",
+              "CAST() name ni fixed-length character string ga convert chestundi path building kosam.",
+              "Recursive case UNION ALL use chesi results combine chesi hierarchy lo oka level add chestundi.",
+              "Employee ni previous level tho join chestundi employee manager_id match chesi org_hierarchy.emp_id tho.",
+              "depth increment avutundi 1 recursion level kosam, hierarchy depth track cheyyali.",
+              "CONCAT reporting path build chestundi employee name append chesi ' -> ' separator tho.",
+              "ORDER BY depth results display chestundi level by level, CEO nundi down-ku."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Combine hierarchy with performance metrics and skills",
+            "ta": "Hierarchy-a performance metrics matrum skills-oda combine pannu",
+            "hi": "Hierarchy ko performance metrics aur skills ke saath combine karo",
+            "te": "Hierarchy ni performance metrics mariyu skills tho combine cheyyandi"
+          },
+          "sql": "WITH RECURSIVE org_hierarchy AS (\n  SELECT e.emp_id, e.emp_name, e.department, e.manager_id, 1 AS depth,\n         CAST(e.emp_name AS CHAR(500)) AS reporting_path\n  FROM employees e\n  WHERE e.manager_id IS NULL\n  UNION ALL\n  SELECT e.emp_id, e.emp_name, e.department, e.manager_id, oh.depth + 1,\n         CONCAT(oh.reporting_path, ' -> ', e.emp_name)\n  FROM employees e\n  JOIN org_hierarchy oh ON e.manager_id = oh.emp_id\n),\nskill_extraction AS (\n  SELECT pr.emp_id,\n         ROUND(AVG(pr.rating), 2) AS avg_rating,\n         GROUP_CONCAT(CASE\n           WHEN LOWER(pr.comments) REGEXP 'sales|client|rapport' THEN 'Sales'\n           WHEN LOWER(pr.comments) REGEXP 'technical|expertise|problem-solving' THEN 'Technical'\n           WHEN LOWER(pr.comments) REGEXP 'leadership|mentor|coordination' THEN 'Leadership'\n           WHEN LOWER(pr.comments) REGEXP 'quality|consistent|reliable' THEN 'Quality'\n           ELSE NULL\n         END, ', ') AS key_skills\n  FROM performance_reviews pr\n  GROUP BY pr.emp_id\n),\ndept_performance AS (\n  SELECT oh.department,\n         ROUND(AVG(se.avg_rating), 2) AS dept_avg_rating\n  FROM org_hierarchy oh\n  LEFT JOIN skill_extraction se ON oh.emp_id = se.emp_id\n  GROUP BY oh.department\n)\nSELECT oh.emp_id,\n       oh.emp_name,\n       oh.department,\n       oh.depth,\n       oh.reporting_path,\n       COALESCE(se.avg_rating, 0) AS employee_rating,\n       COALESCE(se.key_skills, 'No skills recorded') AS key_skills,\n       COALESCE(dp.dept_avg_rating, 0) AS dept_performance,\n       CASE WHEN COALESCE(se.avg_rating, 0) > COALESCE(dp.dept_avg_rating, 0) THEN 'Top Performer'\n            WHEN COALESCE(se.avg_rating, 0) >= COALESCE(dp.dept_avg_rating, 0) - 0.5 THEN 'Solid Performer'\n            ELSE 'Developing'\n       END AS performance_tier\nFROM org_hierarchy oh\nLEFT JOIN skill_extraction se ON oh.emp_id = se.emp_id\nLEFT JOIN dept_performance dp ON oh.department = dp.department\nORDER BY oh.department, oh.depth, oh.emp_name;"
+        }
+      ]
+    }
+  ]
+}
