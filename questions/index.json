@@ -3,22 +3,93 @@
   "totalPages": 1,
   "currentPage": 1,
   "questionsPerPage": 10,
-  "questions": [
-    { "id": "uber",         "name": "Uber",          "sub": "Driver Earnings",       "c": "#1d4ed8" },
-    { "id": "snapchat",     "name": "Snapchat",      "sub": "Engagement Analytics",  "c": "#f7b731" },
-    { "id": "tinder",       "name": "tinder",        "sub": "Engagement Analytics",  "c": "#f7b731" },
-    { "id": "netflix",      "name": "netflix",       "sub": "Engagement Analytics",  "c": "#1d4ed8" },
-    { "id": "youtube",      "name": "youtube",       "sub": "Engagement Analytics",  "c": "#1d4ed8" },
-    { "id": "myntra",       "name": "myntra",        "sub": "Engagement Analytics",  "c": "#1d4ed8" },
-    { "id": "flipkart",     "name": "flipkart",      "sub": "Supplier Analytics",    "c": "#ff9800" },
-    { "id": "techcorp",     "name": "techcorp",      "sub": "Performance Ranking",   "c": "#9c27b0" },
-    { "id": "amazon",       "name": "amazon",        "sub": "Customer Segmentation", "c": "#ff9900" },
-    { "id": "linkedin",     "name": "linkedin",      "sub": "Org Hierarchy",         "c": "#0077b5" }
+  "questionsList": [
+    { 
+      "id": "uber",
+      "name": "Uber",
+      "sub": "Driver Earnings",
+      "c": "#1d4ed8",
+      "file": "uber.json",
+      "difficulty": "mid"
+    },
+    { 
+      "id": "snapchat",
+      "name": "Snapchat",
+      "sub": "Engagement Analytics",
+      "c": "#f7b731",
+      "file": "snapchat.json",
+      "difficulty": "mid"
+    },
+    { 
+      "id": "tinder",
+      "name": "tinder",
+      "sub": "Engagement Analytics",
+      "c": "#f7b731",
+      "file": "tinder.json",
+      "difficulty": "mid"
+    },
+    { 
+      "id": "netflix",
+      "name": "netflix",
+      "sub": "Engagement Analytics",
+      "c": "#1d4ed8",
+      "file": "netflix.json",
+      "difficulty": "mid"
+    },
+    { 
+      "id": "youtube",
+      "name": "youtube",
+      "sub": "Engagement Analytics",
+      "c": "#1d4ed8",
+      "file": "youtube.json",
+      "difficulty": "mid"
+    },
+    { 
+      "id": "myntra",
+      "name": "myntra",
+      "sub": "Engagement Analytics",
+      "c": "#1d4ed8",
+      "file": "myntra.json",
+      "difficulty": "mid"
+    },
+    { 
+      "id": "flipkart",
+      "name": "flipkart",
+      "sub": "Supplier Analytics",
+      "c": "#ff9800",
+      "file": "flipkart.json",
+      "difficulty": "mid"
+    },
+    { 
+      "id": "techcorp",
+      "name": "techcorp",
+      "sub": "Performance Ranking",
+      "c": "#9c27b0",
+      "file": "techcorp.json",
+      "difficulty": "mid"
+    },
+    { 
+      "id": "amazon",
+      "name": "amazon",
+      "sub": "Customer Segmentation",
+      "c": "#ff9900",
+      "file": "amazon.json",
+      "difficulty": "hard"
+    },
+    { 
+      "id": "linkedin",
+      "name": "linkedin",
+      "sub": "Org Hierarchy",
+      "c": "#0077b5",
+      "file": "linkedin.json",
+      "difficulty": "hard"
+    }
   ],
   "pagination": {
     "hasNextPage": false,
     "hasPrevPage": false,
     "nextPageUrl": null,
-    "prevPageUrl": null
+    "prevPageUrl": null,
+    "pageInfo": "Page 1 of 1 - Showing 10 questions"
   }
 }
