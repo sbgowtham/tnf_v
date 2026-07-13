@@ -1,0 +1,218 @@
+{
+  "setup":"CREATE TABLE suppliers(supplier_id INTEGER,supplier_name TEXT,category TEXT,country TEXT);INSERT INTO suppliers VALUES(201,'TechGear Co','Electronics','India'),(202,'ElectroHub','Electronics','China'),(203,'FashionPro','Clothing','Vietnam'),(204,'StyleMax','Clothing','India'),(205,'HomePlus','Home & Garden','Thailand');CREATE TABLE inventory(inventory_id INTEGER,supplier_id INTEGER,product_name TEXT,unit_price DECIMAL,stock_quantity INTEGER);INSERT INTO inventory VALUES(1001,201,'Wireless Headphones',2500,150),(1002,201,'USB Cable',500,300),(1003,202,'Phone Case',1200,250),(1004,202,'Screen Protector',800,400),(1005,203,'Cotton T-Shirt',800,200),(1006,203,'Denim Jeans',2200,150),(1007,204,'Casual Shirt',1500,180),(1008,204,'Summer Dress',2500,120),(1009,205,'Bed Sheet Set',1800,90),(1010,205,'Pillow Cover',600,200);",
+  "questions":[
+    {
+      "id":1,
+      "diff":"mid",
+      "cc":[
+        "JOIN",
+        "GROUP BY",
+        "AVG",
+        "Correlated Subquery",
+        "SUM",
+        "HAVING",
+        "ORDER BY"
+      ],
+      "story":{
+        "en":"Tuesday morning at Flipkart's Procurement office. The Supplier Relations team is identifying which suppliers are strategically important for the upcoming mega sale. Instead of evaluating every supplier's performance individually, they want to find suppliers whose average product prices are higher than the average prices in their category. These premium-positioned suppliers can help Flipkart create exclusive, high-value product collections.",
+        "ta":"Tuesday morning Flipkart Procurement office-la Supplier Relations team upcoming mega sale-ku strategically important suppliers identify pannitu irukkaanga. Ella supplier-um individually compare pannama, adhe category-la irukkura suppliers-oda average price vida adhigama average price irukkura suppliers find pannanunga. Indha premium suppliers-la Flipkart exclusive, high-value product collections create panna mudiyum.",
+        "hi":"Tuesday morning Flipkart ke Procurement office mein Supplier Relations team upcoming mega sale ke liye strategically important suppliers identify kar rahi hai. Har supplier ke performance ko individually compare karna ke bajaye, woh suppliers dhund rahe hain jinke average product prices apni category ke average prices se zyada hain. Ye premium suppliers se Flipkart exclusive, high-value product collections bana sakta hai.",
+        "te":"Tuesday morning Flipkart Procurement office lo Supplier Relations team upcoming mega sale kosam strategically important suppliers identify chestondi. Prathi supplier ni individually compare chesthe valakunda, ade category lo unna suppliers average price kanna ekkuva average price unna suppliers kanugonavaali. Ee premium suppliers tho Flipkart exclusive, high-value product collections create cheyyalem."
+      },
+      "question":{
+        "en":"Find suppliers whose average product unit price is greater than the average unit price of all suppliers in the same category. Return the supplier name, category, and average unit price. Sort the results by category and then by average unit price in descending order.",
+        "ta":"Adhe category-la irukkura suppliers-oda average unit price vida adhigama average unit price irukkura suppliers-a kandupidichu. Supplier name, category, matrum average unit price-a kaatu. Result-a category-ku munnaadi, adhukku apram average unit price descending order-la organize pannu.",
+        "hi":"Un suppliers ko dhoondo jinke average product unit price usi category ke suppliers ke average unit price se zyada hai. Supplier name, category aur average unit price dikhao. Results ko pehle category ke hisaab se, phir average unit price descending order mein organize karo.",
+        "te":"Ade category lo unna suppliers average unit price kanna ekkuva average unit price unna suppliers ni kanugonandi. Supplier name, category mariyu average unit price ni chupinchandi. Results ni category tho, tarvata average unit price descending order lo arrange cheyyandi."
+      },
+      "schemas":[
+        {
+          "name":"suppliers",
+          "cols":[
+            {
+              "n":"supplier_id",
+              "t":"INTEGER",
+              "e":"201"
+            },
+            {
+              "n":"supplier_name",
+              "t":"TEXT",
+              "e":"TechGear Co"
+            },
+            {
+              "n":"category",
+              "t":"TEXT",
+              "e":"Electronics"
+            },
+            {
+              "n":"country",
+              "t":"TEXT",
+              "e":"India"
+            }
+          ]
+        },
+        {
+          "name":"inventory",
+          "cols":[
+            {
+              "n":"inventory_id",
+              "t":"INTEGER",
+              "e":"1001"
+            },
+            {
+              "n":"supplier_id",
+              "t":"INTEGER",
+              "e":"201"
+            },
+            {
+              "n":"product_name",
+              "t":"TEXT",
+              "e":"Wireless Headphones"
+            },
+            {
+              "n":"unit_price",
+              "t":"DECIMAL",
+              "e":"2500"
+            },
+            {
+              "n":"stock_quantity",
+              "t":"INTEGER",
+              "e":"150"
+            }
+          ]
+        }
+      ],
+      "steps":[
+        {
+          "title": {
+            "en": "Calculate the average unit price for each supplier",
+            "ta": "Ovvoru supplier-kum average unit price calculate pannu",
+            "hi": "Har supplier ke average unit price calculate karo",
+            "te": "Prathi supplier ki average unit price calculate cheyyandi"
+          },
+          "sql": "SELECT s.supplier_id,\n       s.supplier_name,\n       s.category,\n       AVG(i.unit_price) AS avg_unit_price\nFROM suppliers s\nJOIN inventory i\nON s.supplier_id = i.supplier_id\nGROUP BY s.supplier_id,\n         s.supplier_name,\n         s.category\nORDER BY s.supplier_id;",
+          "explain": {
+            "en": [
+              "The suppliers table stores supplier details like name and category, while the inventory table stores individual product records with their unit prices. To find suppliers with premium pricing strategies, we first need to calculate each supplier's average product price.",
+              "JOIN connects each product in inventory with its corresponding supplier. Without this JOIN, we would know the unit prices but wouldn't know which supplier they belong to.",
+              "AVG(i.unit_price) calculates the average of all unit prices for products supplied by a single supplier.",
+              "GROUP BY s.supplier_id combines multiple products from the same supplier into a single row. Without GROUP BY, SQL cannot calculate a separate average for each supplier.",
+              "At the end of this step, each supplier has one row showing their average unit price. We are not comparing suppliers yet. We are simply preparing the base metric that will be used in the next step.",
+              "Run this query and verify that suppliers like TechGear Co have different average prices from other suppliers in the same Electronics category. These averages will be compared against the category average in the next step."
+            ],
+            "ta": [
+              "suppliers table-la supplier details irukku. inventory table-la ovvoru product-um store pannirukku athula unit_price irukkum. Supplier average pricing strategy analyze panna mudhala AVG() use panni ovvoru supplier-oda average product price calculate pannanum.",
+              "JOIN use pannumbodhu ovvoru inventory product-um corresponding supplier-oda connect aagum. JOIN illa-na unit prices theriyum, aana adhu endha supplier-ku nu theriyadhu.",
+              "AVG(i.unit_price) oru supplier-ku belong aagura ella product-oda unit prices-um average calculate pannum.",
+              "GROUP BY use pannumbodhu orae supplier-oda ella products-um oru single row-aa merge aagum. GROUP BY illa-na ovvoru supplier-kum separate average calculate panna mudiyadhu.",
+              "Indha step mudinja apram ovvoru supplier-kum oru row mattum irukkum, adhula avg_unit_price irukkum. Innum compare pannala. Next step-la category average calculate panna indha data use pannuvom.",
+              "Query run panni TechGear Co madhiri suppliers sama category-la irukkura matha suppliers vida different average prices irukkudhaa nu verify pannunga."
+            ],
+            "hi": [
+              "suppliers table mein supplier ki details hain aur inventory table mein har product store hota hai jisme unit price bhi hai. Suppliers ke premium pricing strategy ko analyze karne ke liye, pehle har supplier ke average product price calculate karna zaroori hai.",
+              "JOIN har inventory product ko uske supplier se connect karta hai. JOIN ke bina unit prices toh milenge, lekin woh kis supplier ke hain, yeh pata nahi chalega.",
+              "AVG(i.unit_price) ek supplier ke sabhi products ke unit prices ka average calculate karta hai.",
+              "GROUP BY ek hi supplier ke multiple products ko ek row mein combine karta hai. Iske bina SQL har supplier ka alag average calculate nahi kar sakta.",
+              "Is step ke baad har supplier ke paas ek row hogi jisme uska average unit price hoga. Abhi hum comparison nahi kar rahe. Agle step mein isi data ko category average se compare karenge.",
+              "Query run karke dekhiye ki TechGear Co jaise suppliers apne category ke doosre suppliers se different average prices maintain karte hain."
+            ],
+            "te": [
+              "suppliers table lo supplier details untayi. inventory table lo prathi product untundi mariyu athilo unit price untundi. Supplier average pricing strategy analyze cheyyadaniki munduga prathi supplier average product price calculate cheyyali.",
+              "JOIN prathi inventory product ni corresponding supplier tho connect chestundi. JOIN lekapothe unit prices telustundi kani adi e supplier ki sambandhinchindo teliyadu.",
+              "AVG(i.unit_price) oka supplier ki sambandhinchina anni product unit prices ni average chestundi.",
+              "GROUP BY use chesthe oka supplier ki sambandhinchina anni products oka row ga marutayi. GROUP BY lekapothe prathi supplier ki separate average calculate cheyyalem.",
+              "Ee step ayyaka prathi supplier ki oka row untundi mariyu andulo avg_unit_price untundi. Inka compare cheyyatledu. Next step lo ide data ni category average tho compare chestam.",
+              "Query run chesi TechGear Co lanti suppliers ade category lo unna vere suppliers kanna different average prices maintain chestunnayo verify cheyyandi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Calculate the average unit price for all suppliers in the same category",
+            "ta": "Adhe category-la irukkura suppliers-oda average unit price calculate pannu",
+            "hi": "Ussi category ke sabhi suppliers ke average unit price calculate karo",
+            "te": "Ade category lo unna suppliers average unit price calculate cheyyandi"
+          },
+          "sql": "SELECT s.supplier_id,\n       s.supplier_name,\n       s.category,\n       AVG(i.unit_price) AS avg_unit_price,\n       (\n           SELECT AVG(unit_price_inner)\n           FROM (\n               SELECT AVG(i2.unit_price) AS unit_price_inner\n               FROM suppliers s2\n               JOIN inventory i2\n               ON s2.supplier_id = i2.supplier_id\n               WHERE s2.category = s.category\n               GROUP BY s2.supplier_id\n           ) category_averages\n       ) AS category_avg_price\nFROM suppliers s\nJOIN inventory i\nON s.supplier_id = i.supplier_id\nGROUP BY s.supplier_id,\n         s.supplier_name,\n         s.category\nORDER BY s.category, avg_unit_price DESC;",
+          "explain": {
+            "en": [
+              "From the previous step, we already know each supplier's average unit price. Now we need to calculate the average unit price for all suppliers within the same category to use as a benchmark.",
+              "The correlated subquery calculates this category average. It runs once for every row returned by the outer query. As the outer query moves from one supplier to another, the value of s.category changes, and the subquery recalculates the category average accordingly.",
+              "Inside the subquery, we first calculate the average unit price for every supplier within the current category. We then calculate the average of those supplier averages to get the category's overall average price.",
+              "Notice the condition WHERE s2.category = s.category. Here, s2.category belongs to the inner query, while s.category comes from the outer query. This reference to the outer query is what makes it a correlated subquery.",
+              "We are not filtering any suppliers yet. The purpose of this step is simply to display two values for every supplier: its own average unit price and its category's average unit price. These two values will be compared in the next step.",
+              "Run this query and verify that you can see both the individual supplier's average price and the category average for comparison in the next step."
+            ],
+            "ta": [
+              "Previous step-la ovvoru supplier-oda average unit price calculate pannittom. Ippo adhe category-la irukkura suppliers-oda average unit price calculate panna vendum, dhaan benchmark aa become aagum.",
+              "Indha category average-a correlated subquery calculate pannudhu. Outer query-la ovvoru supplier-ku inner query oru thadava execute aagum. s.category change aagumbodhu, inner query-um andha category-ku average calculate pannum.",
+              "Inner query-la mudhala adhe category-la irukkura ovvoru supplier-oda average unit price calculate pannum. Adhukku apram antha supplier averages-oda average calculate panni category-oda overall average price nikalam.",
+              "WHERE s2.category = s.category nu irukku. s2.category inner query-ku belong aagum. s.category outer query-lendhu varudhu. Indha outer query reference dhaan correlated subquery-oda mukkiya feature.",
+              "Indha step-la innum filtering pannala. Ovvoru supplier-kum avg_unit_price matrum category_avg_price nu rendu values-a paakrom. Next step-la indha rendu values compare pannuvom.",
+              "Query run panni ovvoru supplier-oda individual average price matrum category average price rendu values paakka mudiyudhaa nu verify pannunga."
+            ],
+            "hi": [
+              "Pichhle step mein humne har supplier ke average unit price calculate ki thi. Ab humein usi category ke sabhi suppliers ke average unit price calculate karna hai, taaki hum iska comparison kar sakein.",
+              "Ye average correlated subquery calculate karti hai. Outer query ki har row ke liye inner query dobara execute hoti hai. Jaise hi s.category badalta hai, category average bhi us category ke hisaab se calculate hota hai.",
+              "Inner query pehle us category ke har supplier ke average unit price calculate karti hai. Uske baad un supplier averages ka average nikalta hai, jo category ka overall average price hota hai.",
+              "WHERE s2.category = s.category mein s2.category inner query ka column hai, jabki s.category outer query se aata hai. Isi wajah se ise correlated subquery kehte hain.",
+              "Is step mein hum filtering nahi kar rahe. Hum sirf har supplier ke liye uska average unit price aur us category ke average unit price dekh rahe hain. Agle step mein in dono ka comparison hoga.",
+              "Query run karke dekhiye ki har supplier ke average price aur uske category ke average price dono values dikhai de rahe hain."
+            ],
+            "te": [
+              "Previous step lo prathi supplier average unit price calculate chesam. Ippudu ade category lo unna suppliers average unit price calculate cheyyali, compare cheyyadaniki.",
+              "Ee average ni correlated subquery calculate chestundi. Outer query lo prathi row kosam inner query malli execute avutundi. s.category maarina prathi sari, aa category average kuda marutundi.",
+              "Inner query munduga ade category lo unna prathi supplier average unit price ni calculate chestundi. Tarvata aa supplier averages yokka average ni calculate chestundi, aa category overall average price avutundi.",
+              "WHERE s2.category = s.category lo s2.category inner query ki sambandhinchindi. s.category outer query nundi vastundi. Ee outer query reference valle dinini correlated subquery antaru.",
+              "Ee step lo filtering ledu. Prathi supplier ki avg_unit_price mariyu category_avg_price chupistunnam. Next step lo ee rendu values ni compare chestam.",
+              "Query run chesi prathi supplier yokka average price mariyu ade category average price ee rendu values chupistunnayo verify cheyyandi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Filter suppliers whose average unit price exceeds their category's average",
+            "ta": "Category average vida adhigama average unit price irukkura suppliers-a filter pannu",
+            "hi": "Un suppliers ko filter karo jinke average unit price apni category ke average se zyada hai",
+            "te": "Category average kanna ekkuva average unit price unna suppliers ni filter cheyyandi"
+          },
+          "sql": "SELECT s.supplier_name,\n       s.category,\n       AVG(i.unit_price) AS avg_unit_price\nFROM suppliers s\nJOIN inventory i\nON s.supplier_id = i.supplier_id\nGROUP BY s.supplier_id,\n         s.supplier_name,\n         s.category\nHAVING AVG(i.unit_price) > (\n    SELECT AVG(unit_price_inner)\n    FROM (\n        SELECT AVG(i2.unit_price) AS unit_price_inner\n        FROM suppliers s2\n        JOIN inventory i2\n        ON s2.supplier_id = i2.supplier_id\n        WHERE s2.category = s.category\n        GROUP BY s2.supplier_id\n    ) category_averages\n)\nORDER BY s.category, avg_unit_price DESC;",
+          "explain": {
+            "en": [
+              "In the previous step, every supplier had two important values: its own average unit price and the average unit price of all suppliers in the same category. The final task is simply to compare these two values and keep only the suppliers whose average exceeds their category's average.",
+              "HAVING is used instead of WHERE because avg_unit_price is calculated using the AVG() aggregate function. Since SQL evaluates WHERE before GROUP BY, aggregated values are not available inside the WHERE clause. HAVING evaluates conditions after GROUP BY, so it can use aggregate functions.",
+              "For every supplier, SQL first calculates its average unit price using AVG(i.unit_price). It then executes the correlated subquery to calculate the average unit price of all suppliers belonging to the same category.",
+              "If a supplier's average unit price is greater than its category's average unit price, the supplier is included in the final result. Suppliers with average prices equal to or below the category average are excluded.",
+              "ORDER BY s.category, avg_unit_price DESC organizes the output by category and lists the premium-priced suppliers first within each category.",
+              "Business Insight: These suppliers represent the premium positioning in their categories. Flipkart can partner with these suppliers to create exclusive product collections, offer luxury tier products, or target high-value customer segments. These are strategic suppliers for value-added offerings."
+            ],
+            "ta": [
+              "Previous step-la ovvoru supplier-kum avg_unit_price matrum category_avg_price nu rendu values irundhuchu. Indha final step-la indha rendu values compare pannrom matrum supplier-oda average, category average vida adhigama irundha dhaan result-la varum.",
+              "HAVING use pannrom, WHERE illa. Yenna avg_unit_price AVG() use panni calculate pannra aggregated value. WHERE aggregation-ku munnaadi execute aagum; HAVING aggregation mudinja apram execute aagum.",
+              "SQL mudhala ovvoru supplier-oda average unit price calculate pannum. Adhukku apram correlated subquery use panni adhe category-oda average unit price calculate pannum.",
+              "Oru supplier-oda average unit price, adhe category average vida adhigama irundha dhaan result-la varum. Category average-ku equal illa adhukku keezha irukkura suppliers filter aagidum.",
+              "ORDER BY s.category, avg_unit_price DESC use pannradhunaala ovvoru category-la premium-priced suppliers first varum.",
+              "Business Insight: Indha suppliers adhe category-la premium positioning have pannudhu. Flipkart indha suppliers-oda partner panni exclusive product collections create panna mudiyum, luxury tier products offer panna mudiyum, high-value customer segments-ku target panna mudiyum. Indha suppliers value-added offerings-ku strategic partners."
+            ],
+            "hi": [
+              "Pichhle step mein har supplier ke paas do values thi: uska average unit price aur us category ke sabhi suppliers ka average unit price. Is final step mein hum in dono values ka comparison karte hain aur sirf wo suppliers select karte hain jinhe average category average se zyada hai.",
+              "HAVING ka use isliye kiya gaya hai kyunki avg_unit_price AVG() se calculate hoti hai. WHERE aggregation se pehle execute hota hai, jabki HAVING aggregation ke baad execute hota hai.",
+              "SQL pehle har supplier ka average unit price calculate karta hai. Phir correlated subquery us category ke suppliers ka average unit price calculate karti hai.",
+              "Agar kisi supplier ka average unit price us category ke average se zyada hota hai, toh woh final result mein aata hai. Baaki suppliers automatically remove ho jaate hain.",
+              "ORDER BY s.category, avg_unit_price DESC har category ke andar premium-priced suppliers ko pehle dikhata hai.",
+              "Business Insight: Ye suppliers apni category mein premium positioning maintain kar rahe hain. Flipkart un se exclusive collections, luxury products, aur high-value customer segments ke liye partner ban sakta hai. Ye strategic suppliers valued services provide karte hain."
+            ],
+            "te": [
+              "Previous step lo prathi supplier ki avg_unit_price mariyu category_avg_price ane rendu values unnayi. Ee final step lo aa rendu values ni compare chesi, supplier average category average kanna ekkuva unte matrame result lo untundi.",
+              "HAVING ni use chestunnam, WHERE ni kaadu. Endukante avg_unit_price AVG() tho calculate ayina aggregated value. WHERE aggregation mundu execute avutundi, HAVING aggregation tarvata execute avutundi.",
+              "SQL munduga prathi supplier average unit price calculate chestundi. Tarvata correlated subquery ade category average unit price ni calculate chestundi.",
+              "Oka supplier average unit price, ade category average kanna ekkuva unte matrame final result lo untundi. Migatha suppliers filter avutayi.",
+              "ORDER BY s.category, avg_unit_price DESC use cheyyadam valla prathi category lo premium-priced suppliers mundu kanipistayi.",
+              "Business Insight: Ee suppliers ade category lo premium positioning maintain chestunnayi. Flipkart aa suppliers tho exclusive collections, luxury products, mariyu high-value customer segments kosam partner avvalem. Ee suppliers valued services provide chestunnayi."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
