@@ -1,0 +1,208 @@
+{
+  "setup":"CREATE TABLE videos(video_id INTEGER,title TEXT,duration_seconds INTEGER);INSERT INTO videos VALUES(101,'SQL Basics',600),(102,'Python Crash Course',900),(103,'Data Engineering Roadmap',1200);CREATE TABLE watch_history(watch_id INTEGER,user_id INTEGER,video_id INTEGER,watch_seconds INTEGER,watch_date TEXT);INSERT INTO watch_history VALUES(1001,1,101,600,'2024-05-01'),(1002,2,101,420,'2024-05-01'),(1003,3,101,600,'2024-05-02'),(1004,4,101,600,'2024-05-02'),(1005,5,101,310,'2024-05-03'),(1006,6,101,600,'2024-05-03'),(1007,7,101,600,'2024-05-04'),(1008,8,101,600,'2024-05-04'),(1009,1,102,900,'2024-05-05'),(1010,2,102,450,'2024-05-05'),(1011,3,102,900,'2024-05-06'),(1012,4,102,610,'2024-05-06'),(1013,5,102,900,'2024-05-07'),(1014,6,102,320,'2024-05-07'),(1015,7,102,900,'2024-05-08'),(1016,8,102,900,'2024-05-08'),(1017,1,103,1200,'2024-05-09'),(1018,2,103,540,'2024-05-09'),(1019,3,103,1200,'2024-05-10'),(1020,4,103,730,'2024-05-10'),(1021,5,103,420,'2024-05-11'),(1022,6,103,1200,'2024-05-11'),(1023,7,103,380,'2024-05-12'),(1024,8,103,1200,'2024-05-12');",
+  "questions":[
+    {
+      "id":1,
+      "diff":"mid",
+      "cc":[
+        "JOIN",
+        "WHERE",
+        "GROUP BY",
+        "CASE WHEN",
+        "COUNT(DISTINCT)",
+        "ROUND"
+      ],
+      "story":{
+        "en":"YouTube HQ, Monday product review. The Creator Growth team notices that while some videos attract thousands of viewers, not everyone watches until the end. The Product team wants to identify which videos keep viewers engaged throughout the entire video before recommending them to more users.",
+        "ta":"YouTube HQ, Monday product review. Creator Growth team paakumbodhu sila videos-ku neraya viewers varraanga, aana ellarum video mudiyura varaikkum paakradhu illa. Product team-ku endha videos viewers-a full video varaikkum engage pannudhu nu theriyanum. Adha base panni recommendation improve panna poraanga.",
+        "hi":"YouTube HQ, Monday product review. Creator Growth team ne dekha ki kuch videos bahut saare viewers ko attract karte hain, lekin sabhi log video ke end tak nahi dekhte. Product team jaana chahti hai ki kaun se videos audience ko poore video tak engage rakhte hain taaki unhe aur zyada recommend kiya ja sake.",
+        "te":"YouTube HQ, Monday product review. Creator Growth team gamaninchindi entante konni videos ki chala mandi viewers vastunnaru kani andaroo video chivari varaku choodatledu. Product team e videos audience ni poorthi video varaku engage chestunnayo telusukoni recommendation improve cheyyalani anukuntundi."
+      },
+      "question":{
+        "en":"For each video, calculate the percentage of viewers who watched until the end out of all viewers who started the video. Round the result to 2 decimal places.",
+        "ta":"Prathi video-ku video start pannina viewers-la, full video mudichavanga evlo percentage nu calculate pannu. Result-a 2 decimal places-ku round pannu.",
+        "hi":"Har video ke liye video shuru karne wale viewers mein se kitne logon ne poora video dekha uska percentage nikalo. Result ko 2 decimal places tak round karo.",
+        "te":"Prathi video ki video start chesina viewers lo poorthi video chusina viewers percentage calculate cheyyandi. Result ni 2 decimal places ki round cheyyandi."
+      },
+      "schemas":[
+        {
+          "name":"videos",
+          "cols":[
+            {
+              "n":"video_id",
+              "t":"INTEGER",
+              "e":"101"
+            },
+            {
+              "n":"title",
+              "t":"TEXT",
+              "e":"SQL Basics"
+            },
+            {
+              "n":"duration_seconds",
+              "t":"INTEGER",
+              "e":"600"
+            }
+          ]
+        },
+        {
+          "name":"watch_history",
+          "cols":[
+            {
+              "n":"watch_id",
+              "t":"INTEGER",
+              "e":"1001"
+            },
+            {
+              "n":"user_id",
+              "t":"INTEGER",
+              "e":"1"
+            },
+            {
+              "n":"video_id",
+              "t":"INTEGER",
+              "e":"101"
+            },
+            {
+              "n":"watch_seconds",
+              "t":"INTEGER",
+              "e":"600"
+            },
+            {
+              "n":"watch_date",
+              "t":"TEXT",
+              "e":"2024-05-01"
+            }
+          ]
+        }
+      ],
+      "steps":[
+        {
+  "title": {
+    "en": "Join tables and identify viewers who started or completed the video",
+    "ta": "Tables join panni video start panninavanga matrum full video mudichavanga identify pannu",
+    "hi": "Tables join karo aur video shuru ya poora dekhne wale viewers ko identify karo",
+    "te": "Tables join chesi video start chesina mariyu poorthi video chusina viewers ni identify cheyyali"
+  },
+  "sql": "SELECT w.user_id,\n       v.title,\n       v.duration_seconds,\n       w.watch_seconds\nFROM watch_history w\nJOIN videos v ON w.video_id = v.video_id\nWHERE w.watch_seconds > 0;",
+  "explain": {
+    "en": [
+      "Two separate tables contain the information we need. watch_history stores how many seconds each user watched, while videos stores the total duration of every video. Neither table alone can calculate viewer retention.",
+      "JOIN videos v ON w.video_id = v.video_id links every watch record to its corresponding video. This allows us to compare how long a user watched against the video's total duration.",
+      "WHERE w.watch_seconds > 0 removes invalid watch records where a user never actually watched the video. Only users who watched at least one second are considered as viewers who started the video.",
+      "Why filter this early? Rows that do not represent actual viewing activity add unnecessary data to the aggregation step and can produce misleading retention numbers.",
+      "The result of this step is a clean dataset where every watch record contains both the video's duration and the user's watch time. This prepares the data for calculating started and completed viewers in the next step."
+    ],
+    "ta": [
+      "Namakku thevaiyana data rendu tables-la irukku. watch_history-la user evlo neram video paathaaru nu irukku, videos table-la antha video-oda motha duration irukku. Rendu tables-um join pannina dhaan viewer retention calculate panna mudiyum.",
+      "JOIN videos v ON w.video_id = v.video_id use pannumbodhu ovvoru watch record-um corresponding video-oda duration-oda link aagum. Ippo user evlo paathaaru, video motham evlo nu compare panna mudiyum.",
+      "WHERE w.watch_seconds > 0 use pannradhunaala paakave illaatha records remove aagum. Oru second-aavadhu paathavanga dhaan video start pannina viewers-a consider pannrom.",
+      "Yen indha filter-a ippo use pannrom? Actual viewing illaatha rows aggregation-la unnecessary data create pannum, retention calculation-um wrong aagalam.",
+      "Indha step result-la ovvoru row-kum video duration-um user watch time-um irukkum. Idhu next step-la started viewers matrum completed viewers calculate panna ready dataset."
+    ],
+    "hi": [
+      "Humein zaroori information do tables mein milti hai. watch_history batata hai ki user ne kitne seconds video dekha, jabki videos table video ki total duration batati hai. Dono tables ke bina viewer retention calculate nahi ki ja sakti.",
+      "JOIN videos v ON w.video_id = v.video_id har watch record ko us video ke saath jodta hai. Ab hum compare kar sakte hain ki user ne video kitni der dekha aur video ki total length kya hai.",
+      "WHERE w.watch_seconds > 0 un records ko hata deta hai jahan user ne video dekha hi nahi. Sirf wahi users 'started viewers' maane jaate hain jinhone kam se kam ek second video dekha ho.",
+      "Pehle filter kyun? Invalid rows aggregation mein unnecessary data add karti hain aur retention percentage galat ho sakta hai.",
+      "Is step ka result ek clean dataset hai jisme har row mein video duration aur user watch time dono available hain. Agla step isi data se started aur completed viewers calculate karega."
+    ],
+    "te": [
+      "Manaki kavalsina information rendu tables lo untundi. watch_history user video ni enni seconds chusado chupisthundi, videos table aa video total duration ni chupisthundi. Viewer retention calculate cheyyadaniki rendu tables kavali.",
+      "JOIN videos v ON w.video_id = v.video_id prathi watch record ni corresponding video tho link chestundi. Ippudu user entha sepu chusado mariyu video total duration ento compare cheyyachu.",
+      "WHERE w.watch_seconds > 0 use chesthe video assalu choodani records remove avutayi. Kanisam oka second video chusina vallane started viewers ga consider chestam.",
+      "Mundu filter enduku? Actual viewing leni rows aggregation lo unnecessary data create chestayi mariyu retention percentage tappuga ravachu.",
+      "Ee step result lo prathi row ki video duration mariyu user watch time rendu untayi. Next step lo started viewers mariyu completed viewers calculate cheyyadaniki dataset ready avutundi."
+    ]
+  }
+},
+        {
+  "title": {
+    "en": "Group by video and split started vs completed viewers using CASE WHEN",
+    "ta": "Video-wise group panni CASE WHEN use panni started vs completed viewers split pannu",
+    "hi": "Video ke hisaab se group karo aur CASE WHEN se started aur completed viewers alag karo",
+    "te": "Video wise group chesi CASE WHEN use chesi started mariyu completed viewers ni split cheyyali"
+  },
+  "sql": "SELECT v.title,\n       COUNT(DISTINCT CASE\n               WHEN w.watch_seconds > 0\n               THEN w.user_id END) AS started_viewers,\n       COUNT(DISTINCT CASE\n               WHEN w.watch_seconds >= v.duration_seconds\n               THEN w.user_id END) AS completed_viewers\nFROM watch_history w\nJOIN videos v ON w.video_id = v.video_id\nWHERE w.watch_seconds > 0\nGROUP BY v.title\nORDER BY v.title;",
+  "explain": {
+    "en": [
+      "GROUP BY v.title combines all watch records belonging to the same video into a single row. Instead of seeing one row per viewer, we'll see one row per video.",
+      "CASE WHEN w.watch_seconds > 0 THEN w.user_id END identifies users who actually started watching the video. COUNT(DISTINCT) ensures every viewer is counted only once, even if duplicate watch records exist.",
+      "The second CASE WHEN checks whether a viewer watched at least the video's full duration. If watch_seconds is greater than or equal to duration_seconds, that viewer is considered to have completed the video.",
+      "This approach is called conditional aggregation. It allows us to calculate multiple metrics from the same dataset inside one GROUP BY query without writing separate queries.",
+      "Run this step to verify the output. Each video should now have two numbers: started_viewers and completed_viewers.",
+      "These are raw counts only. The next step converts them into viewer retention percentages."
+    ],
+    "ta": [
+      "GROUP BY v.title use pannumbodhu, orae video-oda ella watch records-um oru single row-a merge aagum. Ippo ovvoru viewer-ku oru row illa, ovvoru video-ku oru row dhaan varum.",
+      "CASE WHEN w.watch_seconds > 0 THEN w.user_id END video start pannina viewers-a identify pannum. COUNT(DISTINCT) use pannradhunaala duplicate watch records irundhaalum user oru thadava dhaan count aaguvaar.",
+      "Second CASE WHEN user full video paatharaanu check pannum. watch_seconds video duration-ku equal illana adhigama irundhaa, antha viewer completed viewer-a consider pannuvom.",
+      "Indha technique conditional aggregation nu solluvaanga. Oru GROUP BY query-la multiple metrics calculate panna idhu romba useful.",
+      "Indha step run panninaa ovvoru video-kum started_viewers matrum completed_viewers nu rendu raw counts varum.",
+      "Ivi percentage illa. Next step-la viewer retention percentage calculate pannuvom."
+    ],
+    "hi": [
+      "GROUP BY v.title same video ki saari watch records ko ek row mein combine karta hai. Ab har viewer ke bajay har video ke liye ek row milegi.",
+      "CASE WHEN w.watch_seconds > 0 THEN w.user_id END un users ko identify karta hai jinhone video dekhna shuru kiya. COUNT(DISTINCT) duplicate records hone par bhi viewer ko sirf ek baar count karta hai.",
+      "Doosra CASE WHEN check karta hai ki viewer ne video ki poori duration dekhi ya nahi. Agar watch_seconds video duration ke barabar ya usse zyada hai, toh viewer ko completed viewer maana jaata hai.",
+      "Is technique ko conditional aggregation kehte hain. Isse ek hi GROUP BY query mein multiple metrics calculate kiye ja sakte hain.",
+      "Is step ko run karne par har video ke liye started_viewers aur completed_viewers milenge.",
+      "Ye sirf raw counts hain. Agle step mein inhe viewer retention percentage mein convert karenge."
+    ],
+    "te": [
+      "GROUP BY v.title use chesthe ade video ki sambandhinchina anni watch records oka row ga marutayi. Ippudu prathi viewer ki kaakunda prathi video ki oka row untundi.",
+      "CASE WHEN w.watch_seconds > 0 THEN w.user_id END video start chesina viewers ni identify chestundi. COUNT(DISTINCT) duplicate watch records unna kuda viewer ni okkasari matrame count chestundi.",
+      "Rendo CASE WHEN viewer poorthi video chusado ledo check chestundi. watch_seconds video duration kanna equal leda ekkuva unte completed viewer ga consider chestam.",
+      "Ee technique ni conditional aggregation antaru. Oka GROUP BY query lone multiple metrics calculate cheyyachu.",
+      "Ee step run chesthe prathi video ki started_viewers mariyu completed_viewers ane rendu raw counts vasthayi.",
+      "Ivi percentages kaavu. Next step lo viewer retention percentage calculate chestam."
+    ]
+  }
+},
+        {
+  "title": {
+    "en": "Calculate viewer retention percentage and round to 2 decimal places",
+    "ta": "Viewer retention percentage calculate panni 2 decimal places-ku round pannu",
+    "hi": "Viewer retention percentage calculate karo aur 2 decimal places mein round karo",
+    "te": "Viewer retention percentage calculate chesi 2 decimal places ki round cheyyali"
+  },
+  "sql": "SELECT v.title,\n       ROUND(\n         COUNT(DISTINCT CASE\n                 WHEN w.watch_seconds >= v.duration_seconds\n                 THEN w.user_id END) * 100.0\n         /\n         COUNT(DISTINCT CASE\n                 WHEN w.watch_seconds > 0\n                 THEN w.user_id END), 2\n       ) AS retention_percentage\nFROM watch_history w\nJOIN videos v ON w.video_id = v.video_id\nWHERE w.watch_seconds > 0\nGROUP BY v.title\nORDER BY retention_percentage DESC;",
+  "explain": {
+    "en": [
+      "Viewer Retention Percentage follows a simple business formula: Completed Viewers ÷ Started Viewers × 100. Since Step 2 already calculated both values, we simply apply the formula here.",
+      "Why multiply by 100.0 instead of 100? SQL performs integer division when both values are integers. Using 100.0 forces decimal arithmetic, ensuring the retention percentage is calculated accurately.",
+      "ROUND(expression, 2) wraps the entire percentage calculation and limits the result to exactly two decimal places. The second argument specifies the number of digits after the decimal point.",
+      "Notice that we reuse the same CASE WHEN expressions from Step 2. No new aggregation logic is introduced here. We are simply converting the raw counts into a business metric.",
+      "ORDER BY retention_percentage DESC ranks videos from the highest retention rate to the lowest. Videos with better retention are usually stronger candidates for recommendation because viewers stay engaged until the end.",
+      "Expected result: SQL Basics → 75.00%, Python Crash Course → 62.50%, Data Engineering Roadmap → 50.00%. Higher retention indicates viewers are consistently watching the complete video."
+    ],
+    "ta": [
+      "Viewer Retention Percentage formula romba simple: Completed Viewers ÷ Started Viewers × 100. Step 2-la rendu counts-um calculate pannittom. Ippo adha percentage-a convert pannrom.",
+      "Yen 100.0 use pannrom? SQL integer division pannumbodhu decimal values truncate aagidum. 100.0 use panninaa decimal arithmetic use pannum, correct retention percentage varum.",
+      "ROUND(expression, 2) result-a exactly rendu decimal places-ku round pannum. Second argument decimal-ku appuram evlo digits venumnu solludhu.",
+      "Step 2-la use pannina adhe CASE WHEN expressions dhaan inga reuse pannrom. Pudhusa aggregation edhuvum introduce pannala; raw counts-a business metric-a convert pannrom.",
+      "ORDER BY retention_percentage DESC highest retention irukkura videos first varum. Viewer retention adhigama irukkura videos recommendation-ku nalla candidates.",
+      "Expected result: SQL Basics → 75.00%, Python Crash Course → 62.50%, Data Engineering Roadmap → 50.00%. Higher retention-na viewers full video paakraanga-nu artham."
+    ],
+    "hi": [
+      "Viewer Retention Percentage ka formula simple hai: Completed Viewers ÷ Started Viewers × 100. Step 2 mein dono counts mil chuke hain. Ab unhe percentage mein badalte hain.",
+      "100.0 kyun? Agar 100 use karenge toh SQL integer division karega aur decimal value truncate ho sakti hai. 100.0 likhne se decimal calculation hoti hai.",
+      "ROUND(expression, 2) result ko do decimal places tak round karta hai. Doosra argument decimal ke baad kitne digits chahiye batata hai.",
+      "Dhyan dijiye ki Step 2 wale CASE WHEN expressions hi yahan reuse kiye gaye hain. Nayi aggregation nahi likh rahe, sirf raw counts ko business metric mein convert kar rahe hain.",
+      "ORDER BY retention_percentage DESC videos ko sabse zyada retention se sabse kam retention tak arrange karta hai. High retention wale videos recommendation ke liye zyada suitable hote hain.",
+      "Expected result: SQL Basics → 75.00%, Python Crash Course → 62.50%, Data Engineering Roadmap → 50.00%."
+    ],
+    "te": [
+      "Viewer Retention Percentage formula simple: Completed Viewers ÷ Started Viewers × 100. Step 2 lo rendu counts calculate chesam. Ippudu vatini percentage ga marchutunnam.",
+      "100.0 enduku? SQL integer division cheste decimal value truncate avutundi. 100.0 use chesthe decimal arithmetic jarugutundi mariyu correct retention percentage vasthundi.",
+      "ROUND(expression, 2) result ni rendu decimal places ki round chestundi. Rendo argument decimal tarvata enni digits kavalo cheptundi.",
+      "Step 2 lo use chesina ade CASE WHEN expressions ikkada reuse chestunnam. Kotha aggregation rayatledu; raw counts ni business metric ga marchutunnam.",
+      "ORDER BY retention_percentage DESC highest retention unna videos ni mundu chupisthundi. High retention unna videos recommendation ki better candidates.",
+      "Expected result: SQL Basics → 75.00%, Python Crash Course → 62.50%, Data Engineering Roadmap → 50.00%."
+    ]
+  }
+}
+              ]
+    }
+  ]
+}
