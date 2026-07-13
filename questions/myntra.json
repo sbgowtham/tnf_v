@@ -1,0 +1,209 @@
+{
+  "setup":"CREATE TABLE products(product_id INTEGER,product_name TEXT,brand TEXT,category TEXT);INSERT INTO products VALUES(101,'Air Zoom','Nike','Shoes'),(102,'Revolution 7','Nike','Shoes'),(103,'Sports Tee','Nike','T-Shirts'),(201,'Ultraboost','Adidas','Shoes'),(202,'Running Tee','Adidas','T-Shirts'),(203,'Track Pants','Adidas','Bottom Wear'),(301,'RS-X','Puma','Shoes'),(302,'Polo Tee','Puma','T-Shirts'),(303,'Training Shorts','Puma','Bottom Wear');CREATE TABLE sales(sale_id INTEGER,product_id INTEGER,quantity INTEGER,sale_date TEXT);INSERT INTO sales VALUES(1001,101,45,'2024-05-01'),(1002,101,30,'2024-05-03'),(1003,102,20,'2024-05-02'),(1004,102,18,'2024-05-05'),(1005,103,10,'2024-05-04'),(1006,103,12,'2024-05-06'),(1007,201,35,'2024-05-01'),(1008,201,30,'2024-05-04'),(1009,202,18,'2024-05-02'),(1010,202,16,'2024-05-05'),(1011,203,12,'2024-05-03'),(1012,203,10,'2024-05-06'),(1013,301,28,'2024-05-01'),(1014,301,22,'2024-05-03'),(1015,302,16,'2024-05-02'),(1016,302,14,'2024-05-05'),(1017,303,8,'2024-05-04'),(1018,303,10,'2024-05-06');",
+  "questions":[
+    {
+      "id":1,
+      "diff":"mid",
+      "cc":[
+        "JOIN",
+        "GROUP BY",
+        "SUM",
+        "Correlated Subquery",
+        "AVG",
+        "HAVING",
+        "ORDER BY"
+      ],
+      "story":{
+        "en":"Monday morning at Myntra HQ. The Brand Partnerships team is preparing the 'Top Picks' collection for the upcoming fashion sale. Instead of comparing every product across the marketplace, they want to compare each product only with others from the same brand. Products performing better than their brand average will receive additional promotion on the homepage.",
+        "ta":"Monday morning Myntra HQ-la Brand Partnerships team upcoming fashion sale-ku 'Top Picks' collection prepare pannitu irukkaanga. Ella products-um compare pannama, adhe brand-la irukkura products-oda compare panna virumburaanga. Brand average vida nalla perform pannra products-ku homepage promotion kudukka poraanga.",
+        "hi":"Monday morning Myntra HQ mein Brand Partnerships team upcoming fashion sale ke liye 'Top Picks' collection taiyar kar rahi hai. Woh har product ko usi brand ke products ke saath compare karna chahti hai. Jo products apne brand ke average se behtar perform karte hain unhe homepage par promote kiya jayega.",
+        "te":"Monday morning Myntra HQ lo Brand Partnerships team upcoming fashion sale kosam 'Top Picks' collection prepare chestondi. Prathi product ni ade brand lo unna products tho compare cheyyalani anukuntunnaru. Brand average kanna ekkuva sales unna products ni homepage lo promote cheyyalani plan chestunnaru."
+      },
+      "question":{
+        "en":"Find products whose total sales quantity is greater than the average total sales quantity of products from the same brand. Return the product name, brand and total sales quantity. Sort the result by brand and total sales quantity in descending order.",
+        "ta":"Adhe brand-la irukkura products-oda average total sales quantity vida adhigama sales irukkura products-a kandupidichu product name, brand matrum total sales quantity-a kaatu. Result-a brand-wise sort panni, adhukulla total sales descending order-la kaatu.",
+        "hi":"Un products ko dhoondo jinki total sales quantity usi brand ke products ki average total sales quantity se zyada hai. Product name, brand aur total sales quantity dikhao. Result ko brand aur total sales quantity ke descending order mein sort karo.",
+        "te":"Ade brand lo unna products average total sales quantity kanna ekkuva sales unna products ni kanugonandi. Product name, brand mariyu total sales quantity ni chupinchandi. Result ni brand mariyu total sales quantity descending order lo sort cheyyandi."
+      },
+      "schemas":[
+        {
+          "name":"products",
+          "cols":[
+            {
+              "n":"product_id",
+              "t":"INTEGER",
+              "e":"101"
+            },
+            {
+              "n":"product_name",
+              "t":"TEXT",
+              "e":"Air Zoom"
+            },
+            {
+              "n":"brand",
+              "t":"TEXT",
+              "e":"Nike"
+            },
+            {
+              "n":"category",
+              "t":"TEXT",
+              "e":"Shoes"
+            }
+          ]
+        },
+        {
+          "name":"sales",
+          "cols":[
+            {
+              "n":"sale_id",
+              "t":"INTEGER",
+              "e":"1001"
+            },
+            {
+              "n":"product_id",
+              "t":"INTEGER",
+              "e":"101"
+            },
+            {
+              "n":"quantity",
+              "t":"INTEGER",
+              "e":"45"
+            },
+            {
+              "n":"sale_date",
+              "t":"TEXT",
+              "e":"2024-05-01"
+            }
+          ]
+        }
+      ],
+      "steps":[
+        {
+  "title": {
+    "en": "Calculate the total sales quantity for each product",
+    "ta": "Ovvoru product-kum total sales quantity calculate pannu",
+    "hi": "Har product ki total sales quantity calculate karo",
+    "te": "Prathi product ki total sales quantity calculate cheyyandi"
+  },
+  "sql": "SELECT p.product_id,\n       p.product_name,\n       p.brand,\n       SUM(s.quantity) AS total_sales\nFROM products p\nJOIN sales s\nON p.product_id = s.product_id\nGROUP BY p.product_id,\n         p.product_name,\n         p.brand\nORDER BY p.brand,\n         total_sales DESC;",
+  "explain": {
+    "en": [
+      "The products table stores product details such as the product name and brand, while the sales table stores every sales transaction. To calculate total sales for a product, we first need to combine these two tables.",
+      "JOIN connects every sales transaction with its corresponding product. Without the JOIN, we would know the quantity sold, but we wouldn't know which product or brand it belongs to.",
+      "SUM(s.quantity) adds the quantity from every sales transaction of the same product. This gives us the total number of units sold for each product.",
+      "GROUP BY combines multiple sales transactions into a single row for every product. Without GROUP BY, SQL cannot calculate a separate total for each product.",
+      "At the end of this step, every product has one row with its total sales quantity. We are not comparing products yet. We are simply preparing the base metric that will be used in the next step.",
+      "Run this query and verify that products like Air Zoom have higher total sales than other products within the same brand. These totals will be compared against the brand average in the next step."
+    ],
+    "ta": [
+      "products table-la product details irukku. sales table-la ovvoru sales transaction-um store pannirukku. Total sales calculate panna mudhala rendu tables-um join panna vendum.",
+      "JOIN use pannumbodhu ovvoru sales transaction-um corresponding product-oda connect aagum. JOIN illa-na quantity theriyum, aana adhu endha product-ku nu theriyadhu.",
+      "SUM(s.quantity) orae product-ku belong aagura ella sales quantities-um serthu total sales calculate pannum.",
+      "GROUP BY use pannumbodhu orae product-oda ella sales transactions-um oru single row-aa merge aagum. GROUP BY illa-na ovvoru product-kum separate total calculate panna mudiyadhu.",
+      "Indha step mudinja apram ovvoru product-kum oru row mattum irukkum, adhula total sales quantity irukkum. Innum compare pannala. Next step-la brand average calculate panna indha data use pannuvom.",
+      "Query run panni Air Zoom madhiri products same brand-la irukkura matha products vida adhigama total sales irukkudhaa nu verify pannunga."
+    ],
+    "hi": [
+      "products table mein product ki details hain aur sales table mein har sales transaction store hota hai. Total sales nikalne ke liye sabse pehle dono tables ko join karna zaroori hai.",
+      "JOIN har sales transaction ko uske product ke saath connect karta hai. JOIN ke bina quantity toh milegi, lekin woh kis product aur brand ki hai, yeh pata nahi chalega.",
+      "SUM(s.quantity) ek product ki sabhi sales quantities ko jodkar us product ki total sales quantity calculate karta hai.",
+      "GROUP BY ek hi product ki multiple sales transactions ko ek row mein combine karta hai. Iske bina SQL har product ka alag total calculate nahi kar sakta.",
+      "Is step ke baad har product ke paas ek row hogi jisme uski total sales quantity hogi. Abhi hum comparison nahi kar rahe. Agle step mein isi data ko brand average se compare karenge.",
+      "Query run karke dekhiye ki Air Zoom jaise products apne brand ke doosre products se zyada total sales generate karte hain."
+    ],
+    "te": [
+      "products table lo product details untayi. sales table lo prathi sales transaction untundi. Total sales calculate cheyyadaniki munduga rendu tables ni join cheyyali.",
+      "JOIN prathi sales transaction ni corresponding product tho connect chestundi. JOIN lekapothe quantity telustundi kani adi e product leda brand ki sambandhinchindo teliyadu.",
+      "SUM(s.quantity) oka product ki sambandhinchina anni sales quantities ni kalipi total sales calculate chestundi.",
+      "GROUP BY use chesthe oka product ki sambandhinchina anni sales transactions oka row ga marutayi. GROUP BY lekapothe prathi product ki separate total calculate cheyyalem.",
+      "Ee step ayyaka prathi product ki oka row untundi mariyu andulo total sales quantity untundi. Inka compare cheyyatledu. Next step lo ide data ni brand average tho compare chestam.",
+      "Query run chesi Air Zoom lanti products ade brand lo unna vere products kanna ekkuva total sales generate chestunnayo verify cheyyandi."
+    ]
+  }
+},
+        {
+  "title": {
+    "en": "Calculate the average total sales for products from the same brand",
+    "ta": "Adhe brand-la irukkura products-oda average total sales calculate pannu",
+    "hi": "Ussi brand ke products ki average total sales calculate karo",
+    "te": "Ade brand lo unna products average total sales calculate cheyyandi"
+  },
+  "sql": "SELECT p.product_id,\n       p.product_name,\n       p.brand,\n       SUM(s.quantity) AS total_sales,\n       (\n           SELECT AVG(product_sales)\n           FROM (\n               SELECT SUM(s2.quantity) AS product_sales\n               FROM products p2\n               JOIN sales s2\n               ON p2.product_id = s2.product_id\n               WHERE p2.brand = p.brand\n               GROUP BY p2.product_id\n           ) brand_sales\n       ) AS brand_avg_sales\nFROM products p\nJOIN sales s\nON p.product_id = s.product_id\nGROUP BY p.product_id,\n         p.product_name,\n         p.brand\nORDER BY p.brand,\n         total_sales DESC;",
+  "explain": {
+    "en": [
+      "From the previous step, we already know the total sales of every product. Now we need another value to compare against: the average total sales of products belonging to the same brand.",
+      "The correlated subquery calculates this average. It runs once for every row returned by the outer query. As the outer query moves from one product to another, the value of p.brand changes, and the inner query automatically recalculates the average for that brand.",
+      "Inside the subquery, we first calculate the total sales for every product within the current brand using SUM() and GROUP BY. Once we have the total sales of all products in that brand, AVG() calculates the brand's average sales.",
+      "Notice the condition WHERE p2.brand = p.brand. Here, p2.brand belongs to the inner query, while p.brand comes from the outer query. This reference to the outer query is what makes it a correlated subquery.",
+      "We are not filtering any products yet. The purpose of this step is simply to display two values for every product: its own total sales and its brand's average sales. These two values will be compared in the final step."
+    ],
+    "ta": [
+      "Previous step-la ovvoru product-oda total sales calculate pannittom. Ippo compare panna adhe brand-oda average total sales venum.",
+      "Indha average-a correlated subquery calculate pannudhu. Outer query-la ovvoru product-ku inner query oru thadava execute aagum. p.brand change aagumbodhu, inner query-um andha brand-ku average-a marubadiyum calculate pannum.",
+      "Inner query-la mudhala adhe brand-la irukkura ovvoru product-oda total sales SUM() matrum GROUP BY use panni calculate pannrom. Adhukku apram AVG() use panni andha brand-oda average sales calculate pannrom.",
+      "WHERE p2.brand = p.brand nu irukku. p2.brand inner query-ku belong aagum. p.brand outer query-lendhu varudhu. Indha outer query reference dhaan correlated subquery-oda mukkiya feature.",
+      "Indha step-la innum filtering pannala. Ovvoru product-kum total_sales matrum brand_avg_sales nu rendu values-a paakrom. Next step-la indha rendu values compare pannuvom."
+    ],
+    "hi": [
+      "Pichhle step mein humne har product ki total sales calculate ki thi. Ab humein comparison ke liye usi brand ki average total sales chahiye.",
+      "Ye average correlated subquery calculate karti hai. Outer query ki har row ke liye inner query dobara execute hoti hai. Jaise hi p.brand badalta hai, average bhi us brand ke hisaab se calculate hota hai.",
+      "Inner query pehle us brand ke har product ki total sales SUM() aur GROUP BY se calculate karti hai. Uske baad AVG() un totals ka average nikalta hai.",
+      "WHERE p2.brand = p.brand mein p2.brand inner query ka column hai, jabki p.brand outer query se aata hai. Isi wajah se ise correlated subquery kehte hain.",
+      "Is step mein hum filtering nahi kar rahe. Hum sirf har product ke liye total_sales aur brand_avg_sales dekh rahe hain. Agle step mein in dono ka comparison hoga."
+    ],
+    "te": [
+      "Previous step lo prathi product total sales calculate chesam. Ippudu compare cheyyadaniki ade brand average total sales kavali.",
+      "Ee average ni correlated subquery calculate chestundi. Outer query lo prathi row kosam inner query malli execute avutundi. p.brand maarina prathi sari, aa brand average kuda marutundi.",
+      "Inner query munduga ade brand lo unna prathi product total sales ni SUM() mariyu GROUP BY tho calculate chestundi. Tarvata AVG() aa totals yokka average ni calculate chestundi.",
+      "WHERE p2.brand = p.brand lo p2.brand inner query ki sambandhinchindi. p.brand outer query nundi vastundi. Ee outer query reference valle dinini correlated subquery antaru.",
+      "Ee step lo filtering ledu. Prathi product ki total_sales mariyu brand_avg_sales chupistunnam. Next step lo ee rendu values ni compare chestam."
+    ]
+  }
+},
+        {
+  "title": {
+    "en": "Filter products whose total sales exceed their brand's average sales",
+    "ta": "Brand average vida adhigama sales irukkura products-a filter pannu",
+    "hi": "Un products ko filter karo jinki total sales apne brand ke average se zyada hai",
+    "te": "Brand average kanna ekkuva sales unna products ni filter cheyyandi"
+  },
+  "sql": "SELECT p.product_name,\n       p.brand,\n       SUM(s.quantity) AS total_sales\nFROM products p\nJOIN sales s\nON p.product_id = s.product_id\nGROUP BY p.product_id,\n         p.product_name,\n         p.brand\nHAVING SUM(s.quantity) > (\n    SELECT AVG(product_sales)\n    FROM (\n        SELECT SUM(s2.quantity) AS product_sales\n        FROM products p2\n        JOIN sales s2\n        ON p2.product_id = s2.product_id\n        WHERE p2.brand = p.brand\n        GROUP BY p2.product_id\n    ) brand_sales\n)\nORDER BY p.brand,\n         total_sales DESC;",
+  "explain": {
+    "en": [
+      "In the previous step, every product had two important values: its own total sales and the average sales of products from the same brand. The final task is simply to compare these two values.",
+      "HAVING is used because total_sales is calculated using the SUM() aggregate function. Since SQL evaluates WHERE before GROUP BY, aggregated values are not available inside the WHERE clause. HAVING filters rows after aggregation is complete.",
+      "For every product, SQL first calculates its total sales using SUM(s.quantity). It then executes the correlated subquery to calculate the average sales of all products belonging to the same brand.",
+      "If a product's total sales are greater than its brand's average sales, the product is included in the final result. Products with sales equal to or below the average are excluded.",
+      "ORDER BY p.brand, total_sales DESC organizes the output by brand and lists the best-performing products first within each brand.",
+      "Business Insight: These products are outperforming other products from the same brand. They are strong candidates for the 'Top Picks' collection, homepage promotions, or marketing campaigns because they consistently generate higher sales than their peers."
+    ],
+    "ta": [
+      "Previous step-la ovvoru product-kum total_sales matrum brand_avg_sales nu rendu values irundhuchu. Indha final step-la indha rendu values-a compare pannrom.",
+      "HAVING use pannrom, WHERE illa. Yenna total_sales SUM() use panni calculate pannra aggregated value. WHERE aggregation-ku munnaadi execute aagum; HAVING aggregation mudinja apram execute aagum.",
+      "SQL mudhala ovvoru product-oda total sales calculate pannum. Adhukku apram correlated subquery use panni adhe brand-oda average sales calculate pannum.",
+      "Oru product-oda total sales, adhe brand average vida adhigama irundha dhaan result-la varum. Average-ku equal illa adhukku keezha irukkura products filter aagidum.",
+      "ORDER BY p.brand, total_sales DESC use pannradhunaala ovvoru brand-la highest-performing products first varum.",
+      "Business Insight: Indha products adhe brand-la irukkura matha products vida better perform pannudhu. Adhanala Top Picks collection, homepage promotion matrum marketing campaigns-ku best candidates."
+    ],
+    "hi": [
+      "Pichhle step mein har product ke paas do values thi: uski total sales aur usi brand ki average sales. Is final step mein hum in dono values ka comparison karte hain.",
+      "HAVING ka use isliye kiya gaya hai kyunki total_sales SUM() se calculate hoti hai. WHERE aggregation se pehle execute hota hai, jabki HAVING aggregation ke baad execute hota hai.",
+      "SQL pehle har product ki total sales calculate karta hai. Phir correlated subquery usi brand ke products ki average sales calculate karti hai.",
+      "Agar kisi product ki total sales uske brand ki average sales se zyada hoti hai, toh woh final result mein aata hai. Baaki products automatically remove ho jaate hain.",
+      "ORDER BY p.brand, total_sales DESC har brand ke andar highest-selling products ko pehle dikhata hai.",
+      "Business Insight: Ye products apne brand ke average se behtar perform kar rahe hain. Isliye ye Top Picks collection, homepage promotion aur marketing campaigns ke liye strong candidates hain."
+    ],
+    "te": [
+      "Previous step lo prathi product ki total_sales mariyu brand_avg_sales ane rendu values unnayi. Ee final step lo aa rendu values ni compare chestam.",
+      "HAVING ni use chestunnam, WHERE ni kaadu. Endukante total_sales SUM() tho calculate ayina aggregated value. WHERE aggregation mundu execute avutundi, HAVING aggregation tarvata execute avutundi.",
+      "SQL munduga prathi product total sales calculate chestundi. Tarvata correlated subquery ade brand average sales ni calculate chestundi.",
+      "Oka product total sales, ade brand average kanna ekkuva unte matrame final result lo untundi. Migatha products filter avutayi.",
+      "ORDER BY p.brand, total_sales DESC use cheyyadam valla prathi brand lo highest-performing products mundu kanipistayi.",
+      "Business Insight: Ee products ade brand lo unna vere products kanna better ga perform chestunnayi. Kabatti Top Picks collection, homepage promotions mariyu marketing campaigns ki best candidates."
+    ]
+  }
+}
+              ]
+    }
+  ]
+}
