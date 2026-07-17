@@ -61,12 +61,5 @@
       "sub": "Customer Segmentation",
       "c": "#ff9900",
       "difficulty": "hard"
-    },
-    { 
-      "id": "linkedin",
-      "name": "linkedin",
-      "sub": "Org Hierarchy",
-      "c": "#0077b5",
-      "difficulty": "hard"
     }
   ]
