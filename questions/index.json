@@ -54,12 +54,5 @@
       "sub": "Performance Ranking",
       "c": "#9c27b0",
       "difficulty": "mid"
-    },
-    { 
-      "id": "amazon",
-      "name": "amazon",
-      "sub": "Customer Segmentation",
-      "c": "#ff9900",
-      "difficulty": "hard"
     }
   ]
