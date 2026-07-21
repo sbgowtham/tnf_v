@@ -1,0 +1,188 @@
+{
+  "setup": "CREATE TABLE customers(customer_id INTEGER,customer_name TEXT,is_prime INTEGER,signup_date TEXT);\nCREATE TABLE orders(order_id INTEGER,customer_id INTEGER,order_date TEXT,order_amount REAL);\nINSERT INTO customers VALUES\n (1,'Aaron Wells',1,'2023-01-05'),\n (2,'Brianna Cole',0,'2023-02-10'),\n (3,'Carlos Mendez',1,'2023-01-20'),\n (4,'Diana Osei',0,'2023-03-01'),\n (5,'Ethan Park',1,'2023-01-15'),\n (6,'Fiona Zhao',0,'2023-04-02');\nINSERT INTO orders VALUES\n (101,1,'2024-01-05',120.50),\n (102,1,'2024-01-18',45.00),\n (103,1,'2024-02-20',15.00),\n (104,2,'2024-01-10',200.00),\n (105,2,'2024-01-25',NULL),\n (106,3,'2024-01-12',165.50),\n (107,3,'2024-01-30',0),\n (108,3,'2024-02-14',90.00),\n (109,4,'2024-02-01',300.00),\n (110,4,'2024-02-20',120.00),\n (111,5,'2024-01-08',165.50),\n (112,5,'2024-03-05',75.25),\n (113,6,'2024-04-10',50.00);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "easy",
+      "cc": [
+        "GROUP BY",
+        "strftime",
+        "COALESCE",
+        "SUM",
+        "COUNT",
+        "ORDER BY"
+      ],
+      "story": {
+        "en": "Monday morning at Amazon's Customer Analytics team. Leadership wants a monthly breakdown of order volume and spend for every customer, to feed into an upcoming loyalty-tier review. Some orders in the system have a missing amount — likely a data sync issue — and those need to be treated as zero rather than breaking the totals.",
+        "ta": "Monday morning Amazon-oda Customer Analytics team-la irukkaanga. Leadership-ku ovvoru customer-oda monthly order volume matrum spend breakdown venum, upcoming loyalty-tier review-ku use pannanum nu. System-la konjum orders-ku amount missing irukku — data sync issue-nala irukkalam — adha zero-nu treat pannanum, totals-a break pannama.",
+        "hi": "Monday morning Amazon ke Customer Analytics team mein. Leadership ko har customer ka monthly order volume aur spend ka breakdown chahiye, upcoming loyalty-tier review ke liye. System mein kuch orders ka amount missing hai — shayad data sync issue ki wajah se — unhe zero maan ke chalna hai, totals ko break kiye bina.",
+        "te": "Monday morning Amazon Customer Analytics team lo. Leadership ki prathi customer ki monthly order volume mariyu spend breakdown kavali, upcoming loyalty-tier review kosam. System lo konni orders ki amount missing undi — data sync issue valla undochu — vaatini zero ga treat cheyali, totals break avvakunda."
+      },
+      "question": {
+        "en": "For each customer, calculate the total number of orders and total order amount per month. Treat any NULL order_amount as 0. Return customer_id, order_month (in YYYY-MM format), total_orders, and total_amount, sorted by customer_id and then order_month.",
+        "ta": "Ovvoru customer-kum, month-a total orders count matrum total order amount-a calculate pannunga. Edhavadhu order_amount NULL-a irundha adha 0-nu treat pannunga. customer_id, order_month (YYYY-MM format-la), total_orders, matrum total_amount-a return pannunga, customer_id apparam order_month order-la sort pannunga.",
+        "hi": "Har customer ke liye, month ke hisaab se total orders count aur total order amount calculate karo. Agar order_amount NULL hai toh usse 0 maano. customer_id, order_month (YYYY-MM format mein), total_orders, aur total_amount return karo, pehle customer_id phir order_month ke order mein sort karke.",
+        "te": "Prathi customer ki, month prakaram total orders count mariyu total order amount calculate cheyandi. order_amount NULL unte danini 0 gaa treat cheyandi. customer_id, order_month (YYYY-MM format lo), total_orders, mariyu total_amount ni return cheyandi, customer_id tarvata order_month prakaram sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "customers",
+          "cols": [
+            {
+              "n": "customer_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "customer_name",
+              "t": "TEXT",
+              "e": "Aaron Wells"
+            },
+            {
+              "n": "is_prime",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "signup_date",
+              "t": "TEXT",
+              "e": "2023-01-05"
+            }
+          ]
+        },
+        {
+          "name": "orders",
+          "cols": [
+            {
+              "n": "order_id",
+              "t": "INTEGER",
+              "e": "101"
+            },
+            {
+              "n": "customer_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "order_date",
+              "t": "TEXT",
+              "e": "2024-01-05"
+            },
+            {
+              "n": "order_amount",
+              "t": "REAL",
+              "e": "120.50"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Extract the order month from order_date",
+            "ta": "order_date-la irundhu order month-a extract pannunga",
+            "hi": "order_date se order month nikaalo",
+            "te": "order_date nunchi order month extract cheyandi"
+          },
+          "sql": "SELECT order_id,\n       customer_id,\n       order_date,\n       strftime('%Y-%m', order_date) AS order_month,\n       order_amount\nFROM orders\nORDER BY customer_id, order_date;",
+          "explain": {
+            "en": [
+              "The orders table stores one row per order with a full order_date, but the question needs monthly totals, so the first step is to turn each date into a YYYY-MM month bucket.",
+              "strftime('%Y-%m', order_date) extracts just the year and month from the date string. SQLite has no DATE_TRUNC, so strftime is the standard way to bucket dates by month.",
+              "Nothing is aggregated yet — this just confirms the month extraction works. Check a few rows: an order placed on 2024-01-05 should show order_month '2024-01'.",
+              "Order 105 has a NULL order_amount on purpose. The next step decides how to treat it — for now just notice it sitting there in the raw output."
+            ],
+            "ta": [
+              "orders table-la ovvoru order-kum oru row irukku, full order_date-oda. Aana question-ku monthly totals venum, so mudhala step-la ovvoru date-yum YYYY-MM month bucket-a maathanum.",
+              "strftime('%Y-%m', order_date) date string-la irundhu year matrum month mattum extract pannum. SQLite-la DATE_TRUNC illa, so month-a bucket panna strftime dhaan standard way.",
+              "Innum aggregate pannala — indha step month extraction correct-a work aaguthaa nu confirm pannradhukku dhaan. Konjum rows check pannunga: 2024-01-05-la placed order '2024-01' order_month kaatanum.",
+              "Order 105-ku order_amount NULL-a vecha irukku, purpose-oda. Adha eppadi treat pannanum-nu next step decide pannum — ippo just raw output-la adhu irukkuradha notice pannunga."
+            ],
+            "hi": [
+              "orders table mein har order ke liye ek row hoti hai, poora order_date ke saath. Lekin question ko monthly totals chahiye, isliye pehla step hai har date ko YYYY-MM month bucket mein convert karna.",
+              "strftime('%Y-%m', order_date) date string se sirf year aur month nikaalta hai. SQLite mein DATE_TRUNC nahi hota, isliye month ke hisaab se bucket karne ka standard tareeka strftime hai.",
+              "Abhi kuch aggregate nahi ho raha — yeh step sirf confirm karta hai ki month extraction sahi kaam kar raha hai. Kuch rows check karo: 2024-01-05 ko placed order ka order_month '2024-01' aana chahiye.",
+              "Order 105 ka order_amount jaan-boojh kar NULL rakha gaya hai. Usse kaise treat karna hai yeh next step decide karega — abhi bas raw output mein usse dekh lo."
+            ],
+            "te": [
+              "orders table lo prathi order ki oka row untundi, full order_date tho. Kaani question ki monthly totals kavali, so modati step prathi date ni YYYY-MM month bucket ga marchadam.",
+              "strftime('%Y-%m', order_date) date string nunchi year mariyu month matrame extract chestundi. SQLite lo DATE_TRUNC undadu, so month prakaram bucket cheyadaniki strftime standard way.",
+              "Inka emi aggregate avvatledu — ee step month extraction sarigga work autunda ani confirm cheyadaniki matrame. Konni rows check cheyandi: 2024-01-05 na placed order '2024-01' order_month chupinchali.",
+              "Order 105 ki order_amount purpose tho NULL pettabadindi. Danini ela treat cheyalo next step decide chestundi — ippudu just raw output lo adi kanipistundi ani gamaninchandi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Group by customer and month, treating NULL spend as zero",
+            "ta": "Customer matrum month-a group pannunga, NULL spend-a zero-nu treat pannunga",
+            "hi": "Customer aur month ke hisaab se group karo, NULL spend ko zero maano",
+            "te": "Customer mariyu month prakaram group cheyandi, NULL spend ni zero gaa treat cheyandi"
+          },
+          "sql": "SELECT customer_id,\n       strftime('%Y-%m', order_date) AS order_month,\n       COUNT(order_id) AS total_orders,\n       SUM(COALESCE(order_amount, 0)) AS total_amount\nFROM orders\nGROUP BY customer_id, strftime('%Y-%m', order_date)\nORDER BY customer_id, order_month;",
+          "explain": {
+            "en": [
+              "GROUP BY customer_id, strftime('%Y-%m', order_date) collapses all of a customer's orders in the same month into a single row.",
+              "COUNT(order_id) counts orders per group. Since order_id is never NULL, this gives an accurate order count even for the row with the missing amount.",
+              "SUM(order_amount) alone would silently skip NULL rows instead of counting them as zero — SQLite's SUM() ignores NULLs rather than erroring, which understates spend with no warning. COALESCE(order_amount, 0) converts NULL to 0 before summing, so a missing amount counts as zero spend instead of vanishing.",
+              "Run this and check customer 2's January total: with the NULL treated as 0, it should land on exactly the 200.00 from their one priced order — not more, not less."
+            ],
+            "ta": [
+              "GROUP BY customer_id, strftime('%Y-%m', order_date) oru customer-oda same month-la irukkura ella orders-ayum oru row-a collapse pannum.",
+              "COUNT(order_id) ovvoru group-la orders count pannum. order_id oru pothum NULL-a irukkadhu, so missing amount irukkura row-kum accurate order count kidaikkum.",
+              "SUM(order_amount) mattum use pannna, NULL rows-a zero-nu count pannama silent-a skip pannidum — SQLite-oda SUM() NULLs-a ignore pannum, error kudukkadhu, so spend understate aaidum entha warning-um illama. COALESCE(order_amount, 0) sum pannradhukku munnaadi NULL-a 0-nu maathidum, so missing amount vanish aagama zero spend-nu count aagum.",
+              "Idha run panni customer 2-oda January total check pannunga: NULL-a 0-nu treat panna apparam, adhu avanga oru priced order-oda 200.00 mattum-thaan varanum — adhigama illa, kammiya illa."
+            ],
+            "hi": [
+              "GROUP BY customer_id, strftime('%Y-%m', order_date) ek customer ke same month ke sabhi orders ko ek row mein collapse kar deta hai.",
+              "COUNT(order_id) har group mein orders count karta hai. order_id kabhi NULL nahi hota, isliye missing amount wali row ke liye bhi order count sahi aata hai.",
+              "Sirf SUM(order_amount) use karne se NULL rows silently skip ho jaate — zero maan kar count nahi hote. SQLite ka SUM() NULLs ko ignore karta hai, error nahi deta, isliye spend bina kisi warning ke kam dikhta hai. COALESCE(order_amount, 0) sum karne se pehle NULL ko 0 mein badal deta hai, isliye missing amount vanish hone ke bajaye zero spend ke roop mein count hota hai.",
+              "Isse run karke customer 2 ka January total check karo: NULL ko 0 maanne ke baad, yeh unke ek priced order ke exactly 200.00 par aana chahiye — zyada nahi, kam nahi."
+            ],
+            "te": [
+              "GROUP BY customer_id, strftime('%Y-%m', order_date) oka customer ki same month lo unna anni orders ni oka row lo collapse chestundi.",
+              "COUNT(order_id) prathi group lo orders count chestundi. order_id eppudu NULL kaadu kabatti, missing amount unna row ki kuda accurate order count vastundi.",
+              "SUM(order_amount) matrame vadithe NULL rows ni zero gaa count cheyakunda silent gaa skip chesestundi — SQLite SUM() NULLs ni ignore chestundi, error ivvadu, so spend ee warning lekunda takkuvaga kanipistundi. COALESCE(order_amount, 0) sum cheyadaniki mundu NULL ni 0 gaa marustundi, so missing amount vanish avvakunda zero spend gaa count avutundi.",
+              "Idi run chesi customer 2 January total ni check cheyandi: NULL ni 0 gaa treat chesaka, adi vaalla oka priced order nunchi exact ga 200.00 ki randi — ekkuva kaadu, takkuva kaadu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Final query with clean output",
+            "ta": "Final query — clean output-oda",
+            "hi": "Final query — clean output ke saath",
+            "te": "Final query — clean output tho"
+          },
+          "sql": "SELECT customer_id,\n       strftime('%Y-%m', order_date) AS order_month,\n       COUNT(order_id) AS total_orders,\n       ROUND(SUM(COALESCE(order_amount, 0)), 2) AS total_amount\nFROM orders\nGROUP BY customer_id, strftime('%Y-%m', order_date)\nORDER BY customer_id, order_month;",
+          "explain": {
+            "en": [
+              "ROUND(SUM(COALESCE(order_amount, 0)), 2) rounds the total to two decimal places — floating-point addition can return extra trailing decimals even when every input has exactly two.",
+              "ORDER BY customer_id, order_month sorts the output so each customer's months appear together in chronological order, instead of whatever order SQLite happens to return groups in.",
+              "Look at customer 1, 3, and 5's January rows: all three land on 165.50 in total_amount despite feeding in different order counts (2, 2, and 1 respectively) — a genuine tie in the output, not a bug in the query.",
+              "This is the complete answer: customer_id, order_month, total_orders, and total_amount for every customer-month combination that has at least one order. A customer with zero orders in a given month simply produces no row for that month."
+            ],
+            "ta": [
+              "ROUND(SUM(COALESCE(order_amount, 0)), 2) total-a two decimal places-ku round pannum — floating-point addition-la, ella input-um exactly two decimals irundhaalum extra trailing decimals varalaam.",
+              "ORDER BY customer_id, order_month output-a sort pannum, so ovvoru customer-oda months ellaam chronological order-la serndhu varum, SQLite eppadi return pannuchonu illama.",
+              "Customer 1, 3, matrum 5-oda January rows-a paarunga: moonu perum 165.50 total_amount-la varaanga, order count vera vera irundhaalum (2, 2, matrum 1) — output-la genuine tie idhu, query-la bug illa.",
+              "Idhu dhaan complete answer: customer_id, order_month, total_orders, matrum total_amount, oru order irukkura ella customer-month combination-kum. Oru month-la zero orders irukkura customer-ku andha month-ku row varaadhu."
+            ],
+            "hi": [
+              "ROUND(SUM(COALESCE(order_amount, 0)), 2) total ko do decimal places tak round karta hai — floating-point addition mein har input exactly do decimals ka ho phir bhi extra trailing decimals aa sakte hain.",
+              "ORDER BY customer_id, order_month output ko sort karta hai, taaki har customer ke months chronological order mein saath dikhein, na ki SQLite jis order mein groups return kare.",
+              "Customer 1, 3, aur 5 ki January rows dekho: teeno 165.50 total_amount par aate hain, alag-alag order counts (2, 2, aur 1) hone ke bawajood — yeh output mein genuine tie hai, query mein bug nahi.",
+              "Yahi complete answer hai: customer_id, order_month, total_orders, aur total_amount, har us customer-month combination ke liye jisme kam se kam ek order hai. Jis month mein customer ka zero order hai, uske liye koi row nahi banegi."
+            ],
+            "te": [
+              "ROUND(SUM(COALESCE(order_amount, 0)), 2) total ni rendu decimal places ki round chestundi — floating-point addition lo prathi input exactly rendu decimals unna kuda extra trailing decimals raavachu.",
+              "ORDER BY customer_id, order_month output ni sort chestundi, so prathi customer months chronological order lo kalisi kanipistayi, SQLite ee order lo groups return chesina.",
+              "Customer 1, 3, mariyu 5 January rows chudandi: mugguru 165.50 total_amount ki vastaru, different order counts (2, 2, mariyu 1) unna — idi output lo genuine tie, query lo bug kaadu.",
+              "Idi complete answer: customer_id, order_month, total_orders, mariyu total_amount, kaneesam oka order unna prathi customer-month combination ki. Oka month lo zero orders unna customer ki aa month ki row raadu."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

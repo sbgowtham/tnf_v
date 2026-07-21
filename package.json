@@ -1,0 +1,14 @@
+{
+  "name": "tablenotfound",
+  "private": true,
+  "scripts": {
+    "generate:static": "node scripts/generate-static-pages.js",
+    "generate:questions": "node scripts/generate-question-pages.js",
+    "inject:footer": "node scripts/inject-footer.js",
+    "generate:sitemap": "node scripts/generate-sitemap.js",
+    "validate:questions": "node scripts/validate-questions.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}

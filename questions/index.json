@@ -48,11 +48,18 @@
       "c": "#ff9800",
       "difficulty": "mid"
     },
-    { 
+    {
       "id": "techcorp",
       "name": "techcorp",
       "sub": "Performance Ranking",
       "c": "#9c27b0",
+      "difficulty": "mid"
+    },
+    {
+      "id": "amazon",
+      "name": "Amazon",
+      "sub": "Order & Customer Analytics",
+      "c": "#ff9900",
       "difficulty": "mid"
     }
   ]
