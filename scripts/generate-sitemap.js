@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 /**
  * Generates sitemap.xml + robots.txt at the repo root from:
- *   - index.html                → homepage
- *   - learn/index.json          → the /learn pages
- *   - questions/slugs.json      → every static question page (written by generate-question-pages.js)
+ *   - index.html                     → homepage
+ *   - learn/index.json                → the /learn pages
+ *   - questions/slugs.json            → every static question page (written by generate-question-pages.js)
+ *   - generate-static-pages.js PAGES  → about/contact/privacy/terms
  *
  * Run this AFTER scripts/generate-question-pages.js so slugs.json reflects the current
  * set of question pages — this script doesn't recompute slugs itself, it only reads
@@ -15,6 +16,7 @@
 const fs = require('fs');
 const path = require('path');
 const { SITE_URL } = require('./site-config');
+const { PAGES: STATIC_PAGES } = require('./generate-static-pages');
 
 const ROOT = path.join(__dirname, '..');
 
@@ -77,14 +79,26 @@ function main() {
     urls.push(urlEntry(`${SITE_URL}/questions/${slug}.html`, { priority: 0.8, lastmod: lastmodOf(filePath) }));
   }
 
+  // about/contact/privacy/terms
+  for (const page of STATIC_PAGES) {
+    const filePath = path.join(ROOT, `${page.slug}.html`);
+    if (!fs.existsSync(filePath)) {
+      console.warn(`⚠ ${page.slug}.html doesn't exist yet — skipped. Run scripts/generate-static-pages.js first.`);
+      continue;
+    }
+    urls.push(urlEntry(`${SITE_URL}/${page.slug}.html`, { priority: 0.3, lastmod: lastmodOf(filePath) }));
+  }
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`;
   fs.writeFileSync(path.join(ROOT, 'sitemap.xml'), xml, 'utf8');
 
   const robots = `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
   fs.writeFileSync(path.join(ROOT, 'robots.txt'), robots, 'utf8');
 
-  console.log(`Wrote sitemap.xml — ${urls.length} URL(s) (1 homepage, ${learnItems.length} /learn, ${slugValues.length} questions)`);
+  console.log(`Wrote sitemap.xml — ${urls.length} URL(s) (1 homepage, ${learnItems.length} /learn, ${slugValues.length} questions, ${STATIC_PAGES.length} static)`);
   console.log(`Wrote robots.txt — pointing to ${SITE_URL}/sitemap.xml`);
 }
 
-main();
+if (require.main === module) {
+  main();
+}

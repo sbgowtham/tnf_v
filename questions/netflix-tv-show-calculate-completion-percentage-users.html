@@ -279,8 +279,14 @@ td{padding:14px 16px;vertical-align:middle}
 .cta-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:20px;border:none;cursor:pointer;font-family:var(--ff);font-size:13px;font-weight:700;text-decoration:none;background:linear-gradient(135deg,#7c5cfc,#c45cfc);color:#fff;box-shadow:0 3px 12px rgba(124,92,252,.35);transition:transform .18s}
 .cta-btn:hover{transform:translateY(-2px)}
 .cta-btn.secondary{background:rgba(255,255,255,.65);color:var(--t2);border:var(--bdr);box-shadow:none}
-.static-footer{margin-top:3rem;font-size:12px;color:var(--t3);text-align:center}
 
+</style>
+<style id="tnf-footer-style">
+#tnf-footer{margin-top:3rem;padding:1.5rem 1rem 2rem;text-align:center;border-top:1px solid rgba(128,128,128,.22)}
+#tnf-footer .tnf-footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;margin-bottom:.5rem}
+#tnf-footer .tnf-footer-links a{color:inherit;opacity:.65;text-decoration:none;font-size:12px;font-weight:600;transition:opacity .15s}
+#tnf-footer .tnf-footer-links a:hover{opacity:1;text-decoration:underline}
+#tnf-footer .tnf-footer-copy{font-size:11px;opacity:.45}
 </style>
 </head>
 <body>
@@ -488,9 +494,17 @@ ORDER BY completion_percentage DESC;</code></pre>
     <a class="cta-btn" href="/">▶ Practice this live</a>
     <a class="cta-btn secondary" href="/">← Browse all questions</a>
   </div>
-
-  <div class="static-footer">TableNotFound &nbsp;·&nbsp; Free, in-browser SQL practice with real company scenarios</div>
 </div>
+
+<footer id="tnf-footer">
+      <nav class="tnf-footer-links">
+      <a href="/about.html">About</a>
+      <a href="/contact.html">Contact</a>
+      <a href="/privacy.html">Privacy Policy</a>
+      <a href="/terms.html">Terms of Service</a>
+      </nav>
+      <div class="tnf-footer-copy">© 2026 TableNotFound</div>
+    </footer>
 
 <script>
 function toggleMenu(){document.getElementById('navmenu').classList.toggle('open');}

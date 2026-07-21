@@ -28,6 +28,8 @@ const fs = require('fs');
 const path = require('path');
 
 const { SITE_URL } = require('./site-config');
+const { esc, cap, extractHomeCSS, loadLearnLinksHTML, buildNavHTML, NAV_SCRIPT } = require('./site-common');
+const { buildFooterHTML, buildFooterStyleTag } = require('./site-footer');
 
 const ROOT = path.join(__dirname, '..');
 const QUESTIONS_DIR = path.join(ROOT, 'questions');
@@ -39,24 +41,12 @@ const DRY_RUN = args.includes('--dry-run');
 
 // ── text helpers ─────────────────────────────────────────────────────────
 
-function esc(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
 /** Same semantics as tx() in index.html: string | {en,ta,hi,te} string | {en,ta,hi,te} string[] */
 function tx(field, lang) {
   lang = lang || 'en';
   if (typeof field === 'string') return field;
   const val = field && (field[lang] || field.en);
   return val || (Array.isArray(field && field.en) ? [] : '');
-}
-
-function cap(s) {
-  return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 }
 
 function truncateWords(text, max) {
@@ -130,31 +120,6 @@ function slugifyQuestion(questionText) {
   return slug || 'question';
 }
 
-// ── static assets ────────────────────────────────────────────────────────
-
-/** Extracts the <style>...</style> block from index.html so static pages match it exactly. */
-function extractHomeCSS() {
-  const homeHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  const m = homeHtml.match(/<style>([\s\S]*?)<\/style>/);
-  if (!m) throw new Error('Could not find <style> block in index.html');
-  return m[1];
-}
-
-function loadLearnLinksHTML() {
-  const file = path.join(ROOT, 'learn', 'index.json');
-  if (!fs.existsSync(file)) return '<div class="dropdown-empty">No items yet</div>';
-  const items = JSON.parse(fs.readFileSync(file, 'utf8'));
-  if (!items.length) return '<div class="dropdown-empty">No items yet</div>';
-  return items.map(item => `
-      <a class="dropdown-item" href="/learn/${esc(item.file)}" target="_blank">
-        <div class="di-icon" style="background:${esc(item.color || '#f3f0ff')}">${item.icon || '📄'}</div>
-        <div class="di-text">
-          <span class="di-title">${esc(item.title)}</span>
-          <span class="di-sub">${esc(item.desc || '')}</span>
-        </div>
-      </a>`).join('');
-}
-
 // Extra CSS the interactive page doesn't need but the static page does
 // (mostly: force content visible that index.html hides behind JS state/toggles).
 // Left inlined for now per request — extraction to a shared stylesheet is a later pass.
@@ -174,7 +139,6 @@ const STATIC_OVERRIDES_CSS = `
 .cta-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:20px;border:none;cursor:pointer;font-family:var(--ff);font-size:13px;font-weight:700;text-decoration:none;background:linear-gradient(135deg,#7c5cfc,#c45cfc);color:#fff;box-shadow:0 3px 12px rgba(124,92,252,.35);transition:transform .18s}
 .cta-btn:hover{transform:translateY(-2px)}
 .cta-btn.secondary{background:rgba(255,255,255,.65);color:var(--t2);border:var(--bdr);box-shadow:none}
-.static-footer{margin-top:3rem;font-size:12px;color:var(--t3);text-align:center}
 `;
 
 // ── page builders ────────────────────────────────────────────────────────
@@ -247,24 +211,12 @@ function buildPage({ company, q, slug, homeCSS, learnLinksHTML }) {
 ${homeCSS}
 ${STATIC_OVERRIDES_CSS}
 </style>
+${buildFooterStyleTag()}
 </head>
 <body>
 <div class="bg"></div>
 
-<nav class="nav">
-  <a href="/" class="logo" style="text-decoration:none;color:inherit"><span class="logo-tag">Table</span><span class="logo-rest">NotFound</span></a>
-  <div class="nav-gap"></div>
-  <div class="nav-menu" id="navmenu">
-    <button class="menu-btn" onclick="toggleMenu()">
-      <span>Learn</span>
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <div class="dropdown" id="dropdown">
-      <div class="dropdown-header">Visualizers &amp; Guides</div>
-      <div id="learn-links">${learnLinksHTML}</div>
-    </div>
-  </div>
-</nav>
+${buildNavHTML(learnLinksHTML)}
 
 <div class="static-wrap">
   <a class="crumb" href="/">← All SQL Questions</a>
@@ -302,16 +254,12 @@ ${STATIC_OVERRIDES_CSS}
     <a class="cta-btn" href="/">▶ Practice this live</a>
     <a class="cta-btn secondary" href="/">← Browse all questions</a>
   </div>
-
-  <div class="static-footer">TableNotFound &nbsp;·&nbsp; Free, in-browser SQL practice with real company scenarios</div>
 </div>
 
+${buildFooterHTML()}
+
 <script>
-function toggleMenu(){document.getElementById('navmenu').classList.toggle('open');}
-document.addEventListener('click', e => {
-  const m=document.getElementById('navmenu');
-  if(m&&!m.contains(e.target))m.classList.remove('open');
-});
+${NAV_SCRIPT}
 </script>
 </body>
 </html>
@@ -469,4 +417,8 @@ function main() {
   }
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = { computeExpected };
