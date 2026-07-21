@@ -1,0 +1,10 @@
+{
+  "uber:4": "uber-total-earnings-driver-show-top-3-earning-drivers",
+  "snapchat:5": "snapchat-age-group-calculate-percentage-time-spent-sending",
+  "tinder:7": "tinder-user-count-total-number-likes-they-sent-others",
+  "netflix:1": "netflix-tv-show-calculate-completion-percentage-users",
+  "youtube:1": "youtube-video-calculate-percentage-viewers-watched-until",
+  "myntra:1": "myntra-products-total-sales-quantity-greater-average",
+  "flipkart:1": "flipkart-suppliers-average-product-unit-price-greater-categ",
+  "techcorp:1": "techcorp-employee-display-name-department-latest-performanc"
+}

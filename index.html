@@ -6,6 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TableNotFound — SQL Practice</title>
+<meta name="description" content="Practice SQL for free in your browser with real-world questions modeled on Flipkart, Uber, Netflix, and more — no signup, no setup, instant feedback.">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
 <style>
@@ -88,6 +89,7 @@ tbody tr.active-row{background:rgba(124,92,252,.07)}
 td{padding:14px 16px;vertical-align:middle}
 .td-num{font-family:var(--fm);font-size:11px;color:var(--t3);font-weight:500;width:44px}
 .td-q{}
+.q-link{text-decoration:none;color:inherit;display:block}
 .q-text{font-size:13.5px;font-weight:600;color:var(--text);line-height:1.45;margin-bottom:3px}
 .q-concepts{font-size:11px;color:var(--t3);font-family:var(--fm)}
 .td-co{width:110px}
@@ -302,7 +304,7 @@ td{padding:14px 16px;vertical-align:middle}
   <!-- QUESTION TABLE -->
   <div class="panel">
     <div class="toolbar">
-      <span class="toolbar-stat" id="tstat">Loading…</span>
+      <span class="toolbar-stat" id="tstat">8 questions</span>
       <div class="toolbar-gap"></div>
       <div class="filters">
         <button class="fb on" onclick="filt('all',this)">All</button>
@@ -323,7 +325,80 @@ td{padding:14px 16px;vertical-align:middle}
             <th>✓</th>
           </tr>
         </thead>
-        <tbody id="tbody"></tbody>
+        <tbody id="tbody">
+      <tr onclick="openQ('uber',4)">
+        <td class="td-num">1</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/uber-total-earnings-driver-show-top-3-earning-drivers.html" onclick="event.preventDefault();event.stopPropagation();openQ('uber',4);"><div class="q-text">Find total earnings of each driver and show top 3 earning drivers per city.</div><div class="q-concepts">JOIN · GROUP BY · SUM</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#1d4ed8 13%,white);color:color-mix(in srgb,#1d4ed8 90%,black)">Uber</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('snapchat',5)">
+        <td class="td-num">2</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/snapchat-age-group-calculate-percentage-time-spent-sending.html" onclick="event.preventDefault();event.stopPropagation();openQ('snapchat',5);"><div class="q-text">For each age group, calculate the percentage of time spent sending snaps vs opening snaps out of total send+open time. Round to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE IN · GROUP BY</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#f7b731 13%,white);color:color-mix(in srgb,#f7b731 90%,black)">Snapchat</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('tinder',7)">
+        <td class="td-num">3</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/tinder-user-count-total-number-likes-they-sent-others.html" onclick="event.preventDefault();event.stopPropagation();openQ('tinder',7);"><div class="q-text">For each user, count the total number of likes they have sent to others. Show user name along with the count, sorted by count in descending order.</div><div class="q-concepts">JOIN · GROUP BY · COUNT</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#f7b731 13%,white);color:color-mix(in srgb,#f7b731 90%,black)">Tinder</span></td>
+        <td class="td-diff"><span class="diff-easy">easy</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('netflix',1)">
+        <td class="td-num">4</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/netflix-tv-show-calculate-completion-percentage-users.html" onclick="event.preventDefault();event.stopPropagation();openQ('netflix',1);"><div class="q-text">For each TV show, calculate the completion percentage based on users who started Episode 1 versus users who watched the final episode. Round the result to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE IN · GROUP BY</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#1d4ed8 13%,white);color:color-mix(in srgb,#1d4ed8 90%,black)">Netflix</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('youtube',1)">
+        <td class="td-num">5</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/youtube-video-calculate-percentage-viewers-watched-until.html" onclick="event.preventDefault();event.stopPropagation();openQ('youtube',1);"><div class="q-text">For each video, calculate the percentage of viewers who watched until the end out of all viewers who started the video. Round the result to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE · GROUP BY</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#1d4ed8 13%,white);color:color-mix(in srgb,#1d4ed8 90%,black)">Youtube</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('myntra',1)">
+        <td class="td-num">6</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/myntra-products-total-sales-quantity-greater-average.html" onclick="event.preventDefault();event.stopPropagation();openQ('myntra',1);"><div class="q-text">Find products whose total sales quantity is greater than the average total sales quantity of products from the same brand. Return the product name, brand and total sales quantity. Sort the result by brand and total sales quantity in descending order.</div><div class="q-concepts">JOIN · GROUP BY · SUM</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#1d4ed8 13%,white);color:color-mix(in srgb,#1d4ed8 90%,black)">Myntra</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('flipkart',1)">
+        <td class="td-num">7</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/flipkart-suppliers-average-product-unit-price-greater-categ.html" onclick="event.preventDefault();event.stopPropagation();openQ('flipkart',1);"><div class="q-text">Find suppliers whose average product unit price is greater than the average unit price of all suppliers in the same category. Return the supplier name, category, and average unit price. Sort the results by category and then by average unit price in descending order.</div><div class="q-concepts">JOIN · GROUP BY · AVG</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#ff9800 13%,white);color:color-mix(in srgb,#ff9800 90%,black)">Flipkart</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('techcorp',1)">
+        <td class="td-num">8</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/techcorp-employee-display-name-department-latest-performanc.html" onclick="event.preventDefault();event.stopPropagation();openQ('techcorp',1);"><div class="q-text">For each employee, display their name, department, latest performance rating, the previous performance rating (to track improvement), their ranking within the department, and whether their latest rating is above or below their department's average. Sort by department and ranking.</div><div class="q-concepts">Window Functions · ROW_NUMBER · RANK</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#9c27b0 13%,white);color:color-mix(in srgb,#9c27b0 90%,black)">Techcorp</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+    </tbody>
       </table>
     </div>
   </div>
@@ -344,6 +419,7 @@ const CACHE={};     // uid → questions[]
 const SETUP_CACHE={};// uid → setup SQL string
 let ALL=[];         // flat: {q, uid, uni}
 let activeFilter='all';
+let SLUGS={};        // "uid:qid" → static-page slug, from /questions/slugs.json (generated, not hand-maintained)
 
 /* ── ENGINE ── */
 async function initEngine(){
@@ -392,6 +468,13 @@ async function fetchQ(uid){
   return CACHE[uid];
 }
 
+async function fetchSlugs(){
+  try{
+    const r = await fetch('/questions/slugs.json');
+    if(r.ok) SLUGS = await r.json();
+  }catch(e){ /* row links just fall back to SPA-only click */ }
+}
+
 /* ── LANG ── */
 function setLang(l){
   lang=l;
@@ -431,8 +514,8 @@ function renderExplain(step){
 /* ── LOAD ALL & BUILD TABLE ── */
 async function boot(){
   setOrb('spin','Loading questions…');
-  document.getElementById('tbody').innerHTML =
-    '<tr><td colspan="5" class="tbl-msg">Loading questions…</td></tr>';
+  // tbody already has server-rendered rows from build time — no placeholder needed here,
+  // renderTable() below overwrites it with the live version once data is fetched.
 
   try{
     const r = await fetch('/questions/index.json');
@@ -446,7 +529,7 @@ async function boot(){
     return;
   }
 
-  await Promise.all(UM.map(u => fetchQ(u.id)));
+  await Promise.all([...UM.map(u => fetchQ(u.id)), fetchSlugs()]);
 
   ALL = [];
   UM.forEach(uni => {
@@ -485,11 +568,13 @@ function renderTable(){
   tbody.innerHTML=list.map(({q,uid,uni},i)=>{
     const done=q.steps.every((_,si)=>SS[`${uid}_${q.id}_${si}`]?.ran);
     const active=aQ&&aQ.id===q.id&&aU===uid;
+    const slug=SLUGS[`${uid}:${q.id}`];
+    const qCell=`<div class="q-text">${tx(q.question)}</div><div class="q-concepts">${(q.cc||[]).slice(0,3).join(' · ')}</div>`;
     return `<tr onclick="openQ('${uid}',${q.id})" class="${active?'active-row':''}">
       <td class="td-num">${i+1}</td>
-      <td class="td-q">
-        <div class="q-text">${tx(q.question)}</div>
-        <div class="q-concepts">${(q.cc||[]).slice(0,3).join(' · ')}</div>
+      <td class="td-q">${slug
+        ? `<a class="q-link" href="/questions/${slug}.html" onclick="event.preventDefault();event.stopPropagation();openQ('${uid}',${q.id});">${qCell}</a>`
+        : qCell}
       </td>
       <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,${uni.c} 13%,white);color:color-mix(in srgb,${uni.c} 90%,black)">${uni.name}</span></td>
       <td class="td-diff"><span class="diff-${q.diff}">${q.diff}</span></td>
