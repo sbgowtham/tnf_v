@@ -855,14 +855,17 @@ async function loadLearnLinks(){
     const items=await r.json();
     const container=document.getElementById('learn-links');
     if(!items.length){container.innerHTML='<div class="dropdown-empty">No items yet</div>';return;}
-    container.innerHTML=items.map(item=>`
-      <a class="dropdown-item" href="/learn/${item.file}" target="_blank">
+    container.innerHTML=items.map(item=>{
+      const url=item.href||`/learn/${item.file}`;
+      return `
+      <a class="dropdown-item" href="${url}" target="_blank">
         <div class="di-icon" style="background:${item.color||'#f3f0ff'}">${item.icon||'📄'}</div>
         <div class="di-text">
           <span class="di-title">${item.title}</span>
           <span class="di-sub">${item.desc||''}</span>
         </div>
-      </a>`).join('');
+      </a>`;
+    }).join('');
   }catch(e){}
 }
 loadLearnLinks();

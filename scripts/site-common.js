@@ -31,14 +31,17 @@ function loadLearnLinksHTML() {
   if (!fs.existsSync(file)) return '<div class="dropdown-empty">No items yet</div>';
   const items = JSON.parse(fs.readFileSync(file, 'utf8'));
   if (!items.length) return '<div class="dropdown-empty">No items yet</div>';
-  return items.map(item => `
-      <a class="dropdown-item" href="/learn/${esc(item.file)}" target="_blank">
+  return items.map(item => {
+    const url = item.href || `/learn/${item.file}`;
+    return `
+      <a class="dropdown-item" href="${esc(url)}" target="_blank">
         <div class="di-icon" style="background:${esc(item.color || '#f3f0ff')}">${item.icon || '📄'}</div>
         <div class="di-text">
           <span class="di-title">${esc(item.title)}</span>
           <span class="di-sub">${esc(item.desc || '')}</span>
         </div>
-      </a>`).join('');
+      </a>`;
+  }).join('');
 }
 
 /** Standard nav bar markup shared by every generated page. */

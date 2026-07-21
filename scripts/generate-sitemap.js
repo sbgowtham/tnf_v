@@ -79,12 +79,14 @@ function main() {
   }
   const learnItems = JSON.parse(fs.readFileSync(learnIndexPath, 'utf8'));
   for (const item of learnItems) {
-    const filePath = path.join(ROOT, 'learn', item.file);
+    // Items can live outside /learn/ (e.g. /blog/...) via `href`; `file` stays relative to /learn/.
+    const urlPath = item.href || `/learn/${item.file}`;
+    const filePath = path.join(ROOT, urlPath.replace(/^\//, ''));
     if (!fs.existsSync(filePath)) {
-      console.warn(`⚠ learn/index.json references "${item.file}" but the file doesn't exist — skipped.`);
+      console.warn(`⚠ learn/index.json references "${urlPath}" but the file doesn't exist — skipped.`);
       continue;
     }
-    urls.push(urlEntry(`${SITE_URL}/learn/${item.file}`, { priority: 0.6, lastmod: lastmodOf(filePath) }));
+    urls.push(urlEntry(`${SITE_URL}${urlPath}`, { priority: 0.6, lastmod: lastmodOf(filePath) }));
   }
 
   // Question pages, from the slug manifest — the same source index.html uses for its links

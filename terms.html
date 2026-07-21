@@ -99,6 +99,13 @@ td{padding:14px 16px;vertical-align:middle}
 .diff-hard{background:#f3e8ff;color:#7e22ce;display:inline-block;font-size:10px;font-weight:700;font-family:var(--fm);padding:3px 10px;border-radius:6px}
 .td-st{width:52px;text-align:center;font-size:16px}
 .tbl-msg{padding:2.5rem;text-align:center;color:var(--t3);font-size:13px}
+/* pagination */
+.pagination{display:flex;align-items:center;justify-content:center;gap:.4rem;flex-wrap:wrap;padding:1rem 1.25rem 1.25rem;border-top:var(--bdr)}
+.page-link{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;padding:0 10px;border-radius:8px;border:var(--bdr);background:rgba(255,255,255,.6);color:var(--t2);font-size:12px;font-weight:700;font-family:var(--fm);text-decoration:none;transition:all .15s}
+.page-link:hover{background:rgba(255,255,255,.9);color:var(--text)}
+.page-link.current{background:linear-gradient(135deg,#7c5cfc,#c45cfc);color:#fff;border-color:transparent;cursor:default}
+.page-link.page-prev,.page-link.page-next{padding:0 14px;font-family:var(--ff)}
+.page-info{width:100%;text-align:center;font-size:11px;color:var(--t3);margin-top:.25rem;order:99}
 /* ── QUESTION VIEW ── */
 #qview{animation:up .3s cubic-bezier(.22,1,.36,1) both;margin-top:1.75rem}
 .qv-inner{--uc:#7c5cfc}
@@ -320,6 +327,13 @@ td{padding:14px 16px;vertical-align:middle}
         <div class="di-text">
           <span class="di-title">Data Layers</span>
           <span class="di-sub">DataLayers</span>
+        </div>
+      </a>
+      <a class="dropdown-item" href="/blog/row-number-vs-rank-vs-dense-rank.html" target="_blank">
+        <div class="di-icon" style="background:#dbeafe">📝</div>
+        <div class="di-text">
+          <span class="di-title">ROW_NUMBER vs RANK vs DENSE_RANK</span>
+          <span class="di-sub">Window functions explained</span>
         </div>
       </a></div>
     </div>

@@ -19,5 +19,12 @@
     "file": "datalayers.html",
     "icon": "🏗️",
     "color": "#fef3c7"
+  },
+  {
+    "title": "ROW_NUMBER vs RANK vs DENSE_RANK",
+    "desc": "Window functions explained",
+    "href": "/blog/row-number-vs-rank-vs-dense-rank.html",
+    "icon": "📝",
+    "color": "#dbeafe"
   }
 ]
