@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Uber: total earnings of each driver and… | TableNotFound</title>
-<meta name="description" content="Uber SQL practice question (mid): Find total earnings of each driver and show top 3 earning drivers per city. Free, runs live in your browser.">
-<link rel="canonical" href="https://www.tablenotfound.com/questions/uber-total-earnings-driver-show-top-3-earning-drivers.html">
+<title>Amazon: customer calculate the total… | TableNotFound</title>
+<meta name="description" content="Amazon SQL practice question (easy): For each customer, calculate the total number of orders and total order amount per… Free, runs live in your browser.">
+<link rel="canonical" href="https://www.tablenotfound.com/questions/amazon-customer-calculate-total-number-orders-order-amoun.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -340,61 +340,69 @@ td{padding:14px 16px;vertical-align:middle}
 
   <div class="q-header">
     <div class="q-badges">
-      <span class="co-tag" style="background:color-mix(in srgb,#1d4ed8 13%,white);color:color-mix(in srgb,#1d4ed8 90%,black)">Uber</span>
-      <span class="diff-mid">mid</span>
-      <span class="chip">JOIN</span><span class="chip">GROUP BY</span><span class="chip">SUM</span><span class="chip">ORDER BY</span>
+      <span class="co-tag" style="background:color-mix(in srgb,#ff9900 13%,white);color:color-mix(in srgb,#ff9900 90%,black)">Amazon</span>
+      <span class="diff-easy">easy</span>
+      <span class="chip">GROUP BY</span><span class="chip">strftime</span><span class="chip">COALESCE</span><span class="chip">SUM</span><span class="chip">COUNT</span><span class="chip">ORDER BY</span>
     </div>
-    <h1 class="q-h1">Find total earnings of each driver and show top 3 earning drivers per city.</h1>
-    <p class="q-sub">Uber · Driver Earnings — practice this real-world SQL scenario live in your browser.</p>
+    <h1 class="q-h1">For each customer, calculate the total number of orders and total order amount per month. Treat any NULL order_amount as 0. Return customer_id, order_month (in YYYY-MM format), total_orders, and total_amount, sorted by customer_id and then order_month.</h1>
+    <p class="q-sub">Amazon · Order &amp; Customer Analytics — practice this real-world SQL scenario live in your browser.</p>
   </div>
 
-  <div class="story" style="--uc:#1d4ed8">
+  <div class="story" style="--uc:#ff9900">
     <div class="story-bg"></div>
     <div class="story-top">
       <span class="story-lbl">📖 Story</span>
-      <span class="story-co">Uber · Driver Earnings</span>
+      <span class="story-co">Amazon · Order &amp; Customer Analytics</span>
     </div>
-    <div class="story-body">Uber HQ, Friday evening. Product manager Sneha walks in: &quot;We need top earning drivers per city for bonus distribution.&quot; Time to combine trips and drivers data.</div>
+    <div class="story-body">Monday morning at Amazon's Customer Analytics team. Leadership wants a monthly breakdown of order volume and spend for every customer, to feed into an upcoming loyalty-tier review. Some orders in the system have a missing amount — likely a data sync issue — and those need to be treated as zero rather than breaking the totals.</div>
   </div>
 
   <div class="mission">
     <div class="mission-top">🎯 Your Mission</div>
-    <div class="mission-body">Find total earnings of each driver and show top 3 earning drivers per city.</div>
+    <div class="mission-body">For each customer, calculate the total number of orders and total order amount per month. Treat any NULL order_amount as 0. Return customer_id, order_month (in YYYY-MM format), total_orders, and total_amount, sorted by customer_id and then order_month.</div>
   </div>
 
   <div class="schema-wrap">
     <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem">📋 Table Structure</div>
     <div class="schema-cards">
       <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">drivers</span></div>
+        <div class="sc-head">🗂 <span class="sc-name">customers</span></div>
         <div><div class="sc-row">
-          <span class="sc-col">driver_id</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">D001</span>
+          <span class="sc-col">customer_id</span>
+          <span class="sc-type">INTEGER</span>
+          <span class="sc-eg">1</span>
         </div><div class="sc-row">
-          <span class="sc-col">driver_name</span>
+          <span class="sc-col">customer_name</span>
           <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Ravi Kumar</span>
+          <span class="sc-eg">Aaron Wells</span>
         </div><div class="sc-row">
-          <span class="sc-col">city</span>
+          <span class="sc-col">is_prime</span>
+          <span class="sc-type">INTEGER</span>
+          <span class="sc-eg">1</span>
+        </div><div class="sc-row">
+          <span class="sc-col">signup_date</span>
           <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Chennai</span>
+          <span class="sc-eg">2023-01-05</span>
         </div></div>
       </div>
       <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">trips</span></div>
+        <div class="sc-head">🗂 <span class="sc-name">orders</span></div>
         <div><div class="sc-row">
-          <span class="sc-col">trip_id</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">T101</span>
+          <span class="sc-col">order_id</span>
+          <span class="sc-type">INTEGER</span>
+          <span class="sc-eg">101</span>
         </div><div class="sc-row">
-          <span class="sc-col">driver_id</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">D001</span>
+          <span class="sc-col">customer_id</span>
+          <span class="sc-type">INTEGER</span>
+          <span class="sc-eg">1</span>
         </div><div class="sc-row">
-          <span class="sc-col">fare</span>
+          <span class="sc-col">order_date</span>
+          <span class="sc-type">TEXT</span>
+          <span class="sc-eg">2024-01-05</span>
+        </div><div class="sc-row">
+          <span class="sc-col">order_amount</span>
           <span class="sc-type">REAL</span>
-          <span class="sc-eg">250.50</span>
+          <span class="sc-eg">120.50</span>
         </div></div>
       </div>
     </div>
@@ -402,75 +410,70 @@ td{padding:14px 16px;vertical-align:middle}
 
   <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:1.5rem 0 .75rem">⚡ Step-by-Step Walkthrough</div>
   
-    <div class="step-card" style="--uc:#1d4ed8">
+    <div class="step-card" style="--uc:#ff9900">
       <div class="step-head">
         <div class="step-num">1</div>
         <div class="step-info">
-          <div class="step-title">Join drivers and trips</div>
+          <div class="step-title">Extract the order month from order_date</div>
         </div>
       </div>
       <div class="step-body">
         <div class="ed-win">
           <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
             <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT d.driver_id, d.driver_name, d.city, t.fare
-FROM drivers d
-JOIN trips t ON d.driver_id = t.driver_id;</code></pre>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT order_id,
+       customer_id,
+       order_date,
+       strftime('%Y-%m', order_date) AS order_month,
+       order_amount
+FROM orders
+ORDER BY customer_id, order_date;</code></pre>
         </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">The drivers table has name and city — but no fare. The trips table has fare amounts — but no city or driver name. The only link between them is driver_id.</li><li class="xpl-point">JOIN finds matching rows in both tables using the condition d.driver_id = t.driver_id. Every trip row gets paired with the correct driver row.</li><li class="xpl-point">We use aliases: d for drivers, t for trips. This shortens the query and avoids repeating full table names every time.</li><li class="xpl-point">Without JOIN, you'd have to run two separate queries and manually match rows by driver_id — JOIN does this automatically in one shot.</li><li class="xpl-point">The result of this step: each row now has driver_id, driver_name, city, and fare together in one place — ready for the next aggregation step.</li></ul></div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">The orders table stores one row per order with a full order_date, but the question needs monthly totals, so the first step is to turn each date into a YYYY-MM month bucket.</li><li class="xpl-point">strftime('%Y-%m', order_date) extracts just the year and month from the date string. SQLite has no DATE_TRUNC, so strftime is the standard way to bucket dates by month.</li><li class="xpl-point">Nothing is aggregated yet — this just confirms the month extraction works. Check a few rows: an order placed on 2024-01-05 should show order_month '2024-01'.</li><li class="xpl-point">Order 105 has a NULL order_amount on purpose. The next step decides how to treat it — for now just notice it sitting there in the raw output.</li></ul></div>
       </div>
     </div>
-    <div class="step-card" style="--uc:#1d4ed8">
+    <div class="step-card" style="--uc:#ff9900">
       <div class="step-head">
         <div class="step-num">2</div>
         <div class="step-info">
-          <div class="step-title">Calculate total earnings per driver</div>
+          <div class="step-title">Group by customer and month, treating NULL spend as zero</div>
         </div>
       </div>
       <div class="step-body">
         <div class="ed-win">
           <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
             <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT d.driver_id,
-       d.driver_name,
-       d.city,
-       SUM(t.fare) AS total_earnings
-FROM drivers d
-JOIN trips t ON d.driver_id = t.driver_id
-GROUP BY d.driver_id, d.driver_name, d.city
-ORDER BY total_earnings DESC;</code></pre>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT customer_id,
+       strftime('%Y-%m', order_date) AS order_month,
+       COUNT(order_id) AS total_orders,
+       SUM(COALESCE(order_amount, 0)) AS total_amount
+FROM orders
+GROUP BY customer_id, strftime('%Y-%m', order_date)
+ORDER BY customer_id, order_month;</code></pre>
         </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">SUM(t.fare) adds up all fare values for each driver across all their trips. For example, driver D001 has 3 trips: 250.50 + 180.00 + 320.75 = 751.25 total.</li><li class="xpl-point">GROUP BY d.driver_id, d.driver_name, d.city tells SQL: group all rows with the same driver_id together, then calculate SUM separately for each group.</li><li class="xpl-point">Why include driver_name and city in GROUP BY? SQL rule: every column in SELECT that is NOT inside an aggregate function (like SUM) must also appear in GROUP BY.</li><li class="xpl-point">AS total_earnings gives a clean, readable name to the calculated column. Without it, the output column header would literally say SUM(t.fare) — confusing.</li><li class="xpl-point">ORDER BY total_earnings DESC sorts results from highest earner to lowest. This makes it easy to spot the top drivers at a glance.</li><li class="xpl-point">At this point you have one row per driver with their total earnings — but you still cannot filter top 3 per city. For that, you need ranking logic in the next step.</li></ul></div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">GROUP BY customer_id, strftime('%Y-%m', order_date) collapses all of a customer's orders in the same month into a single row.</li><li class="xpl-point">COUNT(order_id) counts orders per group. Since order_id is never NULL, this gives an accurate order count even for the row with the missing amount.</li><li class="xpl-point">SUM(order_amount) alone would silently skip NULL rows instead of counting them as zero — SQLite's SUM() ignores NULLs rather than erroring, which understates spend with no warning. COALESCE(order_amount, 0) converts NULL to 0 before summing, so a missing amount counts as zero spend instead of vanishing.</li><li class="xpl-point">Run this and check customer 2's January total: with the NULL treated as 0, it should land on exactly the 200.00 from their one priced order — not more, not less.</li></ul></div>
       </div>
     </div>
-    <div class="step-card" style="--uc:#1d4ed8">
+    <div class="step-card" style="--uc:#ff9900">
       <div class="step-head">
         <div class="step-num">3</div>
         <div class="step-info">
-          <div class="step-title">Get top 3 drivers per city using ROW_NUMBER</div>
+          <div class="step-title">Final query with clean output</div>
         </div>
       </div>
       <div class="step-body">
         <div class="ed-win">
           <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
             <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT driver_id, driver_name, city, total_earnings
-FROM (
-  SELECT d.driver_id,
-         d.driver_name,
-         d.city,
-         SUM(t.fare) AS total_earnings,
-         ROW_NUMBER() OVER (
-           PARTITION BY d.city
-           ORDER BY SUM(t.fare) DESC
-         ) AS rn
-  FROM drivers d
-  JOIN trips t ON d.driver_id = t.driver_id
-  GROUP BY d.driver_id, d.driver_name, d.city
-) ranked
-WHERE rn &lt;= 3;</code></pre>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT customer_id,
+       strftime('%Y-%m', order_date) AS order_month,
+       COUNT(order_id) AS total_orders,
+       ROUND(SUM(COALESCE(order_amount, 0)), 2) AS total_amount
+FROM orders
+GROUP BY customer_id, strftime('%Y-%m', order_date)
+ORDER BY customer_id, order_month;</code></pre>
         </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">The previous step gave total earnings per driver — but we need top 3 per city, not overall top 3. For that, we must rank drivers within each city separately.</li><li class="xpl-point">ROW_NUMBER() is a window function. Unlike GROUP BY which collapses multiple rows into one, window functions add a new column to existing rows without removing any rows.</li><li class="xpl-point">OVER (...) defines the 'window' — the rules for how ROW_NUMBER should group and sort. Think of OVER as: 'apply this ranking logic inside this specific window of rows'.</li><li class="xpl-point">PARTITION BY d.city splits drivers into groups by city before ranking. Chennai drivers get ranked among themselves. Delhi drivers get ranked among themselves. Each city is independent.</li><li class="xpl-point">ORDER BY SUM(t.fare) DESC inside OVER means: within each city group, assign rank 1 to the highest earner, rank 2 to the second highest, rank 3 to third, and so on.</li><li class="xpl-point">The inner query is wrapped in a subquery (aliased as 'ranked') because SQL evaluates WHERE before window functions. You cannot write WHERE rn &lt;= 3 in the same query — it must be in an outer query.</li><li class="xpl-point">WHERE rn &lt;= 3 in the outer query keeps only rows where the rank is 1, 2, or 3 — meaning the top 3 earners from each city partition.</li><li class="xpl-point">Why not just use LIMIT 3? LIMIT 3 would give the top 3 drivers globally across all cities. ROW_NUMBER with PARTITION BY is the correct approach when you need top-N within each group.</li></ul></div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">ROUND(SUM(COALESCE(order_amount, 0)), 2) rounds the total to two decimal places — floating-point addition can return extra trailing decimals even when every input has exactly two.</li><li class="xpl-point">ORDER BY customer_id, order_month sorts the output so each customer's months appear together in chronological order, instead of whatever order SQLite happens to return groups in.</li><li class="xpl-point">Look at customer 1, 3, and 5's January rows: all three land on 165.50 in total_amount despite feeding in different order counts (2, 2, and 1 respectively) — a genuine tie in the output, not a bug in the query.</li><li class="xpl-point">This is the complete answer: customer_id, order_month, total_orders, and total_amount for every customer-month combination that has at least one order. A customer with zero orders in a given month simply produces no row for that month.</li></ul></div>
       </div>
     </div>
 

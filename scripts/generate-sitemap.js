@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 /**
  * Generates sitemap.xml + robots.txt at the repo root from:
- *   - index.html                     → homepage
- *   - learn/index.json                → the /learn pages
- *   - questions/slugs.json            → every static question page (written by generate-question-pages.js)
- *   - generate-static-pages.js PAGES  → about/contact/privacy/terms
+ *   - questions/index.json + questions/<company>.json → every paginated listing page (/, /questions/page/2.html, ...)
+ *   - learn/index.json                                 → the /learn pages
+ *   - questions/slugs.json                             → every static question page (written by generate-question-pages.js)
+ *   - generate-static-pages.js PAGES                    → about/contact/privacy/terms
  *
- * Run this AFTER scripts/generate-question-pages.js so slugs.json reflects the current
- * set of question pages — this script doesn't recompute slugs itself, it only reads
- * the manifest so the two never disagree about what pages exist.
+ * Run this AFTER scripts/generate-question-pages.js so slugs.json — and the listing
+ * page count — reflect the current data. Pagination is recomputed here via the SAME
+ * sortEntries/paginateEntries/PAGE_SIZE the page generator uses (imported, not
+ * reimplemented), so the sitemap can't disagree with what actually got written to disk.
  *
  * Usage:
  *   node scripts/generate-sitemap.js
@@ -17,6 +18,7 @@ const fs = require('fs');
 const path = require('path');
 const { SITE_URL } = require('./site-config');
 const { PAGES: STATIC_PAGES } = require('./generate-static-pages');
+const { computeExpected, sortEntries, paginateEntries, pageUrl } = require('./generate-question-pages');
 
 const ROOT = path.join(__dirname, '..');
 
@@ -43,8 +45,31 @@ function urlEntry(loc, { priority, lastmod }) {
 function main() {
   const urls = [];
 
-  // Homepage
-  urls.push(urlEntry(`${SITE_URL}/`, { priority: 1.0, lastmod: lastmodOf(path.join(ROOT, 'index.html')) }));
+  // Paginated listing: page 1 is the homepage, page 2+ are /questions/page/N.html.
+  // Priority tapers off after page 1 — later pages are the same content type but less
+  // likely to be anyone's entry point.
+  const companiesPath = path.join(ROOT, 'questions', 'index.json');
+  if (!fs.existsSync(companiesPath)) {
+    console.error('questions/index.json not found — cannot compute listing pages.');
+    process.exit(1);
+  }
+  const companies = JSON.parse(fs.readFileSync(companiesPath, 'utf8'));
+  const listingPages = paginateEntries(sortEntries(computeExpected(companies)));
+  let listingPagesFound = 0;
+  for (const p of listingPages) {
+    const filePath = p.page === 1
+      ? path.join(ROOT, 'index.html')
+      : path.join(ROOT, 'questions', 'page', `${p.page}.html`);
+    if (!fs.existsSync(filePath)) {
+      console.warn(`⚠ ${pageUrl(p.page)} doesn't exist yet — skipped. Run scripts/generate-question-pages.js first.`);
+      continue;
+    }
+    listingPagesFound++;
+    urls.push(urlEntry(`${SITE_URL}${pageUrl(p.page)}`, {
+      priority: p.page === 1 ? 1.0 : 0.5,
+      lastmod: lastmodOf(filePath),
+    }));
+  }
 
   // /learn pages
   const learnIndexPath = path.join(ROOT, 'learn', 'index.json');
@@ -95,7 +120,7 @@ function main() {
   const robots = `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
   fs.writeFileSync(path.join(ROOT, 'robots.txt'), robots, 'utf8');
 
-  console.log(`Wrote sitemap.xml — ${urls.length} URL(s) (1 homepage, ${learnItems.length} /learn, ${slugValues.length} questions, ${STATIC_PAGES.length} static)`);
+  console.log(`Wrote sitemap.xml — ${urls.length} URL(s) (${listingPagesFound} listing page(s), ${learnItems.length} /learn, ${slugValues.length} questions, ${STATIC_PAGES.length} static)`);
   console.log(`Wrote robots.txt — pointing to ${SITE_URL}/sitemap.xml`);
 }
 
