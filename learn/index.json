@@ -33,12 +33,5 @@
     "href": "/blog/in-vs-exists-vs-join.html",
     "icon": "📝",
     "color": "#dbeafe"
-  },
-  {
-    "title": "The Physics of Bad Data",
-    "desc": "20 distributed-systems data bugs, explained",
-    "href": "/blog/physics-of-bad-data.html",
-    "icon": "📝",
-    "color": "#dbeafe"
   }
 ]
