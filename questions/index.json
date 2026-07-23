@@ -61,5 +61,12 @@
       "sub": "Order & Customer Analytics",
       "c": "#ff9900",
       "difficulty": "mid"
+    },
+    {
+      "id": "meesho",
+      "name": "Meesho",
+      "sub": "Reseller Analytics",
+      "c": "#f43397",
+      "difficulty": "hard"
     }
   ]

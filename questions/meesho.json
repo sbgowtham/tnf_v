@@ -1,0 +1,189 @@
+{
+  "setup": "CREATE TABLE resellers(reseller_id INTEGER,reseller_name TEXT,category TEXT,city TEXT);\nCREATE TABLE orders(order_id INTEGER,reseller_id INTEGER,order_amount REAL,status TEXT);\n\nINSERT INTO resellers VALUES\n (1,'Anjali Traders','Sarees','Surat'),\n (2,'Priya Fashions','Sarees','Jaipur'),\n (3,'Meena Boutique','Sarees','Surat'),\n (4,'Kavya Kurtis','Kurtis','Indore'),\n (5,'Rina Collections','Kurtis','Indore'),\n (6,'Sona Jewels','Jewellery','Mumbai'),\n (7,'Diamond Creations','Jewellery','Mumbai');\n\nINSERT INTO orders VALUES\n (1,1,1200,'delivered'),(2,1,1500,'delivered'),(3,1,900,'delivered'),(4,1,1100,'delivered'),(5,1,800,'rto'),(6,1,600,'rto'),\n (7,2,1000,'delivered'),(8,2,1500,'delivered'),(9,2,1200,'delivered'),(10,2,900,'delivered'),(11,2,1300,'rto'),\n (12,3,800,'delivered'),(13,3,700,'delivered'),(14,3,400,'rto'),\n (15,4,1400,'delivered'),(16,4,1600,'delivered'),(17,4,1000,'delivered'),(18,4,1200,'delivered'),(19,4,900,'rto'),\n (20,5,1100,'delivered'),(21,5,1300,'delivered'),(22,5,1000,'delivered'),(23,5,700,'rto'),(24,5,600,'rto'),(25,5,500,'rto'),\n (26,6,3000,'delivered'),(27,6,2500,'delivered'),(28,6,1800,'delivered'),(29,6,1200,'rto'),(30,6,900,'rto'),\n (31,7,2200,'delivered'),(32,7,1900,'delivered'),(33,7,1600,'delivered'),(34,7,1400,'delivered'),(35,7,1500,'rto');",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "hard",
+      "cc": [
+        "JOIN",
+        "CASE WHEN",
+        "GROUP BY",
+        "HAVING",
+        "DENSE_RANK",
+        "Window Functions",
+        "Running Total"
+      ],
+      "story": {
+        "en": "Thursday afternoon at Meesho's Reseller Growth team. COD orders that get returned before delivery — RTO, or Return to Origin — eat directly into reseller margins, and leadership wants to identify which resellers are actually profitable once RTO losses are subtracted, not just which ones have the most orders. Small or new resellers with only a handful of orders would skew the comparison, so they need to be excluded first.",
+        "ta": "Thursday afternoon Meesho-oda Reseller Growth team-la. Delivery-ku munnadi return aagura COD orders — RTO, Return to Origin nu solluvaanga — reseller margins-a nேரடிya affect pannum, so leadership-ku RTO losses subtract pannina apparam yaaru resellers real-a profitable-nu identify pannanum, just adhigama orders vachirukkura resellers illa. Konjam orders mattum vachirukkura small/new resellers comparison-a skew pannidum, so mudhalla avanga-a exclude pannanum.",
+        "hi": "Thursday afternoon Meesho ke Reseller Growth team mein. Delivery se pehle return ho jaane wale COD orders — RTO, ya Return to Origin — reseller margins ko seedha affect karte hain, isliye leadership jaanna chahti hai ki RTO losses minus karne ke baad kaunse resellers actually profitable hain, sirf sabse zyada orders wale nahi. Kam orders wale chhote ya naye resellers comparison ko skew kar denge, isliye pehle unhe exclude karna hai.",
+        "te": "Thursday afternoon Meesho Reseller Growth team lo. Delivery kakamunde return ayye COD orders — RTO, Return to Origin ani antaru — reseller margins ni neruga affect chestayi, so RTO losses minus chesaka evaru resellers nijamga profitable ani leadership telsukovali, kevalam ekkuva orders unna vallu kaadu. Takkuva orders unna chinna/kotha resellers comparison ni skew chestaru, so vaatini mundu exclude cheyali."
+      },
+      "question": {
+        "en": "For each reseller, calculate net revenue as the total value of delivered orders minus the total value of RTO (returned) orders. Only include resellers with at least 5 total orders. Rank resellers within their product category by net revenue, using DENSE_RANK so tied resellers share a rank. Also calculate the running total of net revenue within each category, ordered by rank (and by reseller name to break ties consistently). Return reseller_name, category, total_orders, net_revenue, category_rank, and running_net_revenue, sorted by category, then rank, then reseller name.",
+        "ta": "Ovvoru reseller-kum, delivered orders-oda total value-la irundhu RTO (returned) orders-oda total value-a minus panni net revenue-a calculate pannunga. Kammasa 5 total orders irukkura resellers mattum include pannunga. Avanga product category-kulla net revenue vachi DENSE_RANK use panni rank pannunga, tie irukkura resellers same rank share pannanum. Category-kulla net revenue-oda running total-ayum calculate pannunga, rank order-la (matrum tie break panna reseller name order-layum). reseller_name, category, total_orders, net_revenue, category_rank, matrum running_net_revenue-a return pannunga, category apparam rank apparam reseller name order-la sort pannunga.",
+        "hi": "Har reseller ke liye, delivered orders ki total value mein se RTO (returned) orders ki total value minus karke net revenue calculate karo. Sirf kam se kam 5 total orders wale resellers include karo. Unke product category ke andar net revenue ke hisaab se DENSE_RANK use karke rank do, taaki tie wale resellers ek hi rank share karein. Category ke andar net revenue ka running total bhi calculate karo, rank ke order mein (aur tie todne ke liye reseller name ke order mein). reseller_name, category, total_orders, net_revenue, category_rank, aur running_net_revenue return karo, pehle category phir rank phir reseller name ke order mein sort karke.",
+        "te": "Prathi reseller ki, delivered orders total value nunchi RTO (returned) orders total value minus chesi net revenue calculate cheyandi. Kanisam 5 total orders unna resellers matrame include cheyandi. Vaalla product category lo net revenue prakaram DENSE_RANK vadi rank ivvandi, tie unna resellers oke rank share cheyali. Category lo net revenue running total ni kuda calculate cheyandi, rank order lo (mariyu tie break cheyadaniki reseller name order lo). reseller_name, category, total_orders, net_revenue, category_rank, mariyu running_net_revenue ni return cheyandi, modata category tarvata rank tarvata reseller name order lo sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "resellers",
+          "cols": [
+            {
+              "n": "reseller_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "reseller_name",
+              "t": "TEXT",
+              "e": "Anjali Traders"
+            },
+            {
+              "n": "category",
+              "t": "TEXT",
+              "e": "Sarees"
+            },
+            {
+              "n": "city",
+              "t": "TEXT",
+              "e": "Surat"
+            }
+          ]
+        },
+        {
+          "name": "orders",
+          "cols": [
+            {
+              "n": "order_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "reseller_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "order_amount",
+              "t": "REAL",
+              "e": "1200"
+            },
+            {
+              "n": "status",
+              "t": "TEXT",
+              "e": "delivered"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Calculate total orders and net revenue per reseller, filtering out low-volume resellers",
+            "ta": "Ovvoru reseller-kum total orders matrum net revenue calculate pannunga, konjam orders vachirukkura resellers-a filter pannunga",
+            "hi": "Har reseller ke total orders aur net revenue calculate karo, kam orders wale resellers ko filter karo",
+            "te": "Prathi reseller ki total orders mariyu net revenue calculate cheyandi, takkuva orders unna resellers ni filter cheyandi"
+          },
+          "sql": "SELECT r.reseller_id,\n       r.reseller_name,\n       r.category,\n       COUNT(o.order_id) AS total_orders,\n       SUM(CASE WHEN o.status = 'delivered' THEN o.order_amount ELSE 0 END)\n         - SUM(CASE WHEN o.status = 'rto' THEN o.order_amount ELSE 0 END) AS net_revenue\nFROM resellers r\nJOIN orders o ON o.reseller_id = r.reseller_id\nGROUP BY r.reseller_id, r.reseller_name, r.category\nHAVING COUNT(o.order_id) >= 5\nORDER BY r.category, net_revenue DESC;",
+          "explain": {
+            "en": [
+              "The orders table has one row per order, tagged 'delivered' or 'rto'. To get net revenue per reseller, delivered and RTO amounts need to be summed separately, then subtracted — a single SUM(order_amount) would just add RTO losses on top of revenue instead of subtracting them.",
+              "SUM(CASE WHEN status='delivered' THEN order_amount ELSE 0 END) adds up only delivered orders; the matching CASE for 'rto' adds up only returned orders. Subtracting the second from the first gives net revenue — money actually kept after returns.",
+              "HAVING COUNT(order_id) >= 5 removes resellers with fewer than 5 total orders, after grouping — HAVING filters on the aggregated result, unlike WHERE, which would run before COUNT exists to filter on.",
+              "Meena Boutique has only 3 orders and is correctly excluded here. Priya Fashions has exactly 5 — the boundary — and is correctly included, since the requirement is 'at least 5,' not 'more than 5.'"
+            ],
+            "ta": [
+              "orders table-la ovvoru order-kum oru row irukku, 'delivered' alladhu 'rto' nu tag pannirukkanga. Ovvoru reseller-kum net revenue kidaikanumna, delivered matrum RTO amounts separate-a sum panni, apparam subtract pannanum — single SUM(order_amount) na RTO losses-a revenue mேlே add pannidum, subtract pannaadhu.",
+              "SUM(CASE WHEN status='delivered' THEN order_amount ELSE 0 END) delivered orders mattum add pannum; adhே madhiri 'rto'-kum CASE returned orders mattum add pannum. Rendaavadhu-la irundhu mudhalvadhu-a subtract panna net revenue kidaikkum — returns apparam meidhippula irukkura paisa.",
+              "HAVING COUNT(order_id) >= 5 group panniya apparam 5-kum kammi total orders irukkura resellers-a remove pannum — HAVING aggregate result-la filter pannum, WHERE madhiri illa, adhu COUNT irukkuradhukku munnadi run aagum.",
+              "Meena Boutique-ku 3 orders mattum-thaan irukku, so idhu correct-a exclude aagirukku. Priya Fashions-ku exactly 5 irukku — boundary — so correct-a include aagirukku, ention requirement 'at least 5', 'more than 5' illa."
+            ],
+            "hi": [
+              "orders table mein har order ke liye ek row hoti hai, 'delivered' ya 'rto' tag ke saath. Har reseller ka net revenue nikaalne ke liye, delivered aur RTO amounts ko alag-alag sum karke phir minus karna padta hai — sirf ek SUM(order_amount) RTO losses ko revenue ke upar add kar dega, minus nahi karega.",
+              "SUM(CASE WHEN status='delivered' THEN order_amount ELSE 0 END) sirf delivered orders jodta hai; 'rto' ke liye same CASE sirf returned orders jodta hai. Dusre ko pehle se minus karne se net revenue milta hai — returns ke baad jo paisa actually bacha.",
+              "HAVING COUNT(order_id) >= 5 group karne ke baad 5 se kam total orders wale resellers ko hata deta hai — HAVING aggregate result par filter karta hai, WHERE ki tarah nahi, jo COUNT banne se pehle chalta.",
+              "Meena Boutique ke sirf 3 orders hain, isliye yahan sahi se exclude ho gaya. Priya Fashions ke exactly 5 hain — boundary — isliye sahi se include hua, kyunki requirement 'at least 5' hai, 'more than 5' nahi."
+            ],
+            "te": [
+              "orders table lo prathi order ki oka row untundi, 'delivered' leda 'rto' ani tag chesi. Prathi reseller ki net revenue kavali ante, delivered mariyu RTO amounts separate ga sum chesi, tarvata subtract cheyali — kevalam oka SUM(order_amount) RTO losses ni revenue paina add chestundi, subtract cheyadu.",
+              "SUM(CASE WHEN status='delivered' THEN order_amount ELSE 0 END) delivered orders matrame add chestundi; 'rto' kosam ade CASE returned orders matrame add chestundi. Rendo dానిని modati dాni nunchi subtract cheste net revenue vastundi — returns tarvata nijaniki migిlిna dabbu.",
+              "HAVING COUNT(order_id) >= 5 group chesaka 5 kanna takkuva total orders unna resellers ni remove chestundi — HAVING aggregate result paina filter chestundi, WHERE la kaadu, adi COUNT undakamunde run avutundi.",
+              "Meena Boutique ki 3 orders matrame unnayi, so idi correct ga exclude ayyindi. Priya Fashions ki exactly 5 unnayi — boundary — so correct ga include ayyindi, endukante requirement 'at least 5', 'more than 5' kaadu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Rank resellers within their category by net revenue",
+            "ta": "Reseller-oda category-kulla net revenue vachi rank pannunga",
+            "hi": "Reseller ke category ke andar net revenue ke hisaab se rank do",
+            "te": "Reseller category lo net revenue prakaram rank cheyandi"
+          },
+          "sql": "WITH reseller_totals AS (\n  SELECT r.reseller_id,\n         r.reseller_name,\n         r.category,\n         COUNT(o.order_id) AS total_orders,\n         SUM(CASE WHEN o.status = 'delivered' THEN o.order_amount ELSE 0 END)\n           - SUM(CASE WHEN o.status = 'rto' THEN o.order_amount ELSE 0 END) AS net_revenue\n  FROM resellers r\n  JOIN orders o ON o.reseller_id = r.reseller_id\n  GROUP BY r.reseller_id, r.reseller_name, r.category\n  HAVING COUNT(o.order_id) >= 5\n)\nSELECT reseller_name,\n       category,\n       total_orders,\n       net_revenue,\n       DENSE_RANK() OVER (PARTITION BY category ORDER BY net_revenue DESC) AS category_rank\nFROM reseller_totals\nORDER BY category, category_rank;",
+          "explain": {
+            "en": [
+              "The previous step's result becomes a CTE (reseller_totals) so it can be reused without repeating the whole GROUP BY/HAVING query — DENSE_RANK needs to run on top of the already-aggregated net revenue, not on raw order rows.",
+              "DENSE_RANK() OVER (PARTITION BY category ORDER BY net_revenue DESC) ranks resellers separately within each category — Sarees, Kurtis, and Jewellery each get their own rank 1, restarting for every category.",
+              "DENSE_RANK specifically (not RANK) matters here because of the tie: Anjali Traders and Priya Fashions both land on 3300 net revenue in Sarees. DENSE_RANK gives them both rank 1 without leaving a gap afterward — RANK would also give them both rank 1, but the next Sarees reseller would jump to rank 3, misrepresenting how many distinct performance tiers actually exist.",
+              "Check the Jewellery and Kurtis categories: each has a clean rank 1 and rank 2, no ties, confirming the ranking logic works whether or not a tie is present."
+            ],
+            "ta": [
+              "Munnaadi step-oda result oru CTE (reseller_totals) aagum, so full GROUP BY/HAVING query-a repeat pannama reuse pannalaam — DENSE_RANK already-aggregate panna net revenue mேlே run aganum, raw order rows mேlே illa.",
+              "DENSE_RANK() OVER (PARTITION BY category ORDER BY net_revenue DESC) ovvoru category-kulla resellers-a separate-a rank pannum — Sarees, Kurtis, matrum Jewellery ovvondrukum thani rank 1 irukkum, ovvoru category-kum restart aagum.",
+              "Tie irukkura karanam-ku DENSE_RANK mattum-thaan (RANK illa) mukkiyam: Anjali Traders matrum Priya Fashions rendu perum Sarees-la 3300 net revenue-la varaanga. DENSE_RANK rendu perukkum rank 1 kudukkum, apparam gap illama — RANK-um rendu perukkum rank 1 kudukkum, aana next Sarees reseller rank 3-ku jump aagidum, adhu edhu distinct performance tiers irukkunu wrong-a kaatidum.",
+              "Jewellery matrum Kurtis categories-a paarunga: rendukum clean rank 1 matrum rank 2 irukku, tie illama, ranking logic tie irundhaalum illaanaalum work aaguthu-nu confirm pannuthu."
+            ],
+            "hi": [
+              "Pichle step ka result ek CTE (reseller_totals) ban jaata hai, taaki poora GROUP BY/HAVING query dobara likhe bina reuse ho sake — DENSE_RANK ko already-aggregate hue net revenue par chalna hai, raw order rows par nahi.",
+              "DENSE_RANK() OVER (PARTITION BY category ORDER BY net_revenue DESC) har category ke andar resellers ko alag se rank deta hai — Sarees, Kurtis, aur Jewellery, har ek ka apna rank 1 hota hai, har category ke liye restart hota hai.",
+              "Yahan DENSE_RANK hi (RANK nahi) isliye zaroori hai kyunki tie hai: Anjali Traders aur Priya Fashions dono Sarees mein 3300 net revenue par aate hain. DENSE_RANK dono ko rank 1 deta hai bina koi gap chhode — RANK bhi dono ko rank 1 dega, lekin agla Sarees reseller seedha rank 3 par chala jaayega, jo galat tareeke se dikhayega ki kitne distinct performance tiers hain.",
+              "Jewellery aur Kurtis categories dekho: dono mein clean rank 1 aur rank 2 hai, koi tie nahi, jo confirm karta hai ki ranking logic tie ho ya na ho, dono mein sahi kaam karta hai."
+            ],
+            "te": [
+              "Previous step result oka CTE (reseller_totals) avutundi, so full GROUP BY/HAVING query malli rayakunda reuse cheyachu — DENSE_RANK already-aggregate chesina net revenue paina run avvali, raw order rows paina kaadu.",
+              "DENSE_RANK() OVER (PARTITION BY category ORDER BY net_revenue DESC) prathi category lo resellers ni separate ga rank chestundi — Sarees, Kurtis, mariyu Jewellery ki vati sontha rank 1 untundi, prathi category ki restart avutundi.",
+              "Tie unna karananiki DENSE_RANK matrame (RANK kaadu) important: Anjali Traders mariyu Priya Fashions ఇద్దరు Sarees lo 3300 net revenue ki vastaru. DENSE_RANK ఇద్దరiki rank 1 istundi gap lekunda — RANK kuda ఇద్దరiki rank 1 istundi, kaani next Sarees reseller నేరుగా rank 3 ki jump avutundi, adi ఎన్ని distinct performance tiers unnayo tappuga chupistundi.",
+              "Jewellery mariyu Kurtis categories chudandi: rendintiలో clean rank 1 mariyu rank 2 undi, tie లేకుండా, ranking logic tie unna lekapoyina sarigga work chestundi ani confirm chestundi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Add the running total and finalize the output",
+            "ta": "Running total-a add panni output-a finalize pannunga",
+            "hi": "Running total add karke output ko final karo",
+            "te": "Running total add chesi output ni final cheyandi"
+          },
+          "sql": "WITH reseller_totals AS (\n  SELECT r.reseller_id,\n         r.reseller_name,\n         r.category,\n         COUNT(o.order_id) AS total_orders,\n         SUM(CASE WHEN o.status = 'delivered' THEN o.order_amount ELSE 0 END)\n           - SUM(CASE WHEN o.status = 'rto' THEN o.order_amount ELSE 0 END) AS net_revenue\n  FROM resellers r\n  JOIN orders o ON o.reseller_id = r.reseller_id\n  GROUP BY r.reseller_id, r.reseller_name, r.category\n  HAVING COUNT(o.order_id) >= 5\n)\nSELECT reseller_name,\n       category,\n       total_orders,\n       net_revenue,\n       DENSE_RANK() OVER (PARTITION BY category ORDER BY net_revenue DESC) AS category_rank,\n       SUM(net_revenue) OVER (\n         PARTITION BY category\n         ORDER BY net_revenue DESC, reseller_name\n         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n       ) AS running_net_revenue\nFROM reseller_totals\nORDER BY category, category_rank, reseller_name;",
+          "explain": {
+            "en": [
+              "SUM(net_revenue) OVER (PARTITION BY category ORDER BY net_revenue DESC, reseller_name ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) adds up net revenue cumulatively within each category, in rank order — each row's running total is the sum of its own net revenue plus every higher-ranked reseller's net revenue in that category.",
+              "ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW explicitly defines the window frame as 'from the start of this category's partition up to the current row' — SQLite's default frame would do the same thing here, but writing it explicitly avoids relying on default behavior that differs across databases.",
+              "The ORDER BY inside this window function includes reseller_name as a tiebreaker, not just net_revenue DESC. Without it, when two rows tie (Anjali Traders and Priya Fashions, both 3300), the running total would still be correct as a final number, but the order the tied rows are processed in — and therefore which one shows 3300 and which shows 6600 first — would be undefined, exactly the non-deterministic-ORDER BY problem that causes results to shift between runs on identical data.",
+              "The final SELECT's own ORDER BY (category, category_rank, reseller_name) is separate from the window function's internal ORDER BY — one controls calculation order inside each partition, the other controls how the finished rows are displayed. They happen to use the same columns here, but they are not the same clause and don't have to match."
+            ],
+            "ta": [
+              "SUM(net_revenue) OVER (PARTITION BY category ORDER BY net_revenue DESC, reseller_name ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) ovvoru category-kulla net revenue-a cumulative-a add pannum, rank order-la — ovvoru row-oda running total, adhoda own net revenue plus andha category-la adhukku mேlே irukkura ella resellers-oda net revenue-um sேrndhadhu.",
+              "ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW window frame-a 'indha category partition start-la irundhu current row varaikkum' nu explicit-a define pannum — SQLite-oda default frame idhே pannum, aana explicit-a eluthina, database-ku database vாraaga irukkura default behavior mேlே depend aagama irukkalaam.",
+              "Indha window function-oda ULLA ORDER BY-la reseller_name-um tiebreaker-a irukku, net_revenue DESC mattum illa. Adhu illama-na, rendu rows tie aana pothu (Anjali Traders matrum Priya Fashions, rendum 3300), running total final number-a correct-a irukkum, aana tie aana rows eppadi process aagum-nu order — so yaaru mudhalla 3300 kaatuvaanga, yaaru 6600 kaatuvaanga-nu — undefined-a irukkum, exactly non-deterministic ORDER BY problem madhiri, identical data-la results run-ku run maaridhal aagum.",
+              "Final SELECT-oda own ORDER BY (category, category_rank, reseller_name) window function-oda internal ORDER BY-la irundhu separate — onnu ovvoru partition-kulla calculation order-a control pannum, மற்றொன்று mudinjadhu rows eppadi display aagum-nu control pannum. Ivanga rendu perum idhே columns use pannuranga, aana ivanga same clause illa, match aaganum-nu kadaayam illa."
+            ],
+            "hi": [
+              "SUM(net_revenue) OVER (PARTITION BY category ORDER BY net_revenue DESC, reseller_name ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) har category ke andar net revenue ko cumulative tareeke se jodta hai, rank order mein — har row ka running total uske apne net revenue plus us category mein usse upar wale sabhi resellers ke net revenue ka jod hai.",
+              "ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW window frame ko explicitly define karta hai — 'is category partition ki shuruaat se current row tak' — SQLite ka default frame yahan wahi karega, lekin explicitly likhne se alag-alag database ke default behavior par depend karne se bacha jaata hai.",
+              "Is window function ke andar wale ORDER BY mein reseller_name bhi tiebreaker ke roop mein hai, sirf net_revenue DESC nahi. Agar yeh na ho, jab do rows tie karti hain (Anjali Traders aur Priya Fashions, dono 3300), running total final number ke roop mein sahi hoga, lekin tie wali rows kis order mein process hoti hain — isliye kaun pehle 3300 dikhayega aur kaun 6600 — yeh undefined hoga, bilkul wahi non-deterministic ORDER BY problem jismein identical data par results run-to-run badal jaate hain.",
+              "Final SELECT ka apna ORDER BY (category, category_rank, reseller_name) window function ke andar wale ORDER BY se alag hai — ek har partition ke andar calculation order control karta hai, doosra yeh control karta hai ki final rows kaise display hoti hain. Yahan dono same columns use karte hain, lekin yeh same clause nahi hai aur inka match hona zaroori nahi."
+            ],
+            "te": [
+              "SUM(net_revenue) OVER (PARTITION BY category ORDER BY net_revenue DESC, reseller_name ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) prathi category lo net revenue ni cumulative గా add chestundi, rank order lo — prathi row running total dాni sontha net revenue plus aa category lo దాని కంటే ఎక్కువ unna anni resellers net revenue కలిపి.",
+              "ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW window frame ni explicit gaa define chestundi — 'ee category partition modati nunchi current row varaku' — SQLite default frame ikkada ade chestundi, kaani explicit gaa rayadam valla vేరు వేరు databases default behavior paina depend avvakunda untundi.",
+              "Ee window function లోపలి ORDER BY lo reseller_name kuda tiebreaker gaa undi, net_revenue DESC matrame kaadu. Adi lekapothe, rendu rows tie ayinapudu (Anjali Traders mariyu Priya Fashions, rendu 3300), running total final number gaa correct ga untundi, kaani tie unna rows ఏ order lo process avutayo — so evaru mundu 3300 chupistaru, evaru 6600 chupistaru — undefined గా untundi, exactly non-deterministic ORDER BY problem la, identical data paina results run-to-run marutayi.",
+              "Final SELECT sontha ORDER BY (category, category_rank, reseller_name) window function లోపలి ORDER BY nunchi separate — okati prathi partition లోపల calculation order ni control chestundi, marokati final rows ela display avutayo control chestundi. Ikkada rendu ఒకే columns vాడutunnayi, kaani ivi ఒకే clause kaadu, match avvali ani em ledu."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

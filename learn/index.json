@@ -26,5 +26,12 @@
     "href": "/blog/row-number-vs-rank-vs-dense-rank.html",
     "icon": "📝",
     "color": "#dbeafe"
+  },
+  {
+    "title": "IN vs EXISTS vs JOIN",
+    "desc": "The NOT IN NULL trap explained",
+    "href": "/blog/in-vs-exists-vs-join.html",
+    "icon": "📝",
+    "color": "#dbeafe"
   }
 ]

@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Youtube: video calculate the percentage of… | TableNotFound</title>
-<meta name="description" content="Youtube SQL practice question (mid): For each video, calculate the percentage of viewers who watched until the end out of… Free, runs live in your browser.">
-<link rel="canonical" href="https://www.tablenotfound.com/questions/youtube-video-calculate-percentage-viewers-watched-until.html">
+<title>Meesho: reseller calculate net revenue as… | TableNotFound</title>
+<meta name="description" content="Meesho SQL practice question (hard): For each reseller, calculate net revenue as the total value of delivered orders minus… Free, runs live in your browser.">
+<link rel="canonical" href="https://www.tablenotfound.com/questions/meesho-reseller-calculate-net-revenue-total-value-deliver.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -354,69 +354,69 @@ td{padding:14px 16px;vertical-align:middle}
 
   <div class="q-header">
     <div class="q-badges">
-      <span class="co-tag" style="background:color-mix(in srgb,#1d4ed8 13%,white);color:color-mix(in srgb,#1d4ed8 90%,black)">Youtube</span>
-      <span class="diff-mid">mid</span>
-      <span class="chip">JOIN</span><span class="chip">WHERE</span><span class="chip">GROUP BY</span><span class="chip">CASE WHEN</span><span class="chip">COUNT(DISTINCT)</span><span class="chip">ROUND</span>
+      <span class="co-tag" style="background:color-mix(in srgb,#f43397 13%,white);color:color-mix(in srgb,#f43397 90%,black)">Meesho</span>
+      <span class="diff-hard">hard</span>
+      <span class="chip">JOIN</span><span class="chip">CASE WHEN</span><span class="chip">GROUP BY</span><span class="chip">HAVING</span><span class="chip">DENSE_RANK</span><span class="chip">Window Functions</span><span class="chip">Running Total</span>
     </div>
-    <h1 class="q-h1">For each video, calculate the percentage of viewers who watched until the end out of all viewers who started the video. Round the result to 2 decimal places.</h1>
-    <p class="q-sub">Youtube · Engagement Analytics — practice this real-world SQL scenario live in your browser.</p>
+    <h1 class="q-h1">For each reseller, calculate net revenue as the total value of delivered orders minus the total value of RTO (returned) orders. Only include resellers with at least 5 total orders. Rank resellers within their product category by net revenue, using DENSE_RANK so tied resellers share a rank. Also calculate the running total of net revenue within each category, ordered by rank (and by reseller name to break ties consistently). Return reseller_name, category, total_orders, net_revenue, category_rank, and running_net_revenue, sorted by category, then rank, then reseller name.</h1>
+    <p class="q-sub">Meesho · Reseller Analytics — practice this real-world SQL scenario live in your browser.</p>
   </div>
 
-  <div class="story" style="--uc:#1d4ed8">
+  <div class="story" style="--uc:#f43397">
     <div class="story-bg"></div>
     <div class="story-top">
       <span class="story-lbl">📖 Story</span>
-      <span class="story-co">Youtube · Engagement Analytics</span>
+      <span class="story-co">Meesho · Reseller Analytics</span>
     </div>
-    <div class="story-body">YouTube HQ, Monday product review. The Creator Growth team notices that while some videos attract thousands of viewers, not everyone watches until the end. The Product team wants to identify which videos keep viewers engaged throughout the entire video before recommending them to more users.</div>
+    <div class="story-body">Thursday afternoon at Meesho's Reseller Growth team. COD orders that get returned before delivery — RTO, or Return to Origin — eat directly into reseller margins, and leadership wants to identify which resellers are actually profitable once RTO losses are subtracted, not just which ones have the most orders. Small or new resellers with only a handful of orders would skew the comparison, so they need to be excluded first.</div>
   </div>
 
   <div class="mission">
     <div class="mission-top">🎯 Your Mission</div>
-    <div class="mission-body">For each video, calculate the percentage of viewers who watched until the end out of all viewers who started the video. Round the result to 2 decimal places.</div>
+    <div class="mission-body">For each reseller, calculate net revenue as the total value of delivered orders minus the total value of RTO (returned) orders. Only include resellers with at least 5 total orders. Rank resellers within their product category by net revenue, using DENSE_RANK so tied resellers share a rank. Also calculate the running total of net revenue within each category, ordered by rank (and by reseller name to break ties consistently). Return reseller_name, category, total_orders, net_revenue, category_rank, and running_net_revenue, sorted by category, then rank, then reseller name.</div>
   </div>
 
   <div class="schema-wrap">
     <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem">📋 Table Structure</div>
     <div class="schema-cards">
       <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">videos</span></div>
+        <div class="sc-head">🗂 <span class="sc-name">resellers</span></div>
         <div><div class="sc-row">
-          <span class="sc-col">video_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">101</span>
-        </div><div class="sc-row">
-          <span class="sc-col">title</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">SQL Basics</span>
-        </div><div class="sc-row">
-          <span class="sc-col">duration_seconds</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">600</span>
-        </div></div>
-      </div>
-      <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">watch_history</span></div>
-        <div><div class="sc-row">
-          <span class="sc-col">watch_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">1001</span>
-        </div><div class="sc-row">
-          <span class="sc-col">user_id</span>
+          <span class="sc-col">reseller_id</span>
           <span class="sc-type">INTEGER</span>
           <span class="sc-eg">1</span>
         </div><div class="sc-row">
-          <span class="sc-col">video_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">101</span>
-        </div><div class="sc-row">
-          <span class="sc-col">watch_seconds</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">600</span>
-        </div><div class="sc-row">
-          <span class="sc-col">watch_date</span>
+          <span class="sc-col">reseller_name</span>
           <span class="sc-type">TEXT</span>
-          <span class="sc-eg">2024-05-01</span>
+          <span class="sc-eg">Anjali Traders</span>
+        </div><div class="sc-row">
+          <span class="sc-col">category</span>
+          <span class="sc-type">TEXT</span>
+          <span class="sc-eg">Sarees</span>
+        </div><div class="sc-row">
+          <span class="sc-col">city</span>
+          <span class="sc-type">TEXT</span>
+          <span class="sc-eg">Surat</span>
+        </div></div>
+      </div>
+      <div class="sc">
+        <div class="sc-head">🗂 <span class="sc-name">orders</span></div>
+        <div><div class="sc-row">
+          <span class="sc-col">order_id</span>
+          <span class="sc-type">INTEGER</span>
+          <span class="sc-eg">1</span>
+        </div><div class="sc-row">
+          <span class="sc-col">reseller_id</span>
+          <span class="sc-type">INTEGER</span>
+          <span class="sc-eg">1</span>
+        </div><div class="sc-row">
+          <span class="sc-col">order_amount</span>
+          <span class="sc-type">REAL</span>
+          <span class="sc-eg">1200</span>
+        </div><div class="sc-row">
+          <span class="sc-col">status</span>
+          <span class="sc-type">TEXT</span>
+          <span class="sc-eg">delivered</span>
         </div></div>
       </div>
     </div>
@@ -424,83 +424,103 @@ td{padding:14px 16px;vertical-align:middle}
 
   <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:1.5rem 0 .75rem">⚡ Step-by-Step Walkthrough</div>
   
-    <div class="step-card" style="--uc:#1d4ed8">
+    <div class="step-card" style="--uc:#f43397">
       <div class="step-head">
         <div class="step-num">1</div>
         <div class="step-info">
-          <div class="step-title">Join tables and identify viewers who started or completed the video</div>
+          <div class="step-title">Calculate total orders and net revenue per reseller, filtering out low-volume resellers</div>
         </div>
       </div>
       <div class="step-body">
         <div class="ed-win">
           <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
             <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT w.user_id,
-       v.title,
-       v.duration_seconds,
-       w.watch_seconds
-FROM watch_history w
-JOIN videos v ON w.video_id = v.video_id
-WHERE w.watch_seconds &gt; 0;</code></pre>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT r.reseller_id,
+       r.reseller_name,
+       r.category,
+       COUNT(o.order_id) AS total_orders,
+       SUM(CASE WHEN o.status = 'delivered' THEN o.order_amount ELSE 0 END)
+         - SUM(CASE WHEN o.status = 'rto' THEN o.order_amount ELSE 0 END) AS net_revenue
+FROM resellers r
+JOIN orders o ON o.reseller_id = r.reseller_id
+GROUP BY r.reseller_id, r.reseller_name, r.category
+HAVING COUNT(o.order_id) &gt;= 5
+ORDER BY r.category, net_revenue DESC;</code></pre>
         </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">Two separate tables contain the information we need. watch_history stores how many seconds each user watched, while videos stores the total duration of every video. Neither table alone can calculate viewer retention.</li><li class="xpl-point">JOIN videos v ON w.video_id = v.video_id links every watch record to its corresponding video. This allows us to compare how long a user watched against the video's total duration.</li><li class="xpl-point">WHERE w.watch_seconds &gt; 0 removes invalid watch records where a user never actually watched the video. Only users who watched at least one second are considered as viewers who started the video.</li><li class="xpl-point">Why filter this early? Rows that do not represent actual viewing activity add unnecessary data to the aggregation step and can produce misleading retention numbers.</li><li class="xpl-point">The result of this step is a clean dataset where every watch record contains both the video's duration and the user's watch time. This prepares the data for calculating started and completed viewers in the next step.</li></ul></div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">The orders table has one row per order, tagged 'delivered' or 'rto'. To get net revenue per reseller, delivered and RTO amounts need to be summed separately, then subtracted — a single SUM(order_amount) would just add RTO losses on top of revenue instead of subtracting them.</li><li class="xpl-point">SUM(CASE WHEN status='delivered' THEN order_amount ELSE 0 END) adds up only delivered orders; the matching CASE for 'rto' adds up only returned orders. Subtracting the second from the first gives net revenue — money actually kept after returns.</li><li class="xpl-point">HAVING COUNT(order_id) &gt;= 5 removes resellers with fewer than 5 total orders, after grouping — HAVING filters on the aggregated result, unlike WHERE, which would run before COUNT exists to filter on.</li><li class="xpl-point">Meena Boutique has only 3 orders and is correctly excluded here. Priya Fashions has exactly 5 — the boundary — and is correctly included, since the requirement is 'at least 5,' not 'more than 5.'</li></ul></div>
       </div>
     </div>
-    <div class="step-card" style="--uc:#1d4ed8">
+    <div class="step-card" style="--uc:#f43397">
       <div class="step-head">
         <div class="step-num">2</div>
         <div class="step-info">
-          <div class="step-title">Group by video and split started vs completed viewers using CASE WHEN</div>
+          <div class="step-title">Rank resellers within their category by net revenue</div>
         </div>
       </div>
       <div class="step-body">
         <div class="ed-win">
           <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
             <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT v.title,
-       COUNT(DISTINCT CASE
-               WHEN w.watch_seconds &gt; 0
-               THEN w.user_id END) AS started_viewers,
-       COUNT(DISTINCT CASE
-               WHEN w.watch_seconds &gt;= v.duration_seconds
-               THEN w.user_id END) AS completed_viewers
-FROM watch_history w
-JOIN videos v ON w.video_id = v.video_id
-WHERE w.watch_seconds &gt; 0
-GROUP BY v.title
-ORDER BY v.title;</code></pre>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>WITH reseller_totals AS (
+  SELECT r.reseller_id,
+         r.reseller_name,
+         r.category,
+         COUNT(o.order_id) AS total_orders,
+         SUM(CASE WHEN o.status = 'delivered' THEN o.order_amount ELSE 0 END)
+           - SUM(CASE WHEN o.status = 'rto' THEN o.order_amount ELSE 0 END) AS net_revenue
+  FROM resellers r
+  JOIN orders o ON o.reseller_id = r.reseller_id
+  GROUP BY r.reseller_id, r.reseller_name, r.category
+  HAVING COUNT(o.order_id) &gt;= 5
+)
+SELECT reseller_name,
+       category,
+       total_orders,
+       net_revenue,
+       DENSE_RANK() OVER (PARTITION BY category ORDER BY net_revenue DESC) AS category_rank
+FROM reseller_totals
+ORDER BY category, category_rank;</code></pre>
         </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">GROUP BY v.title combines all watch records belonging to the same video into a single row. Instead of seeing one row per viewer, we'll see one row per video.</li><li class="xpl-point">CASE WHEN w.watch_seconds &gt; 0 THEN w.user_id END identifies users who actually started watching the video. COUNT(DISTINCT) ensures every viewer is counted only once, even if duplicate watch records exist.</li><li class="xpl-point">The second CASE WHEN checks whether a viewer watched at least the video's full duration. If watch_seconds is greater than or equal to duration_seconds, that viewer is considered to have completed the video.</li><li class="xpl-point">This approach is called conditional aggregation. It allows us to calculate multiple metrics from the same dataset inside one GROUP BY query without writing separate queries.</li><li class="xpl-point">Run this step to verify the output. Each video should now have two numbers: started_viewers and completed_viewers.</li><li class="xpl-point">These are raw counts only. The next step converts them into viewer retention percentages.</li></ul></div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">The previous step's result becomes a CTE (reseller_totals) so it can be reused without repeating the whole GROUP BY/HAVING query — DENSE_RANK needs to run on top of the already-aggregated net revenue, not on raw order rows.</li><li class="xpl-point">DENSE_RANK() OVER (PARTITION BY category ORDER BY net_revenue DESC) ranks resellers separately within each category — Sarees, Kurtis, and Jewellery each get their own rank 1, restarting for every category.</li><li class="xpl-point">DENSE_RANK specifically (not RANK) matters here because of the tie: Anjali Traders and Priya Fashions both land on 3300 net revenue in Sarees. DENSE_RANK gives them both rank 1 without leaving a gap afterward — RANK would also give them both rank 1, but the next Sarees reseller would jump to rank 3, misrepresenting how many distinct performance tiers actually exist.</li><li class="xpl-point">Check the Jewellery and Kurtis categories: each has a clean rank 1 and rank 2, no ties, confirming the ranking logic works whether or not a tie is present.</li></ul></div>
       </div>
     </div>
-    <div class="step-card" style="--uc:#1d4ed8">
+    <div class="step-card" style="--uc:#f43397">
       <div class="step-head">
         <div class="step-num">3</div>
         <div class="step-info">
-          <div class="step-title">Calculate viewer retention percentage and round to 2 decimal places</div>
+          <div class="step-title">Add the running total and finalize the output</div>
         </div>
       </div>
       <div class="step-body">
         <div class="ed-win">
           <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
             <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT v.title,
-       ROUND(
-         COUNT(DISTINCT CASE
-                 WHEN w.watch_seconds &gt;= v.duration_seconds
-                 THEN w.user_id END) * 100.0
-         /
-         COUNT(DISTINCT CASE
-                 WHEN w.watch_seconds &gt; 0
-                 THEN w.user_id END), 2
-       ) AS retention_percentage
-FROM watch_history w
-JOIN videos v ON w.video_id = v.video_id
-WHERE w.watch_seconds &gt; 0
-GROUP BY v.title
-ORDER BY retention_percentage DESC;</code></pre>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>WITH reseller_totals AS (
+  SELECT r.reseller_id,
+         r.reseller_name,
+         r.category,
+         COUNT(o.order_id) AS total_orders,
+         SUM(CASE WHEN o.status = 'delivered' THEN o.order_amount ELSE 0 END)
+           - SUM(CASE WHEN o.status = 'rto' THEN o.order_amount ELSE 0 END) AS net_revenue
+  FROM resellers r
+  JOIN orders o ON o.reseller_id = r.reseller_id
+  GROUP BY r.reseller_id, r.reseller_name, r.category
+  HAVING COUNT(o.order_id) &gt;= 5
+)
+SELECT reseller_name,
+       category,
+       total_orders,
+       net_revenue,
+       DENSE_RANK() OVER (PARTITION BY category ORDER BY net_revenue DESC) AS category_rank,
+       SUM(net_revenue) OVER (
+         PARTITION BY category
+         ORDER BY net_revenue DESC, reseller_name
+         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+       ) AS running_net_revenue
+FROM reseller_totals
+ORDER BY category, category_rank, reseller_name;</code></pre>
         </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">Viewer Retention Percentage follows a simple business formula: Completed Viewers ÷ Started Viewers × 100. Since Step 2 already calculated both values, we simply apply the formula here.</li><li class="xpl-point">Why multiply by 100.0 instead of 100? SQL performs integer division when both values are integers. Using 100.0 forces decimal arithmetic, ensuring the retention percentage is calculated accurately.</li><li class="xpl-point">ROUND(expression, 2) wraps the entire percentage calculation and limits the result to exactly two decimal places. The second argument specifies the number of digits after the decimal point.</li><li class="xpl-point">Notice that we reuse the same CASE WHEN expressions from Step 2. No new aggregation logic is introduced here. We are simply converting the raw counts into a business metric.</li><li class="xpl-point">ORDER BY retention_percentage DESC ranks videos from the highest retention rate to the lowest. Videos with better retention are usually stronger candidates for recommendation because viewers stay engaged until the end.</li><li class="xpl-point">Expected result: SQL Basics → 75.00%, Python Crash Course → 62.50%, Data Engineering Roadmap → 50.00%. Higher retention indicates viewers are consistently watching the complete video.</li></ul></div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">SUM(net_revenue) OVER (PARTITION BY category ORDER BY net_revenue DESC, reseller_name ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) adds up net revenue cumulatively within each category, in rank order — each row's running total is the sum of its own net revenue plus every higher-ranked reseller's net revenue in that category.</li><li class="xpl-point">ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW explicitly defines the window frame as 'from the start of this category's partition up to the current row' — SQLite's default frame would do the same thing here, but writing it explicitly avoids relying on default behavior that differs across databases.</li><li class="xpl-point">The ORDER BY inside this window function includes reseller_name as a tiebreaker, not just net_revenue DESC. Without it, when two rows tie (Anjali Traders and Priya Fashions, both 3300), the running total would still be correct as a final number, but the order the tied rows are processed in — and therefore which one shows 3300 and which shows 6600 first — would be undefined, exactly the non-deterministic-ORDER BY problem that causes results to shift between runs on identical data.</li><li class="xpl-point">The final SELECT's own ORDER BY (category, category_rank, reseller_name) is separate from the window function's internal ORDER BY — one controls calculation order inside each partition, the other controls how the finished rows are displayed. They happen to use the same columns here, but they are not the same clause and don't have to match.</li></ul></div>
       </div>
     </div>
 

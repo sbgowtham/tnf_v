@@ -319,7 +319,7 @@ td{padding:14px 16px;vertical-align:middle}
   <!-- QUESTION TABLE -->
   <div class="panel">
     <div class="toolbar">
-      <span class="toolbar-stat" id="tstat">9 questions</span>
+      <span class="toolbar-stat" id="tstat">10 questions</span>
       <div class="toolbar-gap"></div>
       <div class="filters">
         <button class="fb on" onclick="filt('all',this)">All</button>
@@ -359,8 +359,17 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-diff"><span class="diff-mid">mid</span></td>
         <td class="td-st"></td>
       </tr>
-      <tr onclick="openQ('myntra',1)">
+      <tr onclick="openQ('meesho',1)">
         <td class="td-num">3</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/meesho-reseller-calculate-net-revenue-total-value-deliver.html" onclick="event.preventDefault();event.stopPropagation();openQ('meesho',1);"><div class="q-text">For each reseller, calculate net revenue as the total value of delivered orders minus the total value of RTO (returned) orders. Only include resellers with at least 5 total orders. Rank resellers within their product category by net revenue, using DENSE_RANK so tied resellers share a rank. Also calculate the running total of net revenue within each category, ordered by rank (and by reseller name to break ties consistently). Return reseller_name, category, total_orders, net_revenue, category_rank, and running_net_revenue, sorted by category, then rank, then reseller name.</div><div class="q-concepts">JOIN · CASE WHEN · GROUP BY</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#f43397 13%,white);color:color-mix(in srgb,#f43397 90%,black)">Meesho</span></td>
+        <td class="td-diff"><span class="diff-hard">hard</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('myntra',1)">
+        <td class="td-num">4</td>
         <td class="td-q">
           <a class="q-link" href="/questions/myntra-products-total-sales-quantity-greater-average.html" onclick="event.preventDefault();event.stopPropagation();openQ('myntra',1);"><div class="q-text">Find products whose total sales quantity is greater than the average total sales quantity of products from the same brand. Return the product name, brand and total sales quantity. Sort the result by brand and total sales quantity in descending order.</div><div class="q-concepts">JOIN · GROUP BY · SUM</div></a>
         </td>
@@ -369,7 +378,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('netflix',1)">
-        <td class="td-num">4</td>
+        <td class="td-num">5</td>
         <td class="td-q">
           <a class="q-link" href="/questions/netflix-tv-show-calculate-completion-percentage-users.html" onclick="event.preventDefault();event.stopPropagation();openQ('netflix',1);"><div class="q-text">For each TV show, calculate the completion percentage based on users who started Episode 1 versus users who watched the final episode. Round the result to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE IN · GROUP BY</div></a>
         </td>
@@ -378,7 +387,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('snapchat',5)">
-        <td class="td-num">5</td>
+        <td class="td-num">6</td>
         <td class="td-q">
           <a class="q-link" href="/questions/snapchat-age-group-calculate-percentage-time-spent-sending.html" onclick="event.preventDefault();event.stopPropagation();openQ('snapchat',5);"><div class="q-text">For each age group, calculate the percentage of time spent sending snaps vs opening snaps out of total send+open time. Round to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE IN · GROUP BY</div></a>
         </td>
@@ -387,7 +396,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('techcorp',1)">
-        <td class="td-num">6</td>
+        <td class="td-num">7</td>
         <td class="td-q">
           <a class="q-link" href="/questions/techcorp-employee-display-name-department-latest-performanc.html" onclick="event.preventDefault();event.stopPropagation();openQ('techcorp',1);"><div class="q-text">For each employee, display their name, department, latest performance rating, the previous performance rating (to track improvement), their ranking within the department, and whether their latest rating is above or below their department's average. Sort by department and ranking.</div><div class="q-concepts">Window Functions · ROW_NUMBER · RANK</div></a>
         </td>
@@ -396,7 +405,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('tinder',7)">
-        <td class="td-num">7</td>
+        <td class="td-num">8</td>
         <td class="td-q">
           <a class="q-link" href="/questions/tinder-user-count-total-number-likes-they-sent-others.html" onclick="event.preventDefault();event.stopPropagation();openQ('tinder',7);"><div class="q-text">For each user, count the total number of likes they have sent to others. Show user name along with the count, sorted by count in descending order.</div><div class="q-concepts">JOIN · GROUP BY · COUNT</div></a>
         </td>
@@ -405,7 +414,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('uber',4)">
-        <td class="td-num">8</td>
+        <td class="td-num">9</td>
         <td class="td-q">
           <a class="q-link" href="/questions/uber-total-earnings-driver-show-top-3-earning-drivers.html" onclick="event.preventDefault();event.stopPropagation();openQ('uber',4);"><div class="q-text">Find total earnings of each driver and show top 3 earning drivers per city.</div><div class="q-concepts">JOIN · GROUP BY · SUM</div></a>
         </td>
@@ -414,7 +423,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('youtube',1)">
-        <td class="td-num">9</td>
+        <td class="td-num">10</td>
         <td class="td-q">
           <a class="q-link" href="/questions/youtube-video-calculate-percentage-viewers-watched-until.html" onclick="event.preventDefault();event.stopPropagation();openQ('youtube',1);"><div class="q-text">For each video, calculate the percentage of viewers who watched until the end out of all viewers who started the video. Round the result to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE · GROUP BY</div></a>
         </td>
@@ -440,7 +449,7 @@ let UM = []; // loaded dynamically from /questions/index.json
 /* PAGE_QUESTIONS: the exact {uid,qid} pairs pre-rendered into THIS page's tbody, in order.
    Written by scripts/generate-question-pages.js — boot() only ever fetches and renders
    these, so pagination can't be silently undone once JS loads. */
-let PAGE_QUESTIONS = [{"uid":"amazon","qid":1},{"uid":"flipkart","qid":1},{"uid":"myntra","qid":1},{"uid":"netflix","qid":1},{"uid":"snapchat","qid":5},{"uid":"techcorp","qid":1},{"uid":"tinder","qid":7},{"uid":"uber","qid":4},{"uid":"youtube","qid":1}];
+let PAGE_QUESTIONS = [{"uid":"amazon","qid":1},{"uid":"flipkart","qid":1},{"uid":"meesho","qid":1},{"uid":"myntra","qid":1},{"uid":"netflix","qid":1},{"uid":"snapchat","qid":5},{"uid":"techcorp","qid":1},{"uid":"tinder","qid":7},{"uid":"uber","qid":4},{"uid":"youtube","qid":1}];
 
 /* ── STATE ── */
 let SQL=null, db=null, lang='en';
