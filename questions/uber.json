@@ -1,10 +1,15 @@
 {
-  "setup": "CREATE TABLE drivers(driver_id TEXT,driver_name TEXT,city TEXT);INSERT INTO drivers VALUES('D001','Ravi Kumar','Chennai'),('D002','Anbu S','Chennai'),('D003','Anand Raj','Chennai'),('D004','Siva S','Chennai'),('D005','Ganesh R','Chennai'),('D006','Preet K','Chennai'),('D007','Kiran M','Delhi'),('D008','Suresh P','Delhi'),('D009','Rohit D','Delhi'),('D010','Sanjay B','Delhi'),('D011','Mohan L','Mumbai'),('D012','Sunil G','Mumbai'),('D013','Rahul J','Bangalore'),('D014','Prasad K','Hyderabad'),('D015','Reddy M','Hyderabad');CREATE TABLE trips(trip_id TEXT,driver_id TEXT,fare REAL);INSERT INTO trips VALUES('T101','D001',250.50),('T102','D001',180.00),('T103','D001',320.75),('T104','D002',150.00),('T105','D002',200.50),('T106','D002',175.25),('T107','D003',400.00),('T108','D003',350.50),('T109','D004',280.00),('T110','D004',195.75),('T111','D005',150.00),('T112','D005',220.00),('T113','D006',310.50),('T114','D007',420.00),('T115','D007',380.25),('T116','D007',290.50),('T117','D008',350.00),('T118','D008',410.75),('T119','D009',280.00),('T120','D009',195.50),('T121','D010',450.00),('T122','D010',380.00),('T123','D011',520.50),('T124','D011',480.25),('T125','D012',390.00),('T126','D013',310.75),('T127','D014',560.00),('T128','D014',490.50),('T129','D015',420.00),('T130','D015',380.75)",
+  "setup": "CREATE TABLE drivers(driver_id TEXT,driver_name TEXT,city TEXT);INSERT INTO drivers VALUES('D001','Ravi Kumar','Chennai'),('D002','Anbu S','Chennai'),('D003','Anand Raj','Chennai'),('D004','Siva S','Chennai'),('D005','Ganesh R','Chennai'),('D006','Preet K','Chennai'),('D007','Kiran M','Delhi'),('D008','Suresh P','Delhi'),('D009','Rohit D','Delhi'),('D010','Sanjay B','Delhi'),('D011','Mohan L','Mumbai'),('D012','Sunil G','Mumbai'),('D013','Rahul J','Bangalore'),('D014','Prasad K','Hyderabad'),('D015','Reddy M','Hyderabad');CREATE TABLE trips(trip_id TEXT,driver_id TEXT,fare REAL);INSERT INTO trips VALUES('T101','D001',250.50),('T102','D001',180.00),('T103','D001',320.75),('T104','D002',150.00),('T105','D002',200.50),('T106','D002',175.25),('T107','D003',400.00),('T108','D003',350.50),('T109','D004',280.00),('T110','D004',195.75),('T111','D005',150.00),('T112','D005',220.00),('T113','D006',310.50),('T114','D007',420.00),('T115','D007',380.25),('T116','D007',290.50),('T117','D008',350.00),('T118','D008',410.75),('T119','D009',280.00),('T120','D009',195.50),('T121','D010',450.00),('T122','D010',380.00),('T123','D011',520.50),('T124','D011',480.25),('T125','D012',390.00),('T126','D013',310.75),('T127','D014',560.00),('T128','D014',490.50),('T129','D015',420.00),('T130','D015',380.75);CREATE TABLE riders(rider_id INTEGER,rider_name TEXT,city TEXT);CREATE TABLE rider_trips(trip_id INTEGER,rider_id INTEGER,fare_amount REAL);INSERT INTO riders VALUES(1,'Ravi Shankar','Bangalore'),(2,'Ananya Iyer','Chennai'),(3,'Kiran Rao','Bangalore'),(4,'Divya Menon','Hyderabad'),(5,'Arjun Nair','Chennai'),(6,'Priya Desai','Mumbai');INSERT INTO rider_trips VALUES(1,1,250),(2,1,180),(3,1,NULL),(4,2,300),(5,2,220),(6,2,150),(7,3,90),(8,3,NULL),(9,4,400),(10,4,350),(11,4,300),(12,4,275),(13,5,60),(14,6,500),(15,6,NULL),(16,6,450);",
   "questions": [
     {
       "id": 4,
       "diff": "mid",
-      "cc": ["JOIN", "GROUP BY", "SUM", "ORDER BY"],
+      "cc": [
+        "JOIN",
+        "GROUP BY",
+        "SUM",
+        "ORDER BY"
+      ],
       "story": {
         "en": "Uber HQ, Friday evening. Product manager Sneha walks in: \"We need top earning drivers per city for bonus distribution.\" Time to combine trips and drivers data.",
         "ta": "Uber HQ, Friday evening. Product manager Sneha vandhu sonnaanga: \"City-wise top earning drivers venum — bonus kudukanum.\" Trips-um drivers-um join panna time.",
@@ -21,17 +26,41 @@
         {
           "name": "drivers",
           "cols": [
-            { "n": "driver_id",   "t": "TEXT", "e": "D001" },
-            { "n": "driver_name", "t": "TEXT", "e": "Ravi Kumar" },
-            { "n": "city",        "t": "TEXT", "e": "Chennai" }
+            {
+              "n": "driver_id",
+              "t": "TEXT",
+              "e": "D001"
+            },
+            {
+              "n": "driver_name",
+              "t": "TEXT",
+              "e": "Ravi Kumar"
+            },
+            {
+              "n": "city",
+              "t": "TEXT",
+              "e": "Chennai"
+            }
           ]
         },
         {
           "name": "trips",
           "cols": [
-            { "n": "trip_id",   "t": "TEXT", "e": "T101" },
-            { "n": "driver_id", "t": "TEXT", "e": "D001" },
-            { "n": "fare",      "t": "REAL", "e": "250.50" }
+            {
+              "n": "trip_id",
+              "t": "TEXT",
+              "e": "T101"
+            },
+            {
+              "n": "driver_id",
+              "t": "TEXT",
+              "e": "D001"
+            },
+            {
+              "n": "fare",
+              "t": "REAL",
+              "e": "250.50"
+            }
           ]
         }
       ],
@@ -166,6 +195,179 @@
               "Inner query ni subquery (alias: ranked) lo wrap cheyyali, endukante SQL WHERE ni window functions kanna mundu process chestundi. Aye query lo WHERE rn <= 3 rayyaledu — baita query lo rayyali.",
               "Outer query lo WHERE rn <= 3 — rank 1, 2, 3 unna rows matrame filter avutaayi, ante prathi city top 3 earners matrame output lo vastunayi.",
               "LIMIT 3 endhuku pani cheyyadu? LIMIT 3 globally top 3 isthundi — city-wise kaadu. Prathi group lo top-N kavali ante ROW_NUMBER with PARTITION BY e correct approach."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "diff": "easy",
+      "cc": [
+        "JOIN",
+        "GROUP BY",
+        "COUNT",
+        "AVG",
+        "COALESCE",
+        "ROUND"
+      ],
+      "story": {
+        "en": "Wednesday morning at Uber's Rider Experience team. A few trips in the system have no fare recorded at all — the ride ended before the fare could be calculated, maybe from an app crash or a cancelled payment. The team wants each rider's average fare per trip, but those fare-less trips still happened and still used a driver's time, so they shouldn't just be dropped from the average — they need to count as zero, not disappear.",
+        "ta": "Wednesday morning Uber oda Rider Experience team la. System la konjum trips ku fare record aagala, app crash alladhu cancelled payment nala fare calculate aaguradhukku munnadi ride mudinjidichu. Team ku ovvoru rider oda average fare per trip venum, aana andha fare illaadha trips nadandhurukku, driver oda time um use pannirukku, so avanga a average la irundhu drop pannakoodadhu, avanga zero nu count aagananum, disappear aagakoodadhu.",
+        "hi": "Wednesday morning Uber ke Rider Experience team mein. System mein kuch trips ka fare bilkul record nahi hua — app crash ya cancelled payment ki wajah se fare calculate hone se pehle hi ride khatam ho gayi. Team ko har rider ka average fare per trip chahiye, lekin wo fare-less trips actually hui thi aur driver ka time bhi use hua tha, isliye unhe average se hata dena sahi nahi — unhe zero maan ke count karna hai, gayab nahi karna.",
+        "te": "Wednesday morning Uber Rider Experience team lo. System lo konni trips ki fare ye record avvaledu, app crash leda cancelled payment valla fare calculate avvakamunde ride mugisindi. Team ki prathi rider average fare per trip kavali, kaani aa fare leni trips nijamga jarigayi, driver time kuda vadabadindi, so vaatini average nunchi teeseyakudadu, vaatini zero ga count cheyali, maripoyela kaadu."
+      },
+      "question": {
+        "en": "For each rider, calculate the total number of trips they've taken and their average fare per trip. Treat any trip with a missing (NULL) fare_amount as 0 when calculating the average, rather than excluding it. Return rider_name, total_trips, and avg_fare (rounded to 2 decimal places), sorted by avg_fare in descending order.",
+        "ta": "Ovvoru rider kum, avanga edutha total trips count matrum avanga oda average fare per trip a calculate pannunga. Edhavadhu trip oda fare_amount NULL a irundha, average calculate pannumbodhu adha exclude pannama 0 nu treat pannunga. rider_name, total_trips, matrum avg_fare a (two decimal places ku round panni) return pannunga, avg_fare descending order la sort pannunga.",
+        "hi": "Har rider ke liye, unki total trips count aur unka average fare per trip calculate karo. Agar kisi trip ka fare_amount NULL hai, toh average nikaalte waqt use exclude karne ke bajaye 0 maano. rider_name, total_trips, aur avg_fare (do decimal places tak round karke) return karo, avg_fare ke descending order mein sort karke.",
+        "te": "Prathi rider ki, vaalla theesukunna total trips count mariyu vaalla average fare per trip ni calculate cheyandi. edaina trip fare_amount NULL unte, average calculate chese appudu daanini exclude cheyakunda 0 ga treat cheyandi. rider_name, total_trips, mariyu avg_fare ni (rendu decimal places ki round chesi) return cheyandi, avg_fare descending order lo sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "riders",
+          "cols": [
+            {
+              "n": "rider_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "rider_name",
+              "t": "TEXT",
+              "e": "Ravi Shankar"
+            },
+            {
+              "n": "city",
+              "t": "TEXT",
+              "e": "Bangalore"
+            }
+          ]
+        },
+        {
+          "name": "rider_trips",
+          "cols": [
+            {
+              "n": "trip_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "rider_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "fare_amount",
+              "t": "REAL",
+              "e": "250"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Calculate total trips and average fare per rider",
+            "ta": "Ovvoru rider kum total trips matrum average fare calculate pannunga",
+            "hi": "Har rider ke total trips aur average fare calculate karo",
+            "te": "Prathi rider ki total trips mariyu average fare calculate cheyandi"
+          },
+          "sql": "SELECT r.rider_name,\n       COUNT(t.trip_id) AS total_trips,\n       AVG(t.fare_amount) AS avg_fare\nFROM riders r\nJOIN rider_trips t ON t.rider_id = r.rider_id\nGROUP BY r.rider_id, r.rider_name\nORDER BY r.rider_name;",
+          "explain": {
+            "en": [
+              "riders and rider_trips are joined on rider_id so each trip can be attributed to the rider who took it. JOIN naturally drops nothing here, since every trip has a valid rider_id — the missing data problem in this question is the fare, not the relationship between the two tables.",
+              "COUNT(t.trip_id) counts trips using the trip_id column specifically, not fare_amount or a bare COUNT(*) — trip_id is never NULL, so every trip a rider took is counted correctly, including the ones with no recorded fare.",
+              "AVG(t.fare_amount) computes the average directly on the raw fare column. SQL's AVG() ignores NULL values entirely — both from the sum and from the count it divides by — so a rider with one NULL-fare trip out of three gets averaged over the two priced trips only, not all three.",
+              "Look at Priya Desai: her average here is 475, computed from just two priced trips (500 and 450), with her third trip — the one with no fare — silently excluded from the calculation entirely."
+            ],
+            "ta": [
+              "riders matrum rider_trips rider_id vachi join pannirukku, so ovvoru trip um adha edukkura rider ku attribute aagum. Ella trip kum valid rider_id irukkura, so JOIN edhuvum drop pannaadhu, indha question la missing data problem fare la irukku, rendu table oda relationship la illa.",
+              "COUNT(t.trip_id) trip_id column vachi trips a count pannum, fare_amount alladhu bare COUNT(*) illa, trip_id oru pothum NULL a irukkadhu, so oru rider edukkura ella trip um correct a count aagum, fare record aagama irukkura trips serndhu.",
+              "AVG(t.fare_amount) raw fare column la direct a average calculate pannum. SQL oda AVG() NULL values a completely ignore pannum, sum la irundhum, adha divide pannura count lla irundhum, so moonu trip la oru NULL fare trip irukkura rider, rendu priced trips mattum vachi average pannappadum, moonu trip um illa.",
+              "Priya Desai a paarunga: ivangaloda average inge 475, rendu priced trips mattum vachi calculate aagirukku (500 matrum 450), moonaavadhu trip, fare illama irukkura adhu, calculation la irundhu completely exclude aagirukku."
+            ],
+            "hi": [
+              "riders aur rider_trips ko rider_id par join kiya gaya hai, taaki har trip us rider ko attribute ho sake jisne wo trip li thi. Yahan JOIN kuch bhi drop nahi karta, kyunki har trip ka rider_id valid hai — is question mein missing data ki problem fare mein hai, dono tables ke relationship mein nahi.",
+              "COUNT(t.trip_id) trip_id column use karke trips count karta hai, fare_amount ya bare COUNT(*) nahi — trip_id kabhi NULL nahi hota, isliye rider ki har trip sahi se count hoti hai, un trips samet jinka fare record nahi hua.",
+              "AVG(t.fare_amount) raw fare column par seedha average calculate karta hai. SQL ka AVG() NULL values ko poori tarah ignore karta hai — sum se bhi aur jis count se divide karta hai usse bhi — isliye teen trips mein se ek NULL-fare trip wale rider ka average sirf do priced trips par calculate hota hai, teeno par nahi.",
+              "Priya Desai ko dekho: unka average yahan 475 hai, sirf do priced trips (500 aur 450) se calculate hua, unki teesri trip — jiska fare nahi tha — calculation se poori tarah bahar reh gayi."
+            ],
+            "te": [
+              "riders mariyu rider_trips rider_id meeda join chesaru, so prathi trip aa trip theesukunna rider ki attribute avutundi. Ikkada JOIN emi drop cheyadu, endukante prathi trip ki valid rider_id undi, ee question lo missing data problem fare lo undi, rendu tables relationship lo kaadu.",
+              "COUNT(t.trip_id) trip_id column vaadi trips ni count chestundi, fare_amount leda bare COUNT(*) kaadu, trip_id eppudu NULL kaadu, so oka rider theesukunna prathi trip correct ga count avutundi, fare record avvani trips tho saha.",
+              "AVG(t.fare_amount) raw fare column meeda neruga average calculate chestundi. SQL AVG() NULL values ni poorthiga ignore chestundi, sum nunchi kuda, daanini divide chese count nunchi kuda, so mudu trips lo oka NULL fare trip unna rider average kevalam rendu priced trips meeda calculate avutundi, mudintilo kaadu.",
+              "Priya Desai ni chudandi: aame average ikkada 475, rendu priced trips (500 mariyu 450) nunchi calculate ayyindi, aame mudo trip, fare leni adi, calculation nunchi poorthiga bayata migilipoyindi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix the average with COALESCE so missing fares count as zero",
+            "ta": "COALESCE vachi average a fix pannunga, missing fares zero nu count aagum",
+            "hi": "COALESCE se average theek karo, taaki missing fares zero maani jaayein",
+            "te": "COALESCE tho average ni fix cheyandi, missing fares zero ga count avvali"
+          },
+          "sql": "SELECT r.rider_name,\n       COUNT(t.trip_id) AS total_trips,\n       AVG(COALESCE(t.fare_amount, 0)) AS avg_fare\nFROM riders r\nJOIN rider_trips t ON t.rider_id = r.rider_id\nGROUP BY r.rider_id, r.rider_name\nORDER BY r.rider_name;",
+          "explain": {
+            "en": [
+              "The only change from the previous step is wrapping fare_amount in COALESCE(t.fare_amount, 0) inside the AVG — everything else about the query, including which rows are counted, stays the same.",
+              "COALESCE(t.fare_amount, 0) replaces a NULL fare with 0 before AVG ever sees it. A trip with no recorded fare now genuinely participates in the average as a zero-value trip, instead of being invisible to the calculation.",
+              "This changes the denominator's effective weight, not just which values get summed: for a rider with one NULL-fare trip out of three, the average now divides by all three trips' worth of value (two fares plus one zero), not just the two priced ones.",
+              "Priya Desai's average drops from 475 to about 316.67 — same three trips, same two real fares, but now her fare-less trip pulls the average down instead of being erased from it. Kiran Rao's average is cut in half, from 90 to 45, for the same reason."
+            ],
+            "ta": [
+              "Munnaadi step la irundhu maatram, AVG kulla fare_amount a COALESCE(t.fare_amount, 0) vachi wrap pannradhu mattum thaan, query oda mattha ella um, edhu rows count aaguthu nu adhu ulpada, adhe madhiri irukku.",
+              "COALESCE(t.fare_amount, 0) AVG paakkura munnaadiye NULL fare a 0 nu replace pannidum. Fare record aagama irukkura trip ippo genuinely zero value trip a average la participate pannum, calculation ku invisible a irukkuradhukku pathila.",
+              "Idhu sum aagura values mattum illa, denominator oda effective weight a maathidum: moonu trip la oru NULL fare trip irukkura rider kku, average ippo moonu trip oda mudhal value a divide pannum (rendu fares plus oru zero), rendu priced trips mattum illa.",
+              "Priya Desai oda average 475 la irundhu 316.67 varaikkum kammi aaguthu, adhe moonu trips, adhe rendu real fares, aana ippo avangaloda fare illaadha trip average a kammi pannuthu, adhula irundhu erase aagama. Kiran Rao oda average um adhe karanam ku paadhi aaguthu, 90 la irundhu 45."
+            ],
+            "hi": [
+              "Pichle step se sirf itna change hua hai: AVG ke andar fare_amount ko COALESCE(t.fare_amount, 0) mein wrap kar diya gaya hai — query ka baaki sab kuch, kaunse rows count ho rahe hain samet, wahi hai.",
+              "COALESCE(t.fare_amount, 0) NULL fare ko 0 se replace kar deta hai, isse pehle ki AVG use dekhe. Jis trip ka fare record nahi hua, wo ab average mein genuinely zero-value trip ke roop mein shaamil hoti hai, calculation ke liye invisible hone ke bajaye.",
+              "Yeh sirf yeh nahi badalta ki kaunse values jodi ja rahi hain, balki denominator ka effective weight bhi badalta hai: teen trips mein se ek NULL-fare trip wale rider ke liye, average ab teeno trips ki value se divide hota hai (do fares plus ek zero), sirf do priced trips se nahi.",
+              "Priya Desai ka average 475 se ghatkar lagbhag 316.67 ho jaata hai — wahi teen trips, wahi do asli fares, lekin ab unki fare-less trip average ko neeche khinchti hai, usse mit jaane ke bajaye. Kiran Rao ka average bhi isi wajah se aadha ho jaata hai, 90 se 45."
+            ],
+            "te": [
+              "Previous step nunchi matrame change ayindi enti ante AVG lopala fare_amount ni COALESCE(t.fare_amount, 0) tho wrap cheyadam, query lo migilina anni, e rows count avutunnayo saha, ade la undi.",
+              "COALESCE(t.fare_amount, 0) AVG chudakamunde NULL fare ni 0 tho replace chestundi. Fare record avvani trip ippudu genuinely zero value trip ga average lo participate chestundi, calculation ki invisible ga undakunda.",
+              "Idi e values sum avutunnayo matrame kaadu, denominator effective weight ni kuda marustundi: mudu trips lo oka NULL fare trip unna rider ki, average ippudu mudu trips viluva tho divide avutundi, rendu fares plus oka zero, rendu priced trips tho kaadu.",
+              "Priya Desai average 475 nunchi 316.67 ki thaggutundi, ade mudu trips, ade rendu real fares, kaani ippudu aame fare leni trip average ni takkuva chestundi, danilo nunchi erase avvakunda. Kiran Rao average kuda ade karananiki sagam avutundi, 90 nunchi 45 ki."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Final query with clean output",
+            "ta": "Final query, clean output oda",
+            "hi": "Final query — clean output ke saath",
+            "te": "Final query, clean output tho"
+          },
+          "sql": "SELECT r.rider_name,\n       COUNT(t.trip_id) AS total_trips,\n       ROUND(AVG(COALESCE(t.fare_amount, 0)), 2) AS avg_fare\nFROM riders r\nJOIN rider_trips t ON t.rider_id = r.rider_id\nGROUP BY r.rider_id, r.rider_name\nORDER BY avg_fare DESC;",
+          "explain": {
+            "en": [
+              "ROUND(..., 2) rounds the average to two decimal places — AVG on a REAL column can return long trailing decimals (223.333333...) even when the underlying data is clean money values.",
+              "ORDER BY avg_fare DESC sorts the final output by the corrected average, highest first — this is a plain ORDER BY on the outer query, separate from anything inside the aggregate functions.",
+              "Notice the ranking itself changes between the naive and corrected versions, not just the numbers: Priya Desai was highest in step 1 (475) but drops to second place here (316.67), behind Divya Menon, once her fare-less trip is counted instead of ignored.",
+              "This is the complete answer: every rider who has taken at least one trip, with their true trip count and an average fare that accounts for every trip they took — including the ones that ended without a fare on record."
+            ],
+            "ta": [
+              "ROUND(..., 2) average a two decimal places ku round pannum, REAL column la AVG, underlying data clean money values a irundhaalum, neenda trailing decimals (223.333333...) return pannalaam.",
+              "ORDER BY avg_fare DESC final output a corrected average vachi sort pannum, adhigama mudhalla, idhu outer query la irukkura plain ORDER BY, aggregate functions kulla irukkura edhuvume illama separate a.",
+              "Naive matrum corrected versions kku idaiye ranking e maaruthu nu paarunga, numbers mattum illa: Priya Desai step 1 la adhigama irundhaanga (475) aana inge rendaavadhu place ku varuraanga (316.67), Divya Menon ku pinnaadi, avangaloda fare illaadha trip ignore pannradhukku pathila count aana apparam.",
+              "Idhu dhaan complete answer: kammasa oru trip edutha ella rider um, avangaloda real trip count matrum avanga edutha ella trip um (fare record aagama mudinjadhu ulpada) kanakkil edukkura average fare oda."
+            ],
+            "hi": [
+              "ROUND(..., 2) average ko do decimal places tak round karta hai — REAL column par AVG, underlying data clean money values hone ke bawajood, lambe trailing decimals (223.333333...) return kar sakta hai.",
+              "ORDER BY avg_fare DESC final output ko corrected average ke hisaab se sort karta hai, sabse zyada pehle — yeh outer query par ek plain ORDER BY hai, aggregate functions ke andar wali kisi cheez se alag.",
+              "Dekho ki naive aur corrected versions ke beech ranking hi badal jaati hai, sirf numbers nahi: Priya Desai step 1 mein sabse upar thi (475) lekin yahan doosre number par aa jaati hai (316.67), Divya Menon ke peeche, jab unki fare-less trip ignore hone ke bajaye count hoti hai.",
+              "Yahi complete answer hai: har wo rider jisne kam se kam ek trip li hai, unke sahi trip count ke saath aur ek average fare jo unki har trip ko dhyaan mein rakhta hai — un trips samet jo bina kisi record fare ke khatam hui."
+            ],
+            "te": [
+              "ROUND(..., 2) average ni rendu decimal places ki round chestundi, REAL column meeda AVG, underlying data clean money values unna kuda, podugu trailing decimals (223.333333...) return cheyachu.",
+              "ORDER BY avg_fare DESC final output ni corrected average prakaram sort chestundi, ekkuva modata, idi outer query meeda unna plain ORDER BY, aggregate functions lopala unna danitho nunchi separate.",
+              "Naive mariyu corrected versions madhya ranking e marutundi ani gamaninchandi, numbers matrame kaadu: Priya Desai step 1 lo ekkuva unnaru (475) kaani ikkada rendo place ki vastaru (316.67), Divya Menon venuka, aame fare leni trip ignore cheyadaniki baduluga count ayina tarvata.",
+              "Idi complete answer: kanisam oka trip theesukunna prathi rider, vaalla nijamaina trip count tho mariyu vaalla theesukunna prathi trip (fare record avvakunda mugisinavi saha) lekkalloki theesukunna average fare tho."
             ]
           }
         }
