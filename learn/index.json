@@ -33,5 +33,12 @@
     "href": "/blog/in-vs-exists-vs-join.html",
     "icon": "📝",
     "color": "#dbeafe"
+  },
+  {
+    "title": "LEFT JOIN vs INNER JOIN",
+    "desc": "The WHERE clause trap explained",
+    "href": "/blog/left-join-where-clause-trap.html",
+    "icon": "📝",
+    "color": "#dbeafe"
   }
 ]

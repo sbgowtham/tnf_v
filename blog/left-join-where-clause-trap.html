@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Meesho: reseller calculate net revenue as… | TableNotFound</title>
-<meta name="description" content="Meesho SQL practice question (hard): For each reseller, calculate net revenue as the total value of delivered orders minus… Free, runs live in your browser.">
-<link rel="canonical" href="https://www.tablenotfound.com/questions/meesho-reseller-calculate-net-revenue-total-value-deliver.html">
+<title>LEFT JOIN vs INNER JOIN: The WHERE Clause Trap | TableNotFound</title>
+<meta name="description" content="Why a WHERE clause on the right table can silently turn your LEFT JOIN into an INNER JOIN — verified in SQLite, with two different fixes and when to use each.">
+<link rel="canonical" href="https://www.tablenotfound.com/blog/left-join-where-clause-trap.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -271,21 +271,22 @@ td{padding:14px 16px;vertical-align:middle}
 }
 
 
-.static-wrap{max-width:820px;margin:0 auto;padding:2rem 1.5rem 6rem}
+.article-wrap{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
 .crumb{font-size:12px;font-weight:600;color:var(--t3);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:1.5rem}
 .crumb:hover{color:var(--t2)}
-.q-header{padding:.5rem 0 1.75rem;animation:up .55s cubic-bezier(.22,1,.36,1) both}
-.q-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
-.q-h1{font-size:clamp(22px,4vw,32px);font-weight:800;line-height:1.35;letter-spacing:-.7px;margin-bottom:.5rem;color:var(--text)}
-.q-sub{font-size:13px;color:var(--t2)}
-.step-body{display:block}
-.xpl{display:block}
-.step-head{cursor:default}
-.step-num{background:rgba(255,255,255,.6)!important;color:var(--t2)!important}
-.cta-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.75rem}
-.cta-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:20px;border:none;cursor:pointer;font-family:var(--ff);font-size:13px;font-weight:700;text-decoration:none;background:linear-gradient(135deg,#7c5cfc,#c45cfc);color:#fff;box-shadow:0 3px 12px rgba(124,92,252,.35);transition:transform .18s}
-.cta-btn:hover{transform:translateY(-2px)}
-.cta-btn.secondary{background:rgba(255,255,255,.65);color:var(--t2);border:var(--bdr);box-shadow:none}
+.art-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.art-h1{font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:.5rem;color:var(--text);line-height:1.2}
+.art-meta{font-size:12px;color:var(--t3);margin-bottom:2.5rem}
+.art-section{margin:2.75rem 0}
+.art-section h2{font-size:19px;font-weight:700;color:var(--text);margin-bottom:.4rem}
+.art-section p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
+.art-section code{font-family:var(--fm);font-size:.88em;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
+.ed-win{margin:.75rem 0;border-radius:10px;overflow:hidden}
+.tbl-wrap{margin:.75rem 0}
+.null-cell{color:#ccc;font-style:italic}
+.cheat-table{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0}
+.cheat-table th,.cheat-table td{padding:8px 12px;text-align:left;border-bottom:1px solid rgba(0,0,0,.06)}
+.cheat-table th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3)}
 
 </style>
 <style id="tnf-footer-style">
@@ -356,185 +357,147 @@ td{padding:14px 16px;vertical-align:middle}
   </div>
 </nav>
 
-<div class="static-wrap">
-  <a class="crumb" href="/">← All SQL Questions</a>
+<div class="article-wrap">
+  <a class="crumb" href="/">← Back to TableNotFound</a>
 
-  <div class="q-header">
-    <div class="q-badges">
-      <span class="co-tag" style="background:color-mix(in srgb,#f43397 13%,white);color:color-mix(in srgb,#f43397 90%,black)">Meesho</span>
-      <span class="diff-hard">hard</span>
-      <span class="chip">JOIN</span><span class="chip">CASE WHEN</span><span class="chip">GROUP BY</span><span class="chip">HAVING</span><span class="chip">DENSE_RANK</span><span class="chip">Window Functions</span><span class="chip">Running Total</span>
-    </div>
-    <h1 class="q-h1">For each reseller, calculate net revenue as the total value of delivered orders minus the total value of RTO (returned) orders. Only include resellers with at least 5 total orders. Rank resellers within their product category by net revenue, using DENSE_RANK so tied resellers share a rank. Also calculate the running total of net revenue within each category, ordered by rank (and by reseller name to break ties consistently). Return reseller_name, category, total_orders, net_revenue, category_rank, and running_net_revenue, sorted by category, then rank, then reseller name.</h1>
-    <p class="q-sub">Meesho · Reseller Analytics — practice this real-world SQL scenario live in your browser.</p>
+  <div class="art-badges">
+    <span class="chip">SQL</span>
+    <span class="chip">Joins</span>
+    <span class="chip">NULL Handling</span>
   </div>
+  <h1 class="art-h1">LEFT JOIN vs INNER JOIN</h1>
+  <div class="art-meta">The WHERE clause that silently cancels your LEFT JOIN</div>
 
-  <div class="story" style="--uc:#f43397">
-    <div class="story-bg"></div>
-    <div class="story-top">
-      <span class="story-lbl">📖 Story</span>
-      <span class="story-co">Meesho · Reseller Analytics</span>
-    </div>
-    <div class="story-body">Thursday afternoon at Meesho's Reseller Growth team. COD orders that get returned before delivery — RTO, or Return to Origin — eat directly into reseller margins, and leadership wants to identify which resellers are actually profitable once RTO losses are subtracted, not just which ones have the most orders. Small or new resellers with only a handful of orders would skew the comparison, so they need to be excluded first.</div>
-  </div>
-
-  <div class="mission">
-    <div class="mission-top">🎯 Your Mission</div>
-    <div class="mission-body">For each reseller, calculate net revenue as the total value of delivered orders minus the total value of RTO (returned) orders. Only include resellers with at least 5 total orders. Rank resellers within their product category by net revenue, using DENSE_RANK so tied resellers share a rank. Also calculate the running total of net revenue within each category, ordered by rank (and by reseller name to break ties consistently). Return reseller_name, category, total_orders, net_revenue, category_rank, and running_net_revenue, sorted by category, then rank, then reseller name.</div>
-  </div>
-
-  <div class="schema-wrap">
-    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem">📋 Table Structure</div>
-    <div class="schema-cards">
-      <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">resellers</span></div>
-        <div><div class="sc-row">
-          <span class="sc-col">reseller_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">1</span>
-        </div><div class="sc-row">
-          <span class="sc-col">reseller_name</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Anjali Traders</span>
-        </div><div class="sc-row">
-          <span class="sc-col">category</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Sarees</span>
-        </div><div class="sc-row">
-          <span class="sc-col">city</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Surat</span>
-        </div></div>
-      </div>
-      <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">orders</span></div>
-        <div><div class="sc-row">
-          <span class="sc-col">order_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">1</span>
-        </div><div class="sc-row">
-          <span class="sc-col">reseller_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">1</span>
-        </div><div class="sc-row">
-          <span class="sc-col">order_amount</span>
-          <span class="sc-type">REAL</span>
-          <span class="sc-eg">1200</span>
-        </div><div class="sc-row">
-          <span class="sc-col">status</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">delivered</span>
-        </div></div>
-      </div>
-    </div>
-  </div>
-
-  <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:1.5rem 0 .75rem">⚡ Step-by-Step Walkthrough</div>
   
-    <div class="step-card" style="--uc:#f43397">
-      <div class="step-head">
-        <div class="step-num">1</div>
-        <div class="step-info">
-          <div class="step-title">Calculate total orders and net revenue per reseller, filtering out low-volume resellers</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT r.reseller_id,
-       r.reseller_name,
-       r.category,
-       COUNT(o.order_id) AS total_orders,
-       SUM(CASE WHEN o.status = 'delivered' THEN o.order_amount ELSE 0 END)
-         - SUM(CASE WHEN o.status = 'rto' THEN o.order_amount ELSE 0 END) AS net_revenue
-FROM resellers r
-JOIN orders o ON o.reseller_id = r.reseller_id
-GROUP BY r.reseller_id, r.reseller_name, r.category
-HAVING COUNT(o.order_id) &gt;= 5
-ORDER BY r.category, net_revenue DESC;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">The orders table has one row per order, tagged 'delivered' or 'rto'. To get net revenue per reseller, delivered and RTO amounts need to be summed separately, then subtracted — a single SUM(order_amount) would just add RTO losses on top of revenue instead of subtracting them.</li><li class="xpl-point">SUM(CASE WHEN status='delivered' THEN order_amount ELSE 0 END) adds up only delivered orders; the matching CASE for 'rto' adds up only returned orders. Subtracting the second from the first gives net revenue — money actually kept after returns.</li><li class="xpl-point">HAVING COUNT(order_id) &gt;= 5 removes resellers with fewer than 5 total orders, after grouping — HAVING filters on the aggregated result, unlike WHERE, which would run before COUNT exists to filter on.</li><li class="xpl-point">Meena Boutique has only 3 orders and is correctly excluded here. Priya Fashions has exactly 5 — the boundary — and is correctly included, since the requirement is 'at least 5,' not 'more than 5.'</li></ul></div>
-      </div>
+    <div class="art-section">
+      <h2>1. Why this happens</h2>
+      <p>A LEFT JOIN exists for exactly one reason: to keep every row from the left table, whether or not it has a match on the right. The moment a WHERE clause tests a column that comes from the right-hand table, that guarantee can quietly disappear — the query still runs, still returns rows, and still looks like a LEFT JOIN. It just isn't behaving like one anymore.</p>
     </div>
-    <div class="step-card" style="--uc:#f43397">
-      <div class="step-head">
-        <div class="step-num">2</div>
-        <div class="step-info">
-          <div class="step-title">Rank resellers within their category by net revenue</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>WITH reseller_totals AS (
-  SELECT r.reseller_id,
-         r.reseller_name,
-         r.category,
-         COUNT(o.order_id) AS total_orders,
-         SUM(CASE WHEN o.status = 'delivered' THEN o.order_amount ELSE 0 END)
-           - SUM(CASE WHEN o.status = 'rto' THEN o.order_amount ELSE 0 END) AS net_revenue
-  FROM resellers r
-  JOIN orders o ON o.reseller_id = r.reseller_id
-  GROUP BY r.reseller_id, r.reseller_name, r.category
-  HAVING COUNT(o.order_id) &gt;= 5
-)
-SELECT reseller_name,
-       category,
-       total_orders,
-       net_revenue,
-       DENSE_RANK() OVER (PARTITION BY category ORDER BY net_revenue DESC) AS category_rank
-FROM reseller_totals
-ORDER BY category, category_rank;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">The previous step's result becomes a CTE (reseller_totals) so it can be reused without repeating the whole GROUP BY/HAVING query — DENSE_RANK needs to run on top of the already-aggregated net revenue, not on raw order rows.</li><li class="xpl-point">DENSE_RANK() OVER (PARTITION BY category ORDER BY net_revenue DESC) ranks resellers separately within each category — Sarees, Kurtis, and Jewellery each get their own rank 1, restarting for every category.</li><li class="xpl-point">DENSE_RANK specifically (not RANK) matters here because of the tie: Anjali Traders and Priya Fashions both land on 3300 net revenue in Sarees. DENSE_RANK gives them both rank 1 without leaving a gap afterward — RANK would also give them both rank 1, but the next Sarees reseller would jump to rank 3, misrepresenting how many distinct performance tiers actually exist.</li><li class="xpl-point">Check the Jewellery and Kurtis categories: each has a clean rank 1 and rank 2, no ties, confirming the ranking logic works whether or not a tie is present.</li></ul></div>
-      </div>
-    </div>
-    <div class="step-card" style="--uc:#f43397">
-      <div class="step-head">
-        <div class="step-num">3</div>
-        <div class="step-info">
-          <div class="step-title">Add the running total and finalize the output</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>WITH reseller_totals AS (
-  SELECT r.reseller_id,
-         r.reseller_name,
-         r.category,
-         COUNT(o.order_id) AS total_orders,
-         SUM(CASE WHEN o.status = 'delivered' THEN o.order_amount ELSE 0 END)
-           - SUM(CASE WHEN o.status = 'rto' THEN o.order_amount ELSE 0 END) AS net_revenue
-  FROM resellers r
-  JOIN orders o ON o.reseller_id = r.reseller_id
-  GROUP BY r.reseller_id, r.reseller_name, r.category
-  HAVING COUNT(o.order_id) &gt;= 5
-)
-SELECT reseller_name,
-       category,
-       total_orders,
-       net_revenue,
-       DENSE_RANK() OVER (PARTITION BY category ORDER BY net_revenue DESC) AS category_rank,
-       SUM(net_revenue) OVER (
-         PARTITION BY category
-         ORDER BY net_revenue DESC, reseller_name
-         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-       ) AS running_net_revenue
-FROM reseller_totals
-ORDER BY category, category_rank, reseller_name;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">SUM(net_revenue) OVER (PARTITION BY category ORDER BY net_revenue DESC, reseller_name ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) adds up net revenue cumulatively within each category, in rank order — each row's running total is the sum of its own net revenue plus every higher-ranked reseller's net revenue in that category.</li><li class="xpl-point">ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW explicitly defines the window frame as 'from the start of this category's partition up to the current row' — SQLite's default frame would do the same thing here, but writing it explicitly avoids relying on default behavior that differs across databases.</li><li class="xpl-point">The ORDER BY inside this window function includes reseller_name as a tiebreaker, not just net_revenue DESC. Without it, when two rows tie (Anjali Traders and Priya Fashions, both 3300), the running total would still be correct as a final number, but the order the tied rows are processed in — and therefore which one shows 3300 and which shows 6600 first — would be undefined, exactly the non-deterministic-ORDER BY problem that causes results to shift between runs on identical data.</li><li class="xpl-point">The final SELECT's own ORDER BY (category, category_rank, reseller_name) is separate from the window function's internal ORDER BY — one controls calculation order inside each partition, the other controls how the finished rows are displayed. They happen to use the same columns here, but they are not the same clause and don't have to match.</li></ul></div>
+
+    <div class="art-section">
+      <h2>2. The dataset</h2>
+      <p>Verified by actually running this against SQLite — not hand-computed. Seven employees, four projects. Two employees — Sneha Kapoor and Divya Pillai — aren't assigned to any project at all, so their <code>project_id</code> is NULL. The rest are spread across an active project, a completed one, and one that's on hold. None of this is a contrived edge case; every row here is completely ordinary data.</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">schema.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE projects(
+  project_id INTEGER,
+  project_name TEXT,
+  status TEXT
+);
+CREATE TABLE employees(
+  employee_id INTEGER,
+  employee_name TEXT,
+  department TEXT,
+  project_id INTEGER
+);
+
+INSERT INTO projects VALUES
+ (1,'Website Redesign','active'),
+ (2,'Mobile App','active'),
+ (3,'Data Migration','completed'),
+ (4,'Legacy Cleanup','on_hold');
+
+INSERT INTO employees VALUES
+ (1,'Aditi Rao','Engineering',1),
+ (2,'Rahul Verma','Engineering',2),
+ (3,'Sneha Kapoor','Engineering',NULL),
+ (4,'Vikram Singh','Design',1),
+ (5,'Meera Nair','Design',3),
+ (6,'Arjun Mehta','Data',4),
+ (7,'Divya Pillai','Data',NULL);</code></pre>
       </div>
     </div>
 
-  <div class="cta-row">
-    <a class="cta-btn" href="/">▶ Practice this live</a>
-    <a class="cta-btn secondary" href="/">← Browse all questions</a>
-  </div>
+    <div class="art-section">
+      <h2>3. The correct LEFT JOIN</h2>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">correct.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT e.employee_name, p.project_name, p.status
+FROM employees e
+LEFT JOIN projects p ON p.project_id = e.project_id
+ORDER BY e.employee_name;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>employee_name</th><th>project_name</th><th>status</th></tr></thead><tbody><tr><td>Aditi Rao</td><td>Website Redesign</td><td>active</td></tr><tr><td>Arjun Mehta</td><td>Legacy Cleanup</td><td>on_hold</td></tr><tr><td>Divya Pillai</td><td><span class="null-cell">NULL</span></td><td><span class="null-cell">NULL</span></td></tr><tr><td>Meera Nair</td><td>Data Migration</td><td>completed</td></tr><tr><td>Rahul Verma</td><td>Mobile App</td><td>active</td></tr><tr><td>Sneha Kapoor</td><td><span class="null-cell">NULL</span></td><td><span class="null-cell">NULL</span></td></tr><tr><td>Vikram Singh</td><td>Website Redesign</td><td>active</td></tr></tbody></table></div>
+      <p>Every employee shows up. The two unassigned employees get NULL for <code>project_name</code> and <code>status</code>, exactly as a LEFT JOIN is supposed to behave. This is the baseline the rest of this article is about accidentally breaking.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>4. The bug</h2>
+      <p>Suppose the actual requirement is "show every employee, along with their project — but only mention the project if it's still active." Reaching for a WHERE clause to filter on status looks like the obvious way to write that:</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">bug.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT e.employee_name, p.project_name, p.status
+FROM employees e
+LEFT JOIN projects p ON p.project_id = e.project_id
+WHERE p.status = 'active'
+ORDER BY e.employee_name;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>employee_name</th><th>project_name</th><th>status</th></tr></thead><tbody><tr><td>Aditi Rao</td><td>Website Redesign</td><td>active</td></tr><tr><td>Rahul Verma</td><td>Mobile App</td><td>active</td></tr><tr><td>Vikram Singh</td><td>Website Redesign</td><td>active</td></tr></tbody></table></div>
+      <p>Seven employees became three. Every employee with no project, and every employee on a completed or on-hold project, is gone — not marked, not flagged, just absent, as if the LEFT JOIN had been an INNER JOIN the whole time. Nothing in the query threw an error. Depending on what this feeds, it can look like the company suddenly has three employees.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>5. Why it happens</h2>
+      <p>A LEFT JOIN fills in NULL for every right-table column when a row has no match. <code>WHERE p.status = 'active'</code> then runs against that NULL — and in SQL, comparing anything to NULL, including with <code>=</code>, doesn't return TRUE or FALSE. It returns UNKNOWN, a third value equal to neither. A WHERE clause only keeps rows that evaluate to TRUE; UNKNOWN is discarded exactly like FALSE. Every row the LEFT JOIN worked to preserve — by filling its missing side with NULL — gets thrown out by the very next line of the query, because <code>NULL = 'active'</code> can never be TRUE.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>6. Fix one: move the condition into ON</h2>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">fix1.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT e.employee_name, p.project_name, p.status
+FROM employees e
+LEFT JOIN projects p
+  ON p.project_id = e.project_id AND p.status = 'active'
+ORDER BY e.employee_name;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>employee_name</th><th>project_name</th><th>status</th></tr></thead><tbody><tr><td>Aditi Rao</td><td>Website Redesign</td><td>active</td></tr><tr><td>Arjun Mehta</td><td><span class="null-cell">NULL</span></td><td><span class="null-cell">NULL</span></td></tr><tr><td>Divya Pillai</td><td><span class="null-cell">NULL</span></td><td><span class="null-cell">NULL</span></td></tr><tr><td>Meera Nair</td><td><span class="null-cell">NULL</span></td><td><span class="null-cell">NULL</span></td></tr><tr><td>Rahul Verma</td><td>Mobile App</td><td>active</td></tr><tr><td>Sneha Kapoor</td><td><span class="null-cell">NULL</span></td><td><span class="null-cell">NULL</span></td></tr><tr><td>Vikram Singh</td><td>Website Redesign</td><td>active</td></tr></tbody></table></div>
+      <p>Moving the condition from WHERE into ON changes when it's evaluated. WHERE filters the joined result after the join has already happened. ON is part of how the join decides what counts as a match in the first place — so <code>p.status = 'active'</code> is now a condition on which projects are eligible to match, not a filter on the final output. An employee whose project isn't active simply fails to match anything, which is exactly what a LEFT JOIN is built to handle: no match becomes NULL, not a missing row. All seven employees are back, each showing their active project if they have one, and NULL if they don't.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>7. Fix two — and why it isn't the same fix</h2>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">fix2.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT e.employee_name, p.project_name, p.status
+FROM employees e
+LEFT JOIN projects p ON p.project_id = e.project_id
+WHERE p.status = 'active' OR p.status IS NULL
+ORDER BY e.employee_name;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>employee_name</th><th>project_name</th><th>status</th></tr></thead><tbody><tr><td>Aditi Rao</td><td>Website Redesign</td><td>active</td></tr><tr><td>Divya Pillai</td><td><span class="null-cell">NULL</span></td><td><span class="null-cell">NULL</span></td></tr><tr><td>Rahul Verma</td><td>Mobile App</td><td>active</td></tr><tr><td>Sneha Kapoor</td><td><span class="null-cell">NULL</span></td><td><span class="null-cell">NULL</span></td></tr><tr><td>Vikram Singh</td><td>Website Redesign</td><td>active</td></tr></tbody></table></div>
+      <p>Adding <code>OR p.status IS NULL</code> also brings back the unassigned employees — but not everyone. Meera Nair and Arjun Mehta, both on real, matched projects that just happen to not be active, are still missing. This version keeps rows where the project column is genuinely NULL (no match at all) or where the status is active, but it still excludes anyone whose project matched and turned out to be completed or on hold.</p>
+      <p>That's not a bug — it might even be the intended question. But it's a <em>different</em> question than fix one answers. Fix one says: show every employee, and tell me about their project only if it's active. Fix two says: show me employees who are either unassigned or actively working on something, and leave out anyone stuck on an inactive project. Both are valid business questions. They aren't interchangeable, and choosing between them is a decision about what the report is for, not a syntax detail.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>8. Which one to use</h2>
+      <p>If the requirement is genuinely "list every row from the left table, full stop" — a driver roster, a customer list, an org chart — any filter on the right table's columns belongs in the ON clause, not WHERE. That keeps the LEFT JOIN's guarantee intact no matter what the filter condition finds.</p>
+      <p>If the requirement is actually a filter on the combined result — "employees who are either free or working on something active," say — then WHERE is the right clause, but every condition on a nullable right-side column needs an explicit <code>OR ... IS NULL</code> alongside it, or the LEFT JOIN silently degrades into an INNER JOIN the moment that column happens to be NULL.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>9. Cheat sheet</h2>
+      <table class="cheat-table">
+        <thead><tr><th>Where the condition lives</th><th>Unmatched left rows</th><th>What it actually answers</th></tr></thead>
+        <tbody>
+          <tr><td>WHERE, no NULL handling</td><td>Dropped</td><td>An INNER JOIN wearing a LEFT JOIN's syntax</td></tr>
+          <tr><td>ON (moved into the join)</td><td>Kept, NULL fields</td><td>Every left row, right-side detail shown only when it matches and qualifies</td></tr>
+          <tr><td>WHERE with OR col IS NULL</td><td>Kept</td><td>Unmatched rows plus qualifying matches — matched-but-disqualified rows still dropped</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="art-section">
+      <h2>10. Try it yourself</h2>
+      <p>The failure mode here never announces itself. The query is syntactically a LEFT JOIN, runs without error, and returns a perfectly reasonable-looking table — it's just the wrong table, missing exactly the rows the LEFT JOIN was written to keep. The fix costs nothing once you know to look for it: any WHERE condition on a right-hand column in a LEFT JOIN is worth a second look before it ships.</p>
+      <p><a href="/">Practice JOINs live on TableNotFound →</a></p>
+    </div>
 </div>
 
 <footer id="tnf-footer">
