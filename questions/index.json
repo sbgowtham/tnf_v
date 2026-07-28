@@ -68,5 +68,12 @@
       "sub": "Reseller Analytics",
       "c": "#f43397",
       "difficulty": "hard"
+    },
+    {
+      "id": "ola",
+      "name": "Ola",
+      "sub": "Trip Data Quality",
+      "c": "#00875a",
+      "difficulty": "mid"
     }
   ]

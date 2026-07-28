@@ -1,0 +1,167 @@
+{
+  "setup": "CREATE TABLE trips(trip_id TEXT,driver_id INTEGER,rider_id INTEGER,fare REAL,updated_at TEXT);\nINSERT INTO trips VALUES\n ('TR1001',501,301,250.00,'2026-01-10 09:00:00'),\n ('TR1001',501,301,275.00,'2026-01-10 09:05:00'),\n ('TR1001',501,301,275.00,'2026-01-10 09:10:00'),\n ('TR1002',502,302,180.00,'2026-01-10 09:15:00'),\n ('TR1003',503,303,320.00,'2026-01-10 10:00:00'),\n ('TR1003',503,303,320.00,'2026-01-10 10:00:00'),\n ('TR1004',504,304,150.00,'2026-01-10 11:00:00'),\n ('TR1004',504,304,165.00,'2026-01-10 11:20:00'),\n ('TR1005',505,305,400.00,'2026-01-10 12:00:00');",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "mid",
+      "cc": [
+        "ROW_NUMBER",
+        "PARTITION BY",
+        "OVER",
+        "ORDER BY",
+        "CTE"
+      ],
+      "story": {
+        "en": "Tuesday afternoon at Ola's Data Platform team. The mobile app has a habit of silently retrying a trip update if the network blips mid-request, and each retry writes a brand new row into the trips table instead of updating the existing one. Some trips now have two or three rows logged for the same trip_id, each with a slightly different updated_at timestamp — and sometimes a different fare, if the retry happened after the fare was recalculated. Before this table can be trusted for reporting, every trip needs to collapse down to exactly one row: its most recently updated version.",
+        "ta": "Tuesday afternoon Ola oda Data Platform team la. Mobile app la network mid request la blip aana, trip update a silently retry pannura habit irukku, ovvoru retry um existing row a update pannradhukku pathila trips table la puthu row a eludhidum. Konjum trips ku ippo rendu alladhu moonu rows same trip_id ku log aagirukku, ovvondrukum konjam vera updated_at timestamp, sila neram vera fare um, fare recalculate aana apparam retry nadandha. Indha table a reporting kku use pannradhukku munnadi, ovvoru trip um exact oru row a collapse aaganum, adhoda mudhal recent update aana version.",
+        "hi": "Tuesday afternoon Ola ke Data Platform team mein. Mobile app mein network mid-request mein blip hone par, trip update ko silently retry karne ki habit hai, aur har retry existing row ko update karne ke bajaye trips table mein ek naya row likh deta hai. Kuch trips ke ab do ya teen rows same trip_id ke liye log hue hain, har ek ka thoda alag updated_at timestamp, kabhi-kabhi alag fare bhi, agar retry fare recalculate hone ke baad hua ho. Is table ko reporting ke liye trust karne se pehle, har trip ko exactly ek row mein collapse hona chahiye, uska sabse recent updated version.",
+        "te": "Tuesday afternoon Ola Data Platform team lo. Mobile app lo network mid-request lo blip ayithe, trip update ni silently retry chese habit undi, prathi retry existing row ni update cheyakunda trips table lo kotha row rastundi. Konni trips ki ippudu rendu leda mudu rows same trip_id ki log ayyayi, prathi okkati konchem veru updated_at timestamp tho, konisari veru fare tho kuda, fare recalculate ayina tarvata retry jariginappudu. Ee table ni reporting kosam nammadaniki mundu, prathi trip exact ga oka row ki collapse avvali, daani most recent updated version."
+      },
+      "question": {
+        "en": "The trips table sometimes has multiple rows for the same trip_id, logged because of app retries. For each trip_id, keep only the row with the most recent updated_at and discard the older duplicate rows. Return trip_id, driver_id, rider_id, fare, and updated_at for the deduplicated trips, sorted by trip_id.",
+        "ta": "trips table la konjum times same trip_id ku multiple rows irukkum, app retries nala log aagirukkura. Ovvoru trip_id kkum, mudhal recent updated_at irukkura row a mattum vachi, pazhaiya duplicate rows a discard pannunga. Deduplicated trips kku trip_id, driver_id, rider_id, fare, matrum updated_at a return pannunga, trip_id order la sort pannunga.",
+        "hi": "trips table mein kabhi-kabhi same trip_id ke liye multiple rows hote hain, app retries ki wajah se log hue. Har trip_id ke liye, sabse recent updated_at wali row rakho, aur purani duplicate rows ko discard karo. Deduplicated trips ke liye trip_id, driver_id, rider_id, fare, aur updated_at return karo, trip_id ke order mein sort karke.",
+        "te": "trips table lo konisari same trip_id ki multiple rows untayi, app retries valla log ayyayi. Prathi trip_id ki, most recent updated_at unna row ni matrame vachi, paatha duplicate rows ni discard cheyandi. Deduplicated trips ki trip_id, driver_id, rider_id, fare, mariyu updated_at ni return cheyandi, trip_id order lo sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "trips",
+          "cols": [
+            {
+              "n": "trip_id",
+              "t": "TEXT",
+              "e": "TR1001"
+            },
+            {
+              "n": "driver_id",
+              "t": "INTEGER",
+              "e": "501"
+            },
+            {
+              "n": "rider_id",
+              "t": "INTEGER",
+              "e": "301"
+            },
+            {
+              "n": "fare",
+              "t": "REAL",
+              "e": "275.00"
+            },
+            {
+              "n": "updated_at",
+              "t": "TEXT",
+              "e": "2026-01-10 09:10:00"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at the raw trips table and spot the duplicates",
+            "ta": "Raw trips table a paarunga, duplicates a kandupidunga",
+            "hi": "Raw trips table dekho aur duplicates dhoondo",
+            "te": "Raw trips table ni chudandi, duplicates ni kanugonandi"
+          },
+          "sql": "SELECT *\nFROM trips\nORDER BY trip_id, updated_at;",
+          "explain": {
+            "en": [
+              "The trips table has one row per logged update, not one row per trip — trip_id repeats whenever the app retried, so a single real trip can show up two or three times.",
+              "Sorting by trip_id and updated_at makes the duplicates easy to see side by side: TR1001 has three rows, TR1004 has two, and TR1002 and TR1005 have only one each — not every trip was retried.",
+              "TR1003 is the trickiest case: two rows with the exact same updated_at timestamp, down to the second. A retry that happens to log at the identical second as the original produces a genuine tie, not just a near-duplicate.",
+              "Nothing is being removed yet — this step is purely about confirming what the raw data actually looks like before deciding how to collapse it."
+            ],
+            "ta": [
+              "trips table la ovvoru logged update kkum oru row irukku, oru trip kku oru row illa, app retry pannumbodhu trip_id repeat aagum, so oru real trip rendu alladhu moonu murai varalaam.",
+              "trip_id matrum updated_at vachi sort panna duplicates a side by side la paakka easy aagum: TR1001 kku moonu rows irukku, TR1004 kku rendu, TR1002 matrum TR1005 kku thanikku oru row mattum, ella trip um retry aagala.",
+              "TR1003 dhaan tricky case: rendu rows exact aana same updated_at timestamp vachi, second varaikkum. Original oda same second la log aagura retry oru genuine tie a produce pannum, near duplicate mattum illa.",
+              "Innum edhuvum remove pannala, indha step raw data eppadi irukku nu confirm pannradhukku mattum thaan, eppadi collapse pannanum nu decide pannradhukku munnadi."
+            ],
+            "hi": [
+              "trips table mein har logged update ke liye ek row hai, har trip ke liye ek row nahi — jab bhi app retry karta hai trip_id repeat hota hai, isliye ek asli trip do ya teen baar dikh sakta hai.",
+              "trip_id aur updated_at ke hisaab se sort karne se duplicates ek saath dekhna aasaan ho jaata hai: TR1001 ke teen rows hain, TR1004 ke do, aur TR1002 aur TR1005 ke sirf ek-ek — har trip retry nahi hua.",
+              "TR1003 sabse tricky case hai: do rows ka bilkul same updated_at timestamp hai, second tak. Original ke bilkul usi second par log hone wala retry ek genuine tie banata hai, sirf near-duplicate nahi.",
+              "Abhi kuch bhi remove nahi ho raha — yeh step sirf yeh confirm karne ke liye hai ki raw data asal mein kaisa dikhta hai, usse collapse karne ka tareeka decide karne se pehle."
+            ],
+            "te": [
+              "trips table lo prathi logged update ki oka row untundi, prathi trip ki oka row kaadu, app retry chesinapudalla trip_id repeat avutundi, so oka real trip rendu leda mudu sarlu kanipinchavachu.",
+              "trip_id mariyu updated_at prakaram sort cheste duplicates ni side by side chudadam easy avutundi: TR1001 ki mudu rows unnayi, TR1004 ki rendu, TR1002 mariyu TR1005 ki oka rowe, prathi trip retry avvaledu.",
+              "TR1003 ye tricky case: rendu rows exact ga same updated_at timestamp tho, second varaku. Original ade second lo log ayye retry oka genuine tie ni create chestundi, near duplicate matrame kaadu.",
+              "Inka emi remove avvatledu, ee step kevalam raw data ela undo confirm cheyadaniki matrame, ela collapse cheyalo decide cheyadaniki mundu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Assign a rank to each row within its trip_id group, most recent first",
+            "ta": "Ovvoru trip_id group kkulla ovvoru row kkum rank kudunga, mudhal recent",
+            "hi": "Har trip_id group ke andar har row ko rank do, sabse recent pehle",
+            "te": "Prathi trip_id group lopala prathi row ki rank ivvandi, most recent modata"
+          },
+          "sql": "SELECT trip_id, driver_id, rider_id, fare, updated_at,\n       ROW_NUMBER() OVER (PARTITION BY trip_id ORDER BY updated_at DESC) AS rn\nFROM trips\nORDER BY trip_id, rn;",
+          "explain": {
+            "en": [
+              "PARTITION BY trip_id groups the rows by trip, the same way GROUP BY would — except every row stays visible in the output instead of collapsing into one summary row per group.",
+              "ORDER BY updated_at DESC, inside the OVER() clause, decides the order ROW_NUMBER() counts within each partition — the most recently updated row in each trip_id group gets counted first, so it receives rn = 1.",
+              "ROW_NUMBER() assigns 1, 2, 3... within each partition, restarting at 1 every time trip_id changes. TR1001's three rows get rn 1, 2, 3; TR1002's single row gets rn 1 by itself, since a partition with only one row still starts counting from 1.",
+              "For TR1003's tied pair, both rows share the identical updated_at, so which one becomes rn = 1 and which becomes rn = 2 is arbitrary — SQLite has to pick an order somehow, but nothing in the data says which row is truly 'more recent.' Here both rows are otherwise identical anyway, so it doesn't change the final answer — but a genuine tie in the ORDER BY column is resolved arbitrarily, not meaningfully."
+            ],
+            "ta": [
+              "PARTITION BY trip_id rows a trip vachi group pannum, GROUP BY madhiri thaan, aana ovvoru row um output la visible a irukkum, group kku oru summary row a collapse aagama.",
+              "OVER() clause kkulla irukkura ORDER BY updated_at DESC, ovvoru partition kkulla ROW_NUMBER() eppadi count pannum nu decide pannum, ovvoru trip_id group la mudhal recent update aana row mudhalla count aagum, so adhu rn = 1 vaangum.",
+              "ROW_NUMBER() ovvoru partition kkulla 1, 2, 3 nu assign pannum, trip_id maarumbodhu ella murai um 1 la irundhu restart aagum. TR1001 oda moonu rows rn 1, 2, 3 vaangum, TR1002 oda thani row rn 1 mattum vaangum, oru row mattum irukkura partition um 1 la irundhu thaan count start pannum.",
+              "TR1003 oda tied pair kku, rendu rows um identical updated_at share pannuranga, so yaaru rn = 1 aaguvaanga yaaru rn = 2 aaguvaanga nu arbitrary. SQLite edho oru order pick pannanum, aana data la edhuvume yaaru real a 'more recent' nu solla mudiyadhu. Inge rendu rows um mattha ella vidhathilum identical, so final answer maaraadhu, aana ORDER BY column la genuine tie irundha adhu arbitrary a thaan resolve aagum, meaningful a illa."
+            ],
+            "hi": [
+              "PARTITION BY trip_id rows ko trip ke hisaab se group karta hai, GROUP BY jaisa hi — bas har row output mein visible rehti hai, group ke liye ek summary row mein collapse hone ke bajaye.",
+              "OVER() clause ke andar ORDER BY updated_at DESC, yeh decide karta hai ki har partition ke andar ROW_NUMBER() kis order mein count kare — har trip_id group mein sabse recent update wali row pehle count hoti hai, isliye usse rn = 1 milta hai.",
+              "ROW_NUMBER() har partition ke andar 1, 2, 3 assign karta hai, jab bhi trip_id badalta hai 1 se restart hota hai. TR1001 ki teen rows ko rn 1, 2, 3 milta hai; TR1002 ki akeli row ko rn 1 milta hai, kyunki ek row wala partition bhi 1 se hi count start karta hai.",
+              "TR1003 ke tied pair ke liye, dono rows ka identical updated_at hai, isliye kaun rn = 1 banega aur kaun rn = 2, yeh arbitrary hai. SQLite ko kisi tarah se ek order choose karna hai, lekin data mein aisa kuch nahi jo bataye ki kaunsi row sach mein 'zyada recent' hai. Yahan dono rows waise bhi baaki sab mein identical hain, isliye final answer nahi badalta — lekin ORDER BY column mein genuine tie arbitrary tareeke se resolve hoti hai, meaningful tareeke se nahi."
+            ],
+            "te": [
+              "PARTITION BY trip_id rows ni trip prakaram group chestundi, GROUP BY la ne, kaani prathi row output lo visible ga untundi, group ki oka summary row ga collapse avvakunda.",
+              "OVER() clause lopala unna ORDER BY updated_at DESC, prathi partition lopala ROW_NUMBER() e order lo count chestundo decide chestundi, prathi trip_id group lo most recent update unna row modata count avutundi, so adi rn = 1 pondutundi.",
+              "ROW_NUMBER() prathi partition lopala 1, 2, 3 assign chestundi, trip_id marinapudalla malli 1 nunchi start avutundi. TR1001 mudu rows ki rn 1, 2, 3 vastayi, TR1002 oka row ki rn 1 matrame vastundi, oka row matrame unna partition kuda 1 nunchi ne count start chestundi.",
+              "TR1003 tied pair ki, rendu rows identical updated_at share chestayi, so evaru rn = 1 avutaro evaru rn = 2 avutaro arbitrary. SQLite eppudo oka order pick cheyali, kaani data lo em ledu evaru nijamga 'more recent' ani cheppadaniki. Ikkada rendu rows migilina anni vishayaalallo identical, so final answer marradu, kaani ORDER BY column lo genuine tie unte adi arbitrary ga ne resolve avutundi, meaningful ga kaadu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Wrap it in a CTE and keep only the latest row per trip",
+            "ta": "CTE la wrap panni, ovvoru trip kkum latest row mattum vachi irukkanum",
+            "hi": "CTE mein wrap karo aur har trip ki sirf latest row rakho",
+            "te": "CTE lo wrap chesi, prathi trip ki latest row matrame vachukondi"
+          },
+          "sql": "WITH ranked_trips AS (\n  SELECT trip_id, driver_id, rider_id, fare, updated_at,\n         ROW_NUMBER() OVER (PARTITION BY trip_id ORDER BY updated_at DESC) AS rn\n  FROM trips\n)\nSELECT trip_id, driver_id, rider_id, fare, updated_at\nFROM ranked_trips\nWHERE rn = 1\nORDER BY trip_id;",
+          "explain": {
+            "en": [
+              "The ranking query from the previous step becomes a CTE (ranked_trips) so its output can be filtered — rn is a computed column that only exists after the window function runs, and a WHERE clause can't filter on it in the same SELECT where it's defined.",
+              "WHERE rn = 1 keeps exactly one row per trip_id: the one ROW_NUMBER() counted first, which is the one with the latest updated_at because of how the OVER() clause was ordered.",
+              "Nine raw rows collapse to five — one per distinct trip_id. TR1001 keeps its 09:10:00 record at fare 275, not the earlier 250 from 09:00:00; TR1004 keeps its 11:20:00 record at fare 165, not the original 150.",
+              "ORDER BY trip_id on the outer query is a separate, ordinary sort of the final deduplicated result — it has nothing to do with the ORDER BY inside OVER(), which only controls how rn was assigned."
+            ],
+            "ta": [
+              "Munnaadi step oda ranking query oru CTE (ranked_trips) aagum, so adhoda output a filter panna mudiyum, rn nu oru computed column, window function run aana apparam mattum thaan irukkum, so adhe SELECT la define pannina idathula WHERE clause adha filter panna mudiyadhu.",
+              "WHERE rn = 1 ovvoru trip_id kkum exact oru row mattum vachirukkum: ROW_NUMBER() mudhalla count pannina adhu, OVER() clause eppadi order pannirukkunu adhan padi latest updated_at irukkura adhu dhaan.",
+              "Onbadhu raw rows anju aagum, thani thani trip_id kku oru row. TR1001 adhoda 09:10:00 record a fare 275 la vachirukkum, mudhalla irundha 09:00:00 oda 250 illa, TR1004 adhoda 11:20:00 record a fare 165 la vachirukkum, original 150 illa.",
+              "Outer query la irukkura ORDER BY trip_id, final deduplicated result oda separate, ordinary sort, OVER() kkulla irukkura ORDER BY oda edhuvume sambandham illa, adhu rn eppadi assign aayichunu mattum control pannum."
+            ],
+            "hi": [
+              "Pichle step ka ranking query ek CTE (ranked_trips) ban jaata hai, taaki uske output ko filter kiya ja sake — rn ek computed column hai, jo window function run hone ke baad hi exist karta hai, isliye jis SELECT mein yeh define hua hai usi mein WHERE clause use filter nahi kar sakta.",
+              "WHERE rn = 1 har trip_id ke liye exactly ek row rakhta hai: wo jise ROW_NUMBER() ne pehle count kiya, jo OVER() clause ke order ki wajah se sabse latest updated_at wali row hai.",
+              "Nau raw rows paanch mein collapse ho jaati hain — har alag trip_id ke liye ek. TR1001 apni 09:10:00 wali record fare 275 ke saath rakhta hai, pehle wali 09:00:00 ki 250 nahi; TR1004 apni 11:20:00 wali record fare 165 ke saath rakhta hai, original 150 nahi.",
+              "Outer query par ORDER BY trip_id final deduplicated result ka ek alag, saadha sort hai — iska OVER() ke andar wale ORDER BY se koi lena-dena nahi, jo sirf yeh control karta hai ki rn kaise assign hua."
+            ],
+            "te": [
+              "Previous step ranking query oka CTE (ranked_trips) avutundi, so daani output ni filter cheyachu, rn oka computed column, window function run ayina tarvata matrame untundi, so ade SELECT lo define chesina chota WHERE clause daanini filter cheyaledu.",
+              "WHERE rn = 1 prathi trip_id ki exact ga oka row matrame vachukuntundi: ROW_NUMBER() modata count chesindi, OVER() clause e order lo pettindo daani prakaram latest updated_at unnadi.",
+              "Tommidi raw rows aidu ki collapse avutayi, prathi vere trip_id ki oka row. TR1001 daani 09:10:00 record ni fare 275 tho vachukuntundi, mundu unna 09:00:00 di 250 kaadu; TR1004 daani 11:20:00 record ni fare 165 tho vachukuntundi, original 150 kaadu.",
+              "Outer query meeda ORDER BY trip_id final deduplicated result ki separate, ordinary sort, OVER() lopala unna ORDER BY tho em sambandham ledu, adi rn ela assign ayyindo matrame control chestundi."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

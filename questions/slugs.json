@@ -9,5 +9,6 @@
   "flipkart:1": "flipkart-suppliers-average-product-unit-price-greater-categ",
   "techcorp:1": "techcorp-employee-display-name-department-latest-performanc",
   "amazon:1": "amazon-customer-calculate-total-number-orders-order-amoun",
-  "meesho:1": "meesho-reseller-calculate-net-revenue-total-value-deliver"
+  "meesho:1": "meesho-reseller-calculate-net-revenue-total-value-deliver",
+  "ola:1": "ola-trips-table-sometimes-multiple-rows-tripid-logged"
 }
