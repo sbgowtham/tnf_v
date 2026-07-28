@@ -440,6 +440,7 @@ function renderListingPage(baseHtml, { page, totalPages, items, startIndex, tota
 
   const pageQuestions = items.map(({ company, q }) => ({ uid: company.id, qid: q.id }));
   html = html.replace(/let PAGE_QUESTIONS = \[[^\]]*\];/, `let PAGE_QUESTIONS = ${JSON.stringify(pageQuestions)};`);
+  html = html.replace(/let START_INDEX = \d+;/, `let START_INDEX = ${startIndex};`);
 
   return html;
 }

@@ -382,6 +382,10 @@ let UM = []; // loaded dynamically from /questions/index.json
    Written by scripts/generate-question-pages.js — boot() only ever fetches and renders
    these, so pagination can't be silently undone once JS loads. */
 let PAGE_QUESTIONS = [{"uid":"uber","qid":4},{"uid":"youtube","qid":1}];
+/* START_INDEX: 0-based rank of this page's first question among all questions.
+   Written by scripts/generate-question-pages.js — keeps the "S.No" column in sync
+   with the server-rendered numbering once renderTable() takes over after boot(). */
+let START_INDEX = 10;
 
 /* ── STATE ── */
 let SQL=null, db=null, lang='en';
@@ -545,7 +549,7 @@ function renderTable(){
     const slug=SLUGS[`${uid}:${q.id}`];
     const qCell=`<div class="q-text">${tx(q.question)}</div><div class="q-concepts">${(q.cc||[]).slice(0,3).join(' · ')}</div>`;
     return `<tr onclick="openQ('${uid}',${q.id})" class="${active?'active-row':''}">
-      <td class="td-num">${i+1}</td>
+      <td class="td-num">${START_INDEX+i+1}</td>
       <td class="td-q">${slug
         ? `<a class="q-link" href="/questions/${slug}.html" onclick="event.preventDefault();event.stopPropagation();openQ('${uid}',${q.id});">${qCell}</a>`
         : qCell}
