@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SQL Practice Questions — Page 2 of 2 | TableNotFound</title>
-<meta name="description" content="Browse SQL practice questions 11–12 of 12 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 2 of 2.">
+<meta name="description" content="Browse SQL practice questions 11–13 of 13 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 2 of 2.">
 <link rel="canonical" href="https://www.tablenotfound.com/questions/page/2.html">
 <link rel="prev" href="https://www.tablenotfound.com/">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -320,7 +320,7 @@ td{padding:14px 16px;vertical-align:middle}
   <!-- QUESTION TABLE -->
   <div class="panel">
     <div class="toolbar">
-      <span class="toolbar-stat" id="tstat">2 questions</span>
+      <span class="toolbar-stat" id="tstat">3 questions</span>
       <div class="toolbar-gap"></div>
       <div class="filters">
         <button class="fb on" onclick="filt('all',this)">All</button>
@@ -342,8 +342,17 @@ td{padding:14px 16px;vertical-align:middle}
           </tr>
         </thead>
         <tbody id="tbody">
-      <tr onclick="openQ('uber',4)">
+      <tr onclick="openQ('uber',1)">
         <td class="td-num">11</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/uber-rider-calculate-total-number-trips-theyve-taken.html" onclick="event.preventDefault();event.stopPropagation();openQ('uber',1);"><div class="q-text">For each rider, calculate the total number of trips they've taken and their average fare per trip. Treat any trip with a missing (NULL) fare_amount as 0 when calculating the average, rather than excluding it. Return rider_name, total_trips, and avg_fare (rounded to 2 decimal places), sorted by avg_fare in descending order.</div><div class="q-concepts">JOIN · GROUP BY · COUNT</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#1d4ed8 13%,white);color:color-mix(in srgb,#1d4ed8 90%,black)">Uber</span></td>
+        <td class="td-diff"><span class="diff-easy">easy</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('uber',4)">
+        <td class="td-num">12</td>
         <td class="td-q">
           <a class="q-link" href="/questions/uber-total-earnings-driver-show-top-3-earning-drivers.html" onclick="event.preventDefault();event.stopPropagation();openQ('uber',4);"><div class="q-text">Find total earnings of each driver and show top 3 earning drivers per city.</div><div class="q-concepts">JOIN · GROUP BY · SUM</div></a>
         </td>
@@ -352,7 +361,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('youtube',1)">
-        <td class="td-num">12</td>
+        <td class="td-num">13</td>
         <td class="td-q">
           <a class="q-link" href="/questions/youtube-video-calculate-percentage-viewers-watched-until.html" onclick="event.preventDefault();event.stopPropagation();openQ('youtube',1);"><div class="q-text">For each video, calculate the percentage of viewers who watched until the end out of all viewers who started the video. Round the result to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE · GROUP BY</div></a>
         </td>
@@ -381,7 +390,7 @@ let UM = []; // loaded dynamically from /questions/index.json
 /* PAGE_QUESTIONS: the exact {uid,qid} pairs pre-rendered into THIS page's tbody, in order.
    Written by scripts/generate-question-pages.js — boot() only ever fetches and renders
    these, so pagination can't be silently undone once JS loads. */
-let PAGE_QUESTIONS = [{"uid":"uber","qid":4},{"uid":"youtube","qid":1}];
+let PAGE_QUESTIONS = [{"uid":"uber","qid":1},{"uid":"uber","qid":4},{"uid":"youtube","qid":1}];
 /* START_INDEX: 0-based rank of this page's first question among all questions.
    Written by scripts/generate-question-pages.js — keeps the "S.No" column in sync
    with the server-rendered numbering once renderTable() takes over after boot(). */

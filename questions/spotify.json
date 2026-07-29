@@ -1,0 +1,168 @@
+{
+  "setup": "CREATE TABLE listening_stats(id INTEGER,user_id INTEGER,user_name TEXT,month TEXT,minutes_streamed INTEGER);\nINSERT INTO listening_stats VALUES\n (1,101,'Aarav','2026-03',1200),\n (2,101,'Aarav','2026-04',1100),\n (3,101,'Aarav','2026-05',300),\n (4,102,'Priya','2026-03',800),\n (5,102,'Priya','2026-04',NULL),\n (6,102,'Priya','2026-05',900),\n (7,103,'Karthik','2026-03',500),\n (8,103,'Karthik','2026-04',520),\n (9,103,'Karthik','2026-05',540);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "mid",
+      "cc": [
+        "LAG",
+        "PARTITION BY",
+        "COALESCE",
+        "Window Functions",
+        "CASE WHEN",
+        "CTE"
+      ],
+      "story": {
+        "en": "Wednesday morning at Spotify's Listener Insights team. The product team wants an early-warning signal for churn — users whose monthly listening time drops sharply before they cancel their subscription. The listening_stats table logs total minutes streamed per user per month, but some months have no value logged at all, because the app was never opened that month — a different situation from a user who opened it and streamed nothing. Before churn_risk can be flagged reliably, each user's current month needs to be compared against their own previous month, with missing months treated as zero minutes.",
+        "ta": "Wednesday morning Spotify-oda Listener Insights team-la. Product team-ku churn-ku early-warning signal venum — subscription cancel pannuradhukku munnadi monthly listening time sharpa drop aagura users-a kandupidikanum. listening_stats table ovvoru user-kum ovvoru month-kum total minutes streamed-a log pannum, aana konjum months-la value-е illama irukkum, ention andha month app open pannaadhu — app open panni edhuvum stream pannama irukkura user-la irundhu idhu vera situation. churn_risk-a reliable-a flag panna, ovvoru user-oda current month-a avanga own previous month-oda compare pannanum, missing months-a zero minutes-a treat pannunga.",
+        "hi": "Wednesday morning Spotify ke Listener Insights team mein. Product team ko churn ke liye early-warning signal chahiye — wo users jinka monthly listening time subscription cancel karne se pehle tezi se drop ho jaata hai. listening_stats table har user ke har month ka total minutes streamed log karta hai, lekin kuch mahino mein koi value hi nahi hoti, kyunki us mahine app kabhi khola hi nahi gaya — yeh us user se alag situation hai jisne app khola par kuch bhi stream nahi kiya. churn_risk ko reliably flag karne se pehle, har user ke current month ko unke apne previous month se compare karna hai, missing months ko zero minutes maan kar.",
+        "te": "Wednesday morning Spotify Listener Insights team lo. Product team ki churn kosam early-warning signal kavali — subscription cancel cheyyadaniki mundu monthly listening time sharp ga drop ayye users. listening_stats table prathi user prathi month total minutes streamed ni log chestundi, kaani konni months lo value ne undadu, endukante aa month app open cheyyaledu — app open chesi emi stream cheyyani user kanna idi veru situation. churn_risk ni reliable ga flag cheyyadaniki mundu, prathi user current month ni vaalla own previous month tho compare cheyali, missing months ni zero minutes ga treat chesi."
+      },
+      "question": {
+        "en": "For each user and month in listening_stats, use LAG() to find that same user's previous month minutes_streamed (ordered by month). Treat a NULL minutes_streamed as 0 when comparing. Flag a row as churn_risk = 1 if minutes dropped by more than 50% compared to the previous month, otherwise churn_risk = 0. A user's first month in the data has no previous month to compare against, so churn_risk should be 0 for that row. Return user_name, month, minutes_streamed, previous_month_minutes, and churn_risk, sorted by user_name and month.",
+        "ta": "listening_stats-la ovvoru user matrum month-kum, LAG() use panni andha user-oda previous month minutes_streamed-a kandupidunga (month order-la). Compare pannumbodhu NULL minutes_streamed-a 0-a treat pannunga. Previous month-oda compare pannumbodhu minutes 50%-kum mேlே drop aana andha row-a churn_risk = 1 nu flag pannunga, illainaa churn_risk = 0. Data-la user-oda first month-ku compare panna previous month illa, so andha row-ku churn_risk 0-a irukkanum. user_name, month, minutes_streamed, previous_month_minutes, matrum churn_risk-a return pannunga, user_name apparam month order-la sort pannunga.",
+        "hi": "listening_stats mein har user aur month ke liye, LAG() use karke usi user ka previous month minutes_streamed nikaalo (month ke order mein). Compare karte waqt NULL minutes_streamed ko 0 maano. Agar minutes previous month ke muqable 50% se zyada drop ho gaye hain to us row ko churn_risk = 1 flag karo, warna churn_risk = 0. Data mein user ke first month ke liye compare karne ko previous month hota hi nahi, isliye us row ke liye churn_risk 0 hona chahiye. user_name, month, minutes_streamed, previous_month_minutes, aur churn_risk return karo, user_name phir month ke order mein sort karke.",
+        "te": "listening_stats lo prathi user mariyu month ki, LAG() vadi aa user previous month minutes_streamed ni kanugonandi (month order lo). Compare chese appudu NULL minutes_streamed ni 0 ga treat cheyandi. Previous month tho compare cheste minutes 50% kanna ekkuva drop aithe aa row ni churn_risk = 1 ani flag cheyandi, lekapothe churn_risk = 0. Data lo user first month ki compare cheyadaniki previous month undadu, so aa row ki churn_risk 0 ga undali. user_name, month, minutes_streamed, previous_month_minutes, mariyu churn_risk ni return cheyandi, user_name tarvata month order lo sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "listening_stats",
+          "cols": [
+            {
+              "n": "id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "user_id",
+              "t": "INTEGER",
+              "e": "101"
+            },
+            {
+              "n": "user_name",
+              "t": "TEXT",
+              "e": "Aarav"
+            },
+            {
+              "n": "month",
+              "t": "TEXT",
+              "e": "2026-03"
+            },
+            {
+              "n": "minutes_streamed",
+              "t": "INTEGER",
+              "e": "1200"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at the raw monthly listening data",
+            "ta": "Raw monthly listening data-a paarunga",
+            "hi": "Raw monthly listening data dekho",
+            "te": "Raw monthly listening data ni chudandi"
+          },
+          "sql": "SELECT *\nFROM listening_stats\nORDER BY user_id, month;",
+          "explain": {
+            "en": [
+              "listening_stats logs one row per user per month; user_id repeats across three months (2026-03 through 2026-05) for each of the three users.",
+              "Priya's 2026-04 row has NULL minutes_streamed — the app logged no session that month, different from a row that would show 0 if she'd opened it and streamed nothing.",
+              "Aarav's minutes drop sharply from 1100 in April to 300 in May, while Karthik climbs steadily every month — spotting these patterns visually is the goal before writing the LAG comparison.",
+              "Nothing is filtered or compared yet — this step just confirms what the raw data looks like before the month-over-month logic gets built."
+            ],
+            "ta": [
+              "listening_stats ovvoru user-kum ovvoru month-kum oru row-a log pannum; moonu users-ilyum ovvoruthar-kum user_id moonu months-ilyum (2026-03 mudhal 2026-05 varaikkum) repeat aagum.",
+              "Priya-oda 2026-04 row-la minutes_streamed NULL-a irukku — andha month app edhuvum session log pannala, avanga app open panni edhuvum stream pannama irundhaal 0 kaatura row-la irundhu idhu vera.",
+              "Aarav-oda minutes April-la 1100-la irundhu May-la 300-a sharpa drop aagum, Karthik ovvoru month-um steady-a climb pannuvaanga — LAG comparison eluthura munnadi indha patterns-a visual-a paakkuradhu dhaan goal.",
+              "Innum edhuvum filter alladhu compare pannala — indha step raw data eppadi irukkunu confirm pannradhukku mattum, month-over-month logic build pannradhukku munnadi."
+            ],
+            "hi": [
+              "listening_stats har user ke har month ke liye ek row log karta hai; teeno users mein se har ek ke liye user_id teen mahino (2026-03 se 2026-05 tak) mein repeat hota hai.",
+              "Priya ke 2026-04 wale row mein minutes_streamed NULL hai — us mahine app ne koi session log hi nahi kiya, yeh us row se alag hai jo 0 dikhata agar usne app khola hota par kuch stream nahi kiya hota.",
+              "Aarav ke minutes April ke 1100 se May mein 300 tak tezi se drop hote hain, jabki Karthik har mahine steady climb karta hai — LAG comparison likhne se pehle in patterns ko visually pehchaanna hi goal hai.",
+              "Abhi kuch filter ya compare nahi ho raha — yeh step sirf yeh confirm karta hai ki raw data kaisa dikhta hai, month-over-month logic banane se pehle."
+            ],
+            "te": [
+              "listening_stats prathi user prathi month ki oka row log chestundi; mudu users lo prathi okkariki user_id mudu months (2026-03 nunchi 2026-05 varaku) lo repeat avutundi.",
+              "Priya 2026-04 row lo minutes_streamed NULL undi — aa month app eh session ni log cheyaledu, aame app open chesi emi stream cheyakapothe 0 chupinche row kanna idi veru.",
+              "Aarav minutes April lo 1100 nunchi May lo 300 ki sharp ga drop avutayi, Karthik prathi month steady ga climb avutadu — LAG comparison rayadaniki mundu ee patterns ni visual gaa gamaninchadam e goal.",
+              "Inka emi filter kaani compare kaani avvatledu — ee step kevalam raw data ela undo confirm chestundi, month-over-month logic build cheyadaniki mundu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Pull each user's previous month using LAG, treating missing months as zero",
+            "ta": "LAG use panni ovvoru user-oda previous month-a edunga, missing months-a zero-a treat pannunga",
+            "hi": "LAG use karke har user ka previous month nikaalo, missing months ko zero maankar",
+            "te": "LAG vadi prathi user previous month ni tesukondi, missing months ni zero ga treat chesi"
+          },
+          "sql": "WITH monthly AS (\n  SELECT user_id,\n         user_name,\n         month,\n         minutes_streamed,\n         LAG(COALESCE(minutes_streamed, 0)) OVER (PARTITION BY user_id ORDER BY month) AS previous_month_minutes\n  FROM listening_stats\n)\nSELECT *\nFROM monthly\nORDER BY user_id, month;",
+          "explain": {
+            "en": [
+              "PARTITION BY user_id keeps each user's month sequence separate — LAG() never reaches across users, so Karthik's March never becomes 'the previous month' for Priya.",
+              "ORDER BY month inside OVER() puts each user's rows in chronological order before LAG() looks one row back; since month is stored as 'YYYY-MM' text, sorting it alphabetically is the same as sorting it chronologically.",
+              "COALESCE(minutes_streamed, 0) is applied inside LAG()'s argument, not after — that turns Priya's missing April into a 0 before it gets carried forward as May's previous_month_minutes, instead of leaving a NULL that would silently break the next step's comparison.",
+              "Aarav's and Karthik's first row (2026-03) still gets previous_month_minutes = NULL — COALESCE only rewrites NULL minutes_streamed values that already exist in the data; it can't invent a previous month where none exists in the partition."
+            ],
+            "ta": [
+              "PARTITION BY user_id ovvoru user-oda month sequence-a separate-a vachirukkum — LAG() users-a cross panni pogaadhu, so Karthik-oda March, Priya-kku 'previous month' aaga mudiyaadhu.",
+              "OVER() kkulla irukkura ORDER BY month, LAG() oru row back paakkura munnadi ovvoru user-oda rows-a chronological order-la vaikkum; month 'YYYY-MM' text-a store aagirukkura ention, adha alphabetical-a sort panna chronological-a sort pannradhu madhiri thaan.",
+              "COALESCE(minutes_streamed, 0), LAG()-oda argument-kkulla apply aagum, apparam illa — idhu Priya-oda missing April-a 0-a maathum, May-oda previous_month_minutes-a carry forward aagura munnadi, illainaa NULL-a vittu next step-oda comparison-a silent-a break panniralaam.",
+              "Aarav matrum Karthik-oda first row-kku (2026-03) innum previous_month_minutes = NULL-a dhaan varum — COALESCE data-la already irukkura NULL minutes_streamed values-a mattum-thaan rewrite pannum; partition-la illaadha oru previous month-a create panna mudiyaadhu."
+            ],
+            "hi": [
+              "PARTITION BY user_id har user ki month sequence ko alag rakhta hai — LAG() kabhi users ke aar-paar nahi jaata, isliye Karthik ka March kabhi Priya ke liye 'previous month' nahi banega.",
+              "OVER() ke andar wala ORDER BY month, LAG() ke ek row peeche dekhne se pehle har user ke rows ko chronological order mein rakhta hai; kyunki month 'YYYY-MM' text ke roop mein store hota hai, ise alphabetically sort karna chronologically sort karne jaisa hi hai.",
+              "COALESCE(minutes_streamed, 0), LAG() ke argument ke andar apply hota hai, baad mein nahi — isse Priya ka missing April 0 ban jaata hai, May ke previous_month_minutes ke roop mein carry forward hone se pehle, warna ek NULL reh jaata jo agle step ke comparison ko chupke se todh deta.",
+              "Aarav aur Karthik ke first row (2026-03) ke liye ab bhi previous_month_minutes = NULL milta hai — COALESCE sirf un NULL minutes_streamed values ko rewrite karta hai jo data mein pehle se hain; wo ek aisa previous month nahi bana sakta jo partition mein hai hi nahi."
+            ],
+            "te": [
+              "PARTITION BY user_id prathi user month sequence ni separate ga uంచుతుంది — LAG() users ni cross ayyi vellaledu, so Karthik March, Priya ki 'previous month' avvadu.",
+              "OVER() lopala unna ORDER BY month, LAG() oka row venakki chudakamunde prathi user rows ni chronological order lo pedutundi; month 'YYYY-MM' text ga store avutundi kabatti, dానిని alphabetical ga sort cheyadam chronological ga sort chesinatte.",
+              "COALESCE(minutes_streamed, 0), LAG() argument లోపల apply avutundi, tarvata kaadu — idi Priya missing April ni 0 ga marustundi, May previous_month_minutes ga carry forward avvakamunde, lekapothe NULL migిlి next step comparison ni silent ga break chesedi.",
+              "Aarav mariyu Karthik first row (2026-03) ki inka previous_month_minutes = NULL e vastundi — COALESCE data lo already unna NULL minutes_streamed values ni matrame rewrite chestundi; partition lo lేni previous month ni create cheyaledu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Flag churn risk where minutes dropped more than 50%",
+            "ta": "Minutes 50%-kum mேlே drop aana idathula churn risk-a flag pannunga",
+            "hi": "Jahan minutes 50% se zyada drop hue hain wahan churn risk flag karo",
+            "te": "Minutes 50% kanna ekkuva drop ayina chota churn risk ni flag cheyandi"
+          },
+          "sql": "WITH monthly AS (\n  SELECT user_id,\n         user_name,\n         month,\n         minutes_streamed,\n         LAG(COALESCE(minutes_streamed, 0)) OVER (PARTITION BY user_id ORDER BY month) AS previous_month_minutes\n  FROM listening_stats\n)\nSELECT user_name,\n       month,\n       minutes_streamed,\n       previous_month_minutes,\n       CASE\n         WHEN previous_month_minutes IS NULL OR previous_month_minutes = 0 THEN 0\n         WHEN COALESCE(minutes_streamed, 0) < previous_month_minutes * 0.5 THEN 1\n         ELSE 0\n       END AS churn_risk\nFROM monthly\nORDER BY user_name, month;",
+          "explain": {
+            "en": [
+              "The first WHEN catches two different 'nothing to compare against' cases in one guard: previous_month_minutes IS NULL (a user's first month) and previous_month_minutes = 0 (Priya's May, where April got coalesced to 0) — both correctly get churn_risk = 0 instead of a misleading spike.",
+              "The second WHEN compares COALESCE(minutes_streamed, 0) — not the raw column — against half of the previous month's minutes, so Priya's April (NULL, treated as 0) correctly trips churn_risk = 1 against her March total of 800.",
+              "Aarav's May (300 minutes) compares against April's 1100: 300 is less than 550 (half of 1100), so churn_risk = 1 — a genuine cross-month drop, not a NULL artifact.",
+              "Karthik never triggers churn_risk across any month because his minutes climb every time; the CASE expression only ever sees his current value staying above half of the previous one."
+            ],
+            "ta": [
+              "Mudhal WHEN rendu vera vera 'compare panna edhuvum illa' cases-a oru guard-la catch pannum: previous_month_minutes IS NULL (user-oda first month) matrum previous_month_minutes = 0 (Priya-oda May, andhula April 0-a coalesce aagirukku) — rendukkum correct-a churn_risk = 0 kidaikkum, misleading spike varaadhu.",
+              "Rendaavadhu WHEN COALESCE(minutes_streamed, 0)-a — raw column illa — previous month-oda minutes-oda pathi vachi compare pannum, so Priya-oda April (NULL, 0-a treat pannirukku) avanga March total 800-oda opposite-la correct-a churn_risk = 1 trip pannum.",
+              "Aarav-oda May (300 minutes) April-oda 1100-oda compare aagum: 300, 550 (1100-oda paathi)-kum kammiya irukku, so churn_risk = 1 — idhu genuine-a cross-month drop, NULL artifact illa.",
+              "Karthik-oda minutes ovvoru murai-um climb pannura ention, edhavadhu month-la churn_risk trigger aagaadhu; CASE expression avanga current value-a previous-oda paathi-kku mேlே dhaan paakkum, eppavum."
+            ],
+            "hi": [
+              "Pehla WHEN ek hi guard mein do alag 'compare karne ko kuch nahi' cases pakadta hai: previous_month_minutes IS NULL (user ka first month) aur previous_month_minutes = 0 (Priya ka May, jahan April 0 mein coalesce ho gaya) — dono ko sahi se churn_risk = 0 milta hai, ek misleading spike ki jagah.",
+              "Dusra WHEN COALESCE(minutes_streamed, 0) ko — raw column ko nahi — previous month ke minutes ke aadhe se compare karta hai, isliye Priya ka April (NULL, 0 maana gaya) uske March ke total 800 ke muqable sahi se churn_risk = 1 trip karta hai.",
+              "Aarav ka May (300 minutes) April ke 1100 se compare hota hai: 300, 550 (1100 ka aadha) se kam hai, isliye churn_risk = 1 — yeh ek asli cross-month drop hai, NULL artifact nahi.",
+              "Karthik ke minutes har baar climb karte hain isliye kisi bhi mahine mein churn_risk trigger nahi hota; CASE expression ko uska current value hamesha previous ke aadhe se upar hi dikhta hai."
+            ],
+            "te": [
+              "Modati WHEN rendu vేరు vేరు 'compare cheyadaniki emi ledu' cases ni oka guard lo catch chestundi: previous_month_minutes IS NULL (user first month) mariyu previous_month_minutes = 0 (Priya May, akkada April 0 ki coalesce ayyindi) — rendintiki correct ga churn_risk = 0 vastundi, misleading spike raadu.",
+              "Rendo WHEN COALESCE(minutes_streamed, 0) ni — raw column kaadu — previous month minutes lo sagam tho compare chestundi, so Priya April (NULL, 0 ga treat chesindi) aame March total 800 ki vyatirekam ga correct ga churn_risk = 1 trip chestundi.",
+              "Aarav May (300 minutes) April 1100 tho compare avutundi: 300, 550 (1100 lo sagam) kanna takkuva undi, so churn_risk = 1 — idi genuine ga cross-month drop, NULL artifact kaadu.",
+              "Karthik minutes prathi sari climb avutayi kabatti, edaina month lo churn_risk trigger avvadu; CASE expression daani current value eppudu previous lo sagam kanna paina e chustundi."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -75,5 +75,12 @@
       "sub": "Trip Data Quality",
       "c": "#00875a",
       "difficulty": "mid"
+    },
+    {
+      "id": "spotify",
+      "name": "Spotify",
+      "sub": "Listener Churn Signals",
+      "c": "#1db954",
+      "difficulty": "mid"
     }
   ]
