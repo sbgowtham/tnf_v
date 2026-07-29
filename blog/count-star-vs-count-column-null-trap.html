@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Contact | TableNotFound</title>
-<meta name="description" content="Get in touch with TableNotFound — report a bug, share feedback, or suggest a new SQL practice scenario.">
-<link rel="canonical" href="https://www.tablenotfound.com/contact.html">
+<title>COUNT(*) vs COUNT(column): The NULL Trap | TableNotFound</title>
+<meta name="description" content="Why COUNT(resolution_time_minutes) can silently undercount rows compared to COUNT(*) — verified in SQLite, with the fix and how COUNT(DISTINCT ...) behaves differently again.">
+<link rel="canonical" href="https://www.tablenotfound.com/blog/count-star-vs-count-column-null-trap.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -271,19 +271,22 @@ td{padding:14px 16px;vertical-align:middle}
 }
 
 
-.legal-wrap{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
+.article-wrap{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
 .crumb{font-size:12px;font-weight:600;color:var(--t3);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:1.5rem}
 .crumb:hover{color:var(--t2)}
-.legal-h1{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-1px;margin-bottom:.4rem;color:var(--text)}
-.legal-meta{font-size:12px;color:var(--t3);margin-bottom:2rem}
-.legal-wrap h2{font-size:17px;font-weight:700;color:var(--text);margin:2rem 0 .75rem}
-.legal-wrap p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
-.legal-wrap ul{margin:0 0 .9rem 1.25rem;font-size:14.5px;color:var(--t2)}
-.legal-wrap li{margin-bottom:.4rem}
-.legal-wrap a{color:#7c5cfc;font-weight:600;text-decoration:none}
-.legal-wrap a:hover{text-decoration:underline}
-.legal-wrap strong{color:var(--text)}
-.bracket{background:#fff3cd;color:#664d03;padding:0 3px;border-radius:3px}
+.art-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.art-h1{font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:.5rem;color:var(--text);line-height:1.2}
+.art-meta{font-size:12px;color:var(--t3);margin-bottom:2.5rem}
+.art-section{margin:2.75rem 0}
+.art-section h2{font-size:19px;font-weight:700;color:var(--text);margin-bottom:.4rem}
+.art-section p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
+.art-section code{font-family:var(--fm);font-size:.88em;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
+.ed-win{margin:.75rem 0;border-radius:10px;overflow:hidden}
+.tbl-wrap{margin:.75rem 0}
+.null-cell{color:#ccc;font-style:italic}
+.cheat-table{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0}
+.cheat-table th,.cheat-table td{padding:8px 12px;text-align:left;border-bottom:1px solid rgba(0,0,0,.06)}
+.cheat-table th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3)}
 
 </style>
 <style id="tnf-footer-style">
@@ -361,18 +364,128 @@ td{padding:14px 16px;vertical-align:middle}
   </div>
 </nav>
 
-<div class="legal-wrap">
+<div class="article-wrap">
   <a class="crumb" href="/">← Back to TableNotFound</a>
-  <h1 class="legal-h1">Contact</h1>
-  <div class="legal-meta">Last updated: July 21, 2026</div>
+
+  <div class="art-badges">
+    <span class="chip">SQL</span>
+    <span class="chip">Aggregation</span>
+    <span class="chip">NULL Handling</span>
+  </div>
+  <h1 class="art-h1">COUNT(*) vs COUNT(column)</h1>
+  <div class="art-meta">The NULL trap that quietly shrinks your ticket counts</div>
+
   
-      <p>TableNotFound is a small, independently-run project. If you've spotted a bug, have feedback, or want to suggest a company scenario, I'd like to hear from you.</p>
-      <h2>Email</h2>
-      <p>The most reliable way to reach me: <a href="mailto:dataengineeringtamil@gmail.com">dataengineeringtamil@gmail.com</a></p>
-      <h2>Elsewhere</h2>
-      <p>You can also find me at <a href="https://linkedin.com/in/sbgowtham" target="_blank" rel="noopener">linkedin.com/in/sbgowtham</a>.</p>
-      <p>This site doesn't run a live chat or contact form — it has no backend to send one to — so email is the fastest path.</p>
-    
+    <div class="art-section">
+      <h2>1. Why this happens</h2>
+      <p><code>COUNT(*)</code> and <code>COUNT(column)</code> look interchangeable — both start with <code>COUNT</code>, both end up as a number in a report — but they count completely different things. <code>COUNT(*)</code> counts rows. <code>COUNT(column)</code> counts only the rows where that column is not NULL. The moment a column has NULLs — an unresolved support ticket, a rating nobody left, an order that hasn't shipped yet — swapping one for the other silently changes the number, with no error and no warning.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>2. The dataset</h2>
+      <p>Verified by actually running this against SQLite — not hand-computed. Ten support tickets spread across three agents. <code>resolution_time_minutes</code> is NULL whenever a ticket is still open — that's not missing data, it's the actual, correct state of a ticket nobody has closed yet.</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">schema.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE tickets(
+  ticket_id INTEGER,
+  agent_name TEXT,
+  customer_id INTEGER,
+  resolution_time_minutes INTEGER
+);
+
+INSERT INTO tickets VALUES
+ (1,'Meera',501,12),
+ (2,'Meera',502,8),
+ (3,'Meera',501,NULL),
+ (4,'Meera',503,20),
+ (5,'Rahul',504,15),
+ (6,'Rahul',504,NULL),
+ (7,'Rahul',505,NULL),
+ (8,'Kabir',506,10),
+ (9,'Kabir',507,25),
+ (10,'Kabir',506,5);</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>ticket_id</th><th>agent_name</th><th>customer_id</th><th>resolution_time_minutes</th></tr></thead><tbody><tr><td>1</td><td>Meera</td><td>501</td><td>12</td></tr><tr><td>2</td><td>Meera</td><td>502</td><td>8</td></tr><tr><td>3</td><td>Meera</td><td>501</td><td><span class="null-cell">NULL</span></td></tr><tr><td>4</td><td>Meera</td><td>503</td><td>20</td></tr><tr><td>5</td><td>Rahul</td><td>504</td><td>15</td></tr><tr><td>6</td><td>Rahul</td><td>504</td><td><span class="null-cell">NULL</span></td></tr><tr><td>7</td><td>Rahul</td><td>505</td><td><span class="null-cell">NULL</span></td></tr><tr><td>8</td><td>Kabir</td><td>506</td><td>10</td></tr><tr><td>9</td><td>Kabir</td><td>507</td><td>25</td></tr><tr><td>10</td><td>Kabir</td><td>506</td><td>5</td></tr></tbody></table></div>
+      <p>Rahul has three tickets, but two of them — 504 (the second time) and 505 — are still open. Meera has one open ticket out of four. Kabir has closed all three of his.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>3. The bug</h2>
+      <p>The requirement is simple: "how many tickets has each agent handled?" <code>resolution_time_minutes</code> reads like the column that represents a ticket, so it's the one that gets counted:</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">bug.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT agent_name, COUNT(resolution_time_minutes) AS ticket_count
+FROM tickets
+GROUP BY agent_name
+ORDER BY agent_name;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>agent_name</th><th>ticket_count</th></tr></thead><tbody><tr><td>Kabir</td><td>3</td></tr><tr><td>Meera</td><td>3</td></tr><tr><td>Rahul</td><td>1</td></tr></tbody></table></div>
+      <p>Rahul handled exactly as many tickets as Kabir — three — but the dashboard says one. Two-thirds of his workload disappeared, not because the tickets don't exist, but because they're still open, and an open ticket has no <code>resolution_time_minutes</code> to count.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>4. Why it happens</h2>
+      <p><code>COUNT(column)</code> is shorthand for "count the rows where this column is not NULL" — the same rule <code>SUM</code> and <code>AVG</code> follow when they quietly skip NULLs instead of treating them as zero. It's not a bug in SQLite or any other engine; it's the standard, documented behavior of <code>COUNT(expr)</code>. The bug is choosing a nullable column as a stand-in for "the row exists" when it actually means "this specific thing about the row is known."</p>
+    </div>
+
+    <div class="art-section">
+      <h2>5. The fix</h2>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">fix.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT agent_name, COUNT(*) AS ticket_count
+FROM tickets
+GROUP BY agent_name
+ORDER BY agent_name;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>agent_name</th><th>ticket_count</th></tr></thead><tbody><tr><td>Kabir</td><td>3</td></tr><tr><td>Meera</td><td>4</td></tr><tr><td>Rahul</td><td>3</td></tr></tbody></table></div>
+      <p><code>COUNT(*)</code> counts rows, full stop — it doesn't look inside any column, so a NULL anywhere has no effect on it. Rahul's real count comes back as 3, and Meera's climbs from 3 to 4 once her one open ticket is counted alongside her three closed ones.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>6. A third option: COUNT(DISTINCT column)</h2>
+      <p>There's a third question hiding in the same table: not "how many tickets," but "how many different customers." That's <code>COUNT(DISTINCT customer_id)</code> — and it's worth seeing next to the other two, because it's neither of them.</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">compare.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT agent_name,
+       COUNT(*) AS total_tickets,
+       COUNT(resolution_time_minutes) AS resolved_tickets,
+       COUNT(DISTINCT customer_id) AS unique_customers
+FROM tickets
+GROUP BY agent_name
+ORDER BY agent_name;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>agent_name</th><th>total_tickets</th><th>resolved_tickets</th><th>unique_customers</th></tr></thead><tbody><tr><td>Kabir</td><td>3</td><td>3</td><td>2</td></tr><tr><td>Meera</td><td>4</td><td>3</td><td>3</td></tr><tr><td>Rahul</td><td>3</td><td>1</td><td>2</td></tr></tbody></table></div>
+      <p>Meera's 4 tickets came from only 3 unique customers — customer 501 filed twice. Kabir's 3 tickets came from 2 customers, for the same reason. <code>COUNT(DISTINCT customer_id)</code> counts neither rows nor non-NULL values on their own — it counts <em>distinct</em> non-NULL values, which means it still inherits <code>COUNT(column)</code>'s NULL-skipping behavior on top of collapsing duplicates. If a ticket were ever filed with no <code>customer_id</code> at all, that row would be silently left out of this count too, exactly like an open ticket is left out of <code>COUNT(resolution_time_minutes)</code>.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>7. Which one to use</h2>
+      <p>If the question is "how many rows/tickets/orders are there" — reach for <code>COUNT(*)</code>. It's the only one of the three that's immune to NULLs anywhere in the row.</p>
+      <p>If the question is "how many rows actually have a value for this specific column" — <code>COUNT(column)</code> is correct, but only when that's genuinely the question. "How many tickets are resolved" is a legitimate use of <code>COUNT(resolution_time_minutes)</code>; "how many tickets exist" is not.</p>
+      <p>If the question is "how many unique values does this column have" — <code>COUNT(DISTINCT column)</code>, and remember it drops NULLs before it starts deduplicating, same as its non-distinct sibling.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>8. Cheat sheet</h2>
+      <table class="cheat-table">
+        <thead><tr><th>Expression</th><th>What it counts</th><th>Question it actually answers</th></tr></thead>
+        <tbody>
+          <tr><td><code>COUNT(*)</code></td><td>Every row in the group, NULLs included</td><td>"How many rows are there, period?"</td></tr>
+          <tr><td><code>COUNT(column)</code></td><td>Rows where <code>column</code> is NOT NULL</td><td>"How many rows have a known value for this?"</td></tr>
+          <tr><td><code>COUNT(DISTINCT column)</code></td><td>Distinct NOT NULL values in <code>column</code></td><td>"How many unique values does this have?"</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="art-section">
+      <h2>9. Try it yourself</h2>
+      <p>This one never throws an error either — it just quietly answers a narrower question than the one being asked, and the gap only shows up as "why does this number look too small." Before shipping any <code>COUNT(column)</code>, it's worth asking whether NULL in that column means "doesn't count" or just "not filled in yet."</p>
+      <p><a href="/">Practice aggregations live on TableNotFound →</a></p>
+    </div>
 </div>
 
 <footer id="tnf-footer">

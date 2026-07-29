@@ -40,5 +40,12 @@
     "href": "/blog/left-join-where-clause-trap.html",
     "icon": "📝",
     "color": "#dbeafe"
+  },
+  {
+    "title": "COUNT(*) vs COUNT(column)",
+    "desc": "The NULL trap explained",
+    "href": "/blog/count-star-vs-count-column-null-trap.html",
+    "icon": "📝",
+    "color": "#dbeafe"
   }
 ]
