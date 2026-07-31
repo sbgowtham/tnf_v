@@ -82,5 +82,19 @@
       "sub": "Listener Churn Signals",
       "c": "#1db954",
       "difficulty": "mid"
+    },
+    {
+      "id": "duolingo",
+      "name": "Duolingo",
+      "sub": "Learner Engagement",
+      "c": "#58cc02",
+      "difficulty": "mid"
+    },
+    {
+      "id": "airbnb",
+      "name": "Airbnb",
+      "sub": "Overlapping Bookings",
+      "c": "#ff5a5f",
+      "difficulty": "mid"
     }
   ]

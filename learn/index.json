@@ -47,5 +47,12 @@
     "href": "/blog/count-star-vs-count-column-null-trap.html",
     "icon": "📝",
     "color": "#dbeafe"
+  },
+  {
+    "title": "UNION vs UNION ALL",
+    "desc": "The silent row drop explained",
+    "href": "/blog/union-vs-union-all-silent-row-drop.html",
+    "icon": "📝",
+    "color": "#dbeafe"
   }
 ]

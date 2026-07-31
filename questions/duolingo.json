@@ -1,0 +1,168 @@
+{
+  "setup": "CREATE TABLE learning_activity(id INTEGER,user_name TEXT,language TEXT,xp_earned INTEGER,activity_date TEXT);\nINSERT INTO learning_activity VALUES\n (1,'Meera','Spanish',20,'2026-07-20'),\n (2,'Meera','French',15,'2026-07-21'),\n (3,'Meera','Spanish',10,'2026-07-22'),\n (4,'Rohan','German',25,'2026-07-20'),\n (5,'Rohan','German',NULL,'2026-07-21'),\n (6,'Rohan','German',30,'2026-07-22'),\n (7,'Divya','Spanish',40,'2026-07-20'),\n (8,'Divya','Japanese',35,'2026-07-21'),\n (9,'Divya','French',20,'2026-07-22'),\n (10,'Divya','Spanish',15,'2026-07-23');",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "mid",
+      "cc": [
+        "GROUP_CONCAT",
+        "COALESCE",
+        "COUNT(DISTINCT)",
+        "GROUP BY",
+        "AVG",
+        "ORDER BY"
+      ],
+      "story": {
+        "en": "Monday morning at Duolingo's Learner Engagement team. The learning_activity table logs one row every time a user opens a lesson or uses a 'streak freeze' to protect their streak without actually studying — a freeze day still gets logged with a language and a date, but its xp_earned is NULL, not zero, because no lesson was completed. The team wants a per-user engagement summary: total XP, a fair daily average that doesn't quietly ignore freeze days, and which languages each learner is actively juggling.",
+        "ta": "Monday morning Duolingo-oda Learner Engagement team-la. learning_activity table oru user lesson open pannumbodhu alladhu study pannaama streak-a protect panna 'streak freeze' use pannumbodhu ovvoru murai-um oru row-a log pannum — freeze day-um language matrum date vachi log aagum, aana adhoda xp_earned NULL-a irukkum, zero illa, ention edhuvum lesson complete pannala. Team-ku per-user engagement summary venum: total XP, freeze days-a silent-a ignore pannaadha fair daily average, matrum ovvoru learner-um active-a எத்தனை languages juggle pannuranga-nu.",
+        "hi": "Monday morning Duolingo ke Learner Engagement team mein. learning_activity table mein har baar ek row log hoti hai jab user lesson khole ya bina padhe apni streak bachaane ke liye 'streak freeze' use kare — freeze wale din bhi language aur date ke saath log hota hai, lekin uska xp_earned NULL hota hai, zero nahi, kyunki koi lesson complete nahi hua. Team ko per-user engagement summary chahiye: total XP, ek fair daily average jo freeze days ko chupke se ignore na kare, aur har learner kaunsi languages actively seekh raha hai.",
+        "te": "Monday morning Duolingo Learner Engagement team lo. learning_activity table prathi sari user lesson open chesinapudu leda chadavakunda streak ni protect cheyadaniki 'streak freeze' vadinapudu oka row log chestundi — freeze day kuda language mariyu date tho log avutundi, kaani daani xp_earned NULL ga untundi, zero kaadu, endukante ఏ lesson complete avvaledu. Team ki per-user engagement summary kavali: total XP, freeze days ni silent ga ignore cheyani fair daily average, mariyu prathi learner ఎన్ని languages active ga nerchukuntunnado."
+      },
+      "question": {
+        "en": "For each user in learning_activity, calculate total_xp as the sum of xp_earned (treating a NULL xp_earned, from a streak-freeze day, as 0). Calculate avg_xp_per_day as the average xp_earned across all logged days for that user, also treating NULL as 0 — a freeze day should pull the average down, not be excluded from it. Calculate language_count as the number of distinct languages the user has activity for, and languages_list as those distinct language names joined into a single comma-separated string, sorted alphabetically. Return user_name, total_xp, avg_xp_per_day (rounded to 2 decimal places), language_count, and languages_list, sorted by total_xp in descending order.",
+        "ta": "learning_activity-la ovvoru user-kum, xp_earned-oda sum-a total_xp-a calculate pannunga (streak-freeze day-oda NULL xp_earned-a 0-a treat pannunga). Andha user-oda ella logged days-ilyum xp_earned-oda average-a avg_xp_per_day-a calculate pannunga, adhilyum NULL-a 0-a treat pannunga — freeze day average-a keezha izhukkanum, adhula irundhu exclude aagakoodadhu. User-ku distinct languages எத்தனை irukkunu language_count-a calculate pannunga, matrum andha distinct language names-a single comma-separated string-a alphabetical order-la join panni languages_list-a kudunga. user_name, total_xp, avg_xp_per_day (2 decimal places-kku round pannunga), language_count, matrum languages_list-a return pannunga, total_xp descending order-la sort pannunga.",
+        "hi": "learning_activity mein har user ke liye, xp_earned ka sum total_xp ke roop mein calculate karo (streak-freeze din ke NULL xp_earned ko 0 maan kar). Us user ke sabhi logged days mein xp_earned ka average avg_xp_per_day ke roop mein calculate karo, usme bhi NULL ko 0 maan kar — freeze din average ko neeche khinchna chahiye, usse exclude nahi hona chahiye. User ke liye kitni distinct languages hain wo language_count ke roop mein calculate karo, aur un distinct language names ko ek comma-separated string mein alphabetical order mein jodkar languages_list do. user_name, total_xp, avg_xp_per_day (2 decimal places tak round karke), language_count, aur languages_list return karo, total_xp ke descending order mein sort karke.",
+        "te": "learning_activity lo prathi user ki, xp_earned sum ni total_xp ga calculate cheyandi (streak-freeze day NULL xp_earned ni 0 ga treat chesi). Aa user anni logged days lo xp_earned average ni avg_xp_per_day ga calculate cheyandi, andulo kuda NULL ni 0 ga treat chesi — freeze day average ni takkuvaga lagali, dāni nunchi exclude avvakudadu. User ki ఎన్ని distinct languages unnayo language_count ga calculate cheyandi, mariyu aa distinct language names ni oka comma-separated string ga alphabetical order lo join chesi languages_list ivvandi. user_name, total_xp, avg_xp_per_day (2 decimal places ki round chesi), language_count, mariyu languages_list ni return cheyandi, total_xp descending order lo sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "learning_activity",
+          "cols": [
+            {
+              "n": "id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "user_name",
+              "t": "TEXT",
+              "e": "Meera"
+            },
+            {
+              "n": "language",
+              "t": "TEXT",
+              "e": "Spanish"
+            },
+            {
+              "n": "xp_earned",
+              "t": "INTEGER",
+              "e": "20"
+            },
+            {
+              "n": "activity_date",
+              "t": "TEXT",
+              "e": "2026-07-20"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at the raw learning activity log",
+            "ta": "Raw learning activity log-a paarunga",
+            "hi": "Raw learning activity log dekho",
+            "te": "Raw learning activity log ni chudandi"
+          },
+          "sql": "SELECT *\nFROM learning_activity\nORDER BY user_name, activity_date;",
+          "explain": {
+            "en": [
+              "learning_activity logs one row per day a user interacts with the app, not one row per user — user_name repeats once for every lesson day or freeze day.",
+              "Rohan's 2026-07-21 row has NULL xp_earned — the streak-freeze protected his streak that day without him completing a lesson, which is different from a day where he studied and simply earned 0 XP.",
+              "Divya has two separate Spanish rows (2026-07-20 and 2026-07-23) — she studies Spanish on more than one day, but it's still one language, a detail that matters once distinct languages get counted.",
+              "Nothing is aggregated yet — this step just confirms what a day-by-day activity log looks like before summarizing it per user."
+            ],
+            "ta": [
+              "learning_activity ovvoru day-kum user app-oda interact panna oru row-a log pannum, oru user-kku oru row illa — ovvoru lesson day alladhu freeze day-kkum user_name repeat aagum.",
+              "Rohan-oda 2026-07-21 row-la xp_earned NULL-a irukku — andha naal streak-freeze avanga streak-a protect pannuchu, avanga lesson complete pannaama, idhu avanga study panni 0 XP mattum sampadhicha day-la irundhu vera.",
+              "Divya-kku rendu vera vera Spanish rows irukku (2026-07-20 matrum 2026-07-23) — avanga Spanish-a onnukku mேlே day-la padikkiranga, aana idhu innum oru language thaan, distinct languages count pannumbodhu idhu mukkiyam.",
+              "Innum edhuvum aggregate pannala — indha step ovvoru user-kkum summarize pannradhukku munnadi day-by-day activity log eppadi irukkunu confirm pannradhukku mattum."
+            ],
+            "hi": [
+              "learning_activity har din jab user app se interact karta hai ek row log karta hai, har user ke liye ek row nahi — har lesson din ya freeze din ke liye user_name repeat hota hai.",
+              "Rohan ke 2026-07-21 wale row mein xp_earned NULL hai — us din streak-freeze ne uski streak ko bachaya, bina lesson complete kiye, yeh us din se alag hai jab usne padha aur sirf 0 XP kamaya.",
+              "Divya ke do alag Spanish rows hain (2026-07-20 aur 2026-07-23) — wo Spanish ek se zyada din padhti hai, lekin phir bhi yeh ek hi language hai, jo distinct languages count karte waqt maayne rakhta hai.",
+              "Abhi kuch aggregate nahi hua — yeh step sirf yeh confirm karta hai ki har user ke liye summarize karne se pehle day-by-day activity log kaisa dikhta hai."
+            ],
+            "te": [
+              "learning_activity prathi day user app tho interact ayinapudu oka row log chestundi, prathi user ki oka row kaadu — prathi lesson day leda freeze day ki user_name repeat avutundi.",
+              "Rohan 2026-07-21 row lo xp_earned NULL undi — aa roju streak-freeze atani streak ni protect chesindi, atanu lesson complete cheyakunda, idi atanu chaduvukoni kevalam 0 XP sampadinchina roju kanna veru.",
+              "Divya ki rendu vేరు వేరు Spanish rows unnayi (2026-07-20 mariyu 2026-07-23) — aame Spanish ni oka roju kanna ekkuva chaduvutundi, kaani idi inka oka language e, distinct languages count chese appudu idi important.",
+              "Inka emi aggregate avvatledu — ee step prathi user ki summarize cheyadaniki mundu day-by-day activity log ela undo confirm chestundi matrame."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Total XP and a NULL-safe daily average per user",
+            "ta": "Ovvoru user-kkum total XP matrum NULL-safe daily average",
+            "hi": "Har user ka total XP aur ek NULL-safe daily average",
+            "te": "Prathi user ki total XP mariyu NULL-safe daily average"
+          },
+          "sql": "SELECT user_name,\n       SUM(COALESCE(xp_earned, 0)) AS total_xp,\n       ROUND(AVG(COALESCE(xp_earned, 0)), 2) AS avg_xp_per_day\nFROM learning_activity\nGROUP BY user_name\nORDER BY user_name;",
+          "explain": {
+            "en": [
+              "SUM(COALESCE(xp_earned, 0)) turns Rohan's NULL freeze day into a 0 before adding it up — SUM already skips NULLs on its own, so this step wouldn't change his total_xp either way, but COALESCE makes that stop being an accident and start being explicit.",
+              "AVG is where COALESCE actually changes the answer: AVG(xp_earned) without COALESCE would divide only by the days that have a non-NULL value, quietly excluding the freeze day from the denominator entirely, not just from the numerator.",
+              "Rohan logged 3 days (two lessons plus one freeze) worth 25, NULL, and 30 XP. Without COALESCE, AVG(xp_earned) computes (25+30)/2 = 27.5 — the same average as Divya's, who genuinely studied hard every single day. With COALESCE, it's (25+0+30)/3 = 18.33, correctly reflecting that a third of his logged days had no studying at all.",
+              "Meera and Divya have no NULL rows, so COALESCE makes no visible difference for them here — the gap only shows up for a user who actually has a freeze day, which is exactly the kind of bug that hides until the right row shows up in production data."
+            ],
+            "ta": [
+              "SUM(COALESCE(xp_earned, 0)) Rohan-oda NULL freeze day-a add pannura munnadi 0-a maathum — SUM already NULL-a skip pannum, so idhu iru vidhamum avanga total_xp-a maathaadhu, aana COALESCE idha accident-a illama explicit-a maathum.",
+              "AVG-la dhaan COALESCE answer-a actual-a maathum: COALESCE illama AVG(xp_earned), non-NULL value irukkura days-a mattum-thaan divide pannum, freeze day-a denominator-la irundhu completely silent-a exclude pannidum, numerator-la irundhu mattum illa.",
+              "Rohan 3 days log pannirukkanga (rendu lessons plus oru freeze), 25, NULL, matrum 30 XP. COALESCE illama, AVG(xp_earned) (25+30)/2 = 27.5-a compute pannum — idhu Divya-oda average madhiri thaan, avanga ovvoru naalum genuine-a hard-a padikkiranga. COALESCE vachi, (25+0+30)/3 = 18.33, avanga logged days-la moondril onnu edhuvume padikkala-nu correct-a kaatum.",
+              "Meera matrum Divya-kku NULL rows illa, so COALESCE avangaluku indha idathula visible difference edhuvum kaatadhu — indha gap genuine-a freeze day irukkura user-kku mattum-thaan varum, idhu production data-la sariyaana row varaikkum hide aagirukkura bug madhiri thaan."
+            ],
+            "hi": [
+              "SUM(COALESCE(xp_earned, 0)) Rohan ke NULL freeze din ko jodne se pehle 0 bana deta hai — SUM apne aap hi NULLs ko skip karta hai, isliye yeh step uske total_xp ko waise bhi nahi badalta, lekin COALESCE isse accidental hone ki jagah explicit bana deta hai.",
+              "AVG mein COALESCE asal mein answer badalta hai: bina COALESCE ke AVG(xp_earned) sirf un dino se divide karega jinke paas non-NULL value hai, freeze din ko denominator se bhi chupke se poori tarah exclude kar dega, sirf numerator se nahi.",
+              "Rohan ne 3 din log kiye (do lessons plus ek freeze), 25, NULL, aur 30 XP. Bina COALESCE ke, AVG(xp_earned) (25+30)/2 = 27.5 compute karta hai — bilkul Divya ke average jaisa, jo genuinely har din mehnat se padhti hai. COALESCE ke saath, (25+0+30)/3 = 18.33 aata hai, jo sahi se dikhata hai ki uske logged days mein se ek-tihai din bilkul padhai nahi hui.",
+              "Meera aur Divya ke koi NULL rows nahi hain, isliye COALESCE unke liye yahan koi visible difference nahi banata — yeh gap sirf us user ke liye dikhta hai jiske paas genuinely ek freeze din ho, aur yeh bilkul waisa bug hai jo production data mein sahi row aane tak chhupa rehta hai."
+            ],
+            "te": [
+              "SUM(COALESCE(xp_earned, 0)) Rohan NULL freeze day ni add cheyakamunde 0 ga marustundi — SUM already NULLs ni skip chestundi, so ee step atani total_xp ni em marchadu, kaani COALESCE dానిని accident kaakunda explicit ga marustundi.",
+              "AVG lo COALESCE nijanga answer ni marustundi: COALESCE lekunda AVG(xp_earned), non-NULL value unna days tho matrame divide chestundi, freeze day ni denominator nunchi kuda silent gaa poortiga exclude chestundi, numerator nunchi matrame kaadu.",
+              "Rohan 3 days log chesadu (rendu lessons plus oka freeze), 25, NULL, mariyu 30 XP. COALESCE lekunda, AVG(xp_earned) (25+30)/2 = 27.5 ga compute chestundi — idi Divya average la ede, aame prathi roju genuine ga hard ga chaduvutundi. COALESCE tho, (25+0+30)/3 = 18.33, atani logged days lo mudu vantulo okati emi chadavaledani correct ga chupistundi.",
+              "Meera mariyu Divya ki NULL rows ledu, so COALESCE వాళ్ళకి ఇక్కడ em visible difference chupinchadu — ee gap నిజంగా freeze day unna user ki matrame vastundi, idi production data lo సరైన row vachేవaraku dagi unde bug la ede."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Add distinct language count and a comma-separated language list",
+            "ta": "Distinct language count matrum comma-separated language list-a add pannunga",
+            "hi": "Distinct language count aur comma-separated language list add karo",
+            "te": "Distinct language count mariyu comma-separated language list ni add cheyandi"
+          },
+          "sql": "SELECT user_name,\n       SUM(COALESCE(xp_earned, 0)) AS total_xp,\n       ROUND(AVG(COALESCE(xp_earned, 0)), 2) AS avg_xp_per_day,\n       COUNT(DISTINCT language) AS language_count,\n       GROUP_CONCAT(DISTINCT language ORDER BY language) AS languages_list\nFROM learning_activity\nGROUP BY user_name\nORDER BY total_xp DESC;",
+          "explain": {
+            "en": [
+              "COUNT(DISTINCT language) counts unique language names per user, not rows — Divya has 4 activity rows but only 3 distinct languages, since two of those rows are both Spanish.",
+              "GROUP_CONCAT(DISTINCT language ORDER BY language) builds languages_list as one string per user, deduplicating the same way COUNT(DISTINCT language) does — without DISTINCT, Divya's list would repeat 'Spanish' twice instead of listing each language once.",
+              "SQLite's GROUP_CONCAT only accepts ORDER BY alongside DISTINCT when no custom separator is also supplied — DISTINCT aggregates take exactly one argument, so the alphabetical order here relies on the default comma separator rather than a hand-picked one.",
+              "The final ORDER BY total_xp DESC sorts users by their overall total, unrelated to the ORDER BY tucked inside GROUP_CONCAT — that inner ORDER BY only controls the order languages appear in within each user's own comma-separated string."
+            ],
+            "ta": [
+              "COUNT(DISTINCT language) ovvoru user-kkum unique language names-a count pannum, rows illa — Divya-kku 4 activity rows irukku aana 3 distinct languages mattum-thaan, ention andhula rendu rows-um Spanish.",
+              "GROUP_CONCAT(DISTINCT language ORDER BY language) ovvoru user-kkum languages_list-a oru string-a build pannum, COUNT(DISTINCT language) pannura madhiri-thaan deduplicate pannum — DISTINCT illama, Divya-oda list-la 'Spanish' rendu murai repeat aagum, ovvoru language-um oru murai list pannradhukku pathila.",
+              "SQLite-oda GROUP_CONCAT, DISTINCT-oda ORDER BY-a custom separator kudukkaama irundhaal mattum-thaan accept pannum — DISTINCT aggregates exact-a oru argument mattum-thaan edukkum, so inga alphabetical order default comma separator-a dhaan use pannum, hand-picked onnu illa.",
+              "Final ORDER BY total_xp DESC users-a avanga overall total vachi sort pannum, GROUP_CONCAT-kkulla irukkura ORDER BY-oda edhuvume sambandham illa — andha inner ORDER BY ovvoru user-oda own comma-separated string-kkulla languages eppadi order-la varum-nu mattum-thaan control pannum."
+            ],
+            "hi": [
+              "COUNT(DISTINCT language) har user ke unique language names count karta hai, rows nahi — Divya ke 4 activity rows hain lekin sirf 3 distinct languages, kyunki unme se do rows dono Spanish hain.",
+              "GROUP_CONCAT(DISTINCT language ORDER BY language) har user ke liye languages_list ko ek string banata hai, bilkul waise hi deduplicate karke jaise COUNT(DISTINCT language) karta hai — DISTINCT ke bina, Divya ki list mein 'Spanish' do baar repeat hota, har language ko ek baar list karne ki jagah.",
+              "SQLite ka GROUP_CONCAT, DISTINCT ke saath ORDER BY tabhi accept karta hai jab koi custom separator na diya gaya ho — DISTINCT aggregates exactly ek argument lete hain, isliye yahan alphabetical order default comma separator par hi depend karta hai, hand-picked separator par nahi.",
+              "Final ORDER BY total_xp DESC users ko unke overall total ke hisaab se sort karta hai, GROUP_CONCAT ke andar chhupe ORDER BY se iska koi lena-dena nahi — wo inner ORDER BY sirf yeh control karta hai ki har user ki apni comma-separated string ke andar languages kis order mein aayen."
+            ],
+            "te": [
+              "COUNT(DISTINCT language) prathi user ki unique language names ni count chestundi, rows kaadu — Divya ki 4 activity rows unnayi kaani 3 distinct languages matrame, endukante andulo rendu rows Spanish e.",
+              "GROUP_CONCAT(DISTINCT language ORDER BY language) prathi user ki languages_list ni oka string ga build chestundi, COUNT(DISTINCT language) chesinatte deduplicate chestundi — DISTINCT lekunda, Divya list lo 'Spanish' rendu sarlu repeat avutundi, prathi language ni oka sari list cheyadaniki bదulu.",
+              "SQLite GROUP_CONCAT, DISTINCT tho patu ORDER BY ni custom separator ivvakapothe matrame accept chestundi — DISTINCT aggregates exact ga oka argument tesukuntayi, so ikkada alphabetical order default comma separator paina depend avutundi, hand-picked dాni paina kaadu.",
+              "Final ORDER BY total_xp DESC users ni vaalla overall total prakaram sort chestundi, GROUP_CONCAT లోపల dagi unna ORDER BY tho em sambandham ledu — aa inner ORDER BY prathi user sontha comma-separated string లోపల languages ఏ order lo vastayo matrame control chestundi."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

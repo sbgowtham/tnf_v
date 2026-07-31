@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Myntra: products whose total sales… | TableNotFound</title>
-<meta name="description" content="Myntra SQL practice question (mid): Find products whose total sales quantity is greater than the average total sales… Free, runs live in your browser.">
-<link rel="canonical" href="https://www.tablenotfound.com/questions/myntra-products-total-sales-quantity-greater-average.html">
+<title>UNION vs UNION ALL: The Silent Row You Didn't Mean to Drop | TableNotFound</title>
+<meta name="description" content="Why UNION can quietly erase a real transaction that just happens to look identical to another one — verified in SQLite, with the fix and when UNION's dedup is actually what you want.">
+<link rel="canonical" href="https://www.tablenotfound.com/blog/union-vs-union-all-silent-row-drop.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -271,21 +271,22 @@ td{padding:14px 16px;vertical-align:middle}
 }
 
 
-.static-wrap{max-width:820px;margin:0 auto;padding:2rem 1.5rem 6rem}
+.article-wrap{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
 .crumb{font-size:12px;font-weight:600;color:var(--t3);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:1.5rem}
 .crumb:hover{color:var(--t2)}
-.q-header{padding:.5rem 0 1.75rem;animation:up .55s cubic-bezier(.22,1,.36,1) both}
-.q-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
-.q-h1{font-size:clamp(22px,4vw,32px);font-weight:800;line-height:1.35;letter-spacing:-.7px;margin-bottom:.5rem;color:var(--text)}
-.q-sub{font-size:13px;color:var(--t2)}
-.step-body{display:block}
-.xpl{display:block}
-.step-head{cursor:default}
-.step-num{background:rgba(255,255,255,.6)!important;color:var(--t2)!important}
-.cta-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.75rem}
-.cta-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:20px;border:none;cursor:pointer;font-family:var(--ff);font-size:13px;font-weight:700;text-decoration:none;background:linear-gradient(135deg,#7c5cfc,#c45cfc);color:#fff;box-shadow:0 3px 12px rgba(124,92,252,.35);transition:transform .18s}
-.cta-btn:hover{transform:translateY(-2px)}
-.cta-btn.secondary{background:rgba(255,255,255,.65);color:var(--t2);border:var(--bdr);box-shadow:none}
+.art-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.art-h1{font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:.5rem;color:var(--text);line-height:1.2}
+.art-meta{font-size:12px;color:var(--t3);margin-bottom:2.5rem}
+.art-section{margin:2.75rem 0}
+.art-section h2{font-size:19px;font-weight:700;color:var(--text);margin-bottom:.4rem}
+.art-section p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
+.art-section code{font-family:var(--fm);font-size:.88em;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
+.ed-win{margin:.75rem 0;border-radius:10px;overflow:hidden}
+.tbl-wrap{margin:.75rem 0}
+.null-cell{color:#ccc;font-style:italic}
+.cheat-table{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0}
+.cheat-table th,.cheat-table td{padding:8px 12px;text-align:left;border-bottom:1px solid rgba(0,0,0,.06)}
+.cheat-table th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3)}
 
 </style>
 <style id="tnf-footer-style">
@@ -370,188 +371,102 @@ td{padding:14px 16px;vertical-align:middle}
   </div>
 </nav>
 
-<div class="static-wrap">
-  <a class="crumb" href="/">← All SQL Questions</a>
+<div class="article-wrap">
+  <a class="crumb" href="/">← Back to TableNotFound</a>
 
-  <div class="q-header">
-    <div class="q-badges">
-      <span class="co-tag" style="background:color-mix(in srgb,#1d4ed8 13%,white);color:color-mix(in srgb,#1d4ed8 90%,black)">Myntra</span>
-      <span class="diff-mid">mid</span>
-      <span class="chip">JOIN</span><span class="chip">GROUP BY</span><span class="chip">SUM</span><span class="chip">Correlated Subquery</span><span class="chip">AVG</span><span class="chip">HAVING</span><span class="chip">ORDER BY</span>
-    </div>
-    <h1 class="q-h1">Find products whose total sales quantity is greater than the average total sales quantity of products from the same brand. Return the product name, brand and total sales quantity. Sort the result by brand and total sales quantity in descending order.</h1>
-    <p class="q-sub">Myntra · Engagement Analytics — practice this real-world SQL scenario live in your browser.</p>
+  <div class="art-badges">
+    <span class="chip">SQL</span>
+    <span class="chip">Set Operations</span>
+    <span class="chip">Data Integrity</span>
   </div>
+  <h1 class="art-h1">UNION vs UNION ALL</h1>
+  <div class="art-meta">The dedup that can quietly erase a real sale</div>
 
-  <div class="story" style="--uc:#1d4ed8">
-    <div class="story-bg"></div>
-    <div class="story-top">
-      <span class="story-lbl">📖 Story</span>
-      <span class="story-co">Myntra · Engagement Analytics</span>
-    </div>
-    <div class="story-body">Monday morning at Myntra HQ. The Brand Partnerships team is preparing the 'Top Picks' collection for the upcoming fashion sale. Instead of comparing every product across the marketplace, they want to compare each product only with others from the same brand. Products performing better than their brand average will receive additional promotion on the homepage.</div>
-  </div>
-
-  <div class="mission">
-    <div class="mission-top">🎯 Your Mission</div>
-    <div class="mission-body">Find products whose total sales quantity is greater than the average total sales quantity of products from the same brand. Return the product name, brand and total sales quantity. Sort the result by brand and total sales quantity in descending order.</div>
-  </div>
-
-  <div class="schema-wrap">
-    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem">📋 Table Structure</div>
-    <div class="schema-cards">
-      <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">products</span></div>
-        <div><div class="sc-row">
-          <span class="sc-col">product_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">101</span>
-        </div><div class="sc-row">
-          <span class="sc-col">product_name</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Air Zoom</span>
-        </div><div class="sc-row">
-          <span class="sc-col">brand</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Nike</span>
-        </div><div class="sc-row">
-          <span class="sc-col">category</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Shoes</span>
-        </div></div>
-      </div>
-      <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">sales</span></div>
-        <div><div class="sc-row">
-          <span class="sc-col">sale_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">1001</span>
-        </div><div class="sc-row">
-          <span class="sc-col">product_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">101</span>
-        </div><div class="sc-row">
-          <span class="sc-col">quantity</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">45</span>
-        </div><div class="sc-row">
-          <span class="sc-col">sale_date</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">2024-05-01</span>
-        </div></div>
-      </div>
-    </div>
-  </div>
-
-  <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:1.5rem 0 .75rem">⚡ Step-by-Step Walkthrough</div>
   
-    <div class="step-card" style="--uc:#1d4ed8">
-      <div class="step-head">
-        <div class="step-num">1</div>
-        <div class="step-info">
-          <div class="step-title">Calculate the total sales quantity for each product</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT p.product_id,
-       p.product_name,
-       p.brand,
-       SUM(s.quantity) AS total_sales
-FROM products p
-JOIN sales s
-ON p.product_id = s.product_id
-GROUP BY p.product_id,
-         p.product_name,
-         p.brand
-ORDER BY p.brand,
-         total_sales DESC;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">The products table stores product details such as the product name and brand, while the sales table stores every sales transaction. To calculate total sales for a product, we first need to combine these two tables.</li><li class="xpl-point">JOIN connects every sales transaction with its corresponding product. Without the JOIN, we would know the quantity sold, but we wouldn't know which product or brand it belongs to.</li><li class="xpl-point">SUM(s.quantity) adds the quantity from every sales transaction of the same product. This gives us the total number of units sold for each product.</li><li class="xpl-point">GROUP BY combines multiple sales transactions into a single row for every product. Without GROUP BY, SQL cannot calculate a separate total for each product.</li><li class="xpl-point">At the end of this step, every product has one row with its total sales quantity. We are not comparing products yet. We are simply preparing the base metric that will be used in the next step.</li><li class="xpl-point">Run this query and verify that products like Air Zoom have higher total sales than other products within the same brand. These totals will be compared against the brand average in the next step.</li></ul></div>
-      </div>
-    </div>
-    <div class="step-card" style="--uc:#1d4ed8">
-      <div class="step-head">
-        <div class="step-num">2</div>
-        <div class="step-info">
-          <div class="step-title">Calculate the average total sales for products from the same brand</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT p.product_id,
-       p.product_name,
-       p.brand,
-       SUM(s.quantity) AS total_sales,
-       (
-           SELECT AVG(product_sales)
-           FROM (
-               SELECT SUM(s2.quantity) AS product_sales
-               FROM products p2
-               JOIN sales s2
-               ON p2.product_id = s2.product_id
-               WHERE p2.brand = p.brand
-               GROUP BY p2.product_id
-           ) brand_sales
-       ) AS brand_avg_sales
-FROM products p
-JOIN sales s
-ON p.product_id = s.product_id
-GROUP BY p.product_id,
-         p.product_name,
-         p.brand
-ORDER BY p.brand,
-         total_sales DESC;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">From the previous step, we already know the total sales of every product. Now we need another value to compare against: the average total sales of products belonging to the same brand.</li><li class="xpl-point">The correlated subquery calculates this average. It runs once for every row returned by the outer query. As the outer query moves from one product to another, the value of p.brand changes, and the inner query automatically recalculates the average for that brand.</li><li class="xpl-point">Inside the subquery, we first calculate the total sales for every product within the current brand using SUM() and GROUP BY. Once we have the total sales of all products in that brand, AVG() calculates the brand's average sales.</li><li class="xpl-point">Notice the condition WHERE p2.brand = p.brand. Here, p2.brand belongs to the inner query, while p.brand comes from the outer query. This reference to the outer query is what makes it a correlated subquery.</li><li class="xpl-point">We are not filtering any products yet. The purpose of this step is simply to display two values for every product: its own total sales and its brand's average sales. These two values will be compared in the final step.</li></ul></div>
-      </div>
-    </div>
-    <div class="step-card" style="--uc:#1d4ed8">
-      <div class="step-head">
-        <div class="step-num">3</div>
-        <div class="step-info">
-          <div class="step-title">Filter products whose total sales exceed their brand's average sales</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT p.product_name,
-       p.brand,
-       SUM(s.quantity) AS total_sales
-FROM products p
-JOIN sales s
-ON p.product_id = s.product_id
-GROUP BY p.product_id,
-         p.product_name,
-         p.brand
-HAVING SUM(s.quantity) &gt; (
-    SELECT AVG(product_sales)
-    FROM (
-        SELECT SUM(s2.quantity) AS product_sales
-        FROM products p2
-        JOIN sales s2
-        ON p2.product_id = s2.product_id
-        WHERE p2.brand = p.brand
-        GROUP BY p2.product_id
-    ) brand_sales
-)
-ORDER BY p.brand,
-         total_sales DESC;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">In the previous step, every product had two important values: its own total sales and the average sales of products from the same brand. The final task is simply to compare these two values.</li><li class="xpl-point">HAVING is used because total_sales is calculated using the SUM() aggregate function. Since SQL evaluates WHERE before GROUP BY, aggregated values are not available inside the WHERE clause. HAVING filters rows after aggregation is complete.</li><li class="xpl-point">For every product, SQL first calculates its total sales using SUM(s.quantity). It then executes the correlated subquery to calculate the average sales of all products belonging to the same brand.</li><li class="xpl-point">If a product's total sales are greater than its brand's average sales, the product is included in the final result. Products with sales equal to or below the average are excluded.</li><li class="xpl-point">ORDER BY p.brand, total_sales DESC organizes the output by brand and lists the best-performing products first within each brand.</li><li class="xpl-point">Business Insight: These products are outperforming other products from the same brand. They are strong candidates for the 'Top Picks' collection, homepage promotions, or marketing campaigns because they consistently generate higher sales than their peers.</li></ul></div>
-      </div>
+    <div class="art-section">
+      <h2>1. Why this happens</h2>
+      <p><code>UNION</code> and <code>UNION ALL</code> both stack two result sets on top of each other, and both require the same number of columns with compatible types in the same order — that part is identical. The difference is one word: <code>UNION</code> runs an implicit <code>DISTINCT</code> over the combined rows afterward; <code>UNION ALL</code> doesn't. That single word decides whether two genuinely different real-world events that happen to produce an identical row get counted twice, or silently collapsed into one.</p>
     </div>
 
-  <div class="cta-row">
-    <a class="cta-btn" href="/">▶ Practice this live</a>
-    <a class="cta-btn secondary" href="/">← Browse all questions</a>
-  </div>
+    <div class="art-section">
+      <h2>2. The dataset</h2>
+      <p>Verified by actually running this against SQLite — not hand-computed. A coffee shop logs sales from two channels into separate tables: <code>online_orders</code> and <code>store_orders</code>. Walk-in customers who don't give a name are all logged simply as <code>'Walk-in'</code> — a common, deliberate choice, not a data quality problem.</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">schema.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE online_orders(customer_name TEXT, item TEXT, amount REAL);
+CREATE TABLE store_orders(customer_name TEXT, item TEXT, amount REAL);
+
+INSERT INTO online_orders VALUES
+ ('Priya','Coffee',150),
+ ('Walk-in','Coffee',150),
+ ('Rahul','Sandwich',220);
+
+INSERT INTO store_orders VALUES
+ ('Walk-in','Coffee',150),
+ ('Meera','Tea',90),
+ ('Walk-in','Coffee',150);</code></pre>
+      </div>
+      <p><code>online_orders</code>:</p>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>customer_name</th><th>item</th><th>amount</th></tr></thead><tbody><tr><td>Priya</td><td>Coffee</td><td>150</td></tr><tr><td>Walk-in</td><td>Coffee</td><td>150</td></tr><tr><td>Rahul</td><td>Sandwich</td><td>220</td></tr></tbody></table></div>
+      <p><code>store_orders</code>:</p>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>customer_name</th><th>item</th><th>amount</th></tr></thead><tbody><tr><td>Walk-in</td><td>Coffee</td><td>150</td></tr><tr><td>Meera</td><td>Tea</td><td>90</td></tr><tr><td>Walk-in</td><td>Coffee</td><td>150</td></tr></tbody></table></div>
+      <p>Six rows total, six real sales — three different walk-in customers on three separate occasions each bought one coffee for ₹150. Nothing here is a mistake or a duplicate entry; it's just three ordinary transactions that happen to look the same on paper because "Walk-in" carries no identifying detail.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>3. The bug</h2>
+      <p>A report needs "every order from both channels, combined." Reaching for <code>UNION</code> to stack two same-shaped result sets looks like the obvious tool:</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">bug.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT customer_name, item, amount FROM online_orders
+UNION
+SELECT customer_name, item, amount FROM store_orders;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>customer_name</th><th>item</th><th>amount</th></tr></thead><tbody><tr><td>Meera</td><td>Tea</td><td>90</td></tr><tr><td>Priya</td><td>Coffee</td><td>150</td></tr><tr><td>Rahul</td><td>Sandwich</td><td>220</td></tr><tr><td>Walk-in</td><td>Coffee</td><td>150</td></tr></tbody></table></div>
+      <p>Six real sales became four rows. <code>SELECT SUM(amount)</code> over this combined result reports <strong>₹610</strong> — but the two tables together actually sold <strong>₹910</strong> worth of coffee, tea, and sandwiches. ₹300 of real revenue, two entire transactions, vanished without a single error, warning, or row count that looked obviously wrong.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>4. Why it happens</h2>
+      <p><code>UNION</code> deduplicates on the <em>entire row</em>, not on any notion of "the same customer" or "the same person." SQL has no way to know that the <code>'Walk-in','Coffee',150</code> row from the website and the two identical rows from the till represent three different people who happen to have left the same three-column fingerprint. As far as <code>UNION</code>'s implicit <code>DISTINCT</code> is concerned, three identical-looking rows are one row that showed up three times — and it keeps exactly one.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>5. The fix</h2>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">fix.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT customer_name, item, amount FROM online_orders
+UNION ALL
+SELECT customer_name, item, amount FROM store_orders;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>customer_name</th><th>item</th><th>amount</th></tr></thead><tbody><tr><td>Priya</td><td>Coffee</td><td>150</td></tr><tr><td>Walk-in</td><td>Coffee</td><td>150</td></tr><tr><td>Rahul</td><td>Sandwich</td><td>220</td></tr><tr><td>Walk-in</td><td>Coffee</td><td>150</td></tr><tr><td>Meera</td><td>Tea</td><td>90</td></tr><tr><td>Walk-in</td><td>Coffee</td><td>150</td></tr></tbody></table></div>
+      <p><code>UNION ALL</code> just concatenates both result sets — no dedup pass, no rows compared against each other, nothing silently merged. All six rows survive, in the order they came from each source. <code>SUM(amount)</code> over this correctly reports the full <strong>₹910</strong>.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>6. When UNION is actually the right choice</h2>
+      <p>None of this makes <code>UNION</code> wrong to use — it makes it wrong for combining <em>transactions</em>, where every row is supposed to represent a distinct event even if its columns coincidentally match another row's. <code>UNION</code> earns its keep when a duplicate row genuinely does mean "the same real-world thing, seen twice": merging a newsletter list and a support-ticket list into one set of email addresses to contact, for instance, where the same address appearing in both really should collapse to one entry, not two. The deciding question isn't "do these two tables have the same shape" — both queries answer that the same way — it's "if two rows come out identical, does that mean one real thing or two."</p>
+    </div>
+
+    <div class="art-section">
+      <h2>7. Cheat sheet</h2>
+      <table class="cheat-table">
+        <thead><tr><th>Operator</th><th>Duplicate full rows</th><th>Right for</th></tr></thead>
+        <tbody>
+          <tr><td><code>UNION</code></td><td>Collapsed to one</td><td>Combining sets of the same real-world entity — e.g. a deduplicated contact list</td></tr>
+          <tr><td><code>UNION ALL</code></td><td>All kept</td><td>Combining events, transactions, or logs — anything where each row is a distinct occurrence</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="art-section">
+      <h2>8. Try it yourself</h2>
+      <p>This failure mode is easy to miss precisely because it looks like good hygiene — nobody sets out to write a query that drops real sales, they write one that "removes duplicates," which sounds like exactly the right thing to do until a coincidence in the data turns two real events into one. Before reaching for <code>UNION</code> over <code>UNION ALL</code>, it's worth asking directly: if two rows here happen to be identical, is that actually the same thing twice, or just two different things that ran out of columns to tell them apart?</p>
+      <p><a href="/">Practice set operations live on TableNotFound →</a></p>
+    </div>
 </div>
 
 <footer id="tnf-footer">

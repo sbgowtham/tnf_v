@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SQL Practice Questions — Page 2 of 2 | TableNotFound</title>
-<meta name="description" content="Browse SQL practice questions 11–13 of 13 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 2 of 2.">
+<meta name="description" content="Browse SQL practice questions 11–15 of 15 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 2 of 2.">
 <link rel="canonical" href="https://www.tablenotfound.com/questions/page/2.html">
 <link rel="prev" href="https://www.tablenotfound.com/">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -320,7 +320,7 @@ td{padding:14px 16px;vertical-align:middle}
   <!-- QUESTION TABLE -->
   <div class="panel">
     <div class="toolbar">
-      <span class="toolbar-stat" id="tstat">3 questions</span>
+      <span class="toolbar-stat" id="tstat">5 questions</span>
       <div class="toolbar-gap"></div>
       <div class="filters">
         <button class="fb on" onclick="filt('all',this)">All</button>
@@ -342,8 +342,26 @@ td{padding:14px 16px;vertical-align:middle}
           </tr>
         </thead>
         <tbody id="tbody">
-      <tr onclick="openQ('uber',1)">
+      <tr onclick="openQ('techcorp',1)">
         <td class="td-num">11</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/techcorp-employee-display-name-department-latest-performanc.html" onclick="event.preventDefault();event.stopPropagation();openQ('techcorp',1);"><div class="q-text">For each employee, display their name, department, latest performance rating, the previous performance rating (to track improvement), their ranking within the department, and whether their latest rating is above or below their department's average. Sort by department and ranking.</div><div class="q-concepts">Window Functions · ROW_NUMBER · RANK</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#9c27b0 13%,white);color:color-mix(in srgb,#9c27b0 90%,black)">Techcorp</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('tinder',7)">
+        <td class="td-num">12</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/tinder-user-count-total-number-likes-they-sent-others.html" onclick="event.preventDefault();event.stopPropagation();openQ('tinder',7);"><div class="q-text">For each user, count the total number of likes they have sent to others. Show user name along with the count, sorted by count in descending order.</div><div class="q-concepts">JOIN · GROUP BY · COUNT</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#f7b731 13%,white);color:color-mix(in srgb,#f7b731 90%,black)">Tinder</span></td>
+        <td class="td-diff"><span class="diff-easy">easy</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('uber',1)">
+        <td class="td-num">13</td>
         <td class="td-q">
           <a class="q-link" href="/questions/uber-rider-calculate-total-number-trips-theyve-taken.html" onclick="event.preventDefault();event.stopPropagation();openQ('uber',1);"><div class="q-text">For each rider, calculate the total number of trips they've taken and their average fare per trip. Treat any trip with a missing (NULL) fare_amount as 0 when calculating the average, rather than excluding it. Return rider_name, total_trips, and avg_fare (rounded to 2 decimal places), sorted by avg_fare in descending order.</div><div class="q-concepts">JOIN · GROUP BY · COUNT</div></a>
         </td>
@@ -352,7 +370,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('uber',4)">
-        <td class="td-num">12</td>
+        <td class="td-num">14</td>
         <td class="td-q">
           <a class="q-link" href="/questions/uber-total-earnings-driver-show-top-3-earning-drivers.html" onclick="event.preventDefault();event.stopPropagation();openQ('uber',4);"><div class="q-text">Find total earnings of each driver and show top 3 earning drivers per city.</div><div class="q-concepts">JOIN · GROUP BY · SUM</div></a>
         </td>
@@ -361,7 +379,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('youtube',1)">
-        <td class="td-num">13</td>
+        <td class="td-num">15</td>
         <td class="td-q">
           <a class="q-link" href="/questions/youtube-video-calculate-percentage-viewers-watched-until.html" onclick="event.preventDefault();event.stopPropagation();openQ('youtube',1);"><div class="q-text">For each video, calculate the percentage of viewers who watched until the end out of all viewers who started the video. Round the result to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE · GROUP BY</div></a>
         </td>
@@ -390,7 +408,7 @@ let UM = []; // loaded dynamically from /questions/index.json
 /* PAGE_QUESTIONS: the exact {uid,qid} pairs pre-rendered into THIS page's tbody, in order.
    Written by scripts/generate-question-pages.js — boot() only ever fetches and renders
    these, so pagination can't be silently undone once JS loads. */
-let PAGE_QUESTIONS = [{"uid":"uber","qid":1},{"uid":"uber","qid":4},{"uid":"youtube","qid":1}];
+let PAGE_QUESTIONS = [{"uid":"techcorp","qid":1},{"uid":"tinder","qid":7},{"uid":"uber","qid":1},{"uid":"uber","qid":4},{"uid":"youtube","qid":1}];
 /* START_INDEX: 0-based rank of this page's first question among all questions.
    Written by scripts/generate-question-pages.js — keeps the "S.No" column in sync
    with the server-rendered numbering once renderTable() takes over after boot(). */

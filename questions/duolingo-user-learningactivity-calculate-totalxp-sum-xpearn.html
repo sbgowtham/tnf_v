@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Myntra: products whose total sales… | TableNotFound</title>
-<meta name="description" content="Myntra SQL practice question (mid): Find products whose total sales quantity is greater than the average total sales… Free, runs live in your browser.">
-<link rel="canonical" href="https://www.tablenotfound.com/questions/myntra-products-total-sales-quantity-greater-average.html">
+<title>Duolingo: user in learning_activity… | TableNotFound</title>
+<meta name="description" content="Duolingo SQL practice question (mid): For each user in learning_activity, calculate total_xp as the sum of xp_earned… Free, runs live in your browser.">
+<link rel="canonical" href="https://www.tablenotfound.com/questions/duolingo-user-learningactivity-calculate-totalxp-sum-xpearn.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -375,69 +375,53 @@ td{padding:14px 16px;vertical-align:middle}
 
   <div class="q-header">
     <div class="q-badges">
-      <span class="co-tag" style="background:color-mix(in srgb,#1d4ed8 13%,white);color:color-mix(in srgb,#1d4ed8 90%,black)">Myntra</span>
+      <span class="co-tag" style="background:color-mix(in srgb,#58cc02 13%,white);color:color-mix(in srgb,#58cc02 90%,black)">Duolingo</span>
       <span class="diff-mid">mid</span>
-      <span class="chip">JOIN</span><span class="chip">GROUP BY</span><span class="chip">SUM</span><span class="chip">Correlated Subquery</span><span class="chip">AVG</span><span class="chip">HAVING</span><span class="chip">ORDER BY</span>
+      <span class="chip">GROUP_CONCAT</span><span class="chip">COALESCE</span><span class="chip">COUNT(DISTINCT)</span><span class="chip">GROUP BY</span><span class="chip">AVG</span><span class="chip">ORDER BY</span>
     </div>
-    <h1 class="q-h1">Find products whose total sales quantity is greater than the average total sales quantity of products from the same brand. Return the product name, brand and total sales quantity. Sort the result by brand and total sales quantity in descending order.</h1>
-    <p class="q-sub">Myntra · Engagement Analytics — practice this real-world SQL scenario live in your browser.</p>
+    <h1 class="q-h1">For each user in learning_activity, calculate total_xp as the sum of xp_earned (treating a NULL xp_earned, from a streak-freeze day, as 0). Calculate avg_xp_per_day as the average xp_earned across all logged days for that user, also treating NULL as 0 — a freeze day should pull the average down, not be excluded from it. Calculate language_count as the number of distinct languages the user has activity for, and languages_list as those distinct language names joined into a single comma-separated string, sorted alphabetically. Return user_name, total_xp, avg_xp_per_day (rounded to 2 decimal places), language_count, and languages_list, sorted by total_xp in descending order.</h1>
+    <p class="q-sub">Duolingo · Learner Engagement — practice this real-world SQL scenario live in your browser.</p>
   </div>
 
-  <div class="story" style="--uc:#1d4ed8">
+  <div class="story" style="--uc:#58cc02">
     <div class="story-bg"></div>
     <div class="story-top">
       <span class="story-lbl">📖 Story</span>
-      <span class="story-co">Myntra · Engagement Analytics</span>
+      <span class="story-co">Duolingo · Learner Engagement</span>
     </div>
-    <div class="story-body">Monday morning at Myntra HQ. The Brand Partnerships team is preparing the 'Top Picks' collection for the upcoming fashion sale. Instead of comparing every product across the marketplace, they want to compare each product only with others from the same brand. Products performing better than their brand average will receive additional promotion on the homepage.</div>
+    <div class="story-body">Monday morning at Duolingo's Learner Engagement team. The learning_activity table logs one row every time a user opens a lesson or uses a 'streak freeze' to protect their streak without actually studying — a freeze day still gets logged with a language and a date, but its xp_earned is NULL, not zero, because no lesson was completed. The team wants a per-user engagement summary: total XP, a fair daily average that doesn't quietly ignore freeze days, and which languages each learner is actively juggling.</div>
   </div>
 
   <div class="mission">
     <div class="mission-top">🎯 Your Mission</div>
-    <div class="mission-body">Find products whose total sales quantity is greater than the average total sales quantity of products from the same brand. Return the product name, brand and total sales quantity. Sort the result by brand and total sales quantity in descending order.</div>
+    <div class="mission-body">For each user in learning_activity, calculate total_xp as the sum of xp_earned (treating a NULL xp_earned, from a streak-freeze day, as 0). Calculate avg_xp_per_day as the average xp_earned across all logged days for that user, also treating NULL as 0 — a freeze day should pull the average down, not be excluded from it. Calculate language_count as the number of distinct languages the user has activity for, and languages_list as those distinct language names joined into a single comma-separated string, sorted alphabetically. Return user_name, total_xp, avg_xp_per_day (rounded to 2 decimal places), language_count, and languages_list, sorted by total_xp in descending order.</div>
   </div>
 
   <div class="schema-wrap">
     <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem">📋 Table Structure</div>
     <div class="schema-cards">
       <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">products</span></div>
+        <div class="sc-head">🗂 <span class="sc-name">learning_activity</span></div>
         <div><div class="sc-row">
-          <span class="sc-col">product_id</span>
+          <span class="sc-col">id</span>
           <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">101</span>
+          <span class="sc-eg">1</span>
         </div><div class="sc-row">
-          <span class="sc-col">product_name</span>
+          <span class="sc-col">user_name</span>
           <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Air Zoom</span>
+          <span class="sc-eg">Meera</span>
         </div><div class="sc-row">
-          <span class="sc-col">brand</span>
+          <span class="sc-col">language</span>
           <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Nike</span>
+          <span class="sc-eg">Spanish</span>
         </div><div class="sc-row">
-          <span class="sc-col">category</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Shoes</span>
-        </div></div>
-      </div>
-      <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">sales</span></div>
-        <div><div class="sc-row">
-          <span class="sc-col">sale_id</span>
+          <span class="sc-col">xp_earned</span>
           <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">1001</span>
+          <span class="sc-eg">20</span>
         </div><div class="sc-row">
-          <span class="sc-col">product_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">101</span>
-        </div><div class="sc-row">
-          <span class="sc-col">quantity</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">45</span>
-        </div><div class="sc-row">
-          <span class="sc-col">sale_date</span>
+          <span class="sc-col">activity_date</span>
           <span class="sc-type">TEXT</span>
-          <span class="sc-eg">2024-05-01</span>
+          <span class="sc-eg">2026-07-20</span>
         </div></div>
       </div>
     </div>
@@ -445,106 +429,66 @@ td{padding:14px 16px;vertical-align:middle}
 
   <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:1.5rem 0 .75rem">⚡ Step-by-Step Walkthrough</div>
   
-    <div class="step-card" style="--uc:#1d4ed8">
+    <div class="step-card" style="--uc:#58cc02">
       <div class="step-head">
         <div class="step-num">1</div>
         <div class="step-info">
-          <div class="step-title">Calculate the total sales quantity for each product</div>
+          <div class="step-title">Look at the raw learning activity log</div>
         </div>
       </div>
       <div class="step-body">
         <div class="ed-win">
           <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
             <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT p.product_id,
-       p.product_name,
-       p.brand,
-       SUM(s.quantity) AS total_sales
-FROM products p
-JOIN sales s
-ON p.product_id = s.product_id
-GROUP BY p.product_id,
-         p.product_name,
-         p.brand
-ORDER BY p.brand,
-         total_sales DESC;</code></pre>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
+FROM learning_activity
+ORDER BY user_name, activity_date;</code></pre>
         </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">The products table stores product details such as the product name and brand, while the sales table stores every sales transaction. To calculate total sales for a product, we first need to combine these two tables.</li><li class="xpl-point">JOIN connects every sales transaction with its corresponding product. Without the JOIN, we would know the quantity sold, but we wouldn't know which product or brand it belongs to.</li><li class="xpl-point">SUM(s.quantity) adds the quantity from every sales transaction of the same product. This gives us the total number of units sold for each product.</li><li class="xpl-point">GROUP BY combines multiple sales transactions into a single row for every product. Without GROUP BY, SQL cannot calculate a separate total for each product.</li><li class="xpl-point">At the end of this step, every product has one row with its total sales quantity. We are not comparing products yet. We are simply preparing the base metric that will be used in the next step.</li><li class="xpl-point">Run this query and verify that products like Air Zoom have higher total sales than other products within the same brand. These totals will be compared against the brand average in the next step.</li></ul></div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">learning_activity logs one row per day a user interacts with the app, not one row per user — user_name repeats once for every lesson day or freeze day.</li><li class="xpl-point">Rohan's 2026-07-21 row has NULL xp_earned — the streak-freeze protected his streak that day without him completing a lesson, which is different from a day where he studied and simply earned 0 XP.</li><li class="xpl-point">Divya has two separate Spanish rows (2026-07-20 and 2026-07-23) — she studies Spanish on more than one day, but it's still one language, a detail that matters once distinct languages get counted.</li><li class="xpl-point">Nothing is aggregated yet — this step just confirms what a day-by-day activity log looks like before summarizing it per user.</li></ul></div>
       </div>
     </div>
-    <div class="step-card" style="--uc:#1d4ed8">
+    <div class="step-card" style="--uc:#58cc02">
       <div class="step-head">
         <div class="step-num">2</div>
         <div class="step-info">
-          <div class="step-title">Calculate the average total sales for products from the same brand</div>
+          <div class="step-title">Total XP and a NULL-safe daily average per user</div>
         </div>
       </div>
       <div class="step-body">
         <div class="ed-win">
           <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
             <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT p.product_id,
-       p.product_name,
-       p.brand,
-       SUM(s.quantity) AS total_sales,
-       (
-           SELECT AVG(product_sales)
-           FROM (
-               SELECT SUM(s2.quantity) AS product_sales
-               FROM products p2
-               JOIN sales s2
-               ON p2.product_id = s2.product_id
-               WHERE p2.brand = p.brand
-               GROUP BY p2.product_id
-           ) brand_sales
-       ) AS brand_avg_sales
-FROM products p
-JOIN sales s
-ON p.product_id = s.product_id
-GROUP BY p.product_id,
-         p.product_name,
-         p.brand
-ORDER BY p.brand,
-         total_sales DESC;</code></pre>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT user_name,
+       SUM(COALESCE(xp_earned, 0)) AS total_xp,
+       ROUND(AVG(COALESCE(xp_earned, 0)), 2) AS avg_xp_per_day
+FROM learning_activity
+GROUP BY user_name
+ORDER BY user_name;</code></pre>
         </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">From the previous step, we already know the total sales of every product. Now we need another value to compare against: the average total sales of products belonging to the same brand.</li><li class="xpl-point">The correlated subquery calculates this average. It runs once for every row returned by the outer query. As the outer query moves from one product to another, the value of p.brand changes, and the inner query automatically recalculates the average for that brand.</li><li class="xpl-point">Inside the subquery, we first calculate the total sales for every product within the current brand using SUM() and GROUP BY. Once we have the total sales of all products in that brand, AVG() calculates the brand's average sales.</li><li class="xpl-point">Notice the condition WHERE p2.brand = p.brand. Here, p2.brand belongs to the inner query, while p.brand comes from the outer query. This reference to the outer query is what makes it a correlated subquery.</li><li class="xpl-point">We are not filtering any products yet. The purpose of this step is simply to display two values for every product: its own total sales and its brand's average sales. These two values will be compared in the final step.</li></ul></div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">SUM(COALESCE(xp_earned, 0)) turns Rohan's NULL freeze day into a 0 before adding it up — SUM already skips NULLs on its own, so this step wouldn't change his total_xp either way, but COALESCE makes that stop being an accident and start being explicit.</li><li class="xpl-point">AVG is where COALESCE actually changes the answer: AVG(xp_earned) without COALESCE would divide only by the days that have a non-NULL value, quietly excluding the freeze day from the denominator entirely, not just from the numerator.</li><li class="xpl-point">Rohan logged 3 days (two lessons plus one freeze) worth 25, NULL, and 30 XP. Without COALESCE, AVG(xp_earned) computes (25+30)/2 = 27.5 — the same average as Divya's, who genuinely studied hard every single day. With COALESCE, it's (25+0+30)/3 = 18.33, correctly reflecting that a third of his logged days had no studying at all.</li><li class="xpl-point">Meera and Divya have no NULL rows, so COALESCE makes no visible difference for them here — the gap only shows up for a user who actually has a freeze day, which is exactly the kind of bug that hides until the right row shows up in production data.</li></ul></div>
       </div>
     </div>
-    <div class="step-card" style="--uc:#1d4ed8">
+    <div class="step-card" style="--uc:#58cc02">
       <div class="step-head">
         <div class="step-num">3</div>
         <div class="step-info">
-          <div class="step-title">Filter products whose total sales exceed their brand's average sales</div>
+          <div class="step-title">Add distinct language count and a comma-separated language list</div>
         </div>
       </div>
       <div class="step-body">
         <div class="ed-win">
           <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
             <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT p.product_name,
-       p.brand,
-       SUM(s.quantity) AS total_sales
-FROM products p
-JOIN sales s
-ON p.product_id = s.product_id
-GROUP BY p.product_id,
-         p.product_name,
-         p.brand
-HAVING SUM(s.quantity) &gt; (
-    SELECT AVG(product_sales)
-    FROM (
-        SELECT SUM(s2.quantity) AS product_sales
-        FROM products p2
-        JOIN sales s2
-        ON p2.product_id = s2.product_id
-        WHERE p2.brand = p.brand
-        GROUP BY p2.product_id
-    ) brand_sales
-)
-ORDER BY p.brand,
-         total_sales DESC;</code></pre>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT user_name,
+       SUM(COALESCE(xp_earned, 0)) AS total_xp,
+       ROUND(AVG(COALESCE(xp_earned, 0)), 2) AS avg_xp_per_day,
+       COUNT(DISTINCT language) AS language_count,
+       GROUP_CONCAT(DISTINCT language ORDER BY language) AS languages_list
+FROM learning_activity
+GROUP BY user_name
+ORDER BY total_xp DESC;</code></pre>
         </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">In the previous step, every product had two important values: its own total sales and the average sales of products from the same brand. The final task is simply to compare these two values.</li><li class="xpl-point">HAVING is used because total_sales is calculated using the SUM() aggregate function. Since SQL evaluates WHERE before GROUP BY, aggregated values are not available inside the WHERE clause. HAVING filters rows after aggregation is complete.</li><li class="xpl-point">For every product, SQL first calculates its total sales using SUM(s.quantity). It then executes the correlated subquery to calculate the average sales of all products belonging to the same brand.</li><li class="xpl-point">If a product's total sales are greater than its brand's average sales, the product is included in the final result. Products with sales equal to or below the average are excluded.</li><li class="xpl-point">ORDER BY p.brand, total_sales DESC organizes the output by brand and lists the best-performing products first within each brand.</li><li class="xpl-point">Business Insight: These products are outperforming other products from the same brand. They are strong candidates for the 'Top Picks' collection, homepage promotions, or marketing campaigns because they consistently generate higher sales than their peers.</li></ul></div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">COUNT(DISTINCT language) counts unique language names per user, not rows — Divya has 4 activity rows but only 3 distinct languages, since two of those rows are both Spanish.</li><li class="xpl-point">GROUP_CONCAT(DISTINCT language ORDER BY language) builds languages_list as one string per user, deduplicating the same way COUNT(DISTINCT language) does — without DISTINCT, Divya's list would repeat 'Spanish' twice instead of listing each language once.</li><li class="xpl-point">SQLite's GROUP_CONCAT only accepts ORDER BY alongside DISTINCT when no custom separator is also supplied — DISTINCT aggregates take exactly one argument, so the alphabetical order here relies on the default comma separator rather than a hand-picked one.</li><li class="xpl-point">The final ORDER BY total_xp DESC sorts users by their overall total, unrelated to the ORDER BY tucked inside GROUP_CONCAT — that inner ORDER BY only controls the order languages appear in within each user's own comma-separated string.</li></ul></div>
       </div>
     </div>
 
