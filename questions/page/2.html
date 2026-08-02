@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SQL Practice Questions — Page 2 of 2 | TableNotFound</title>
-<meta name="description" content="Browse SQL practice questions 11–15 of 15 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 2 of 2.">
+<meta name="description" content="Browse SQL practice questions 11–16 of 16 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 2 of 2.">
 <link rel="canonical" href="https://www.tablenotfound.com/questions/page/2.html">
 <link rel="prev" href="https://www.tablenotfound.com/">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -320,7 +320,7 @@ td{padding:14px 16px;vertical-align:middle}
   <!-- QUESTION TABLE -->
   <div class="panel">
     <div class="toolbar">
-      <span class="toolbar-stat" id="tstat">5 questions</span>
+      <span class="toolbar-stat" id="tstat">6 questions</span>
       <div class="toolbar-gap"></div>
       <div class="filters">
         <button class="fb on" onclick="filt('all',this)">All</button>
@@ -387,6 +387,15 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-diff"><span class="diff-mid">mid</span></td>
         <td class="td-st"></td>
       </tr>
+      <tr onclick="openQ('zomato',1)">
+        <td class="td-num">16</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/zomato-every-restaurant-never-had-cancelled-order-meaning.html" onclick="event.preventDefault();event.stopPropagation();openQ('zomato',1);"><div class="q-text">Find every restaurant that has never had a cancelled order — meaning it has zero orders with status = 'cancelled'. This includes restaurants with no orders at all, since they trivially satisfy 'never cancelled.' Use EXISTS or NOT EXISTS with a correlated subquery rather than aggregating and filtering afterward. Return restaurant_name and city, sorted alphabetically by restaurant_name.</div><div class="q-concepts">EXISTS · NOT EXISTS · Correlated Subquery</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#e23744 13%,white);color:color-mix(in srgb,#e23744 90%,black)">Zomato</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
     </tbody>
       </table>
     </div>
@@ -408,7 +417,7 @@ let UM = []; // loaded dynamically from /questions/index.json
 /* PAGE_QUESTIONS: the exact {uid,qid} pairs pre-rendered into THIS page's tbody, in order.
    Written by scripts/generate-question-pages.js — boot() only ever fetches and renders
    these, so pagination can't be silently undone once JS loads. */
-let PAGE_QUESTIONS = [{"uid":"techcorp","qid":1},{"uid":"tinder","qid":7},{"uid":"uber","qid":1},{"uid":"uber","qid":4},{"uid":"youtube","qid":1}];
+let PAGE_QUESTIONS = [{"uid":"techcorp","qid":1},{"uid":"tinder","qid":7},{"uid":"uber","qid":1},{"uid":"uber","qid":4},{"uid":"youtube","qid":1},{"uid":"zomato","qid":1}];
 /* START_INDEX: 0-based rank of this page's first question among all questions.
    Written by scripts/generate-question-pages.js — keeps the "S.No" column in sync
    with the server-rendered numbering once renderTable() takes over after boot(). */

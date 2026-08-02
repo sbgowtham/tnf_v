@@ -13,5 +13,6 @@
   "ola:1": "ola-trips-table-sometimes-multiple-rows-tripid-logged",
   "spotify:1": "spotify-user-month-listeningstats-use-lag-find-users-previ",
   "duolingo:1": "duolingo-user-learningactivity-calculate-totalxp-sum-xpearn",
-  "airbnb:1": "airbnb-every-pair-reservations-listing-stay-dates-genuine"
+  "airbnb:1": "airbnb-every-pair-reservations-listing-stay-dates-genuine",
+  "zomato:1": "zomato-every-restaurant-never-had-cancelled-order-meaning"
 }
