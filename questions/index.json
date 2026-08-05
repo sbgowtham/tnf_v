@@ -110,5 +110,12 @@
       "sub": "Portfolio Growth Tracking",
       "c": "#00d09c",
       "difficulty": "mid"
+    },
+    {
+      "id": "nykaa",
+      "name": "Nykaa",
+      "sub": "Customer Loyalty Tiers",
+      "c": "#fc2779",
+      "difficulty": "mid"
     }
   ]

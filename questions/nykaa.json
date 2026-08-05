@@ -1,0 +1,157 @@
+{
+  "setup": "CREATE TABLE customers(customer_id INTEGER,customer_name TEXT,total_spend REAL);\nINSERT INTO customers VALUES\n (1,'Aisha',45000),\n (2,'Bhavya',42000),\n (3,'Chitra',38000),\n (4,'Divya',35000),\n (5,'Esha',30000),\n (6,'Farah',28000),\n (7,'Gauri',22000),\n (8,'Hema',18000),\n (9,'Isha',12000),\n (10,'Juhi',8000),\n (11,'Kavya',NULL);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "mid",
+      "cc": [
+        "NTILE",
+        "CASE WHEN",
+        "Window Functions",
+        "ORDER BY",
+        "WHERE"
+      ],
+      "story": {
+        "en": "Wednesday morning at Nykaa's Loyalty Program team. Marketing wants to launch a four-tier loyalty program — Platinum, Gold, Silver, Bronze — based purely on how much each customer has spent lifetime, with the top quarter of spenders becoming Platinum. One customer in the system has NULL total_spend because her account was created during a signup promotion but she's never actually completed a purchase — she shouldn't be ranked into any tier at all until she has real spend to rank.",
+        "ta": "Wednesday morning Nykaa-oda Loyalty Program team-la. Marketing-ku naanku-tier loyalty program launch pannanum — Platinum, Gold, Silver, Bronze — mudhal ella customer-um lifetime-la evvalavu spend pannirukkaanga nu vachi mattum, top quarter spenders Platinum aaganum. System-la oru customer-ku total_spend NULL-a irukku, ention avanga account signup promotion-oda pothu create aachu aana avanga innum genuine-a oru purchase-um complete pannala — avanga real spend irukkura varaikkum edhavadhu tier-la rank pannakoodadhu.",
+        "hi": "Wednesday morning Nykaa ke Loyalty Program team mein. Marketing ek four-tier loyalty program launch karna chahti hai — Platinum, Gold, Silver, Bronze — sirf isi aadhar par ki har customer ne lifetime mein kitna spend kiya hai, top quarter spenders Platinum ban jaayenge. System mein ek customer ka total_spend NULL hai, kyunki uska account signup promotion ke dauraan bana tha lekin usne abhi tak genuinely koi purchase complete nahi ki hai — jab tak uske paas real spend nahi hoti, use kisi bhi tier mein rank nahi karna chahiye.",
+        "te": "Wednesday morning Nykaa Loyalty Program team lo. Marketing ki four-tier loyalty program launch cheyali — Platinum, Gold, Silver, Bronze — prathi customer lifetime lo enta spend chesado దాని ఆధారంగా matrame, top quarter spenders Platinum avutaru. System lo oka customer ki total_spend NULL undi, endukante aame account signup promotion సమయంలో create ayyindi kaani aame inka genuine ga purchase complete cheyaledu — aameకి real spend undేవaraku, ఏ tier lో kuda rank cheyakudadu."
+      },
+      "question": {
+        "en": "Rank customers into four loyalty tiers based on total_spend, using NTILE(4) ordered by total_spend descending, so the top-spending quarter becomes tier 1. Exclude any customer with a NULL total_spend entirely — they haven't made a purchase yet and shouldn't be tiered. Label tier 1 as 'Platinum', tier 2 as 'Gold', tier 3 as 'Silver', and tier 4 as 'Bronze'. Return customer_name, total_spend, and loyalty_tier, sorted by total_spend descending.",
+        "ta": "total_spend vachi customers-a naanku loyalty tiers-la rank pannunga, NTILE(4) use panni total_spend descending order-la, so top-spending quarter tier 1 aagum. NULL total_spend irukkura edhavadhu customer-a completely exclude pannunga — avanga innum purchase pannala, tier pannakoodadhu. Tier 1-a 'Platinum' nu, tier 2-a 'Gold' nu, tier 3-a 'Silver' nu, matrum tier 4-a 'Bronze' nu label pannunga. customer_name, total_spend, matrum loyalty_tier-a return pannunga, total_spend descending order-la sort pannunga.",
+        "hi": "total_spend ke aadhar par customers ko chaar loyalty tiers mein rank karo, NTILE(4) use karke total_spend ke descending order mein, taaki top-spending quarter tier 1 ban jaaye. NULL total_spend wale kisi bhi customer ko poori tarah exclude karo — unhone abhi purchase nahi kiya, unhe tier nahi karna chahiye. Tier 1 ko 'Platinum', tier 2 ko 'Gold', tier 3 ko 'Silver', aur tier 4 ko 'Bronze' label karo. customer_name, total_spend, aur loyalty_tier return karo, total_spend ke descending order mein sort karke.",
+        "te": "total_spend prakaram customers ni nalugu loyalty tiers ki rank cheyandi, NTILE(4) vadi total_spend descending order lo, so top-spending quarter tier 1 avutundi. NULL total_spend unna ఏ customer ni poortiga exclude cheyandi — vaallu inka purchase cheyaledu, tier cheyakudadu. Tier 1 ni 'Platinum' ani, tier 2 ni 'Gold' ani, tier 3 ni 'Silver' ani, mariyu tier 4 ni 'Bronze' ani label cheyandi. customer_name, total_spend, mariyu loyalty_tier ni return cheyandi, total_spend descending order lo sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "customers",
+          "cols": [
+            {
+              "n": "customer_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "customer_name",
+              "t": "TEXT",
+              "e": "Aisha"
+            },
+            {
+              "n": "total_spend",
+              "t": "REAL",
+              "e": "45000"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at the raw customer spend data",
+            "ta": "Raw customer spend data-a paarunga",
+            "hi": "Raw customer spend data dekho",
+            "te": "Raw customer spend data ni chudandi"
+          },
+          "sql": "SELECT *\nFROM customers\nORDER BY total_spend DESC;",
+          "explain": {
+            "en": [
+              "Ten customers have a real total_spend, ranging from Aisha's 45000 down to Juhi's 8000 — this is the pool the loyalty tiers need to be carved out of.",
+              "Kavya's total_spend is NULL, not 0 — she signed up but has never actually bought anything, which is a fundamentally different situation from a customer who spent nothing on purpose; a 0 would still be a real number to rank, NULL isn't.",
+              "10 doesn't divide evenly into 4 tiers — that mismatch is exactly the detail the next steps need to handle correctly rather than assuming every tier comes out the same size.",
+              "Nothing is tiered yet — this step exists purely to see the full spend distribution before deciding where the tier boundaries fall."
+            ],
+            "ta": [
+              "Pathu customers-kku real total_spend irukku, Aisha-oda 45000-la irundhu Juhi-oda 8000 varaikkum — idhu dhaan loyalty tiers-a carve panna venum irukkura pool.",
+              "Kavya-oda total_spend NULL, 0 illa — avanga sign up pannaanga aana edhuvum vaanganga illa, idhu vElpaduttu edhuvum spend pannaadha customer-oda situation-la irundhu fundamentally vera; 0 na kooda rank panna real number-a irukkum, NULL illa.",
+              "10, 4 tiers-a evenly divide pannaadhu — indha mismatch-a dhaan adutha steps correct-a handle pannanum, ovvoru tier-um same size-a varum-nu assume pannama.",
+              "Innum edhuvum tier pannala — indha step, tier boundaries engu vareenu decide pannradhukku munnadi full spend distribution-a paakkuradhu-kku mattum thaan."
+            ],
+            "hi": [
+              "Das customers ke paas real total_spend hai, Aisha ke 45000 se lekar Juhi ke 8000 tak — yehi wo pool hai jisse loyalty tiers carve karne hain.",
+              "Kavya ka total_spend NULL hai, 0 nahi — usne sign up kiya lekin kabhi kuch khareeda nahi, jo jaan-boojh kar kuch na kharidne wale customer se fundamentally alag situation hai; 0 bhi rank karne ke liye ek real number hota, NULL nahi.",
+              "10, 4 tiers mein evenly divide nahi hota — yehi mismatch hai jise agle steps ko sahi se handle karna hai, yeh maan kar nahi ki har tier same size ka niklega.",
+              "Abhi kuch tier nahi hua — yeh step sirf poori spend distribution dekhne ke liye hai, yeh tय karne se pehle ki tier boundaries kahan girti hain."
+            ],
+            "te": [
+              "Padi customers ki real total_spend undi, Aisha 45000 nunchi Juhi 8000 varaku — idi e loyalty tiers ni carve cheyalsina pool.",
+              "Kavya total_spend NULL, 0 kaadu — aame sign up chesindi kaani ఎప్పుడూ emi konaledu, idi udesha purvakంగా emi spend cheyani customer kanna fundamentally veru situation; 0 aina rank cheyadaniki real number ga untundi, NULL kaadu.",
+              "10, 4 tiers ki evenly divide avvadu — ee mismatch nే e next steps correct ga handle cheyali, prathi tier same size lో వస్తుందని assume cheyakunda.",
+              "Inka emi tier avvatledu — ee step tier boundaries ekkada padtayo decide cheyakamunde full spend distribution ni chudadaniki matrame."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "NTILE(4) splits customers into four ordered buckets",
+            "ta": "NTILE(4), customers-a naanku ordered buckets-a split pannum",
+            "hi": "NTILE(4) customers ko chaar ordered buckets mein baantta hai",
+            "te": "NTILE(4) customers ni nalugu ordered buckets ga split chestundi"
+          },
+          "sql": "SELECT customer_name, total_spend,\n       NTILE(4) OVER (ORDER BY total_spend DESC) AS tier_num\nFROM customers\nWHERE total_spend IS NOT NULL\nORDER BY total_spend DESC;",
+          "explain": {
+            "en": [
+              "WHERE total_spend IS NOT NULL runs first and removes Kavya before NTILE ever sees the data — she never gets assigned a tier number at all, rather than landing in some default bucket by accident.",
+              "NTILE(4) OVER (ORDER BY total_spend DESC) doesn't look at the spend values themselves to decide tier boundaries — it just takes the ordered rows and divides that ordering into 4 roughly equal-sized, consecutive groups. Tier 1 is simply 'the first quarter of rows in this order,' not 'everyone above some spend threshold.'",
+              "10 customers split into 4 tiers can't come out perfectly even — NTILE hands the extra rows to the earliest tiers first, so tier 1 and tier 2 get 3 customers each while tier 3 and tier 4 get 2 each, rather than every tier trying to force an equal 2.5 customers.",
+              "Divya (35000) lands in tier 2 while Chitra (38000) lands in tier 1, even though both are solidly high spenders — NTILE cares about rank position, not how close two spend values are to each other, so a close pair can end up split across a tier boundary."
+            ],
+            "ta": [
+              "WHERE total_spend IS NOT NULL mudhalla run aagum, NTILE data-a paakkura munnadi Kavya-a remove pannidum — avangaluku edhavadhu tier number assign aagavE aagaadhu, edhavadhu default bucket-la accidental-a poga koodadhu.",
+              "NTILE(4) OVER (ORDER BY total_spend DESC), tier boundaries decide panna spend values-a paarkaadhu — adhu ordered rows-a edukku, andha ordering-a 4 roughly equal-sized, consecutive groups-a divide pannum. Tier 1 nu solradhu, 'indha order-la mudhal quarter rows' mattum thaan, 'edhavadhu spend threshold-kku mேlே irukkura yaaru-um' illa.",
+              "10 customers 4 tiers-a split aana perfect-a even-a varaadhu — NTILE extra rows-a mudhal tiers-kku kudukkum, so tier 1 matrum tier 2 thalaikku 3 customers vaangum, tier 3 matrum tier 4 thalaikku 2, equal 2.5 customers-a force panna mudiyaadhu ention.",
+              "Divya (35000) tier 2-la varum, Chitra (38000) tier 1-la varum, rendu perum solid-a high spenders-a irundhaalum — NTILE rank position-a mattum-thaan kavalaippadum, rendu spend values eppadi close-a irukkunu illa, so close pair oru tier boundary-la split aagalaam."
+            ],
+            "hi": [
+              "WHERE total_spend IS NOT NULL sabse pehle chalta hai aur NTILE ke data dekhne se pehle Kavya ko hata deta hai — use koi tier number kabhi milta hi nahi, kisi default bucket mein galti se jaane ki jagah.",
+              "NTILE(4) OVER (ORDER BY total_spend DESC) tier boundaries tय karne ke liye spend values ko khud nahi dekhta — yeh sirf ordered rows leta hai aur us ordering ko 4 roughly equal-sized, consecutive groups mein baant deta hai. Tier 1 ka matlab bas 'is order mein rows ka pehla quarter' hai, 'kisi spend threshold se upar sab log' nahi.",
+              "10 customers 4 tiers mein split hone par perfectly even nahi aa sakte — NTILE extra rows sabse pehle wale tiers ko deta hai, isliye tier 1 aur tier 2 ko 3-3 customers milte hain jabki tier 3 aur tier 4 ko 2-2, kyunki equal 2.5 customers force nahi kiye ja sakte.",
+              "Divya (35000) tier 2 mein aati hai jabki Chitra (38000) tier 1 mein, bhale hi dono solid high spenders hain — NTILE rank position se matlab rakhta hai, do spend values ek doosre se kitne close hain isse nahi, isliye ek close pair tier boundary ke aar-paar split ho sakta hai."
+            ],
+            "te": [
+              "WHERE total_spend IS NOT NULL modata run avutundi, NTILE data ni chudakamunde Kavya ni remove chestundi — aameకి ఏ tier number e assign avvadu, edaina default bucket lo accidental ga padakunda.",
+              "NTILE(4) OVER (ORDER BY total_spend DESC) tier boundaries decide cheyadaniki spend values ni chudadu — adi ordered rows ni tesukoni, aa ordering ni 4 roughly equal-sized, consecutive groups ga divide chestundi. Tier 1 ante 'ee order lo modati quarter rows' matrame, 'edaina spend threshold paina unna andaru' kaadu.",
+              "10 customers 4 tiers ki split ayite perfect ga even ga raavu — NTILE extra rows ni modati tiers ki istundi, so tier 1 mariyu tier 2 ki 3 customers cheppuna, tier 3 mariyu tier 4 ki 2 cheppuna vastayi, equal 2.5 customers force cheyalేకపోవడం valla.",
+              "Divya (35000) tier 2 lo padutundi, Chitra (38000) tier 1 lo padutundi, rendu solid high spenders ayina — NTILE rank position ni pattinchukుంటుంది, rendu spend values ఒకదానికొకటి enta close ga unnayo kaadu, so close pair oka tier boundary meeda split avvachu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Label each tier number with its loyalty name",
+            "ta": "Ovvoru tier number-kkum adhoda loyalty name-a label pannunga",
+            "hi": "Har tier number ko uske loyalty name se label karo",
+            "te": "Prathi tier number ki దాని loyalty name tho label cheyandi"
+          },
+          "sql": "SELECT customer_name, total_spend,\n       CASE NTILE(4) OVER (ORDER BY total_spend DESC)\n         WHEN 1 THEN 'Platinum'\n         WHEN 2 THEN 'Gold'\n         WHEN 3 THEN 'Silver'\n         ELSE 'Bronze'\n       END AS loyalty_tier\nFROM customers\nWHERE total_spend IS NOT NULL\nORDER BY total_spend DESC;",
+          "explain": {
+            "en": [
+              "This CASE uses the 'CASE expression WHEN value THEN ...' form rather than 'CASE WHEN condition THEN ...' — it's matching the NTILE() result against specific numbers 1, 2, 3, which is a shorter way to write what would otherwise need three separate WHEN NTILE(4) OVER (...) = 1 conditions repeating the whole window function each time.",
+              "ELSE 'Bronze' quietly covers tier 4 without a WHEN 4 THEN 'Bronze' branch — that's safe here specifically because NTILE(4) can only ever produce 1, 2, 3, or 4, so ELSE and 'exactly tier 4' mean the same thing; the same ELSE shortcut would be a bug if the tier count ever changed to NTILE(5).",
+              "Kavya still doesn't appear anywhere in this result — the WHERE clause filtering happens before NTILE and CASE ever run, so there was never a tier number for CASE to label in the first place.",
+              "Platinum ends up with 3 customers and Bronze with 2 — the uneven group sizes from the previous step carry straight through into the labeled output, which is worth knowing before promising stakeholders 'exactly 25% of customers in each tier.'"
+            ],
+            "ta": [
+              "Indha CASE, 'CASE WHEN condition THEN ...' vaidhathukku pathila 'CASE expression WHEN value THEN ...' form use pannum — idhu NTILE() result-a specific numbers 1, 2, 3-oda match pannum, illainaa moondru thani WHEN NTILE(4) OVER (...) = 1 conditions ovvoru murai-um whole window function-a repeat pannanum, adhைவிட idhu shorter way.",
+              "ELSE 'Bronze', WHEN 4 THEN 'Bronze' branch illama tier 4-a quietly cover pannum — idhu inga safe, ention NTILE(4) eppavum 1, 2, 3, alladhu 4 mattum-thaan produce pannum, so ELSE matrum 'exact tier 4' same-a artham; tier count NTILE(5)-a maarina, idhே ELSE shortcut bug-a maarum.",
+              "Kavya innum indha result-la engum varala — WHERE clause filtering, NTILE matrum CASE run aagura munnadi nadakkum, so CASE label panna edhavadhu tier number mudhalla irundhadhE illa.",
+              "Platinum-la 3 customers, Bronze-la 2 customers varum — munnaadi step-oda uneven group sizes, labeled output-kku straight-a carry aagum, stakeholders-kku 'ovvoru tier-lyum exact-a 25% customers' nu promise pannura munnadi idha therinjukka mukkiyam."
+            ],
+            "hi": [
+              "Yeh CASE 'CASE WHEN condition THEN ...' ki jagah 'CASE expression WHEN value THEN ...' form use karta hai — yeh NTILE() result ko specific numbers 1, 2, 3 se match karta hai, jo teen alag WHEN NTILE(4) OVER (...) = 1 conditions likhne se, jinme har baar poora window function repeat karna padta, chhota tareeka hai.",
+              "ELSE 'Bronze' bina WHEN 4 THEN 'Bronze' branch ke chupke se tier 4 ko cover kar leta hai — yeh yahan safe hai kyunki NTILE(4) hamesha sirf 1, 2, 3, ya 4 hi produce kar sakta hai, isliye ELSE aur 'exactly tier 4' ka matlab ek hi hai; agar tier count NTILE(5) mein badal jaaye to yehi ELSE shortcut bug ban jaayega.",
+              "Kavya ab bhi is result mein kahin nahi dikhti — WHERE clause filtering, NTILE aur CASE chalne se pehle hoti hai, isliye CASE ke liye label karne ko koi tier number kabhi tha hi nahi.",
+              "Platinum mein 3 customers aate hain aur Bronze mein 2 — pichle step ke uneven group sizes seedhe labeled output mein carry ho jaate hain, jo stakeholders se 'har tier mein exactly 25% customers' promise karne se pehle jaan lena zaroori hai."
+            ],
+            "te": [
+              "Ee CASE 'CASE WHEN condition THEN ...' బదులు 'CASE expression WHEN value THEN ...' form vadutundi — idi NTILE() result ni specific numbers 1, 2, 3 tho match chestundi, ఇలా kakapothe mudu separate WHEN NTILE(4) OVER (...) = 1 conditions prathi sari whole window function repeat cheyalsi vachేది, danikanna idi shorter way.",
+              "ELSE 'Bronze' WHEN 4 THEN 'Bronze' branch lేకుండా tier 4 ni silent ga cover chestundi — idi ikkada safe, endukante NTILE(4) eppudu 1, 2, 3, leda 4 matrame produce chestundi, so ELSE mariyu 'exact tier 4' okate ardham; tier count NTILE(5) ki మారితే, ade ELSE shortcut bug avutundi.",
+              "Kavya inka ee result lo ekkada kanipinchadu — WHERE clause filtering, NTILE mariyu CASE run avvakamunde jarugutundi, so CASE label cheyadaniki ఏ tier number modatlo undedu kaadu.",
+              "Platinum lo 3 customers, Bronze lo 2 customers vastayi — mundari step uneven group sizes straight ga labeled output loki carry avutayi, stakeholders ki 'prathi tier lo exact ga 25% customers' ani promise cheyakamunde idi telusukovalsindi."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

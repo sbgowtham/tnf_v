@@ -414,21 +414,21 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-diff"><span class="diff-mid">mid</span></td>
         <td class="td-st"></td>
       </tr>
-      <tr onclick="openQ('ola',1)">
+      <tr onclick="openQ('nykaa',1)">
         <td class="td-num">9</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/nykaa-rank-customers-four-loyalty-tiers-totalspend-using.html" onclick="event.preventDefault();event.stopPropagation();openQ('nykaa',1);"><div class="q-text">Rank customers into four loyalty tiers based on total_spend, using NTILE(4) ordered by total_spend descending, so the top-spending quarter becomes tier 1. Exclude any customer with a NULL total_spend entirely — they haven't made a purchase yet and shouldn't be tiered. Label tier 1 as 'Platinum', tier 2 as 'Gold', tier 3 as 'Silver', and tier 4 as 'Bronze'. Return customer_name, total_spend, and loyalty_tier, sorted by total_spend descending.</div><div class="q-concepts">NTILE · CASE WHEN · Window Functions</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#fc2779 13%,white);color:color-mix(in srgb,#fc2779 90%,black)">Nykaa</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('ola',1)">
+        <td class="td-num">10</td>
         <td class="td-q">
           <a class="q-link" href="/questions/ola-trips-table-sometimes-multiple-rows-tripid-logged.html" onclick="event.preventDefault();event.stopPropagation();openQ('ola',1);"><div class="q-text">The trips table sometimes has multiple rows for the same trip_id, logged because of app retries. For each trip_id, keep only the row with the most recent updated_at and discard the older duplicate rows. Return trip_id, driver_id, rider_id, fare, and updated_at for the deduplicated trips, sorted by trip_id.</div><div class="q-concepts">ROW_NUMBER · PARTITION BY · OVER</div></a>
         </td>
         <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#00875a 13%,white);color:color-mix(in srgb,#00875a 90%,black)">Ola</span></td>
-        <td class="td-diff"><span class="diff-mid">mid</span></td>
-        <td class="td-st"></td>
-      </tr>
-      <tr onclick="openQ('snapchat',5)">
-        <td class="td-num">10</td>
-        <td class="td-q">
-          <a class="q-link" href="/questions/snapchat-age-group-calculate-percentage-time-spent-sending.html" onclick="event.preventDefault();event.stopPropagation();openQ('snapchat',5);"><div class="q-text">For each age group, calculate the percentage of time spent sending snaps vs opening snaps out of total send+open time. Round to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE IN · GROUP BY</div></a>
-        </td>
-        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#f7b731 13%,white);color:color-mix(in srgb,#f7b731 90%,black)">Snapchat</span></td>
         <td class="td-diff"><span class="diff-mid">mid</span></td>
         <td class="td-st"></td>
       </tr>
@@ -453,7 +453,7 @@ let UM = []; // loaded dynamically from /questions/index.json
 /* PAGE_QUESTIONS: the exact {uid,qid} pairs pre-rendered into THIS page's tbody, in order.
    Written by scripts/generate-question-pages.js — boot() only ever fetches and renders
    these, so pagination can't be silently undone once JS loads. */
-let PAGE_QUESTIONS = [{"uid":"airbnb","qid":1},{"uid":"amazon","qid":1},{"uid":"duolingo","qid":1},{"uid":"flipkart","qid":1},{"uid":"groww","qid":1},{"uid":"meesho","qid":1},{"uid":"myntra","qid":1},{"uid":"netflix","qid":1},{"uid":"ola","qid":1},{"uid":"snapchat","qid":5}];
+let PAGE_QUESTIONS = [{"uid":"airbnb","qid":1},{"uid":"amazon","qid":1},{"uid":"duolingo","qid":1},{"uid":"flipkart","qid":1},{"uid":"groww","qid":1},{"uid":"meesho","qid":1},{"uid":"myntra","qid":1},{"uid":"netflix","qid":1},{"uid":"nykaa","qid":1},{"uid":"ola","qid":1}];
 /* START_INDEX: 0-based rank of this page's first question among all questions.
    Written by scripts/generate-question-pages.js — keeps the "S.No" column in sync
    with the server-rendered numbering once renderTable() takes over after boot(). */
