@@ -14,5 +14,6 @@
   "spotify:1": "spotify-user-month-listeningstats-use-lag-find-users-previ",
   "duolingo:1": "duolingo-user-learningactivity-calculate-totalxp-sum-xpearn",
   "airbnb:1": "airbnb-every-pair-reservations-listing-stay-dates-genuine",
-  "zomato:1": "zomato-every-restaurant-never-had-cancelled-order-meaning"
+  "zomato:1": "zomato-every-restaurant-never-had-cancelled-order-meaning",
+  "groww:1": "groww-user-portfoliosnapshots-ignoring-any-row-where"
 }

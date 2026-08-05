@@ -103,5 +103,12 @@
       "sub": "Order Reliability",
       "c": "#e23744",
       "difficulty": "mid"
+    },
+    {
+      "id": "groww",
+      "name": "Groww",
+      "sub": "Portfolio Growth Tracking",
+      "c": "#00d09c",
+      "difficulty": "mid"
     }
   ]

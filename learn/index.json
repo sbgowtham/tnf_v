@@ -54,5 +54,19 @@
     "href": "/blog/union-vs-union-all-silent-row-drop.html",
     "icon": "📝",
     "color": "#dbeafe"
+  },
+  {
+    "title": "BETWEEN with Timestamps",
+    "desc": "The missing last day explained",
+    "href": "/blog/between-timestamps-missing-last-day.html",
+    "icon": "📝",
+    "color": "#dbeafe"
+  },
+  {
+    "title": "WHERE vs HAVING",
+    "desc": "Why aggregates can't go in WHERE",
+    "href": "/blog/where-vs-having-execution-order.html",
+    "icon": "📝",
+    "color": "#dbeafe"
   }
 ]

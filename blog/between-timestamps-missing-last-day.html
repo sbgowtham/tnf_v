@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>About | TableNotFound</title>
-<meta name="description" content="TableNotFound is a free, in-browser SQL practice tool built around real-world company scenarios — no signup, no backend, just SQL.">
-<link rel="canonical" href="https://www.tablenotfound.com/about.html">
+<title>BETWEEN with Timestamps: The Missing Last Day | TableNotFound</title>
+<meta name="description" content="Why WHERE order_time BETWEEN '2026-01-01' AND '2026-01-31' silently drops every sale from the last day of the month — verified in SQLite, with two fixes and when plain BETWEEN is actually fine.">
+<link rel="canonical" href="https://www.tablenotfound.com/blog/between-timestamps-missing-last-day.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -271,19 +271,22 @@ td{padding:14px 16px;vertical-align:middle}
 }
 
 
-.legal-wrap{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
+.article-wrap{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
 .crumb{font-size:12px;font-weight:600;color:var(--t3);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:1.5rem}
 .crumb:hover{color:var(--t2)}
-.legal-h1{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-1px;margin-bottom:.4rem;color:var(--text)}
-.legal-meta{font-size:12px;color:var(--t3);margin-bottom:2rem}
-.legal-wrap h2{font-size:17px;font-weight:700;color:var(--text);margin:2rem 0 .75rem}
-.legal-wrap p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
-.legal-wrap ul{margin:0 0 .9rem 1.25rem;font-size:14.5px;color:var(--t2)}
-.legal-wrap li{margin-bottom:.4rem}
-.legal-wrap a{color:#7c5cfc;font-weight:600;text-decoration:none}
-.legal-wrap a:hover{text-decoration:underline}
-.legal-wrap strong{color:var(--text)}
-.bracket{background:#fff3cd;color:#664d03;padding:0 3px;border-radius:3px}
+.art-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.art-h1{font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:.5rem;color:var(--text);line-height:1.2}
+.art-meta{font-size:12px;color:var(--t3);margin-bottom:2.5rem}
+.art-section{margin:2.75rem 0}
+.art-section h2{font-size:19px;font-weight:700;color:var(--text);margin-bottom:.4rem}
+.art-section p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
+.art-section code{font-family:var(--fm);font-size:.88em;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
+.ed-win{margin:.75rem 0;border-radius:10px;overflow:hidden}
+.tbl-wrap{margin:.75rem 0}
+.null-cell{color:#ccc;font-style:italic}
+.cheat-table{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0}
+.cheat-table th,.cheat-table td{padding:8px 12px;text-align:left;border-bottom:1px solid rgba(0,0,0,.06)}
+.cheat-table th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3)}
 
 </style>
 <style id="tnf-footer-style">
@@ -382,21 +385,118 @@ td{padding:14px 16px;vertical-align:middle}
   </div>
 </nav>
 
-<div class="legal-wrap">
+<div class="article-wrap">
   <a class="crumb" href="/">← Back to TableNotFound</a>
-  <h1 class="legal-h1">About TableNotFound</h1>
-  <div class="legal-meta">Last updated: July 21, 2026</div>
+
+  <div class="art-badges">
+    <span class="chip">SQL</span>
+    <span class="chip">Dates &amp; Time</span>
+    <span class="chip">Data Integrity</span>
+  </div>
+  <h1 class="art-h1">BETWEEN with Timestamps</h1>
+  <div class="art-meta">The trap that quietly deletes the last day of every report</div>
+
   
-      <p>TableNotFound is a free tool for practicing SQL against real-world business scenarios modeled on companies like Flipkart, Uber, Netflix, Snapchat, Tinder, Myntra, and YouTube.</p>
-      <p>Every query runs entirely in your browser using SQLite compiled to WebAssembly — there's no backend, no account, and nothing you type is sent to a server. Close the tab and it's gone; open it again and start fresh.</p>
-      <h2>Why it exists</h2>
-      <p>Most SQL practice is disconnected from why the query matters. TableNotFound frames every question as a short business story first — a supplier pricing question at Flipkart, a driver earnings question at Uber — so you're solving a problem, not just matching syntax to a pattern.</p>
-      <h2>About the company scenarios</h2>
-      <p>Company names are used for scenario flavor only. These questions may or may not reflect anything actually asked at the named companies, and TableNotFound is not affiliated with, endorsed by, or sponsored by any of them.</p>
-      <h2>Who's behind this</h2>
-      <p>TableNotFound is built and maintained by Gowtham SB. You can find more of my work at <a href="https://linkedin.com/in/sbgowtham" target="_blank" rel="noopener">linkedin.com/in/sbgowtham</a>.</p>
-      <p>Found a bug, have feedback, or want to suggest a company scenario? <a href="/contact.html">Get in touch</a>.</p>
-    
+    <div class="art-section">
+      <h2>1. Why this happens</h2>
+      <p><code>BETWEEN</code> on a date column looks like the obvious way to ask for "everything in January" — pick the first of the month, pick the last, done. It works perfectly when the column only ever stores a bare date. The moment that column stores a full timestamp instead, the same query starts silently dropping every order placed on the last day of the range after midnight, and nothing about the query looks wrong. It runs, it returns rows, the totals just quietly don't add up.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>2. The dataset</h2>
+      <p>Verified by actually running this against SQLite — not hand-computed. Six sales, five of them genuinely in January, stored with full <code>'YYYY-MM-DD HH:MM:SS'</code> timestamps — including two on January 31st, one first thing in the morning and one right before midnight.</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">schema.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE sales(
+  sale_id INTEGER,
+  product TEXT,
+  amount REAL,
+  order_time TEXT
+);
+
+INSERT INTO sales VALUES
+ (5,'Widget',120,'2026-01-01 00:00:00'),
+ (1,'Widget',100,'2026-01-05 10:00:00'),
+ (2,'Gadget',200,'2026-01-15 14:30:00'),
+ (3,'Widget',150,'2026-01-31 09:00:00'),
+ (4,'Gadget',300,'2026-01-31 23:45:00'),
+ (6,'Gadget',250,'2026-02-01 08:00:00');</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>sale_id</th><th>product</th><th>amount</th><th>order_time</th></tr></thead><tbody><tr><td>5</td><td>Widget</td><td>120</td><td>2026-01-01 00:00:00</td></tr><tr><td>1</td><td>Widget</td><td>100</td><td>2026-01-05 10:00:00</td></tr><tr><td>2</td><td>Gadget</td><td>200</td><td>2026-01-15 14:30:00</td></tr><tr><td>3</td><td>Widget</td><td>150</td><td>2026-01-31 09:00:00</td></tr><tr><td>4</td><td>Gadget</td><td>300</td><td>2026-01-31 23:45:00</td></tr><tr><td>6</td><td>Gadget</td><td>250</td><td>2026-02-01 08:00:00</td></tr></tbody></table></div>
+      <p>Five of these six rows belong in a January report. Only the last one, from February 1st, should be excluded.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>3. The bug</h2>
+      <p>"Every sale in January" reaches for the two boundary dates directly:</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">bug.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
+FROM sales
+WHERE order_time BETWEEN '2026-01-01' AND '2026-01-31'
+ORDER BY order_time;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>sale_id</th><th>product</th><th>amount</th><th>order_time</th></tr></thead><tbody><tr><td>5</td><td>Widget</td><td>120</td><td>2026-01-01 00:00:00</td></tr><tr><td>1</td><td>Widget</td><td>100</td><td>2026-01-05 10:00:00</td></tr><tr><td>2</td><td>Gadget</td><td>200</td><td>2026-01-15 14:30:00</td></tr></tbody></table></div>
+      <p>Three rows come back, totaling <strong>₹420</strong>. Both January 31st sales are missing — ₹450 of real revenue, more than half the month's actual total of ₹870, gone with no error and no obviously wrong row count.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>4. Why it happens</h2>
+      <p><code>BETWEEN x AND y</code> is shorthand for <code>column >= x AND column <= y</code> — nothing more. The upper bound, <code>'2026-01-31'</code>, is a five-character-shorter string than <code>'2026-01-31 09:00:00'</code>. SQLite compares text lexicographically, and a string that starts with the same characters but then <em>continues</em> sorts after the shorter one — the same rule that puts <code>'2026-01-31 anything'</code> after <code>'2026-01-31'</code> puts a timestamp of any time on the 31st after the bare date. <code>order_time <= '2026-01-31'</code> is only satisfied by rows at exactly midnight, 00:00:00, on the 31st. Every other second of that entire day fails the comparison.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>5. Fix one: a half-open range</h2>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">fix1.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
+FROM sales
+WHERE order_time >= '2026-01-01'
+  AND order_time <  '2026-02-01'
+ORDER BY order_time;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>sale_id</th><th>product</th><th>amount</th><th>order_time</th></tr></thead><tbody><tr><td>5</td><td>Widget</td><td>120</td><td>2026-01-01 00:00:00</td></tr><tr><td>1</td><td>Widget</td><td>100</td><td>2026-01-05 10:00:00</td></tr><tr><td>2</td><td>Gadget</td><td>200</td><td>2026-01-15 14:30:00</td></tr><tr><td>3</td><td>Widget</td><td>150</td><td>2026-01-31 09:00:00</td></tr><tr><td>4</td><td>Gadget</td><td>300</td><td>2026-01-31 23:45:00</td></tr></tbody></table></div>
+      <p>Instead of trying to name the last possible instant of January, the upper bound becomes the first instant it's no longer January — the start of February — with a strict <code>&lt;</code>. Every timestamp on the 31st, no matter the time, is still less than <code>'2026-02-01'</code>, so all five real January rows now come back. Revenue is correctly ₹870. This pattern — start of the range inclusive, start of the <em>next</em> range exclusive — works regardless of what time component a row happens to carry, because it never tries to guess where a period ends.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>6. Fix two: strip the time component before comparing</h2>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">fix2.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
+FROM sales
+WHERE date(order_time) BETWEEN '2026-01-01' AND '2026-01-31'
+ORDER BY order_time;</code></pre>
+      </div>
+      <p>SQLite's <code>date()</code> function truncates a timestamp down to just its date portion, so <code>date('2026-01-31 23:45:00')</code> becomes <code>'2026-01-31'</code> — now an exact match against the upper bound instead of a string that sorts past it. This also correctly returns all five January rows and ₹870. The original <code>BETWEEN</code> shape is preserved; only the column being compared changes, which makes this the smaller diff if <code>BETWEEN column1 AND column2</code> is already used all over an existing codebase.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>7. When plain BETWEEN on dates is fine</h2>
+      <p>None of this is an argument against <code>BETWEEN</code> itself — it's an argument about what's actually stored in the column being compared. If a column is a genuine date-only value that never carries a time component — an <code>order_date</code> column that's always exactly <code>'2026-01-31'</code> and nothing else — the original, simplest form of <code>BETWEEN '2026-01-01' AND '2026-01-31'</code> is completely correct, because there's no hidden time-of-day for the upper bound to accidentally exclude. The trap only exists at the boundary between a date-shaped comparison and a column that can hold more precision than the comparison expects.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>8. Cheat sheet</h2>
+      <table class="cheat-table">
+        <thead><tr><th>Column stores</th><th>Safe pattern</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Date only, no time</td><td><code>BETWEEN '2026-01-01' AND '2026-01-31'</code></td><td>No time-of-day exists to fall outside the upper bound</td></tr>
+          <tr><td>Full timestamp</td><td><code>>= start AND < next_period_start</code></td><td>Never has to name an exact "last instant" of the period</td></tr>
+          <tr><td>Full timestamp, minimal query change</td><td><code>date(column) BETWEEN start AND end</code></td><td>Truncates the time component before comparing</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="art-section">
+      <h2>9. Try it yourself</h2>
+      <p>This one is easy to carry from one project to the next without ever noticing, because it only breaks on a column that stores more precision than the query expects — and it breaks by quietly deleting the last day of whatever range is being reported on, every single time. Before shipping a <code>BETWEEN</code> on any date-like column, it's worth checking what that column actually holds: a pure date, or a timestamp wearing a date's clothes.</p>
+      <p><a href="/">Practice date filtering live on TableNotFound →</a></p>
+    </div>
 </div>
 
 <footer id="tnf-footer">

@@ -1,0 +1,162 @@
+{
+  "setup": "CREATE TABLE portfolio_snapshots(id INTEGER,user_name TEXT,snapshot_date TEXT,portfolio_value REAL);\nINSERT INTO portfolio_snapshots VALUES\n (1,'Aarav','2026-05-01',100000),\n (2,'Aarav','2026-06-01',108000),\n (3,'Aarav','2026-06-15',NULL),\n (4,'Aarav','2026-07-01',95000),\n (5,'Aarav','2026-08-01',121000),\n (6,'Priya','2026-05-01',50000),\n (7,'Priya','2026-06-01',52000),\n (8,'Priya','2026-07-01',54500),\n (9,'Karthik','2026-06-01',75000),\n (10,'Karthik','2026-07-01',70000),\n (11,'Karthik','2026-08-01',68000);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "mid",
+      "cc": [
+        "FIRST_VALUE",
+        "LAST_VALUE",
+        "Window Functions",
+        "PARTITION BY",
+        "CTE"
+      ],
+      "story": {
+        "en": "Sunday evening at Groww's Investor Insights team. portfolio_snapshots logs a user's total portfolio value every time it's captured — usually monthly, but a sync job that ran on 2026-06-15 for one user failed partway through and logged a row with no value at all, a placeholder that shouldn't be treated as a real data point. The team wants a simple growth signal for every investor: their portfolio value on their very first recorded snapshot compared against their most recent one, to spot who's actually growing and who's been quietly losing money since they started.",
+        "ta": "Sunday evening Groww-oda Investor Insights team-la. portfolio_snapshots, user-oda total portfolio value capture aagum ovvoru murai-um oru row-a log pannum — usually monthly, aana 2026-06-15-la oru user-kku run aana sync job idையில fail aagiducho, value-е illaama oru row log aagiruchu, idha real data point-a treat pannakoodadhu. Team-ku ovvoru investor-kkum simple growth signal venum: avanga first recorded snapshot-la irundhu portfolio value, avanga most recent snapshot-oda compare panni, yaaru real-a valaruranga, yaaru start pannina apparam silent-a paisa nashtapaduranga-nu kandupidikkaradhukku.",
+        "hi": "Sunday evening Groww ke Investor Insights team mein. portfolio_snapshots, jab bhi user ki total portfolio value capture hoti hai, ek row log karta hai — usually monthly, lekin 2026-06-15 ko ek user ke liye chalne wala sync job beech mein fail ho gaya, koi value hi nahi, sirf ek row log hui, ise real data point nahi maanna chahiye. Team ko har investor ke liye ek simple growth signal chahiye: unki pehli recorded snapshot ki portfolio value ko unki sabse recent wali se compare karke, yeh dekhne ke liye ki kaun asal mein badh raha hai aur kaun shuruaat se hi chupke se paisa gawa raha hai.",
+        "te": "Sunday evening Groww Investor Insights team lo. portfolio_snapshots, user total portfolio value capture ayina prathi sari oka row log chestundi — usually monthly, kaani 2026-06-15 na oka user ki run ayina sync job madhyalo fail ayyindi, value e lేకుండా oka row log ayyindi, దీనిని real data point ga treat cheyakudadu. Team ki prathi investor ki simple growth signal kavali: vaalla first recorded snapshot lo unna portfolio value ni, vaalla most recent దాంతో compare chesi, evaru nijamga peruguthunnaro, evaru start chesinప్పటినుండి silent ga dabbu nashtapotunnaro ani kanugonadaniki."
+      },
+      "question": {
+        "en": "For each user in portfolio_snapshots, ignoring any row where portfolio_value is NULL, find their first_value (portfolio_value on their earliest snapshot_date) and last_value (portfolio_value on their most recent snapshot_date). Calculate growth_amount as last_value minus first_value, and growth_pct as that difference as a percentage of first_value, rounded to 2 decimal places. Return one row per user_name with first_value, last_value, growth_amount, and growth_pct, sorted by growth_pct in descending order.",
+        "ta": "portfolio_snapshots-la ovvoru user-kkum, portfolio_value NULL-a irukkura row-a ignore panni, avanga first_value-a (avanga earliest snapshot_date-la portfolio_value) matrum last_value-a (avanga most recent snapshot_date-la portfolio_value) kandupidunga. growth_amount-a last_value minus first_value-a calculate pannunga, matrum growth_pct-a andha difference-a first_value-oda percentage-a, 2 decimal places-kku round panni calculate pannunga. Ovvoru user_name-kkum oru row-a return pannunga, first_value, last_value, growth_amount, matrum growth_pct-oda, growth_pct descending order-la sort pannunga.",
+        "hi": "portfolio_snapshots mein har user ke liye, jis row mein portfolio_value NULL hai use ignore karke, unka first_value (unki sabse purani snapshot_date par portfolio_value) aur last_value (unki sabse recent snapshot_date par portfolio_value) dhoondo. growth_amount ko last_value minus first_value ke roop mein calculate karo, aur growth_pct ko us difference ko first_value ke percentage ke roop mein, 2 decimal places tak round karke calculate karo. Har user_name ke liye ek row return karo, first_value, last_value, growth_amount, aur growth_pct ke saath, growth_pct ke descending order mein sort karke.",
+        "te": "portfolio_snapshots lo prathi user ki, portfolio_value NULL unna row ni ignore chesi, vaalla first_value (vaalla earliest snapshot_date lo portfolio_value) mariyu last_value (vaalla most recent snapshot_date lo portfolio_value) ni kanugonandi. growth_amount ni last_value minus first_value ga calculate cheyandi, mariyu growth_pct ni aa difference ni first_value percentage ga, 2 decimal places ki round chesi calculate cheyandi. Prathi user_name ki oka row return cheyandi, first_value, last_value, growth_amount, mariyu growth_pct తో, growth_pct descending order lo sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "portfolio_snapshots",
+          "cols": [
+            {
+              "n": "id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "user_name",
+              "t": "TEXT",
+              "e": "Aarav"
+            },
+            {
+              "n": "snapshot_date",
+              "t": "TEXT",
+              "e": "2026-05-01"
+            },
+            {
+              "n": "portfolio_value",
+              "t": "REAL",
+              "e": "100000"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at the raw snapshots, including the failed sync",
+            "ta": "Raw snapshots-a, fail aana sync-um sேrndhu paarunga",
+            "hi": "Raw snapshots ko, failed sync sameत dekho",
+            "te": "Raw snapshots ni, fail ayina sync తో patu chudandi"
+          },
+          "sql": "SELECT *\nFROM portfolio_snapshots\nORDER BY user_name, snapshot_date;",
+          "explain": {
+            "en": [
+              "portfolio_snapshots has one row per capture, not one row per user — user_name repeats across every date a snapshot was taken, and the three users have different numbers of snapshots (Aarav has more than Karthik, who joined later).",
+              "Aarav's 2026-06-15 row has NULL portfolio_value — the sync job that day failed partway through, so a row got logged with a date but no actual value; it isn't a genuine zero and shouldn't count as a real data point.",
+              "Karthik's earliest snapshot is 2026-06-01, a full month after Aarav's and Priya's earliest ones — 'first snapshot' has to mean each user's own earliest date, not some shared calendar date across all three.",
+              "Nothing is compared yet — this step only confirms which rows are real data points and which one is a gap that needs to be excluded before any first/last comparison happens."
+            ],
+            "ta": [
+              "portfolio_snapshots-la ovvoru capture-kkum oru row irukku, oru user-kku oru row illa — snapshot edukkapatta ovvoru date-kkum user_name repeat aagum, matrum moondru users-ukkum different number-la snapshots irukku (Aarav-ku Karthik-a vida adhigam irukku, avaru pinnaadi join aanaar).",
+              "Aarav-oda 2026-06-15 row-la portfolio_value NULL-a irukku — andha naal sync job idையில fail aachu, so date-oda oru row log aachu aana actual value illama; idhu genuine-a zero illa, real data point-a count pannakoodadhu.",
+              "Karthik-oda earliest snapshot 2026-06-01, Aarav matrum Priya-oda earliest ones-kku oru maadham apparam — 'first snapshot' nu solradhu ovvoru user-oda own earliest date-a artham, moondru perukkum shared-a irukkura calendar date illa.",
+              "Innum edhuvum compare pannala — indha step, edhu real data points, edhu gap-a exclude pannanum-nu confirm pannradhukku mattum, first/last comparison edhavadhu nadakkura munnadi."
+            ],
+            "hi": [
+              "portfolio_snapshots mein har capture ke liye ek row hai, har user ke liye ek row nahi — jis bhi date par snapshot li gayi, user_name us par repeat hota hai, aur teeno users ke snapshots ki sankhya alag-alag hai (Aarav ke paas Karthik se zyada hain, jo baad mein join hua).",
+              "Aarav ke 2026-06-15 wale row mein portfolio_value NULL hai — us din sync job beech mein fail ho gaya, isliye ek row date ke saath log hui lekin koi actual value nahi thi; yeh genuinely zero nahi hai aur ise real data point nahi maanna chahiye.",
+              "Karthik ki sabse purani snapshot 2026-06-01 hai, Aarav aur Priya ki purani snapshots ke ek poore mahine baad — 'first snapshot' ka matlab hai har user ki apni sabse purani date, teeno ke liye koi shared calendar date nahi.",
+              "Abhi kuch compare nahi hua — yeh step sirf yeh confirm karta hai ki kaunsi rows real data points hain aur kaunsi ek gap hai jise first/last comparison hone se pehle exclude karna hoga."
+            ],
+            "te": [
+              "portfolio_snapshots lo prathi capture ki oka row untundi, prathi user ki oka row kaadu — snapshot theesukunna prathi date ki user_name repeat avutundi, mariyu mudu users ki veru veru sంఖ్యలో snapshots unnayi (Aarav ki Karthik kanna ekkuva unnayi, atanu tarvata join ayyadu).",
+              "Aarav 2026-06-15 row lo portfolio_value NULL undi — aa roju sync job madhyalo fail ayyindi, so date తో oka row log ayyindi kaani actual value ledu; idi genuine ga zero kaadu, real data point ga count cheyakudadu.",
+              "Karthik earliest snapshot 2026-06-01, Aarav mariyu Priya earliest vati kanna oka nela tarvata — 'first snapshot' ante prathi user own earliest date ani ardham, mudu variki shared ga unna calendar date kaadu.",
+              "Inka emi compare avvatledu — ee step ఏవి real data points, ఏది exclude cheyalsina gap ani confirm chestundi, ఏ first/last comparison jarige mundu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "See the trap: LAST_VALUE without an explicit frame just returns the current row",
+            "ta": "Trap-a paarunga: explicit frame illama LAST_VALUE, current row-a mattum return pannum",
+            "hi": "Trap dekho: bina explicit frame ke LAST_VALUE sirf current row hi return karta hai",
+            "te": "Trap ni chudandi: explicit frame lేకుండా LAST_VALUE kevalam current row ni matrame return chestundi"
+          },
+          "sql": "SELECT user_name, snapshot_date, portfolio_value,\n       FIRST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) AS first_value,\n       LAST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) AS last_value_bug\nFROM portfolio_snapshots\nWHERE portfolio_value IS NOT NULL\nORDER BY user_name, snapshot_date;",
+          "explain": {
+            "en": [
+              "WHERE portfolio_value IS NOT NULL runs before the window functions ever see a row, so Aarav's failed-sync row is gone from this result entirely — filtering out a bad row is simpler than trying to make FIRST_VALUE or LAST_VALUE skip NULLs mid-calculation.",
+              "FIRST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) behaves exactly as expected: every row for a given user shows that same user's earliest portfolio_value, 100000 for every one of Aarav's rows.",
+              "LAST_VALUE looks like it should be the mirror image of FIRST_VALUE, but last_value_bug for every single row is identical to that row's own portfolio_value — Aarav's 2026-05-01 row reports a last_value_bug of 100000, not his actual latest value of 121000.",
+              "Neither FIRST_VALUE nor LAST_VALUE was given an explicit window frame here. SQL's default frame for an ORDER BY'd window is 'from the start of the partition up to the current row' — for FIRST_VALUE that default happens to give the right answer (the earliest row is always in range), but for LAST_VALUE it means 'the last row of whatever's been seen so far,' which is just the current row itself."
+            ],
+            "ta": [
+              "WHERE portfolio_value IS NOT NULL, window functions oru row-a paakkura munnadi run aagum, so Aarav-oda failed-sync row indha result-la irundhu completely poyiடும் — bad row-a filter panradhu, FIRST_VALUE alladhu LAST_VALUE-a calculation nadukkula NULLs-a skip panna vைkkiradha vida easy.",
+              "FIRST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) expect pannina madhiri-thaan behave pannum: oru user-oda ella row-um andha user-oda earliest portfolio_value-a kaatum, Aarav-oda ella rows-kkum 100000.",
+              "LAST_VALUE, FIRST_VALUE-oda mirror image madhiri irukkanum-nu theriyum, aana ovvoru row-oda last_value_bug, andha row-oda own portfolio_value-oda same-a irukku — Aarav-oda 2026-05-01 row, last_value_bug 100000-a report pannum, avanga actual latest value 121000 illa.",
+              "FIRST_VALUE-kkum LAST_VALUE-kkum inga explicit window frame kudukkala. ORDER BY vachirukkura window-kku SQL-oda default frame 'partition start-la irundhu current row varaikkum' — FIRST_VALUE-kku andha default sariyaana answer-a kudukkum (earliest row eppavum range-la irukkum), aana LAST_VALUE-kku idhu artham 'இதுவரை பார்க்கப்பட்டதில் கடைசி row,' adhu current row-thaan."
+            ],
+            "hi": [
+              "WHERE portfolio_value IS NOT NULL, window functions ke kisi row ko dekhne se pehle chalta hai, isliye Aarav ka failed-sync row is result se poori tarah gayab ho jaata hai — ek bad row ko filter karna, FIRST_VALUE ya LAST_VALUE ko calculation ke beech mein NULLs skip karwane se aasaan hai.",
+              "FIRST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) bilkul expected tarike se behave karta hai: kisi bhi user ki har row us user ka sabse purana portfolio_value dikhati hai, Aarav ki har row ke liye 100000.",
+              "LAST_VALUE ko FIRST_VALUE ki mirror image jaisa hona chahiye lagta hai, lekin har row ka last_value_bug us row ke apne portfolio_value ke barabar hi hai — Aarav ki 2026-05-01 wali row last_value_bug 100000 dikhati hai, uska asal latest value 121000 nahi.",
+              "FIRST_VALUE aur LAST_VALUE, dono ko yahan explicit window frame nahi diya gaya. ORDER BY wale window ke liye SQL ka default frame hai 'partition ki shuruaat se current row tak' — FIRST_VALUE ke liye yeh default sahi answer de deta hai (sabse purani row hamesha range mein hoti hai), lekin LAST_VALUE ke liye iska matlab hai 'ab tak jo bhi dekha gaya usme se aakhri row,' jo current row hi hai."
+            ],
+            "te": [
+              "WHERE portfolio_value IS NOT NULL, window functions ఏదైనా row ni chudakamunde run avutundi, so Aarav failed-sync row ee result nunchi poortiga poతుంది — bad row ni filter cheyadam, FIRST_VALUE leda LAST_VALUE ni calculation madhyalo NULLs skip cheyinchadam kanna easy.",
+              "FIRST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) expect chesinatte behave chestundi: oka user ki prathi row aa user earliest portfolio_value ni chupistundi, Aarav prathi row ki 100000.",
+              "LAST_VALUE ante FIRST_VALUE mirror image la undali ani anipistundi, kaani prathi row last_value_bug aa row sontha portfolio_value tho same ga undi — Aarav 2026-05-01 row last_value_bug 100000 ani report chestundi, atani actual latest value 121000 kaadu.",
+              "FIRST_VALUE mariyu LAST_VALUE rendintiki ikkada explicit window frame ivvaledu. ORDER BY unna window ki SQL default frame 'partition modati nunchi current row varaku' — FIRST_VALUE ki aa default correct answer istundi (earliest row eppudu range lo untundi), kaani LAST_VALUE ki దాని ardham 'ఇప్పటివరకు chusina దానిలో last row,' adi current row e."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix LAST_VALUE with an explicit frame, then collapse to one row per user",
+            "ta": "Explicit frame vachi LAST_VALUE-a fix pannunga, apparam ovvoru user-kkum oru row-a collapse pannunga",
+            "hi": "LAST_VALUE ko explicit frame se fix karo, phir har user ke liye ek row mein collapse karo",
+            "te": "Explicit frame tho LAST_VALUE ni fix cheyandi, tarvata prathi user ki oka row ki collapse cheyandi"
+          },
+          "sql": "WITH filtered AS (\n  SELECT user_name, snapshot_date, portfolio_value\n  FROM portfolio_snapshots\n  WHERE portfolio_value IS NOT NULL\n),\nbounds AS (\n  SELECT user_name,\n         FIRST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) AS first_value,\n         LAST_VALUE(portfolio_value) OVER (\n           PARTITION BY user_name ORDER BY snapshot_date\n           ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING\n         ) AS last_value\n  FROM filtered\n)\nSELECT DISTINCT user_name,\n       first_value,\n       last_value,\n       last_value - first_value AS growth_amount,\n       ROUND((last_value - first_value) * 100.0 / first_value, 2) AS growth_pct\nFROM bounds\nORDER BY growth_pct DESC;",
+          "explain": {
+            "en": [
+              "ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING widens the frame to the entire partition for every row, not just up to the current one — now LAST_VALUE genuinely means 'the last row of this whole user's data,' regardless of which row is currently being evaluated.",
+              "bounds still has one row per snapshot, with first_value and last_value repeated identically across every row for a user — SELECT DISTINCT in the outer query collapses that down to exactly one summary row per user_name, since first_value and last_value are now the same for all of a user's rows.",
+              "Karthik is the one case where growth is negative: his first_value of 75000 is higher than his last_value of 68000, and growth_amount correctly comes out as -7000 rather than something that needs a separate CASE WHEN to handle — subtraction already handles a decline the same way it handles growth.",
+              "growth_pct uses 100.0, not 100, as the multiplier — a plain 100 would force integer arithmetic in some engines and silently truncate the percentage; 100.0 keeps the whole expression in floating point so Karthik's -9.33% doesn't get rounded down to -9 or worse before ROUND ever runs."
+            ],
+            "ta": [
+              "ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING, frame-a ovvoru row-kkum whole partition-a widen pannum, current row varaikkum mattum illa — ippo LAST_VALUE genuine-a 'indha whole user-oda data-oda last row' nu artham, evvalavu row current-a evaluate aagudhu-nu bandham illama.",
+              "bounds-la innum ovvoru snapshot-kkum oru row irukku, first_value matrum last_value ovvoru user-oda ella row-kkum identical-a repeat aagum — outer query-la SELECT DISTINCT, exact-a oru user_name-kkum oru summary row-a collapse pannum, ention first_value matrum last_value ippo user-oda ella rows-kkum same-a irukku.",
+              "Karthik dhaan growth negative-a irukkura case: avanga first_value 75000, avanga last_value 68000-a vida adhigam, matrum growth_amount correct-a -7000-a varum, thani CASE WHEN thevaipadura edhuvum illama — subtraction already decline-a growth-a handle pannura madhiri-thaan handle pannum.",
+              "growth_pct-la multiplier-a 100 illama 100.0 use pannirukku — plain 100 na sila engines-la integer arithmetic force pannidum, percentage-a silent-a truncate pannidum; 100.0 whole expression-a floating point-la vachirukkum, so Karthik-oda -9.33%, ROUND run aagura munnadi -9 alladhu adhைவிட kettadhu-a round aagaadhu."
+            ],
+            "hi": [
+              "ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING, har row ke liye frame ko poori partition tak widen kar deta hai, sirf current row tak nahi — ab LAST_VALUE genuinely 'is poore user ke data ki aakhri row' ka matlab hai, chahe abhi koi bhi row evaluate ho rahi ho.",
+              "bounds mein ab bhi har snapshot ke liye ek row hai, first_value aur last_value har user ki har row mein hubahu repeat hote hain — outer query mein SELECT DISTINCT ise exactly har user_name ke liye ek summary row mein collapse kar deta hai, kyunki first_value aur last_value ab user ki sabhi rows ke liye same hain.",
+              "Karthik ek aisa case hai jahan growth negative hai: uska first_value 75000, uske last_value 68000 se zyada hai, aur growth_amount sahi se -7000 aata hai, kisi alag CASE WHEN ki zaroorat ke bina — subtraction pehle se hi decline ko waise hi handle karta hai jaise growth ko karta hai.",
+              "growth_pct mein multiplier ke roop mein 100 nahi, 100.0 use hota hai — plain 100 kuch engines mein integer arithmetic force kar deta aur percentage ko chupke se truncate kar deta; 100.0 poore expression ko floating point mein rakhta hai, taaki Karthik ka -9.33%, ROUND chalne se pehle -9 ya usse bhi bura round na ho jaaye."
+            ],
+            "te": [
+              "ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING, prathi row ki frame ni whole partition varaku widen chestundi, current row varaku matrame kaadu — ippudu LAST_VALUE genuine ga 'ee whole user data lo last row' ani ardham, ఏ row prasthutham evaluate avutunna.",
+              "bounds lo inka prathi snapshot ki oka row untundi, first_value mariyu last_value prathi user prathi row ki identical ga repeat avutayi — outer query lo SELECT DISTINCT దానిని exact ga prathi user_name ki oka summary row ki collapse chestundi, endukante first_value mariyu last_value ippudu user anni rows ki same ga unnayi.",
+              "Karthik growth negative unna case: atani first_value 75000, atani last_value 68000 kanna ekkuva, mariyu growth_amount correct ga -7000 ga vastundi, separate CASE WHEN avasaram lేకుండా — subtraction already decline ni growth ni handle chesinatte handle chestundi.",
+              "growth_pct lo multiplier ga 100 kaadu, 100.0 vadutundi — plain 100 konni engines lo integer arithmetic force chestundi, percentage ni silent ga truncate chestundi; 100.0 whole expression ni floating point lo uంచుతుంది, so Karthik -9.33%, ROUND run avvakamunde -9 leda inka దారుణంగా round avvadu."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>About | TableNotFound</title>
-<meta name="description" content="TableNotFound is a free, in-browser SQL practice tool built around real-world company scenarios — no signup, no backend, just SQL.">
-<link rel="canonical" href="https://www.tablenotfound.com/about.html">
+<title>Groww: user in portfolio_snapshots… | TableNotFound</title>
+<meta name="description" content="Groww SQL practice question (mid): For each user in portfolio_snapshots, ignoring any row where portfolio_value is NULL,… Free, runs live in your browser.">
+<link rel="canonical" href="https://www.tablenotfound.com/questions/groww-user-portfoliosnapshots-ignoring-any-row-where.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -271,19 +271,21 @@ td{padding:14px 16px;vertical-align:middle}
 }
 
 
-.legal-wrap{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
+.static-wrap{max-width:820px;margin:0 auto;padding:2rem 1.5rem 6rem}
 .crumb{font-size:12px;font-weight:600;color:var(--t3);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:1.5rem}
 .crumb:hover{color:var(--t2)}
-.legal-h1{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-1px;margin-bottom:.4rem;color:var(--text)}
-.legal-meta{font-size:12px;color:var(--t3);margin-bottom:2rem}
-.legal-wrap h2{font-size:17px;font-weight:700;color:var(--text);margin:2rem 0 .75rem}
-.legal-wrap p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
-.legal-wrap ul{margin:0 0 .9rem 1.25rem;font-size:14.5px;color:var(--t2)}
-.legal-wrap li{margin-bottom:.4rem}
-.legal-wrap a{color:#7c5cfc;font-weight:600;text-decoration:none}
-.legal-wrap a:hover{text-decoration:underline}
-.legal-wrap strong{color:var(--text)}
-.bracket{background:#fff3cd;color:#664d03;padding:0 3px;border-radius:3px}
+.q-header{padding:.5rem 0 1.75rem;animation:up .55s cubic-bezier(.22,1,.36,1) both}
+.q-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.q-h1{font-size:clamp(22px,4vw,32px);font-weight:800;line-height:1.35;letter-spacing:-.7px;margin-bottom:.5rem;color:var(--text)}
+.q-sub{font-size:13px;color:var(--t2)}
+.step-body{display:block}
+.xpl{display:block}
+.step-head{cursor:default}
+.step-num{background:rgba(255,255,255,.6)!important;color:var(--t2)!important}
+.cta-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.75rem}
+.cta-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:20px;border:none;cursor:pointer;font-family:var(--ff);font-size:13px;font-weight:700;text-decoration:none;background:linear-gradient(135deg,#7c5cfc,#c45cfc);color:#fff;box-shadow:0 3px 12px rgba(124,92,252,.35);transition:transform .18s}
+.cta-btn:hover{transform:translateY(-2px)}
+.cta-btn.secondary{background:rgba(255,255,255,.65);color:var(--t2);border:var(--bdr);box-shadow:none}
 
 </style>
 <style id="tnf-footer-style">
@@ -382,21 +384,141 @@ td{padding:14px 16px;vertical-align:middle}
   </div>
 </nav>
 
-<div class="legal-wrap">
-  <a class="crumb" href="/">← Back to TableNotFound</a>
-  <h1 class="legal-h1">About TableNotFound</h1>
-  <div class="legal-meta">Last updated: July 21, 2026</div>
+<div class="static-wrap">
+  <a class="crumb" href="/">← All SQL Questions</a>
+
+  <div class="q-header">
+    <div class="q-badges">
+      <span class="co-tag" style="background:color-mix(in srgb,#00d09c 13%,white);color:color-mix(in srgb,#00d09c 90%,black)">Groww</span>
+      <span class="diff-mid">mid</span>
+      <span class="chip">FIRST_VALUE</span><span class="chip">LAST_VALUE</span><span class="chip">Window Functions</span><span class="chip">PARTITION BY</span><span class="chip">CTE</span>
+    </div>
+    <h1 class="q-h1">For each user in portfolio_snapshots, ignoring any row where portfolio_value is NULL, find their first_value (portfolio_value on their earliest snapshot_date) and last_value (portfolio_value on their most recent snapshot_date). Calculate growth_amount as last_value minus first_value, and growth_pct as that difference as a percentage of first_value, rounded to 2 decimal places. Return one row per user_name with first_value, last_value, growth_amount, and growth_pct, sorted by growth_pct in descending order.</h1>
+    <p class="q-sub">Groww · Portfolio Growth Tracking — practice this real-world SQL scenario live in your browser.</p>
+  </div>
+
+  <div class="story" style="--uc:#00d09c">
+    <div class="story-bg"></div>
+    <div class="story-top">
+      <span class="story-lbl">📖 Story</span>
+      <span class="story-co">Groww · Portfolio Growth Tracking</span>
+    </div>
+    <div class="story-body">Sunday evening at Groww's Investor Insights team. portfolio_snapshots logs a user's total portfolio value every time it's captured — usually monthly, but a sync job that ran on 2026-06-15 for one user failed partway through and logged a row with no value at all, a placeholder that shouldn't be treated as a real data point. The team wants a simple growth signal for every investor: their portfolio value on their very first recorded snapshot compared against their most recent one, to spot who's actually growing and who's been quietly losing money since they started.</div>
+  </div>
+
+  <div class="mission">
+    <div class="mission-top">🎯 Your Mission</div>
+    <div class="mission-body">For each user in portfolio_snapshots, ignoring any row where portfolio_value is NULL, find their first_value (portfolio_value on their earliest snapshot_date) and last_value (portfolio_value on their most recent snapshot_date). Calculate growth_amount as last_value minus first_value, and growth_pct as that difference as a percentage of first_value, rounded to 2 decimal places. Return one row per user_name with first_value, last_value, growth_amount, and growth_pct, sorted by growth_pct in descending order.</div>
+  </div>
+
+  <div class="schema-wrap">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem">📋 Table Structure</div>
+    <div class="schema-cards">
+      <div class="sc">
+        <div class="sc-head">🗂 <span class="sc-name">portfolio_snapshots</span></div>
+        <div><div class="sc-row">
+          <span class="sc-col">id</span>
+          <span class="sc-type">INTEGER</span>
+          <span class="sc-eg">1</span>
+        </div><div class="sc-row">
+          <span class="sc-col">user_name</span>
+          <span class="sc-type">TEXT</span>
+          <span class="sc-eg">Aarav</span>
+        </div><div class="sc-row">
+          <span class="sc-col">snapshot_date</span>
+          <span class="sc-type">TEXT</span>
+          <span class="sc-eg">2026-05-01</span>
+        </div><div class="sc-row">
+          <span class="sc-col">portfolio_value</span>
+          <span class="sc-type">REAL</span>
+          <span class="sc-eg">100000</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:1.5rem 0 .75rem">⚡ Step-by-Step Walkthrough</div>
   
-      <p>TableNotFound is a free tool for practicing SQL against real-world business scenarios modeled on companies like Flipkart, Uber, Netflix, Snapchat, Tinder, Myntra, and YouTube.</p>
-      <p>Every query runs entirely in your browser using SQLite compiled to WebAssembly — there's no backend, no account, and nothing you type is sent to a server. Close the tab and it's gone; open it again and start fresh.</p>
-      <h2>Why it exists</h2>
-      <p>Most SQL practice is disconnected from why the query matters. TableNotFound frames every question as a short business story first — a supplier pricing question at Flipkart, a driver earnings question at Uber — so you're solving a problem, not just matching syntax to a pattern.</p>
-      <h2>About the company scenarios</h2>
-      <p>Company names are used for scenario flavor only. These questions may or may not reflect anything actually asked at the named companies, and TableNotFound is not affiliated with, endorsed by, or sponsored by any of them.</p>
-      <h2>Who's behind this</h2>
-      <p>TableNotFound is built and maintained by Gowtham SB. You can find more of my work at <a href="https://linkedin.com/in/sbgowtham" target="_blank" rel="noopener">linkedin.com/in/sbgowtham</a>.</p>
-      <p>Found a bug, have feedback, or want to suggest a company scenario? <a href="/contact.html">Get in touch</a>.</p>
-    
+    <div class="step-card" style="--uc:#00d09c">
+      <div class="step-head">
+        <div class="step-num">1</div>
+        <div class="step-info">
+          <div class="step-title">Look at the raw snapshots, including the failed sync</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="ed-win">
+          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+            <span class="ed-file">query.sql</span></div>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
+FROM portfolio_snapshots
+ORDER BY user_name, snapshot_date;</code></pre>
+        </div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">portfolio_snapshots has one row per capture, not one row per user — user_name repeats across every date a snapshot was taken, and the three users have different numbers of snapshots (Aarav has more than Karthik, who joined later).</li><li class="xpl-point">Aarav's 2026-06-15 row has NULL portfolio_value — the sync job that day failed partway through, so a row got logged with a date but no actual value; it isn't a genuine zero and shouldn't count as a real data point.</li><li class="xpl-point">Karthik's earliest snapshot is 2026-06-01, a full month after Aarav's and Priya's earliest ones — 'first snapshot' has to mean each user's own earliest date, not some shared calendar date across all three.</li><li class="xpl-point">Nothing is compared yet — this step only confirms which rows are real data points and which one is a gap that needs to be excluded before any first/last comparison happens.</li></ul></div>
+      </div>
+    </div>
+    <div class="step-card" style="--uc:#00d09c">
+      <div class="step-head">
+        <div class="step-num">2</div>
+        <div class="step-info">
+          <div class="step-title">See the trap: LAST_VALUE without an explicit frame just returns the current row</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="ed-win">
+          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+            <span class="ed-file">query.sql</span></div>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT user_name, snapshot_date, portfolio_value,
+       FIRST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) AS first_value,
+       LAST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) AS last_value_bug
+FROM portfolio_snapshots
+WHERE portfolio_value IS NOT NULL
+ORDER BY user_name, snapshot_date;</code></pre>
+        </div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">WHERE portfolio_value IS NOT NULL runs before the window functions ever see a row, so Aarav's failed-sync row is gone from this result entirely — filtering out a bad row is simpler than trying to make FIRST_VALUE or LAST_VALUE skip NULLs mid-calculation.</li><li class="xpl-point">FIRST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) behaves exactly as expected: every row for a given user shows that same user's earliest portfolio_value, 100000 for every one of Aarav's rows.</li><li class="xpl-point">LAST_VALUE looks like it should be the mirror image of FIRST_VALUE, but last_value_bug for every single row is identical to that row's own portfolio_value — Aarav's 2026-05-01 row reports a last_value_bug of 100000, not his actual latest value of 121000.</li><li class="xpl-point">Neither FIRST_VALUE nor LAST_VALUE was given an explicit window frame here. SQL's default frame for an ORDER BY'd window is 'from the start of the partition up to the current row' — for FIRST_VALUE that default happens to give the right answer (the earliest row is always in range), but for LAST_VALUE it means 'the last row of whatever's been seen so far,' which is just the current row itself.</li></ul></div>
+      </div>
+    </div>
+    <div class="step-card" style="--uc:#00d09c">
+      <div class="step-head">
+        <div class="step-num">3</div>
+        <div class="step-info">
+          <div class="step-title">Fix LAST_VALUE with an explicit frame, then collapse to one row per user</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="ed-win">
+          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+            <span class="ed-file">query.sql</span></div>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>WITH filtered AS (
+  SELECT user_name, snapshot_date, portfolio_value
+  FROM portfolio_snapshots
+  WHERE portfolio_value IS NOT NULL
+),
+bounds AS (
+  SELECT user_name,
+         FIRST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) AS first_value,
+         LAST_VALUE(portfolio_value) OVER (
+           PARTITION BY user_name ORDER BY snapshot_date
+           ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+         ) AS last_value
+  FROM filtered
+)
+SELECT DISTINCT user_name,
+       first_value,
+       last_value,
+       last_value - first_value AS growth_amount,
+       ROUND((last_value - first_value) * 100.0 / first_value, 2) AS growth_pct
+FROM bounds
+ORDER BY growth_pct DESC;</code></pre>
+        </div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING widens the frame to the entire partition for every row, not just up to the current one — now LAST_VALUE genuinely means 'the last row of this whole user's data,' regardless of which row is currently being evaluated.</li><li class="xpl-point">bounds still has one row per snapshot, with first_value and last_value repeated identically across every row for a user — SELECT DISTINCT in the outer query collapses that down to exactly one summary row per user_name, since first_value and last_value are now the same for all of a user's rows.</li><li class="xpl-point">Karthik is the one case where growth is negative: his first_value of 75000 is higher than his last_value of 68000, and growth_amount correctly comes out as -7000 rather than something that needs a separate CASE WHEN to handle — subtraction already handles a decline the same way it handles growth.</li><li class="xpl-point">growth_pct uses 100.0, not 100, as the multiplier — a plain 100 would force integer arithmetic in some engines and silently truncate the percentage; 100.0 keeps the whole expression in floating point so Karthik's -9.33% doesn't get rounded down to -9 or worse before ROUND ever runs.</li></ul></div>
+      </div>
+    </div>
+
+  <div class="cta-row">
+    <a class="cta-btn" href="/">▶ Practice this live</a>
+    <a class="cta-btn secondary" href="/">← Browse all questions</a>
+  </div>
 </div>
 
 <footer id="tnf-footer">

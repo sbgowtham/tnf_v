@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>About | TableNotFound</title>
-<meta name="description" content="TableNotFound is a free, in-browser SQL practice tool built around real-world company scenarios — no signup, no backend, just SQL.">
-<link rel="canonical" href="https://www.tablenotfound.com/about.html">
+<title>WHERE vs HAVING: Why Aggregates Can't Go in WHERE | TableNotFound</title>
+<meta name="description" content="Why WHERE SUM(quantity) > 100 fails with a SQL error instead of a wrong number — the logical execution order behind WHERE and HAVING, verified in SQLite, with the fix.">
+<link rel="canonical" href="https://www.tablenotfound.com/blog/where-vs-having-execution-order.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -271,19 +271,22 @@ td{padding:14px 16px;vertical-align:middle}
 }
 
 
-.legal-wrap{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
+.article-wrap{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
 .crumb{font-size:12px;font-weight:600;color:var(--t3);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:1.5rem}
 .crumb:hover{color:var(--t2)}
-.legal-h1{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-1px;margin-bottom:.4rem;color:var(--text)}
-.legal-meta{font-size:12px;color:var(--t3);margin-bottom:2rem}
-.legal-wrap h2{font-size:17px;font-weight:700;color:var(--text);margin:2rem 0 .75rem}
-.legal-wrap p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
-.legal-wrap ul{margin:0 0 .9rem 1.25rem;font-size:14.5px;color:var(--t2)}
-.legal-wrap li{margin-bottom:.4rem}
-.legal-wrap a{color:#7c5cfc;font-weight:600;text-decoration:none}
-.legal-wrap a:hover{text-decoration:underline}
-.legal-wrap strong{color:var(--text)}
-.bracket{background:#fff3cd;color:#664d03;padding:0 3px;border-radius:3px}
+.art-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.art-h1{font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:.5rem;color:var(--text);line-height:1.2}
+.art-meta{font-size:12px;color:var(--t3);margin-bottom:2.5rem}
+.art-section{margin:2.75rem 0}
+.art-section h2{font-size:19px;font-weight:700;color:var(--text);margin-bottom:.4rem}
+.art-section p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
+.art-section code{font-family:var(--fm);font-size:.88em;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
+.ed-win{margin:.75rem 0;border-radius:10px;overflow:hidden}
+.tbl-wrap{margin:.75rem 0}
+.null-cell{color:#ccc;font-style:italic}
+.cheat-table{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0}
+.cheat-table th,.cheat-table td{padding:8px 12px;text-align:left;border-bottom:1px solid rgba(0,0,0,.06)}
+.cheat-table th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3)}
 
 </style>
 <style id="tnf-footer-style">
@@ -382,21 +385,113 @@ td{padding:14px 16px;vertical-align:middle}
   </div>
 </nav>
 
-<div class="legal-wrap">
+<div class="article-wrap">
   <a class="crumb" href="/">← Back to TableNotFound</a>
-  <h1 class="legal-h1">About TableNotFound</h1>
-  <div class="legal-meta">Last updated: July 21, 2026</div>
+
+  <div class="art-badges">
+    <span class="chip">SQL</span>
+    <span class="chip">Query Execution Order</span>
+    <span class="chip">Aggregation</span>
+  </div>
+  <h1 class="art-h1">WHERE vs HAVING</h1>
+  <div class="art-meta">Why an aggregate condition can't go in WHERE, and where it belongs instead</div>
+
   
-      <p>TableNotFound is a free tool for practicing SQL against real-world business scenarios modeled on companies like Flipkart, Uber, Netflix, Snapchat, Tinder, Myntra, and YouTube.</p>
-      <p>Every query runs entirely in your browser using SQLite compiled to WebAssembly — there's no backend, no account, and nothing you type is sent to a server. Close the tab and it's gone; open it again and start fresh.</p>
-      <h2>Why it exists</h2>
-      <p>Most SQL practice is disconnected from why the query matters. TableNotFound frames every question as a short business story first — a supplier pricing question at Flipkart, a driver earnings question at Uber — so you're solving a problem, not just matching syntax to a pattern.</p>
-      <h2>About the company scenarios</h2>
-      <p>Company names are used for scenario flavor only. These questions may or may not reflect anything actually asked at the named companies, and TableNotFound is not affiliated with, endorsed by, or sponsored by any of them.</p>
-      <h2>Who's behind this</h2>
-      <p>TableNotFound is built and maintained by Gowtham SB. You can find more of my work at <a href="https://linkedin.com/in/sbgowtham" target="_blank" rel="noopener">linkedin.com/in/sbgowtham</a>.</p>
-      <p>Found a bug, have feedback, or want to suggest a company scenario? <a href="/contact.html">Get in touch</a>.</p>
-    
+    <div class="art-section">
+      <h2>1. Why this happens</h2>
+      <p>A SQL query doesn't run top-to-bottom in the order it's typed. It runs in a fixed logical order — roughly <code>FROM</code> → <code>WHERE</code> → <code>GROUP BY</code> → <code>HAVING</code> → <code>SELECT</code> → <code>ORDER BY</code> — and <code>WHERE</code> finishes its job well before <code>GROUP BY</code> ever creates a single aggregate. Writing a condition on <code>SUM()</code> or <code>COUNT()</code> into <code>WHERE</code> isn't a style choice with a minor downside; it's asking a clause to filter on a value that doesn't exist yet at the point it runs.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>2. The dataset</h2>
+      <p>Verified by actually running this against SQLite — not hand-computed. Seven line items across two categories and four products.</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">schema.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE order_items(
+  order_id INTEGER,
+  category TEXT,
+  product TEXT,
+  quantity INTEGER
+);
+
+INSERT INTO order_items VALUES
+ (1,'Electronics','Headphones',40),
+ (2,'Electronics','Headphones',70),
+ (3,'Electronics','Charger',30),
+ (4,'Electronics','Charger',20),
+ (5,'Kitchen','Blender',80),
+ (6,'Kitchen','Blender',50),
+ (7,'Kitchen','Toaster',15);</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>order_id</th><th>category</th><th>product</th><th>quantity</th></tr></thead><tbody><tr><td>1</td><td>Electronics</td><td>Headphones</td><td>40</td></tr><tr><td>2</td><td>Electronics</td><td>Headphones</td><td>70</td></tr><tr><td>3</td><td>Electronics</td><td>Charger</td><td>30</td></tr><tr><td>4</td><td>Electronics</td><td>Charger</td><td>20</td></tr><tr><td>5</td><td>Kitchen</td><td>Blender</td><td>80</td></tr><tr><td>6</td><td>Kitchen</td><td>Blender</td><td>50</td></tr><tr><td>7</td><td>Kitchen</td><td>Toaster</td><td>15</td></tr></tbody></table></div>
+      <p>The goal: find Electronics products that have sold more than 100 units in total — Headphones (40 + 70 = 110) qualifies, Charger (30 + 20 = 50) doesn't. Kitchen's Blender also totals over 100 (80 + 50 = 130), but it's a different category and shouldn't appear in an Electronics report.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>3. The bug</h2>
+      <p>"Total quantity over 100" sounds like exactly what a <code>WHERE</code> clause is for:</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">bug.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT product, SUM(quantity) AS total_qty
+FROM order_items
+WHERE SUM(quantity) > 100
+GROUP BY product;</code></pre>
+      </div>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">result</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>Error: misuse of aggregate: SUM()</code></pre>
+      </div>
+      <p>This one doesn't return a wrong number — it doesn't run at all. Every mainstream SQL engine rejects an aggregate function inside <code>WHERE</code> with some version of this error. That's actually the forgiving outcome: a query that fails loudly is far easier to catch than one that quietly computes the wrong thing.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>4. Why it happens</h2>
+      <p><code>WHERE</code> filters individual rows coming out of <code>FROM</code>, one at a time, before those rows have been grouped into anything. <code>SUM(quantity)</code> is a question about a whole group of rows — it can't be answered until <code>GROUP BY</code> has actually formed the groups, which happens in a later stage. Asking <code>WHERE</code> to evaluate <code>SUM(quantity) > 100</code> is asking for a group total at a point in execution where no groups exist yet; there's nothing to sum.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>5. The fix</h2>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">fix.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT product, SUM(quantity) AS total_qty
+FROM order_items
+WHERE category = 'Electronics'
+GROUP BY product
+HAVING SUM(quantity) > 100;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>product</th><th>total_qty</th></tr></thead><tbody><tr><td>Headphones</td><td>110</td></tr></tbody></table></div>
+      <p><code>HAVING</code> exists for exactly this: it runs after <code>GROUP BY</code>, once every group's aggregates are already computed, so <code>SUM(quantity) > 100</code> has an actual number to compare against. Notice <code>category = 'Electronics'</code> stayed in <code>WHERE</code> — that condition doesn't need an aggregate, so it belongs in the clause that runs earliest. Kitchen's Blender, despite also totaling over 100, never even makes it to the grouping stage because <code>WHERE</code> already removed every Kitchen row first.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>6. Put every condition in the earliest clause that can express it</h2>
+      <p>The rule isn't "aggregate conditions go in <code>HAVING</code>, everything else is optional" — it's that each clause should carry exactly the conditions it's capable of expressing, and no later than necessary. <code>category = 'Electronics'</code> is a fact about a single row; it belongs in <code>WHERE</code>, which discards non-matching rows before the database does the work of grouping and aggregating them. <code>SUM(quantity) > 100</code> is a fact about a group; it can only be expressed in <code>HAVING</code>, because no earlier clause has a group to ask about. Moving a row-level condition into <code>HAVING</code> "works" in the sense that it still returns the right answer, but it means the database aggregates rows it was always going to throw away — for one table this is invisible, on a large one it's wasted work with no upside.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>7. Cheat sheet</h2>
+      <table class="cheat-table">
+        <thead><tr><th>Logical order</th><th>Clause</th><th>Can reference an aggregate?</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>FROM</code> / <code>JOIN</code></td><td>—</td></tr>
+          <tr><td>2</td><td><code>WHERE</code></td><td>No — runs before grouping exists</td></tr>
+          <tr><td>3</td><td><code>GROUP BY</code></td><td>—</td></tr>
+          <tr><td>4</td><td><code>HAVING</code></td><td>Yes — this is what it's for</td></tr>
+          <tr><td>5</td><td><code>SELECT</code></td><td>Yes</td></tr>
+          <tr><td>6</td><td><code>ORDER BY</code></td><td>Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="art-section">
+      <h2>8. Try it yourself</h2>
+      <p>This is one of the few traps on this site that fails loudly instead of quietly — SQLite refuses to run it at all. The real lesson isn't just "remember to use <code>HAVING</code>," it's that every SQL clause has a fixed place in an invisible pipeline, and a condition can only reference what's already been computed by the time its clause runs. Once that order is second nature, <code>WHERE</code> vs <code>HAVING</code> stops being a rule to memorize and becomes obvious from the shape of the question being asked.</p>
+      <p><a href="/">Practice GROUP BY and HAVING live on TableNotFound →</a></p>
+    </div>
 </div>
 
 <footer id="tnf-footer">
