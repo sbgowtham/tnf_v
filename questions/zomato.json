@@ -13,15 +13,15 @@
       ],
       "story": {
         "en": "Thursday morning at Zomato's Restaurant Quality team. Leadership wants a list of restaurant partners who have a spotless order-fulfillment record — every single order they've ever received actually got delivered, none cancelled. The orders table only has a row for an order that actually happened, so a restaurant that's brand new and hasn't received any orders yet simply has no rows in it at all — that's not missing data, it's a restaurant that's never had the chance to disappoint anyone. One order is also still sitting with a NULL status because the delivery hasn't been marked complete or cancelled yet; it shouldn't count against a restaurant either way until it resolves.",
-        "ta": "Thursday morning Zomato-oda Restaurant Quality team-la. Leadership-ku spotless order-fulfillment record irukkura restaurant partners-oda list venum — avanga vaangina ella order-um genuine-a deliver aagirukkanum, edhuvum cancel aagakoodadhu. orders table-la real-a nadandha order-kku mattum-thaan oru row irukkum, so brand new-a irukkura, innum edhavadhu order vaangaadha restaurant-kku andha table-la rows-е irukkaadhu — idhu missing data illa, yaaruku-um disappoint pannradhukku innum chance-е kidaikkaadha restaurant. Oru order-um innum NULL status-la irukku, delivery complete-nu alladhu cancel-nu innum mark pannala; adhu resolve aagura varaikkum edhavadhu restaurant-kkum edhirila count aagakoodadhu.",
+        "ta": "Thursday morning Zomato-oda Restaurant Quality team-la. Leadership-ku spotless order-fulfillment record irukkura restaurant partners-oda list venum — avanga vaangina ella order-um genuine-a deliver aagirukkanum, edhuvum cancel aagakoodadhu. orders table-la real-a nadandha order-kku mattum-thaan oru row irukkum, so brand new-a irukkura, innum edhavadhu order vaangaadha restaurant-kku andha table-la rows-e irukkaadhu — idhu missing data illa, yaaruku-um disappoint pannradhukku innum chance-e kidaikkaadha restaurant. Oru order-um innum NULL status-la irukku, delivery complete-nu alladhu cancel-nu innum mark pannala; adhu resolve aagura varaikkum edhavadhu restaurant-kkum edhirila count aagakoodadhu.",
         "hi": "Thursday morning Zomato ke Restaurant Quality team mein. Leadership ko un restaurant partners ki list chahiye jinka order-fulfillment record bilkul saaf hai — unhe jitne bhi orders mile, sab actually deliver hue, koi cancel nahi hua. orders table mein sirf usi order ke liye row hoti hai jo asal mein hua ho, isliye jo restaurant bilkul naya hai aur abhi tak koi order nahi mila, uske liye us table mein rows hi nahi hongi — yeh missing data nahi hai, yeh aisa restaurant hai jise abhi tak kisi ko disappoint karne ka mauka hi nahi mila. Ek order abhi bhi NULL status ke saath pada hai, delivery complete ya cancel mark nahi hui hai; jab tak wo resolve nahi hoti, use kisi bhi restaurant ke khilaf count nahi hona chahiye.",
-        "te": "Thursday morning Zomato Restaurant Quality team lo. Leadership ki spotless order-fulfillment record unna restaurant partners list kavali — vaalliki vachina prathi order genuine ga deliver ayyindi, edi cancel avvaledu. orders table lo నిజంగా jarigina order ki matrame row untundi, so brand new ga unna, inka ఏ order raani restaurant ki aa table lo rows e undavu — idi missing data kaadu, idi inkevariki disappoint cheyadaniki inka chance e raani restaurant. Oka order inka NULL status tho undi, delivery complete ani leda cancel ani inka mark cheyaledu; adi resolve ayేవaraku, ఏ restaurant ki వ్యతిరేకంగా count avvakudadu."
+        "te": "Thursday morning Zomato Restaurant Quality team lo. Leadership ki spotless order-fulfillment record unna restaurant partners list kavali — vaalliki vachina prathi order genuine ga deliver ayyindi, edi cancel avvaledu. orders table lo nijamga jarigina order ki matrame row untundi, so brand new ga unna, inka e order raani restaurant ki aa table lo rows e undavu — idi missing data kaadu, idi inkevariki disappoint cheyadaniki inka chance e raani restaurant. Oka order inka NULL status tho undi, delivery complete ani leda cancel ani inka mark cheyaledu; adi resolve ayevaraku, e restaurant ki vyathirekamga count avvakudadu."
       },
       "question": {
         "en": "Find every restaurant that has never had a cancelled order — meaning it has zero orders with status = 'cancelled'. This includes restaurants with no orders at all, since they trivially satisfy 'never cancelled.' Use EXISTS or NOT EXISTS with a correlated subquery rather than aggregating and filtering afterward. Return restaurant_name and city, sorted alphabetically by restaurant_name.",
-        "ta": "Edhavadhu order cancel aagaadha ella restaurant-a-yum kandupidunga — atharkiya status = 'cancelled' irukkura zero orders irukkanum. Idhula edhavadhu order-е illaadha restaurants-um adangum, ention avanga trivially-a 'never cancelled' condition-a meet pannuranga. Aggregate panni apparam filter pannradhukku pathila, EXISTS alladhu NOT EXISTS-a correlated subquery-oda use pannunga. restaurant_name matrum city-a return pannunga, restaurant_name alphabetical order-la sort pannunga.",
+        "ta": "Edhavadhu order cancel aagaadha ella restaurant-a-yum kandupidunga — atharkiya status = 'cancelled' irukkura zero orders irukkanum. Idhula edhavadhu order-e illaadha restaurants-um adangum, ention avanga trivially-a 'never cancelled' condition-a meet pannuranga. Aggregate panni apparam filter pannradhukku pathila, EXISTS alladhu NOT EXISTS-a correlated subquery-oda use pannunga. restaurant_name matrum city-a return pannunga, restaurant_name alphabetical order-la sort pannunga.",
         "hi": "Aise sabhi restaurants dhoondo jinka koi bhi order kabhi cancel nahi hua — matlab unke paas status = 'cancelled' wale zero orders hain. Ismein wo restaurants bhi shaamil hain jinka koi order hi nahi hai, kyunki wo trivially 'never cancelled' condition ko poora karte hain. Aggregate karke baad mein filter karne ke bajaye, EXISTS ya NOT EXISTS ko correlated subquery ke saath use karo. restaurant_name aur city return karo, restaurant_name ke alphabetical order mein sort karke.",
-        "te": "ఏ order kuda cancel avvani anni restaurants ni kanugonandi — ante status = 'cancelled' unna zero orders undali. Idulo ఏ order lేni restaurants kuda untayi, endukante vaallu trivially ga 'never cancelled' condition ni meet chestaru. Aggregate chesi tarvata filter cheyadaniki bదulu, EXISTS leda NOT EXISTS ni correlated subquery tho vadandi. restaurant_name mariyu city ni return cheyandi, restaurant_name alphabetical order lo sort chesi."
+        "te": "e order kuda cancel avvani anni restaurants ni kanugonandi — ante status = 'cancelled' unna zero orders undali. Idulo e order leni restaurants kuda untayi, endukante vaallu trivially ga 'never cancelled' condition ni meet chestaru. Aggregate chesi tarvata filter cheyadaniki badulu, EXISTS leda NOT EXISTS ni correlated subquery tho vadandi. restaurant_name mariyu city ni return cheyandi, restaurant_name alphabetical order lo sort chesi."
       },
       "schemas": [
         {
@@ -76,7 +76,7 @@
             "en": "Look at every restaurant next to its orders (or lack of them)",
             "ta": "Ovvoru restaurant-um adhoda orders-oda (alladhu orders illama) paakkunga",
             "hi": "Har restaurant ko uske orders ke (ya na hone ke) saath dekho",
-            "te": "Prathi restaurant ni దాని orders తో (leda orders lేకుండా) chudandi"
+            "te": "Prathi restaurant ni dani orders tho (leda orders lekunda) chudandi"
           },
           "sql": "SELECT r.restaurant_id, r.restaurant_name, o.order_id, o.status, o.order_amount\nFROM restaurants r\nLEFT JOIN orders o ON o.restaurant_id = r.restaurant_id\nORDER BY r.restaurant_id, o.order_id;",
           "explain": {
@@ -89,8 +89,8 @@
             "ta": [
               "LEFT JOIN, match aagura orders illama irundhaalum ella restaurant-um vachirukkum — Tandoor Nights (restaurant_id 5) ella order column-kkum NULL vachi varum, ention adhukku orders-la genuine-a zero rows-thaan irukku, join thappa pona ention illa.",
               "Wok This Way-kku moondru order rows irukku, moondravadhu-la (order_id 9) NULL status irukku — andha order innum delivered alladhu cancelled nu mark pannala, adhu innum in-progress-a irukku.",
-              "Spice Route matrum Green Bowl rendukkum delivered orders-oda sேrndhu exact-a oru cancelled order irukku — final query-la palavu orders-la onnu mattum cancel aana-alum andha restaurant-a catch pannanum.",
-              "Innum edhuvum filter pannala — indha step, restaurant restaurant-a 'order irukku' matrum 'edhuvum order-е illa' eppadi irukkunu side by side paakkuradhu-kku mattum thaan."
+              "Spice Route matrum Green Bowl rendukkum delivered orders-oda serndhu exact-a oru cancelled order irukku — final query-la palavu orders-la onnu mattum cancel aana-alum andha restaurant-a catch pannanum.",
+              "Innum edhuvum filter pannala — indha step, restaurant restaurant-a 'order irukku' matrum 'edhuvum order-e illa' eppadi irukkunu side by side paakkuradhu-kku mattum thaan."
             ],
             "hi": [
               "LEFT JOIN har restaurant ko rakhta hai chahe uske match hone wale orders na hon — Tandoor Nights (restaurant_id 5) har order column ke liye NULL ke saath dikhta hai, kyunki uske orders mein genuinely zero rows hain, kisi galat join ki wajah se nahi.",
@@ -99,10 +99,10 @@
               "Abhi kuch filter nahi hua — yeh step sirf yeh dekhne ke liye hai ki har restaurant ke liye 'order hai' aur 'koi order hi nahi' asal mein kaisa dikhta hai, side by side."
             ],
             "te": [
-              "LEFT JOIN prathi restaurant ni uంచుతుంది, match ayye orders lేకపోయినా — Tandoor Nights (restaurant_id 5) prathi order column ki NULL tho vastundi, endukante దానికి orders lo నిజంగా zero rows unnayi, join tappaga jariginanduku kaadu.",
+              "LEFT JOIN prathi restaurant ni unchutundi, match ayye orders lekapoyina — Tandoor Nights (restaurant_id 5) prathi order column ki NULL tho vastundi, endukante daniki orders lo nijamga zero rows unnayi, join tappaga jariginanduku kaadu.",
               "Wok This Way ki mudu order rows unnayi, mudavadi (order_id 9) lo NULL status undi — aa order inka delivered leda cancelled ani mark cheyaledu, adi inka in-progress lo undi.",
               "Spice Route mariyu Green Bowl rendintiki delivered orders tho kalisi exact ga oka cancelled order undi — final query anni orders lo okatti matrame cancel ayina aa restaurant ni catch cheyali.",
-              "Inka emi filter avvatledu — ee step prathi restaurant ki 'order undi' mariyu 'ఏ order e ledu' ela untundo side by side chudadaniki matrame."
+              "Inka emi filter avvatledu — ee step prathi restaurant ki 'order undi' mariyu 'e order e ledu' ela untundo side by side chudadaniki matrame."
             ]
           }
         },
@@ -134,10 +134,10 @@
               "Sirf Spice Route aur Green Bowl wapas aate hain — wo do restaurants jinke orders table mein genuinely kam se kam ek row hai jahan status bilkul 'cancelled' hai."
             ],
             "te": [
-              "EXISTS subquery nunchi ఏ నిజమైన data return cheyadu — SELECT 1 ante convention matrame, meaningful column kaadu; outer query ki subquery kanisam oka matching row kanugoనిందా ledా ani matrame pattinchukుంటుంది, aa row lo emi undo kaadu.",
-              "Subquery correlated ga undi: o.restaurant_id = r.restaurant_id దానిని outer query prasthutham check chestunna restaurant tho connect chestundi, so idi conceptual ga prathi restaurant ki oka sari re-run avutundi, whole table ki oka sari run avvadam kaadu.",
+              "EXISTS subquery nunchi e nijamaina data return cheyadu — SELECT 1 ante convention matrame, meaningful column kaadu; outer query ki subquery kanisam oka matching row kanugonindaa ledaa ani matrame pattinchukuntundi, aa row lo emi undo kaadu.",
+              "Subquery correlated ga undi: o.restaurant_id = r.restaurant_id danini outer query prasthutham check chestunna restaurant tho connect chestundi, so idi conceptual ga prathi restaurant ki oka sari re-run avutundi, whole table ki oka sari run avvadam kaadu.",
               "Wok This Way NULL-status order (order_id 9) ikkada match avvadu — o.status = 'cancelled', NULL ni 'cancelled' tho compare chestundi, adi UNKNOWN ga evaluate avutundi, TRUE kaadu, so aa row EXISTS condition ni satisfy cheyaledu.",
-              "Spice Route mariyu Green Bowl matrame vastayi — orders table lo status exact ga 'cancelled' unna kanisam oka row నిజంగా unna rendu restaurants."
+              "Spice Route mariyu Green Bowl matrame vastayi — orders table lo status exact ga 'cancelled' unna kanisam oka row nijamga unna rendu restaurants."
             ]
           }
         },
@@ -145,8 +145,8 @@
           "title": {
             "en": "Flip it: NOT EXISTS finds restaurants with no cancelled order",
             "ta": "Adha maathunga: NOT EXISTS, cancelled order illaadha restaurants-a kandupidikkum",
-            "hi": "Ise ultā karo: NOT EXISTS un restaurants ko dhoondta hai jinka koi cancelled order nahi hai",
-            "te": "దానిని తిప్పండి: NOT EXISTS, cancelled order lేni restaurants ni kanugontundi"
+            "hi": "Ise ulta karo: NOT EXISTS un restaurants ko dhoondta hai jinka koi cancelled order nahi hai",
+            "te": "Danini tippandi: NOT EXISTS, cancelled order leni restaurants ni kanugontundi"
           },
           "sql": "SELECT restaurant_name, city\nFROM restaurants r\nWHERE NOT EXISTS (\n  SELECT 1 FROM orders o\n  WHERE o.restaurant_id = r.restaurant_id AND o.status = 'cancelled'\n)\nORDER BY restaurant_name;",
           "explain": {
@@ -160,7 +160,7 @@
               "NOT EXISTS, munnaadi step-oda condition-a exact-a invert pannirukku — correlated subquery kammasa oru row-kku pathila zero matching rows kandupidicha ude andha restaurant qualify aagum.",
               "Tandoor Nights udane qualify aagum: adhoda correlated subquery restaurant_id 5-kku zero orders rows-oda run aagum, edhuvum kandupidikaadhu, matrum 'edhuvum kandupidikala' nu solradhu-thaan NOT EXISTS thedura sariyaana thing — 'orders illa' nu query-la engum special-case pannat theva illa.",
               "Curry Leaf matrum Wok This Way-um qualify aaguranga — avanga irukkura ella order-um alladhu delivered alladhu NULL, ivai rendum 'cancelled' illa, so avangaloda correlated subquery-um empty-a thirumbi varum.",
-              "Moondru restaurants thirumbi varum, indha result step 2-oda rendu restaurants-oda clean complement — sேrndhu ella anju restaurants-ayum kanakku pannum, EXISTS matrum NOT EXISTS use panni oru table-a rendu disjoint groups-a split pannumbodhu idhu useful sanity check."
+              "Moondru restaurants thirumbi varum, indha result step 2-oda rendu restaurants-oda clean complement — serndhu ella anju restaurants-ayum kanakku pannum, EXISTS matrum NOT EXISTS use panni oru table-a rendu disjoint groups-a split pannumbodhu idhu useful sanity check."
             ],
             "hi": [
               "NOT EXISTS bilkul pichle step ki condition hai, ulta kiya hua — jaise hi correlated subquery ko kam se kam ek ki jagah zero matching rows milti hain, wo restaurant qualify kar jaata hai.",
@@ -169,10 +169,10 @@
               "Teen restaurants wapas aate hain, aur yeh result step 2 ke do restaurants ka clean complement hai — dono milkar sabhi paanch restaurants ko cover karte hain, jo tab kaafi useful sanity check hota hai jab EXISTS aur NOT EXISTS ka use ek table ko do disjoint groups mein baantne ke liye kiya jaata hai."
             ],
             "te": [
-              "NOT EXISTS ante mundari step condition ne exact ga invert chesindi — correlated subquery kanisam oka row ki bదulu zero matching rows kanugonna ventane aa restaurant qualify avutundi.",
-              "Tandoor Nights వెంటనే qualify avutundi: దాని correlated subquery restaurant_id 5 ki zero orders rows tho run avutundi, emi దొరకదు, mariyu 'emi దొరకకపోవడం' ante e NOT EXISTS chustunnadi — 'orders ledu' ani query lo ekkada special-case cheyalsina avasaram raledu.",
-              "Curry Leaf mariyu Wok This Way kuda qualify avutayi — vaalliki unna prathi order delivered leda NULL, ఇవి రెండు 'cancelled' kaadu, so vaalla correlated subquery kuda empty ga vastundi.",
-              "Mudu restaurants వస్తాయి, ee result step 2 rendu restaurants ki clean complement — kalisi anni ఐదు restaurants ni లెక్కిస్తాయి, EXISTS mariyu NOT EXISTS ఉపయోగించి oka table ni rendu disjoint groups ga split chesetappudu idi useful sanity check."
+              "NOT EXISTS ante mundari step condition ne exact ga invert chesindi — correlated subquery kanisam oka row ki badulu zero matching rows kanugonna ventane aa restaurant qualify avutundi.",
+              "Tandoor Nights ventane qualify avutundi: dani correlated subquery restaurant_id 5 ki zero orders rows tho run avutundi, emi dorakadu, mariyu 'emi dorakakapovadam' ante e NOT EXISTS chustunnadi — 'orders ledu' ani query lo ekkada special-case cheyalsina avasaram raledu.",
+              "Curry Leaf mariyu Wok This Way kuda qualify avutayi — vaalliki unna prathi order delivered leda NULL, ivi rendu 'cancelled' kaadu, so vaalla correlated subquery kuda empty ga vastundi.",
+              "Mudu restaurants vastayi, ee result step 2 rendu restaurants ki clean complement — kalisi anni aidu restaurants ni lekkistayi, EXISTS mariyu NOT EXISTS upayoginchi oka table ni rendu disjoint groups ga split chesetappudu idi useful sanity check."
             ]
           }
         }

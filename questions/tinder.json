@@ -116,7 +116,7 @@
               "Enduku COUNT(l.like_id), COUNT(*) kaadu? Rendu ikkada same answer istayi endukante manam plain JOIN vadamu, kaani COUNT(l.like_id) manchi habit, endukante adi eppudu actual like records ni matrame count chestundi, query structure marina kuda accurate ga untundi.",
               "ORDER BY likes_sent DESC ekkuva active ga swipe chese users ni top lo pettistundi, idi exact ga Kabir task adigindi — 'evaru ekkuva likes pampistunnaru.'",
               "GROUP BY ni skip chesthe, malli oka like ki oka row vastundi, summary emi undadu — count column ki ee row lekapothe artham undadu.",
-              "Ee query kanisham oka like ayina pampina users ni matrame chupistundi ani గమనించండి. Okka like kuda pampani vallu evaru kanipincharu, endukante mundu step lo manam JOIN vadamu, LEFT JOIN kaadu."
+              "Ee query kanisham oka like ayina pampina users ni matrame chupistundi ani gamaninchandi. Okka like kuda pampani vallu evaru kanipincharu, endukante mundu step lo manam JOIN vadamu, LEFT JOIN kaadu."
             ]
           }
         },
@@ -151,7 +151,7 @@
               "Ye 'final SELECT ko saaf karo' ka accha example hai — asal logic (JOIN, GROUP BY, COUNT, ORDER BY) step 2 se step 3 tak nahi badalta, sirf reader ko dikhaaye jaane wale columns badalte hain."
             ],
             "te": [
-              "Ee final version mundu step la laganē pani chestundi — okate marpu, manam SELECT list nunchi u.user_id ni teesestamu, endukante Kabir report lo peru matrame kavali, internal id kaadu.",
+              "Ee final version mundu step la lagane pani chestundi — okate marpu, manam SELECT list nunchi u.user_id ni teesestamu, endukante Kabir report lo peru matrame kavali, internal id kaadu.",
               "user_id kanipinchakapoina, manam ippatiki GROUP BY u.user_id, u.name chestamu, endukante peru matrame batti group cheyadam risky — rendu different users ki same peru undachu theoretically, peru matrame batti group chesthe vaari counts tappuga kalisi potayi.",
               "AS user_name, AS likes_sent — output columns ki clean ga, chaduvutuna easy ga unde labels istayi, raw SQL expressions kaadu — Kabir manager laanti non-technical vyakti chadive report ki idi manchi practice.",
               "Expected output (top rows): Rahul → 5 likes pampincharu, tarvata konni users 2-3 likes range lo untaru, endukante Rahul aaru different vallaki like chesaru, kaani cheyyaru migata anduru okati rendu matrame chesaru.",
