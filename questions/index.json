@@ -124,5 +124,12 @@
       "sub": "Mock Test Percentiles",
       "c": "#7c4dff",
       "difficulty": "mid"
+    },
+    {
+      "id": "notion",
+      "name": "Notion",
+      "sub": "Habit Streak Calendars",
+      "c": "#37352f",
+      "difficulty": "hard"
     }
   ]

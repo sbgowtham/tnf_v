@@ -62,10 +62,12 @@ function extractCreatedTables(setup) {
 
 function extractCteNames(sql) {
   // WITH foo AS (...), bar AS (...) — foo/bar are valid FROM/JOIN targets
-  // even though setup never creates them as real tables.
+  // even though setup never creates them as real tables. Also handles
+  // WITH RECURSIVE name(col1, col2) AS (...) — the RECURSIVE keyword and an
+  // optional column-list both sit between the CTE name and AS.
   const names = new Set();
   if (!/\bWITH\b/i.test(sql)) return names;
-  const re = /(?:WITH|,)\s*["`\[]?(\w+)["`\]]?\s+AS\s*\(/gi;
+  const re = /(?:WITH(?:\s+RECURSIVE)?|,)\s*["`\[]?(\w+)["`\]]?\s*(?:\([^)]*\))?\s+AS\s*\(/gi;
   let m;
   while ((m = re.exec(sql))) names.add(m[1].toLowerCase());
   return names;

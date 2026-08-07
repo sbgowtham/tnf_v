@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>IN vs EXISTS vs JOIN — and the NOT IN NULL Trap | TableNotFound</title>
-<meta name="description" content="A practical, verified comparison of SQL's IN, EXISTS, and JOIN for filtering rows — including exactly why NOT IN silently breaks when NULLs are involved.">
-<link rel="canonical" href="https://www.tablenotfound.com/blog/in-vs-exists-vs-join.html">
+<title>Numbers Stored as TEXT: Why '10' Sorts Before '2' | TableNotFound</title>
+<meta name="description" content="Why ORDER BY on a numeric-looking TEXT column scrambles the order, and WHERE col > 'N' can return zero rows even when rows clearly qualify — verified in SQLite, with the CAST fix.">
+<link rel="canonical" href="https://www.tablenotfound.com/blog/numbers-stored-as-text-sorting-trap.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -280,10 +280,10 @@ td{padding:14px 16px;vertical-align:middle}
 .art-section{margin:2.75rem 0}
 .art-section h2{font-size:19px;font-weight:700;color:var(--text);margin-bottom:.4rem}
 .art-section p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
-.art-section code{font-family:var(--fm);font-size:.9em;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
+.art-section code{font-family:var(--fm);font-size:.88em;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
 .ed-win{margin:.75rem 0;border-radius:10px;overflow:hidden}
 .tbl-wrap{margin:.75rem 0}
-.empty-result{margin:.75rem 0;padding:1rem 1.25rem;border-radius:10px;background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.18);color:#991b1b;font-family:var(--fm);font-size:13px}
+.null-cell{color:#ccc;font-style:italic}
 .cheat-table{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0}
 .cheat-table th,.cheat-table td{padding:8px 12px;text-align:left;border-bottom:1px solid rgba(0,0,0,.06)}
 .cheat-table th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3)}
@@ -404,186 +404,109 @@ td{padding:14px 16px;vertical-align:middle}
 
   <div class="art-badges">
     <span class="chip">SQL</span>
-    <span class="chip">Filtering</span>
-    <span class="chip">NULL Handling</span>
+    <span class="chip">Data Types</span>
+    <span class="chip">Data Quality</span>
   </div>
-  <h1 class="art-h1">IN vs EXISTS vs JOIN</h1>
-  <div class="art-meta">Filtering rows the right way — and the NULL trap that silently breaks NOT IN</div>
+  <h1 class="art-h1">Numbers Stored as TEXT</h1>
+  <div class="art-meta">Why '10' sorts before '2', and WHERE quantity > '8' can return nothing at all</div>
 
   
     <div class="art-section">
-      <h2>1. Three ways to answer the same question</h2>
-      <p>IN, EXISTS, and JOIN can all answer "does a match exist in another table?" and get chosen almost interchangeably. Most of the time they return the same rows. The differences only surface in two specific situations: when the matched table can produce more than one match per row, and when it can contain NULL. Both are common in real data, and both produce wrong results silently — no error, just a row count that's wrong in a way nobody notices until someone asks why an author with zero books didn't show up on a report, or why a customer appears twice in a list that was supposed to be deduplicated.</p>
+      <h2>1. Why this happens</h2>
+      <p>A column doesn't have to be declared TEXT for numbers to end up stored as text inside it — a CSV import, a JSON API response, or a spreadsheet export will happily hand a database the string <code>"10"</code> instead of the number <code>10</code>, and SQLite's relaxed typing will store it exactly as given. Every value still <em>looks</em> like a number when you eyeball the table. The problem only shows up the moment something tries to sort or compare those values, because a database sorting text doesn't count — it compares characters, left to right, the same way it would sort words in a dictionary.</p>
     </div>
 
     <div class="art-section">
       <h2>2. The dataset</h2>
-      <p>Verified by actually running this against SQLite — not hand-computed. Two things here are deliberate: Yaa Gyasi has no books at all — she's the target for every "authors with no books" query below — and one book, <em>Untitled Manuscript</em>, has a NULL <code>author_id</code>, an unassigned submission still sitting in the table. That single NULL is enough to break one of these three approaches completely.</p>
+      <p>Verified by actually running this against SQLite — not hand-computed. A small inventory table where <code>quantity</code> was imported from a CSV and landed as TEXT instead of INTEGER.</p>
       <div class="ed-win">
         <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
           <span class="ed-file">schema.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE authors(
-  author_id INTEGER,
-  author_name TEXT,
-  country TEXT
-);
-CREATE TABLE books(
-  book_id INTEGER,
-  title TEXT,
-  author_id INTEGER,
-  published_year INTEGER
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE inventory(
+  product_name TEXT,
+  quantity TEXT
 );
 
-INSERT INTO authors VALUES
- (1,'Chinua Achebe','Nigeria'),
- (2,'Jane Austen','UK'),
- (3,'Haruki Murakami','Japan'),
- (4,'Toni Morrison','USA'),
- (5,'Gabriel Garcia Marquez','Colombia'),
- (6,'Elena Ferrante','Italy'),
- (7,'Yaa Gyasi','Ghana'),
- (8,'Kazuo Ishiguro','UK');
-
-INSERT INTO books VALUES
- (101,'Things Fall Apart',1,1958),
- (102,'Pride and Prejudice',2,1813),
- (103,'Norwegian Wood',3,1987),
- (104,'Kafka on the Shore',3,2002),
- (105,'Beloved',4,1987),
- (106,'One Hundred Years of Solitude',5,1967),
- (107,'My Brilliant Friend',6,2011),
- (108,'The Remains of the Day',8,1989),
- (109,'Never Let Me Go',8,2005),
- (110,'Untitled Manuscript',NULL,2020);</code></pre>
+INSERT INTO inventory VALUES
+ ('Notebook','25'),
+ ('Pen','5'),
+ ('Stapler','100'),
+ ('Eraser','2'),
+ ('Marker','10');</code></pre>
       </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>product_name</th><th>quantity</th></tr></thead><tbody><tr><td>Notebook</td><td>'25'</td></tr><tr><td>Pen</td><td>'5'</td></tr><tr><td>Stapler</td><td>'100'</td></tr><tr><td>Eraser</td><td>'2'</td></tr><tr><td>Marker</td><td>'10'</td></tr></tbody></table></div>
+      <p>Every value here is a perfectly ordinary-looking number. Nothing about glancing at this table suggests a problem — the trouble is entirely in the column's declared type, which doesn't show up in a normal <code>SELECT *</code>.</p>
     </div>
 
     <div class="art-section">
-      <h2>3. The positive case: "at least one"</h2>
-      <p>"Find authors who have published at least one book." With IN:</p>
+      <h2>3. The bug: sorting scrambles the order</h2>
       <div class="ed-win">
         <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">in.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT author_name
-FROM authors
-WHERE author_id IN (SELECT author_id FROM books)
-ORDER BY author_name;</code></pre>
+          <span class="ed-file">bug.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
+FROM inventory
+ORDER BY quantity ASC;</code></pre>
       </div>
-      <div class="tbl-wrap"><table class="rt"><thead><tr><th>author_name</th></tr></thead><tbody><tr><td>Chinua Achebe</td></tr><tr><td>Elena Ferrante</td></tr><tr><td>Gabriel Garcia Marquez</td></tr><tr><td>Haruki Murakami</td></tr><tr><td>Jane Austen</td></tr><tr><td>Kazuo Ishiguro</td></tr><tr><td>Toni Morrison</td></tr></tbody></table></div>
-      <p>IN checks each <code>author_id</code> against the full list of author_ids that appear in <code>books</code>. It doesn't care how many times an author_id repeats in that list — the check is just membership, so each author appears exactly once no matter how many books they've published.</p>
-      <p>With EXISTS:</p>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">exists.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT author_name
-FROM authors a
-WHERE EXISTS (
-  SELECT 1 FROM books b WHERE b.author_id = a.author_id
-)
-ORDER BY author_name;</code></pre>
-      </div>
-      <p>EXISTS asks a different question for every author: "is there at least one row in <code>books</code> where author_id matches?" It stops looking the moment it finds one match — it doesn't care how many books that author has, only whether the count is greater than zero. Same seven rows, same order, identical output to the IN version.</p>
-      <p>With a plain JOIN:</p>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">join.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT a.author_name
-FROM authors a
-JOIN books b ON b.author_id = a.author_id
-ORDER BY a.author_name;</code></pre>
-      </div>
-      <div class="tbl-wrap"><table class="rt"><thead><tr><th>author_name</th></tr></thead><tbody><tr><td>Chinua Achebe</td></tr><tr><td>Elena Ferrante</td></tr><tr><td>Gabriel Garcia Marquez</td></tr><tr><td>Haruki Murakami</td></tr><tr><td>Haruki Murakami</td></tr><tr><td>Jane Austen</td></tr><tr><td>Kazuo Ishiguro</td></tr><tr><td>Kazuo Ishiguro</td></tr><tr><td>Toni Morrison</td></tr></tbody></table></div>
-      <p>A JOIN doesn't check membership — it multiplies rows. For every book an author has, JOIN produces one row. Haruki Murakami and Kazuo Ishiguro each have two books, so they each appear twice — nine rows for seven distinct authors, not because the query is "wrong," but because a JOIN was never asking "does a match exist," it was asking "show me every combination that matches." Those are different questions that happen to look similar.</p>
-      <p>Getting back to one row per author needs an explicit <code>DISTINCT</code>:</p>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">join-fixed.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT DISTINCT a.author_name
-FROM authors a
-JOIN books b ON b.author_id = a.author_id
-ORDER BY a.author_name;</code></pre>
-      </div>
-      <p>Forgetting that <code>DISTINCT</code> is the single most common reason a "simple" JOIN-based existence check quietly returns duplicate rows.</p>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>product_name</th><th>quantity</th></tr></thead><tbody><tr><td>Marker</td><td>'10'</td></tr><tr><td>Stapler</td><td>'100'</td></tr><tr><td>Eraser</td><td>'2'</td></tr><tr><td>Notebook</td><td>'25'</td></tr><tr><td>Pen</td><td>'5'</td></tr></tbody></table></div>
+      <p>The lowest quantity on the shelf, 2, ends up third. The highest, 100, ends up second. This isn't close to sorted by quantity in any numeric sense — <code>10</code> and <code>100</code> jump to the front simply because they start with the character <code>'1'</code>, which sorts before <code>'2'</code>, <code>'5'</code>, and <code>'9'</code>.</p>
     </div>
 
     <div class="art-section">
-      <h2>4. The negative case: "has none"</h2>
-      <p>"Find authors who have published no books." This should return exactly one row: Yaa Gyasi. With NOT IN:</p>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">not-in.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT author_name
-FROM authors
-WHERE author_id NOT IN (SELECT author_id FROM books)
-ORDER BY author_name;</code></pre>
-      </div>
-      <div class="empty-result">0 rows returned.</div>
-      <p>Not an error — a silent, confidently wrong empty result. The reason is the NULL sitting in <em>Untitled Manuscript</em>'s <code>author_id</code>.</p>
-      <p>With NOT EXISTS:</p>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">not-exists.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT author_name
-FROM authors a
-WHERE NOT EXISTS (
-  SELECT 1 FROM books b WHERE b.author_id = a.author_id
-)
-ORDER BY author_name;</code></pre>
-      </div>
-      <div class="tbl-wrap"><table class="rt"><thead><tr><th>author_name</th></tr></thead><tbody><tr><td>Yaa Gyasi</td></tr></tbody></table></div>
-      <p>NOT EXISTS asks, per author, "is there no row in <code>books</code> matching this author_id" — a question a stray NULL somewhere else in the table can't interfere with, because the comparison is always scoped to rows that actually match this specific author_id. Correct: one row, Yaa Gyasi.</p>
-      <p>Equally correct, with a LEFT JOIN:</p>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">left-join.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT a.author_name
-FROM authors a
-LEFT JOIN books b ON b.author_id = a.author_id
-WHERE b.book_id IS NULL
-ORDER BY a.author_name;</code></pre>
-      </div>
-      <p>LEFT JOIN keeps every author whether or not <code>books</code> has a match, filling in NULL for <code>book_id</code> when there's no match — filtering on <code>b.book_id IS NULL</code> isolates exactly the authors who never matched. Same single row.</p>
+      <h2>4. Why it happens</h2>
+      <p><code>quantity</code> is declared TEXT, so SQLite compares its values the way it compares any text: character by character, left to right, using each character's code point — exactly like sorting words alphabetically. <code>'100'</code> and <code>'2'</code> are compared by looking at their first characters first: <code>'1'</code> versus <code>'2'</code>. <code>'1'</code> comes first, so <code>'100'</code> sorts before <code>'2'</code>, no matter what the rest of either string says. The comparison never gets far enough to notice that one number is fifty times larger than the other, because it was never told these were numbers in the first place.</p>
     </div>
 
     <div class="art-section">
-      <h2>5. Why NOT IN breaks</h2>
-      <p>NOT IN expands to a chain of <code>&lt;&gt;</code> comparisons: <code>author_id &lt;&gt; 1 AND author_id &lt;&gt; 2 AND ... AND author_id &lt;&gt; NULL</code>. Every comparison against NULL in SQL evaluates to UNKNOWN, not TRUE or FALSE — SQL has three truth values, not two. ANDing anything with UNKNOWN produces UNKNOWN, never TRUE, so the moment one NULL enters that chain, the entire condition becomes UNKNOWN for every row being tested — including Yaa Gyasi, who has nothing to do with the NULL book. A WHERE clause only keeps rows that evaluate to TRUE; UNKNOWN is discarded exactly like FALSE. The result is an empty set, with nothing to flag that anything went wrong.</p>
-      <p>IN doesn't have this failure mode for matching rows, only once it's negated: a genuine match still evaluates to TRUE regardless of what else is in the list, which is why IN worked fine in section 3 against the exact same NULL-containing subquery, and only broke once it became NOT IN.</p>
-    </div>
-
-    <div class="art-section">
-      <h2>6. Which one to reach for</h2>
-      <p>EXISTS and NOT EXISTS are the safest default for "does a match exist" questions, for two reasons that hold regardless of the data: they can't produce duplicate rows, because they never return columns from the matched table, only a yes/no per outer row; and they can't be broken by a NULL somewhere else in the matched table, because the comparison is scoped per-row rather than evaluated against the whole subquery result up front.</p>
-      <p>IN is fine, and often reads more naturally, for the positive case — but shouldn't be negated into NOT IN unless the subquery column is guaranteed NOT NULL. Filtering the NULL out before the comparison happens fixes it:</p>
+      <h2>5. The same root cause breaks WHERE too</h2>
       <div class="ed-win">
         <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">not-in-fixed.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT author_name
-FROM authors
-WHERE author_id NOT IN (
-  SELECT author_id FROM books WHERE author_id IS NOT NULL
-)
-ORDER BY author_name;</code></pre>
+          <span class="ed-file">where-bug.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
+FROM inventory
+WHERE quantity > '8';</code></pre>
       </div>
-      <p>JOIN is the right tool when the goal is genuinely to pull data from both tables together — not just to check existence. Using it purely as an existence filter, without DISTINCT, is how duplicate rows end up in reports that were never supposed to have them.</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">result</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>(0 rows)</code></pre>
+      </div>
+      <p>Three products — Marker (10), Notebook (25), Stapler (100) — clearly have more than 8 units in stock. This query returns nothing. <code>'10'</code>, <code>'25'</code>, and <code>'100'</code> all start with <code>'1'</code> or <code>'2'</code>, both of which sort before <code>'8'</code> as characters, so none of them count as "greater than" <code>'8'</code> in a text comparison — even though every one of them is numerically much larger.</p>
     </div>
 
     <div class="art-section">
-      <h2>7. Cheat sheet</h2>
+      <h2>6. The fix: CAST before comparing</h2>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">fix.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
+FROM inventory
+ORDER BY CAST(quantity AS INTEGER) ASC;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>product_name</th><th>quantity</th></tr></thead><tbody><tr><td>Eraser</td><td>'2'</td></tr><tr><td>Pen</td><td>'5'</td></tr><tr><td>Marker</td><td>'10'</td></tr><tr><td>Notebook</td><td>'25'</td></tr><tr><td>Stapler</td><td>'100'</td></tr></tbody></table></div>
+      <p><code>CAST(quantity AS INTEGER)</code> converts each value to a real number before the comparison runs, so <code>ORDER BY</code> sorts 2, 5, 10, 25, 100 the way anyone would expect. The same fix applies directly to the WHERE version: <code>WHERE CAST(quantity AS INTEGER) > 8</code> correctly returns Marker, Notebook, and Stapler. <code>CAST</code> is a query-time patch — the more durable fix is correcting the column's type at the source (the import script, the table definition) so nothing downstream has to remember to cast it every time.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>7. Where this actually comes from</h2>
+      <p>Nobody sits down and deliberately declares a quantity column as TEXT. It happens through the side doors: a CSV loader that treats every column as text unless told otherwise, a JSON API that serializes all its numbers as quoted strings, a spreadsheet export where a "Format Cells as Text" setting leaked into a column, or a user-facing form field that was never validated as numeric before being saved. By the time the data lands in a table, it looks completely ordinary — which is exactly why this bug tends to survive for a long time before anyone notices the sort order is wrong.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>8. Cheat sheet</h2>
       <table class="cheat-table">
-        <thead><tr><th>Approach</th><th>Duplicates rows?</th><th>Breaks on NULL?</th><th>Best for</th></tr></thead>
+        <thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead>
         <tbody>
-          <tr><td>IN</td><td>No</td><td>Only when negated (NOT IN)</td><td>Positive existence checks</td></tr>
-          <tr><td>EXISTS / NOT EXISTS</td><td>No</td><td>No</td><td>Existence checks, especially with untrusted NULLs</td></tr>
-          <tr><td>JOIN</td><td>Yes, without DISTINCT</td><td>No</td><td>Pulling actual data from both tables, not just checking existence</td></tr>
+          <tr><td>ORDER BY puts 10 before 2</td><td>Numeric-looking column is actually TEXT</td><td><code>ORDER BY CAST(col AS INTEGER)</code></td></tr>
+          <tr><td>WHERE col > 'N' returns too few or zero rows</td><td>Comparing TEXT lexicographically instead of numerically</td><td><code>WHERE CAST(col AS INTEGER) > N</code></td></tr>
+          <tr><td>Long-term fix</td><td>Import/ingestion never set the right column type</td><td>Correct the type at the source table or the load script</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="art-section">
-      <h2>8. Try it yourself</h2>
-      <p>The two gotchas here — JOIN's duplicate rows and NOT IN's silent NULL failure — don't show up in toy examples with clean data. They show up the first time a real dataset has an author with no books, or a record nobody bothered to link to anything. Both are common, and both are one word — <code>DISTINCT</code>, or EXISTS instead of IN — away from not happening.</p>
-      <p><a href="/">Practice filtering queries live on TableNotFound →</a></p>
+      <h2>9. Try it yourself</h2>
+      <p>This trap is quiet because the data never looks wrong — every value really is the number it claims to be, just spelled out as text instead of stored as one. The only way to catch it ahead of time is checking a column's actual declared type before trusting <code>ORDER BY</code> or a numeric <code>WHERE</code> comparison on it, especially on any column that came from a CSV, an API, or a spreadsheet rather than being typed by hand.</p>
+      <p><a href="/">Practice sorting and filtering live on TableNotFound →</a></p>
     </div>
 </div>
 

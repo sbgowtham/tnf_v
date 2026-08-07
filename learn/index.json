@@ -75,5 +75,12 @@
     "href": "/blog/nullif-sentinel-values-division-by-zero.html",
     "icon": "📝",
     "color": "#dbeafe"
+  },
+  {
+    "title": "Numbers Stored as TEXT",
+    "desc": "Why '10' sorts before '2'",
+    "href": "/blog/numbers-stored-as-text-sorting-trap.html",
+    "icon": "📝",
+    "color": "#dbeafe"
   }
 ]

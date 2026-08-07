@@ -1,0 +1,162 @@
+{
+  "setup": "CREATE TABLE habit_logs(log_id INTEGER,habit_name TEXT,log_date TEXT,completed INTEGER);\nINSERT INTO habit_logs VALUES\n (1,'Morning Meditation','2026-08-01',1),\n (2,'Morning Meditation','2026-08-02',1),\n (3,'Morning Meditation','2026-08-03',0),\n (4,'Morning Meditation','2026-08-05',1),\n (5,'Morning Meditation','2026-08-07',1);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "hard",
+      "cc": [
+        "Recursive CTE",
+        "LEFT JOIN",
+        "CASE WHEN",
+        "CTE",
+        "ORDER BY"
+      ],
+      "story": {
+        "en": "Friday morning at Notion's Habit Tracker team. The habit_logs table only gets a row when the app is actually opened that day — a completed habit gets logged as 1, a habit the user opened the app for but chose to skip gets logged as 0, and a day the user never opened the app at all simply has no row whatsoever. Weekly streak calendars need to show all seven days regardless, including the days with no data at all, but habit_logs only ever contains the days something actually happened — there's no table anywhere that already lists 'every day of the week' to join against.",
+        "ta": "Friday morning Notion-oda Habit Tracker team-la. habit_logs table-la, app-a andha naal open pannina apparam mattum-thaan oru row varum — complete panniya habit 1-a log aagum, user app open panni aana habit-a skip panna decide pannaal 0-a log aagum, matrum user app-е open pannaadha oru naal-kku edhavadhu row-е irukkaadhu. Weekly streak calendars ella ezhu naalum kaatanum, edhavadhu data-е illaadha naalgal sேrndhu, aana habit_logs-la edhavadhu real-a nadandha naalgal mattum-thaan irukkum — 'week-oda ovvoru naalum' nu already list pannirukkura table edhuvum illa join panna.",
+        "hi": "Friday morning Notion ke Habit Tracker team mein. habit_logs table mein tabhi ek row aati hai jab app us din actually khola gaya ho — complete hui habit 1 ke roop mein log hoti hai, user ne app khola lekin habit skip karne ka faisla kiya to 0 ke roop mein log hoti hai, aur jis din user ne app hi nahi khola us din koi row hoti hi nahi. Weekly streak calendars ko saatoon din dikhane hain, un dino sameत jinke paas koi data hi nahi hai, lekin habit_logs mein sirf wahi din hain jab kuch asal mein hua — 'hafte ka har din' pehle se list karne wala koi table hai hi nahi jise join kiya ja sake.",
+        "te": "Friday morning Notion Habit Tracker team lo. habit_logs table lo, app aa roju actually open chesinapudu matrame oka row vastundi — complete chesina habit 1 ga log avutundi, user app open chesi habit skip cheyalani decide chesinapudu 0 ga log avutundi, mariyu user app e open cheyani roju ki ఏ row e undadu. Weekly streak calendars anni edu rojulu chupinchali, data e lేni rojulu తో patu, kaani habit_logs lo నిజంగా jarigina rojulu matrame unnayi — 'week prathi roju' ani already list chesina table edi ledu join cheyadaniki."
+      },
+      "question": {
+        "en": "For the habit 'Morning Meditation', build a full calendar of all seven days from 2026-08-01 through 2026-08-07 using a recursive CTE, then LEFT JOIN it against habit_logs to find that habit's status on each day. Label each day's status as 'Completed' if completed = 1, 'Skipped' if completed = 0, and 'No Data' if there's no matching row in habit_logs at all for that day. Return day and status for all seven days, sorted by day.",
+        "ta": "'Morning Meditation' habit-kku, 2026-08-01 mudhal 2026-08-07 varaikkum ella ezhu naalgal-ayum recursive CTE use panni build pannunga, apparam adha habit_logs-oda LEFT JOIN panni, ovvoru naalum andha habit-oda status-a kandupidunga. completed = 1 na 'Completed' nu, completed = 0 na 'Skipped' nu, matrum andha naal-kku habit_logs-la edhavadhu matching row-е illainaa 'No Data' nu status-a label pannunga. day matrum status-a ella ezhu naalgal-kkum return pannunga, day-la sort pannunga.",
+        "hi": "'Morning Meditation' habit ke liye, 2026-08-01 se 2026-08-07 tak sabhi saat din ka calendar recursive CTE use karke banao, phir use habit_logs se LEFT JOIN karke har din us habit ka status dhoondo. completed = 1 ho to 'Completed', completed = 0 ho to 'Skipped', aur us din ke liye habit_logs mein koi matching row hi na ho to 'No Data' label karo. day aur status ko sabhi saat dino ke liye return karo, day ke hisaab se sort karke.",
+        "te": "'Morning Meditation' habit ki, 2026-08-01 nunchi 2026-08-07 varaku anni edu rojula calendar ni recursive CTE vadi build cheyandi, tarvata దానిని habit_logs తో LEFT JOIN chesi, prathi roju aa habit status ni kanugonandi. completed = 1 aithe 'Completed' ani, completed = 0 aithe 'Skipped' ani, mariyu aa roju ki habit_logs lo ఏ matching row e lేకపోతే 'No Data' ani status ni label cheyandi. day mariyu status ni anni edu rojulaki return cheyandi, day prakaram sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "habit_logs",
+          "cols": [
+            {
+              "n": "log_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "habit_name",
+              "t": "TEXT",
+              "e": "Morning Meditation"
+            },
+            {
+              "n": "log_date",
+              "t": "TEXT",
+              "e": "2026-08-01"
+            },
+            {
+              "n": "completed",
+              "t": "INTEGER",
+              "e": "1"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at the raw habit log — only five rows for a seven-day week",
+            "ta": "Raw habit log-a paarunga — ezhu-naal week-kku pathu rows mattum",
+            "hi": "Raw habit log dekho — saat din ke hafte ke liye sirf paanch rows",
+            "te": "Raw habit log ni chudandi — edu-roju week ki aidu rows matrame"
+          },
+          "sql": "SELECT *\nFROM habit_logs\nORDER BY log_date;",
+          "explain": {
+            "en": [
+              "habit_logs has exactly five rows, but the week being reported on spans seven days — 2026-08-04 and 2026-08-06 don't appear anywhere in this table at all, not as a row with a NULL completed value, just as rows that were never created.",
+              "2026-08-03's row has completed = 0 — the user opened the app that day and actively marked the habit as not done, which is a genuinely different event from a day the app was never opened at all. Both will eventually need to be told apart in the final report.",
+              "There's no table in this database that already lists every calendar date — habit_logs only ever contains a row for a day something happened, so the seven-day calendar itself has to be built from scratch rather than looked up anywhere.",
+              "Nothing about a full week is visible yet from this table alone — this step only confirms how sparse the raw log actually is against the week it needs to represent."
+            ],
+            "ta": [
+              "habit_logs-la exact-a anju rows irukku, aana report pannura week ezhu naalgal irukku — 2026-08-04 matrum 2026-08-06 indha table-la engum varala, NULL completed value vachirukkura row-a kooda illa, edhavadhu create-е aagaadha rows.",
+              "2026-08-03-oda row-la completed = 0 irukku — andha naal user app open panni habit-a actively 'not done' nu mark pannaanga, idhu app-е open pannaadha naal-la irundhu genuine-a vera event. Final report-la rendayum vElpadutti solla venum.",
+              "Indha database-la ovvoru calendar date-ayum already list pannirukkura table edhuvum illa — habit_logs-la edhavadhu nadandha naal-kku mattum-thaan row irukkum, so ezhu-naal calendar-a engum lookup pannama scratch-la irundhu build pannanum.",
+              "Full week-a paatti indha table-la mattum edhuvum theriyaadhu — indha step, andha week-a represent panna venum irukkura raw log evvalavu sparse-a irukkunu confirm pannradhukku mattum."
+            ],
+            "hi": [
+              "habit_logs mein exactly paanch rows hain, lekin jis hafte ka report banana hai wo saat din ka hai — 2026-08-04 aur 2026-08-06 is table mein kahin nahi dikhte, na NULL completed value wali row ke roop mein, bas aisi rows jo kabhi bani hi nahi.",
+              "2026-08-03 ki row mein completed = 0 hai — us din user ne app khola aur habit ko actively 'not done' mark kiya, jo us din se bilkul alag event hai jab app kabhi khola hi nahi gaya. Final report mein dono ko alag-alag batana hoga.",
+              "Is database mein koi table nahi hai jo pehle se har calendar date list karta ho — habit_logs mein sirf usi din ki row hoti hai jab kuch hua ho, isliye saat-din ka calendar kahin se lookup karne ki jagah shuru se banana padta hai.",
+              "Sirf is table se poore hafte ke baare mein abhi kuch nahi dikhta — yeh step sirf yeh confirm karta hai ki jis hafte ko represent karna hai uske muqable raw log kitna sparse hai."
+            ],
+            "te": [
+              "habit_logs lo exact ga aidu rows unnayi, kaani report cheyalsina week edu rojulu — 2026-08-04 mariyu 2026-08-06 ee table lo ekkada kanipinchavu, NULL completed value unna row ga kuda kaadu, kevalam create e avvani rows.",
+              "2026-08-03 row lo completed = 0 undi — aa roju user app open chesi habit ni actively 'not done' ani mark chesadu, idi app e open cheyani roju kanna genuine ga veru event. Final report lo rendintini vేరు cheppali.",
+              "Ee database lo prathi calendar date ni already list chese table edi ledu — habit_logs lo emaina jarigina roju ki matrame row untundi, so edu-roju calendar ni ekkadaina lookup cheyadam kaadu, scratch nunchi build cheyali.",
+              "Kevalam ee table nunchi full week gurinchi inka emi kanipinchadu — ee step aa week ni represent cheyalsina raw log enta sparse ga undo confirm chestundi matrame."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Build the missing calendar with a recursive CTE",
+            "ta": "Recursive CTE vachi missing calendar-a build pannunga",
+            "hi": "Recursive CTE se missing calendar banao",
+            "te": "Recursive CTE tho missing calendar ni build cheyandi"
+          },
+          "sql": "WITH RECURSIVE date_series(day) AS (\n  SELECT DATE('2026-08-01')\n  UNION ALL\n  SELECT DATE(day, '+1 day')\n  FROM date_series\n  WHERE day < DATE('2026-08-07')\n)\nSELECT day FROM date_series;",
+          "explain": {
+            "en": [
+              "A recursive CTE has two parts joined by UNION ALL: the first SELECT (the anchor) produces the very first row, and the second SELECT (the recursive member) refers back to date_series itself, generating the next row from the previous one — something an ordinary, non-recursive CTE can never do.",
+              "The anchor is SELECT DATE('2026-08-01') — exactly one row, 2026-08-01, which becomes the starting point the recursion builds on.",
+              "The recursive member, SELECT DATE(day, '+1 day') FROM date_series WHERE day < DATE('2026-08-07'), runs again and again: first against the anchor's single row to produce 08-02, then against 08-02 to produce 08-03, and so on, each pass adding exactly one more day.",
+              "WHERE day < DATE('2026-08-07') is the part that eventually stops the recursion — once day reaches 08-07, the condition is false, no more rows get produced, and the CTE settles at exactly seven rows: 08-01 through 08-07. Without a stopping condition like this, a recursive CTE keeps producing rows indefinitely."
+            ],
+            "ta": [
+              "Recursive CTE-kku UNION ALL vachi join panna rendu parts irukku: mudhal SELECT (anchor) mudhal row-a produce pannum, rendaavadhu SELECT (recursive member) date_series-a thirumba refer pannum, previous row-la irundhu next row-a generate pannum — idha ordinary, non-recursive CTE eppavum panna mudiyaadhu.",
+              "Anchor SELECT DATE('2026-08-01') — exact-a oru row, 2026-08-01, adhu recursion build panna starting point aagum.",
+              "Recursive member, SELECT DATE(day, '+1 day') FROM date_series WHERE day < DATE('2026-08-07'), thirumba thirumba run aagum: mudhalla anchor-oda single row-kku etthiraaga 08-02-a produce pannum, apparam 08-02-kku etthiraaga 08-03-a produce pannum, appadi, ovvoru pass-um exact-a oru naal add pannum.",
+              "WHERE day < DATE('2026-08-07'), recursion-a eventually nikkura part — day 08-07 reach aana ude, condition false-a irukkum, innum rows produce aagaadhu, matrum CTE exact-a ezhu rows-la settle aagum: 08-01 mudhal 08-07 varaikkum. Idhu madhiri oru stopping condition illama, recursive CTE indefinitely rows produce panniteE irukkum."
+            ],
+            "hi": [
+              "Recursive CTE ke UNION ALL se jude do parts hote hain: pehla SELECT (anchor) sabse pehli row produce karta hai, aur dusra SELECT (recursive member) date_series ko wapas refer karta hai, pichli row se agli row generate karta hai — jo ek ordinary, non-recursive CTE kabhi nahi kar sakta.",
+              "Anchor hai SELECT DATE('2026-08-01') — exactly ek row, 2026-08-01, jo recursion banane ka starting point ban jaata hai.",
+              "Recursive member, SELECT DATE(day, '+1 day') FROM date_series WHERE day < DATE('2026-08-07'), baar-baar chalta hai: pehle anchor ki single row ke against 08-02 produce karta hai, phir 08-02 ke against 08-03, aise hi, har pass exactly ek din aur jodta hai.",
+              "WHERE day < DATE('2026-08-07') wo part hai jo aakhir mein recursion ko rokta hai — jaise hi day 08-07 tak pahunchta hai, condition false ho jaati hai, aur rows produce hona band ho jaati hain, aur CTE exactly saat rows par settle ho jaata hai: 08-01 se 08-07 tak. Aisi stopping condition ke bina, recursive CTE hamesha ke liye rows produce karta rahega."
+            ],
+            "te": [
+              "Recursive CTE ki UNION ALL tho join ayye rendu parts untayi: modati SELECT (anchor) modati row ni produce chestundi, rendo SELECT (recursive member) date_series ni malli refer chestundi, previous row nunchi next row ni generate chestundi — idi ordinary, non-recursive CTE ఎప్పుడూ cheyaledu.",
+              "Anchor SELECT DATE('2026-08-01') — exact ga oka row, 2026-08-01, adi recursion build cheyadaniki starting point avutundi.",
+              "Recursive member, SELECT DATE(day, '+1 day') FROM date_series WHERE day < DATE('2026-08-07'), malli malli run avutundi: modata anchor single row ki వ్యతిరేకంగా 08-02 ni produce chestundi, tarvata 08-02 ki వ్యతిరేకంగా 08-03, ala, prathi pass exact ga oka roju add chestundi.",
+              "WHERE day < DATE('2026-08-07') ante recursion ni eventually apestundi — day 08-07 ki cherukunna venタనే, condition false avutundi, inka rows produce avvavu, mariyu CTE exact ga edu rows ki settle avutundi: 08-01 nunchi 08-07 varaku. ఇలాంటి stopping condition lేకపోతే, recursive CTE indefinite ga rows produce chestune untundi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "LEFT JOIN the calendar against habit_logs and label each day",
+            "ta": "Calendar-a habit_logs-oda LEFT JOIN panni ovvoru naalum label pannunga",
+            "hi": "Calendar ko habit_logs se LEFT JOIN karke har din ko label karo",
+            "te": "Calendar ni habit_logs తో LEFT JOIN chesi prathi roju label cheyandi"
+          },
+          "sql": "WITH RECURSIVE date_series(day) AS (\n  SELECT DATE('2026-08-01')\n  UNION ALL\n  SELECT DATE(day, '+1 day')\n  FROM date_series\n  WHERE day < DATE('2026-08-07')\n)\nSELECT ds.day,\n       CASE\n         WHEN hl.completed = 1 THEN 'Completed'\n         WHEN hl.completed = 0 THEN 'Skipped'\n         ELSE 'No Data'\n       END AS status\nFROM date_series ds\nLEFT JOIN habit_logs hl\n  ON hl.log_date = ds.day AND hl.habit_name = 'Morning Meditation'\nORDER BY ds.day;",
+          "explain": {
+            "en": [
+              "LEFT JOIN keeps every one of the seven rows from date_series no matter what — if a day has no matching habit_logs row, hl.completed simply comes back NULL for that day rather than the day disappearing from the result the way an INNER JOIN would make it disappear.",
+              "The CASE expression checks hl.completed = 1 and hl.completed = 0 explicitly, in that order, before falling through to ELSE — a genuinely unmatched day has hl.completed as NULL, and NULL never equals 1 or 0 in either comparison, so it correctly falls through to 'No Data' rather than accidentally matching one of the first two branches.",
+              "2026-08-04 and 2026-08-06 — the two days with no row in habit_logs at all — correctly come back labeled 'No Data', while 2026-08-03, which does have a row with completed = 0, correctly comes back 'Skipped' instead. The recursive CTE from step 2 is what made it possible to even have a row for 08-04 and 08-06 to label in the first place.",
+              "hl.habit_name = 'Morning Meditation' is part of the ON clause, not a separate WHERE filter — that keeps it evaluated during the join itself, so a day would still appear as 'No Data' rather than disappearing entirely if that condition ever excluded every matching row, exactly the same LEFT-JOIN-safe pattern as filtering inside ON instead of WHERE."
+            ],
+            "ta": [
+              "LEFT JOIN, date_series-oda ella ezhu rows-um edhu nadandhaalum vachirukkum — oru naal-kku matching habit_logs row illaina, hl.completed andha naal-kku NULL-a mattum-thaan varum, INNER JOIN madhiri andha naal result-la irundhu maraiyaadhu.",
+              "CASE expression, hl.completed = 1 matrum hl.completed = 0-a explicit-a, andha order-la, ELSE-kku pogura munnadi check pannum — genuine-a unmatched naal-kku hl.completed NULL-a irukkum, NULL eppavum 1 alladhu 0-kku equal aagaadhu, so correct-a 'No Data'-kku poagum, mudhal rendu branches-la onnu accidental-a match aagaadhu.",
+              "2026-08-04 matrum 2026-08-06 — habit_logs-la edhavadhu row-е illaadha rendu naalgal — correct-a 'No Data' nu label aagi varum, 2026-08-03 aana, completed = 0 vachirukkura row irukku, correct-a 'Skipped' nu varum. Step 2-oda recursive CTE dhaan 08-04 matrum 08-06-kku label panna row-е irukka vaikkiradhu.",
+              "hl.habit_name = 'Morning Meditation', ON clause-oda part, thani WHERE filter illa — idhu join nadakkumbodhu-thaan evaluate aagum, so andha condition edhavadhu matching row-a exclude pannina kooda, naal completely maraiyaama 'No Data'-a dhaan varum, ON-kkulla filter panradhu, WHERE-a vida LEFT-JOIN-safe pattern."
+            ],
+            "hi": [
+              "LEFT JOIN date_series ki saatoon rows ko har haal mein rakhta hai — agar kisi din ke liye koi matching habit_logs row nahi hai, to us din ke liye hl.completed sirf NULL aata hai, INNER JOIN ki tarah wo din result se gayab nahi hota.",
+              "CASE expression, hl.completed = 1 aur hl.completed = 0 ko explicitly, usi order mein, ELSE tak pahunchne se pehle check karta hai — genuinely unmatched din ke liye hl.completed NULL hota hai, aur NULL kabhi bhi 1 ya 0 ke barabar nahi hota, isliye yeh sahi se 'No Data' tak pahunchta hai, pehle do branches mein se koi galti se match nahi hota.",
+              "2026-08-04 aur 2026-08-06 — jinke paas habit_logs mein koi row hi nahi hai — sahi se 'No Data' label ho kar aate hain, jabki 2026-08-03, jiske paas completed = 0 wali row hai, sahi se 'Skipped' aata hai. Step 2 ka recursive CTE hi hai jisne 08-04 aur 08-06 ke liye label karne ko ek row hona sambhav banaya.",
+              "hl.habit_name = 'Morning Meditation', ON clause ka part hai, alag WHERE filter nahi — isse yeh join ke dauraan hi evaluate hota hai, isliye agar yeh condition kisi bhi matching row ko exclude kar de, to bhi din poori tarah gayab hone ki jagah 'No Data' hi dikhega, WHERE ki jagah ON ke andar filter karna bilkul waisa hi LEFT-JOIN-safe pattern hai."
+            ],
+            "te": [
+              "LEFT JOIN date_series anni edu rows ni ఏమైనా uంచుతుంది — oka roju ki matching habit_logs row lేకపోతే, hl.completed aa roju ki NULL vastundi, INNER JOIN la aa roju result nunchi marugadu.",
+              "CASE expression, hl.completed = 1 mariyu hl.completed = 0 ni explicit ga, aa order lో, ELSE ki vellakamunde check chestundi — genuine ga unmatched roju ki hl.completed NULL ga untundi, NULL ఎప్పుడూ 1 leda 0 ki equal avvadu, so correct ga 'No Data' ki veltundi, modati rendu branches lo edi accidental ga match avvadu.",
+              "2026-08-04 mariyu 2026-08-06 — habit_logs lో ఏ row e lేni rendu rojulu — correct ga 'No Data' ani label ayi vastayi, 2026-08-03 aithe, completed = 0 unna row undi, correct ga 'Skipped' ani vastundi. Step 2 recursive CTE నే 08-04 mariyu 08-06 ki label cheyadaniki row undేలా chesindi modatlo.",
+              "hl.habit_name = 'Morning Meditation', ON clause part, separate WHERE filter kaadu — idi join jarిగే samayంలో e evaluate avutundi, so aa condition ఏదైనా matching row ni exclude chesina, roju poortiga marugakunda 'No Data' ga e vastundi, WHERE బదులు ON లోపల filter cheyadam ade LEFT-JOIN-safe pattern."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
