@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SQL Practice Questions — Page 2 of 2 | TableNotFound</title>
-<meta name="description" content="Browse SQL practice questions 11–18 of 18 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 2 of 2.">
+<meta name="description" content="Browse SQL practice questions 11–19 of 19 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 2 of 2.">
 <link rel="canonical" href="https://www.tablenotfound.com/questions/page/2.html">
 <link rel="prev" href="https://www.tablenotfound.com/">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -320,7 +320,7 @@ td{padding:14px 16px;vertical-align:middle}
   <!-- QUESTION TABLE -->
   <div class="panel">
     <div class="toolbar">
-      <span class="toolbar-stat" id="tstat">8 questions</span>
+      <span class="toolbar-stat" id="tstat">9 questions</span>
       <div class="toolbar-gap"></div>
       <div class="filters">
         <button class="fb on" onclick="filt('all',this)">All</button>
@@ -396,8 +396,17 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-diff"><span class="diff-mid">mid</span></td>
         <td class="td-st"></td>
       </tr>
-      <tr onclick="openQ('youtube',1)">
+      <tr onclick="openQ('unacademy',1)">
         <td class="td-num">17</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/unacademy-student-mocktestscores-nonnull-score-calculate.html" onclick="event.preventDefault();event.stopPropagation();openQ('unacademy',1);"><div class="q-text">For each student in mock_test_scores who has a non-NULL score, calculate their percentile as PERCENT_RANK() expressed as a percentage (0 to 100, rounded to 2 decimal places) such that the highest-scoring student ends up with a percentile near 100 and the lowest-scoring student ends up near 0 — matching how 'percentile' is normally understood ('I scored better than X% of test-takers'). Exclude Vikram, whose score is NULL, entirely. Return student_name, score, and percentile, sorted by score descending.</div><div class="q-concepts">PERCENT_RANK · Window Functions · RANK</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#7c4dff 13%,white);color:color-mix(in srgb,#7c4dff 90%,black)">Unacademy</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('youtube',1)">
+        <td class="td-num">18</td>
         <td class="td-q">
           <a class="q-link" href="/questions/youtube-video-calculate-percentage-viewers-watched-until.html" onclick="event.preventDefault();event.stopPropagation();openQ('youtube',1);"><div class="q-text">For each video, calculate the percentage of viewers who watched until the end out of all viewers who started the video. Round the result to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE · GROUP BY</div></a>
         </td>
@@ -406,7 +415,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('zomato',1)">
-        <td class="td-num">18</td>
+        <td class="td-num">19</td>
         <td class="td-q">
           <a class="q-link" href="/questions/zomato-every-restaurant-never-had-cancelled-order-meaning.html" onclick="event.preventDefault();event.stopPropagation();openQ('zomato',1);"><div class="q-text">Find every restaurant that has never had a cancelled order — meaning it has zero orders with status = 'cancelled'. This includes restaurants with no orders at all, since they trivially satisfy 'never cancelled.' Use EXISTS or NOT EXISTS with a correlated subquery rather than aggregating and filtering afterward. Return restaurant_name and city, sorted alphabetically by restaurant_name.</div><div class="q-concepts">EXISTS · NOT EXISTS · Correlated Subquery</div></a>
         </td>
@@ -435,7 +444,7 @@ let UM = []; // loaded dynamically from /questions/index.json
 /* PAGE_QUESTIONS: the exact {uid,qid} pairs pre-rendered into THIS page's tbody, in order.
    Written by scripts/generate-question-pages.js — boot() only ever fetches and renders
    these, so pagination can't be silently undone once JS loads. */
-let PAGE_QUESTIONS = [{"uid":"snapchat","qid":5},{"uid":"spotify","qid":1},{"uid":"techcorp","qid":1},{"uid":"tinder","qid":7},{"uid":"uber","qid":1},{"uid":"uber","qid":4},{"uid":"youtube","qid":1},{"uid":"zomato","qid":1}];
+let PAGE_QUESTIONS = [{"uid":"snapchat","qid":5},{"uid":"spotify","qid":1},{"uid":"techcorp","qid":1},{"uid":"tinder","qid":7},{"uid":"uber","qid":1},{"uid":"uber","qid":4},{"uid":"unacademy","qid":1},{"uid":"youtube","qid":1},{"uid":"zomato","qid":1}];
 /* START_INDEX: 0-based rank of this page's first question among all questions.
    Written by scripts/generate-question-pages.js — keeps the "S.No" column in sync
    with the server-rendered numbering once renderTable() takes over after boot(). */

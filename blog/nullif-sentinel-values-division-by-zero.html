@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nykaa: Rank customers into four loyalty… | TableNotFound</title>
-<meta name="description" content="Nykaa SQL practice question (mid): Rank customers into four loyalty tiers based on total_spend, using NTILE(4) ordered by… Free, runs live in your browser.">
-<link rel="canonical" href="https://www.tablenotfound.com/questions/nykaa-rank-customers-four-loyalty-tiers-totalspend-using.html">
+<title>NULLIF: Sentinel Values and Division by Zero | TableNotFound</title>
+<meta name="description" content="Why AVG(rating) silently skews toward a legacy -1 placeholder instead of skipping it — verified in SQLite, with NULLIF as the fix for both sentinel values and safe division.">
+<link rel="canonical" href="https://www.tablenotfound.com/blog/nullif-sentinel-values-division-by-zero.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -271,21 +271,22 @@ td{padding:14px 16px;vertical-align:middle}
 }
 
 
-.static-wrap{max-width:820px;margin:0 auto;padding:2rem 1.5rem 6rem}
+.article-wrap{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
 .crumb{font-size:12px;font-weight:600;color:var(--t3);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:1.5rem}
 .crumb:hover{color:var(--t2)}
-.q-header{padding:.5rem 0 1.75rem;animation:up .55s cubic-bezier(.22,1,.36,1) both}
-.q-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
-.q-h1{font-size:clamp(22px,4vw,32px);font-weight:800;line-height:1.35;letter-spacing:-.7px;margin-bottom:.5rem;color:var(--text)}
-.q-sub{font-size:13px;color:var(--t2)}
-.step-body{display:block}
-.xpl{display:block}
-.step-head{cursor:default}
-.step-num{background:rgba(255,255,255,.6)!important;color:var(--t2)!important}
-.cta-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.75rem}
-.cta-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:20px;border:none;cursor:pointer;font-family:var(--ff);font-size:13px;font-weight:700;text-decoration:none;background:linear-gradient(135deg,#7c5cfc,#c45cfc);color:#fff;box-shadow:0 3px 12px rgba(124,92,252,.35);transition:transform .18s}
-.cta-btn:hover{transform:translateY(-2px)}
-.cta-btn.secondary{background:rgba(255,255,255,.65);color:var(--t2);border:var(--bdr);box-shadow:none}
+.art-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.art-h1{font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:.5rem;color:var(--text);line-height:1.2}
+.art-meta{font-size:12px;color:var(--t3);margin-bottom:2.5rem}
+.art-section{margin:2.75rem 0}
+.art-section h2{font-size:19px;font-weight:700;color:var(--text);margin-bottom:.4rem}
+.art-section p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
+.art-section code{font-family:var(--fm);font-size:.88em;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
+.ed-win{margin:.75rem 0;border-radius:10px;overflow:hidden}
+.tbl-wrap{margin:.75rem 0}
+.null-cell{color:#ccc;font-style:italic}
+.cheat-table{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0}
+.cheat-table th,.cheat-table td{padding:8px 12px;text-align:left;border-bottom:1px solid rgba(0,0,0,.06)}
+.cheat-table th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3)}
 
 </style>
 <style id="tnf-footer-style">
@@ -391,125 +392,106 @@ td{padding:14px 16px;vertical-align:middle}
   </div>
 </nav>
 
-<div class="static-wrap">
-  <a class="crumb" href="/">← All SQL Questions</a>
+<div class="article-wrap">
+  <a class="crumb" href="/">← Back to TableNotFound</a>
 
-  <div class="q-header">
-    <div class="q-badges">
-      <span class="co-tag" style="background:color-mix(in srgb,#fc2779 13%,white);color:color-mix(in srgb,#fc2779 90%,black)">Nykaa</span>
-      <span class="diff-mid">mid</span>
-      <span class="chip">NTILE</span><span class="chip">CASE WHEN</span><span class="chip">Window Functions</span><span class="chip">ORDER BY</span><span class="chip">WHERE</span>
-    </div>
-    <h1 class="q-h1">Rank customers into four loyalty tiers based on total_spend, using NTILE(4) ordered by total_spend descending, so the top-spending quarter becomes tier 1. Exclude any customer with a NULL total_spend entirely — they haven't made a purchase yet and shouldn't be tiered. Label tier 1 as 'Platinum', tier 2 as 'Gold', tier 3 as 'Silver', and tier 4 as 'Bronze'. Return customer_name, total_spend, and loyalty_tier, sorted by total_spend descending.</h1>
-    <p class="q-sub">Nykaa · Customer Loyalty Tiers — practice this real-world SQL scenario live in your browser.</p>
+  <div class="art-badges">
+    <span class="chip">SQL</span>
+    <span class="chip">NULL Handling</span>
+    <span class="chip">Data Quality</span>
   </div>
+  <h1 class="art-h1">NULLIF Explained</h1>
+  <div class="art-meta">Sentinel values, safe division, and why -1 isn't NULL</div>
 
-  <div class="story" style="--uc:#fc2779">
-    <div class="story-bg"></div>
-    <div class="story-top">
-      <span class="story-lbl">📖 Story</span>
-      <span class="story-co">Nykaa · Customer Loyalty Tiers</span>
-    </div>
-    <div class="story-body">Wednesday morning at Nykaa's Loyalty Program team. Marketing wants to launch a four-tier loyalty program — Platinum, Gold, Silver, Bronze — based purely on how much each customer has spent lifetime, with the top quarter of spenders becoming Platinum. One customer in the system has NULL total_spend because her account was created during a signup promotion but she's never actually completed a purchase — she shouldn't be ranked into any tier at all until she has real spend to rank.</div>
-  </div>
-
-  <div class="mission">
-    <div class="mission-top">🎯 Your Mission</div>
-    <div class="mission-body">Rank customers into four loyalty tiers based on total_spend, using NTILE(4) ordered by total_spend descending, so the top-spending quarter becomes tier 1. Exclude any customer with a NULL total_spend entirely — they haven't made a purchase yet and shouldn't be tiered. Label tier 1 as 'Platinum', tier 2 as 'Gold', tier 3 as 'Silver', and tier 4 as 'Bronze'. Return customer_name, total_spend, and loyalty_tier, sorted by total_spend descending.</div>
-  </div>
-
-  <div class="schema-wrap">
-    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem">📋 Table Structure</div>
-    <div class="schema-cards">
-      <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">customers</span></div>
-        <div><div class="sc-row">
-          <span class="sc-col">customer_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">1</span>
-        </div><div class="sc-row">
-          <span class="sc-col">customer_name</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Aisha</span>
-        </div><div class="sc-row">
-          <span class="sc-col">total_spend</span>
-          <span class="sc-type">REAL</span>
-          <span class="sc-eg">45000</span>
-        </div></div>
-      </div>
-    </div>
-  </div>
-
-  <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:1.5rem 0 .75rem">⚡ Step-by-Step Walkthrough</div>
   
-    <div class="step-card" style="--uc:#fc2779">
-      <div class="step-head">
-        <div class="step-num">1</div>
-        <div class="step-info">
-          <div class="step-title">Look at the raw customer spend data</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
-FROM customers
-ORDER BY total_spend DESC;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">Ten customers have a real total_spend, ranging from Aisha's 45000 down to Juhi's 8000 — this is the pool the loyalty tiers need to be carved out of.</li><li class="xpl-point">Kavya's total_spend is NULL, not 0 — she signed up but has never actually bought anything, which is a fundamentally different situation from a customer who spent nothing on purpose; a 0 would still be a real number to rank, NULL isn't.</li><li class="xpl-point">10 doesn't divide evenly into 4 tiers — that mismatch is exactly the detail the next steps need to handle correctly rather than assuming every tier comes out the same size.</li><li class="xpl-point">Nothing is tiered yet — this step exists purely to see the full spend distribution before deciding where the tier boundaries fall.</li></ul></div>
-      </div>
-    </div>
-    <div class="step-card" style="--uc:#fc2779">
-      <div class="step-head">
-        <div class="step-num">2</div>
-        <div class="step-info">
-          <div class="step-title">NTILE(4) splits customers into four ordered buckets</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT customer_name, total_spend,
-       NTILE(4) OVER (ORDER BY total_spend DESC) AS tier_num
-FROM customers
-WHERE total_spend IS NOT NULL
-ORDER BY total_spend DESC;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">WHERE total_spend IS NOT NULL runs first and removes Kavya before NTILE ever sees the data — she never gets assigned a tier number at all, rather than landing in some default bucket by accident.</li><li class="xpl-point">NTILE(4) OVER (ORDER BY total_spend DESC) doesn't look at the spend values themselves to decide tier boundaries — it just takes the ordered rows and divides that ordering into 4 roughly equal-sized, consecutive groups. Tier 1 is simply 'the first quarter of rows in this order,' not 'everyone above some spend threshold.'</li><li class="xpl-point">10 customers split into 4 tiers can't come out perfectly even — NTILE hands the extra rows to the earliest tiers first, so tier 1 and tier 2 get 3 customers each while tier 3 and tier 4 get 2 each, rather than every tier trying to force an equal 2.5 customers.</li><li class="xpl-point">Divya (35000) lands in tier 2 while Chitra (38000) lands in tier 1, even though both are solidly high spenders — NTILE cares about rank position, not how close two spend values are to each other, so a close pair can end up split across a tier boundary.</li></ul></div>
-      </div>
-    </div>
-    <div class="step-card" style="--uc:#fc2779">
-      <div class="step-head">
-        <div class="step-num">3</div>
-        <div class="step-info">
-          <div class="step-title">Label each tier number with its loyalty name</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT customer_name, total_spend,
-       CASE NTILE(4) OVER (ORDER BY total_spend DESC)
-         WHEN 1 THEN 'Platinum'
-         WHEN 2 THEN 'Gold'
-         WHEN 3 THEN 'Silver'
-         ELSE 'Bronze'
-       END AS loyalty_tier
-FROM customers
-WHERE total_spend IS NOT NULL
-ORDER BY total_spend DESC;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">This CASE uses the 'CASE expression WHEN value THEN ...' form rather than 'CASE WHEN condition THEN ...' — it's matching the NTILE() result against specific numbers 1, 2, 3, which is a shorter way to write what would otherwise need three separate WHEN NTILE(4) OVER (...) = 1 conditions repeating the whole window function each time.</li><li class="xpl-point">ELSE 'Bronze' quietly covers tier 4 without a WHEN 4 THEN 'Bronze' branch — that's safe here specifically because NTILE(4) can only ever produce 1, 2, 3, or 4, so ELSE and 'exactly tier 4' mean the same thing; the same ELSE shortcut would be a bug if the tier count ever changed to NTILE(5).</li><li class="xpl-point">Kavya still doesn't appear anywhere in this result — the WHERE clause filtering happens before NTILE and CASE ever run, so there was never a tier number for CASE to label in the first place.</li><li class="xpl-point">Platinum ends up with 3 customers and Bronze with 2 — the uneven group sizes from the previous step carry straight through into the labeled output, which is worth knowing before promising stakeholders 'exactly 25% of customers in each tier.'</li></ul></div>
-      </div>
+    <div class="art-section">
+      <h2>1. Why this happens</h2>
+      <p>Not every "no value here" in a real database is an actual NULL. Older systems, spreadsheet imports, and quick internal tools frequently invent a placeholder instead — <code>-1</code> for "not rated yet," <code>'N/A'</code> for "not applicable," <code>9999</code> for "unknown date." To every SQL aggregate function, a placeholder like <code>-1</code> is just a normal, valid integer. <code>AVG()</code> has no way to know it's standing in for "nothing" — it averages it in like any other rating, and the result quietly skews toward whatever the placeholder happens to be.</p>
     </div>
 
-  <div class="cta-row">
-    <a class="cta-btn" href="/">▶ Practice this live</a>
-    <a class="cta-btn secondary" href="/">← Browse all questions</a>
-  </div>
+    <div class="art-section">
+      <h2>2. The dataset</h2>
+      <p>Verified by actually running this against SQLite — not hand-computed. A ride-hailing app's <code>trip_ratings</code> table, where riders rate 1–5, but a trip the rider never bothered to rate is logged with a legacy sentinel value of <code>-1</code> instead of a proper NULL.</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">schema.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE trip_ratings(
+  trip_id INTEGER,
+  driver_name TEXT,
+  rating INTEGER
+);
+
+INSERT INTO trip_ratings VALUES
+ (1,'Arjun',5),
+ (2,'Arjun',4),
+ (3,'Arjun',-1),
+ (4,'Arjun',5),
+ (5,'Arjun',-1),
+ (6,'Meena',3),
+ (7,'Meena',3),
+ (8,'Meena',4);</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>trip_id</th><th>driver_name</th><th>rating</th></tr></thead><tbody><tr><td>1</td><td>Arjun</td><td>5</td></tr><tr><td>2</td><td>Arjun</td><td>4</td></tr><tr><td>3</td><td>Arjun</td><td>-1</td></tr><tr><td>4</td><td>Arjun</td><td>5</td></tr><tr><td>5</td><td>Arjun</td><td>-1</td></tr><tr><td>6</td><td>Meena</td><td>3</td></tr><tr><td>7</td><td>Meena</td><td>3</td></tr><tr><td>8</td><td>Meena</td><td>4</td></tr></tbody></table></div>
+      <p>Arjun actually earned three real ratings — 5, 4, 5 — and two of his five trips were simply never rated. Meena has three trips, all rated, no placeholders at all.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>3. The bug</h2>
+      <p>"Average rating per driver" reaches for the obvious aggregate:</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">bug.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT driver_name, ROUND(AVG(rating), 2) AS avg_rating_bug
+FROM trip_ratings
+GROUP BY driver_name;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>driver_name</th><th>avg_rating_bug</th></tr></thead><tbody><tr><td>Arjun</td><td>2.4</td></tr><tr><td>Meena</td><td>3.33</td></tr></tbody></table></div>
+      <p>Arjun — who earned a genuine 5, 4, and 5 on every trip he was actually rated on — comes out with a worse average than Meena, who never scored higher than a 4. The two unrated trips, logged as <code>-1</code>, dragged his real 4.67 average all the way down to 2.4. Nothing errored. The number is just wrong, and it's wrong in exactly the direction that makes a good driver look bad.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>4. Why it happens</h2>
+      <p><code>AVG()</code> sums every non-NULL value in the group and divides by how many there are. <code>-1</code> is not NULL — it's a completely ordinary integer as far as SQL is concerned, so it gets summed in right alongside the real 4s and 5s and counted toward the denominator too. The bug isn't in <code>AVG()</code>; it's that the data uses a number to mean "absence," and nothing in the query told SQL that <code>-1</code> means anything other than <code>-1</code>.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>5. The fix</h2>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">fix.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT driver_name,
+       ROUND(AVG(NULLIF(rating, -1)), 2) AS avg_rating,
+       COUNT(NULLIF(rating, -1)) AS rated_trips,
+       COUNT(*) AS total_trips
+FROM trip_ratings
+GROUP BY driver_name;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>driver_name</th><th>avg_rating</th><th>rated_trips</th><th>total_trips</th></tr></thead><tbody><tr><td>Arjun</td><td>4.67</td><td>3</td><td>5</td></tr><tr><td>Meena</td><td>3.33</td><td>3</td><td>3</td></tr></tbody></table></div>
+      <p><code>NULLIF(a, b)</code> returns NULL if <code>a</code> equals <code>b</code>, and returns <code>a</code> unchanged otherwise. <code>NULLIF(rating, -1)</code> turns every <code>-1</code> into a genuine NULL before <code>AVG()</code> ever sees it, and a real NULL is exactly what every aggregate function already knows how to skip. Arjun's average corrects itself to 4.67 — his actual rating on the trips people bothered to rate — and <code>COUNT(NULLIF(rating, -1))</code> reuses the same trick to report that only 3 of his 5 trips were rated at all, a number worth knowing on its own. Meena, who has no <code>-1</code> rows, is completely unaffected — <code>NULLIF</code> only ever touches the exact value it's told to catch.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>6. NULLIF's other job: guarding a division</h2>
+      <p><code>NULLIF</code>'s single most common real-world use isn't sentinel values at all — it's protecting a division from a zero denominator. <code>orders / clicks</code> is a completely ordinary conversion-rate calculation, right up until a brand-new campaign with zero clicks recorded so far hits that line. SQLite happens to evaluate <code>5 / 0</code> as NULL rather than raising an error — but that's a SQLite-specific kindness, not something to depend on. PostgreSQL raises a hard <code>division by zero</code> error and aborts the whole statement; other engines vary. <code>orders / NULLIF(clicks, 0)</code> sidesteps the question entirely: the moment <code>clicks</code> is exactly 0, <code>NULLIF</code> turns it into NULL first, and dividing anything by NULL is always, unconditionally, just NULL — on every engine, with no error, no matter how the database in question happens to feel about zero denominators.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>7. Cheat sheet</h2>
+      <table class="cheat-table">
+        <thead><tr><th>Use case</th><th>Pattern</th><th>What it buys you</th></tr></thead>
+        <tbody>
+          <tr><td>Legacy sentinel value</td><td><code>AVG(NULLIF(col, -1))</code></td><td>Placeholder gets excluded from aggregates like a real NULL would be</td></tr>
+          <tr><td>Safe division</td><td><code>numerator / NULLIF(denominator, 0)</code></td><td>Zero denominator becomes NULL instead of an engine-dependent error or surprise</td></tr>
+          <tr><td>Count only "real" values</td><td><code>COUNT(NULLIF(col, sentinel))</code></td><td>Reuses COUNT's built-in NULL-skipping instead of a separate WHERE/CASE</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="art-section">
+      <h2>8. Try it yourself</h2>
+      <p>This bug hides especially well because the placeholder value is usually chosen to look plausible — <code>-1</code>, <code>0</code>, <code>9999</code> — never something that would visibly stand out in a spot check of the raw table. The only reliable defense is knowing, for every nullable-in-spirit column, whether "no value" is actually stored as NULL or as a stand-in number wearing NULL's job. Once that's known, <code>NULLIF</code> is a one-line fix either way.</p>
+      <p><a href="/">Practice aggregations live on TableNotFound →</a></p>
+    </div>
 </div>
 
 <footer id="tnf-footer">

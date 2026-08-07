@@ -1,0 +1,157 @@
+{
+  "setup": "CREATE TABLE mock_test_scores(student_id INTEGER,student_name TEXT,score INTEGER);\nINSERT INTO mock_test_scores VALUES\n (1,'Aarav',92),\n (2,'Priya',85),\n (3,'Karthik',85),\n (4,'Meera',78),\n (5,'Rohan',70),\n (6,'Divya',65),\n (7,'Vikram',NULL),\n (8,'Sneha',55);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "mid",
+      "cc": [
+        "PERCENT_RANK",
+        "Window Functions",
+        "RANK",
+        "ORDER BY",
+        "WHERE"
+      ],
+      "story": {
+        "en": "Thursday evening at Unacademy's Test Analytics team. Right after every mock test, students want one number that tells them where they stand: 'I beat this percentage of everyone who took the test.' The mock_test_scores table logs every registered student, but one of them, Vikram, registered and never actually attempted the test — his score is NULL, not zero, and he shouldn't factor into anyone's percentile at all. A first attempt at the percentile calculation looked fine syntactically and ran without any error, but the numbers it produced were backwards: the highest scorer in the batch came out with the worst percentile in the report.",
+        "ta": "Thursday evening Unacademy-oda Test Analytics team-la. Ovvoru mock test apparam udane, students-ku oru number venum, avanga எங்கே நிற்கிறார்கள்-nu solradhu: 'Test edukkina ella perukkum evvalavu percentage-a naan beat pannen.' mock_test_scores table ovvoru registered student-ayum log pannum, aana avangala oruthar, Vikram, register panniturukaaru aana test attempt panna vE illa — avanga score NULL, zero illa, avanga edhavadhu percentile-lyum factor aagakoodadhu. Percentile calculation-oda mudhal attempt syntactically correct-a irundhu, edhuvum error illama run aachu, aana adhu produce panna numbers backwards-a irundhudhu: batch-la highest scorer, report-la worst percentile-a vandhaaru.",
+        "hi": "Thursday evening Unacademy ke Test Analytics team mein. Har mock test ke turant baad, students ko ek number chahiye jo unhe bataye ki wo kahan khade hain: 'Maine test dene wale kitne percent logon ko beat kiya.' mock_test_scores table har registered student ko log karta hai, lekin unme se ek, Vikram, register to hua lekin kabhi test attempt hi nahi kiya — uska score NULL hai, zero nahi, aur use kisi ke bhi percentile mein factor nahi hona chahiye. Percentile calculation ki pehli koshish syntactically sahi lagi aur bina kisi error ke chal gayi, lekin usne jo numbers diye wo ulte the: batch mein sabse zyada score karne wale student ka report mein sabse kharab percentile aaya.",
+        "te": "Thursday evening Unacademy Test Analytics team lo. Prathi mock test tarvata vెంటనే, students ki oka number kavali, vaallu ekkada nilabaduthunnaro cheppadaniki: 'Test rasina andarilo enta percent mandini nenu beat chesanu.' mock_test_scores table prathi registered student ni log chestundi, kaani vaallalo okaru, Vikram, register ayyi kani ఎప్పుడూ test attempt cheyaledu — atani score NULL, zero kaadu, mariyu atanu ఏ percentile lో kuda factor avvakudadu. Percentile calculation modati attempt syntactically bagane undi, ఏ error lేకుండా run ayyindi, kaani adi produce chesina numbers backwards ga unnayi: batch lో highest scorer, report lో worst percentile tho vachadu."
+      },
+      "question": {
+        "en": "For each student in mock_test_scores who has a non-NULL score, calculate their percentile as PERCENT_RANK() expressed as a percentage (0 to 100, rounded to 2 decimal places) such that the highest-scoring student ends up with a percentile near 100 and the lowest-scoring student ends up near 0 — matching how 'percentile' is normally understood ('I scored better than X% of test-takers'). Exclude Vikram, whose score is NULL, entirely. Return student_name, score, and percentile, sorted by score descending.",
+        "ta": "mock_test_scores-la NULL illama score irukkura ovvoru student-kkum, PERCENT_RANK()-a percentage-a (0-la irundhu 100 varaikkum, 2 decimal places-kku round panni) calculate pannunga, andha vidham highest-scoring student 100-kku close-a percentile-um, lowest-scoring student 0-kku close-a percentile-um varanum — 'percentile' nu normal-a purinjukkura madhiri ('naan test edukkina X% perukkum mேlே score pannen'). Vikram, avanga score NULL, avanga-a completely exclude pannunga. student_name, score, matrum percentile-a return pannunga, score descending order-la sort pannunga.",
+        "hi": "mock_test_scores mein NULL na hokar score wale har student ke liye, PERCENT_RANK() ko percentage ke roop mein (0 se 100 tak, 2 decimal places tak round karke) calculate karo, taaki highest-scoring student ka percentile 100 ke paas ho aur lowest-scoring student ka percentile 0 ke paas ho — jaise 'percentile' normally samjha jaata hai ('maine test dene wale X% logon se behtar score kiya'). Vikram ko, jiska score NULL hai, poori tarah exclude karo. student_name, score, aur percentile return karo, score ke descending order mein sort karke.",
+        "te": "mock_test_scores lo NULL kaakunda score unna prathi student ki, PERCENT_RANK() ni percentage ga (0 nunchi 100 varaku, 2 decimal places ki round chesi) calculate cheyandi, ఆ vidhంగా highest-scoring student percentile 100 daggara, lowest-scoring student percentile 0 daggara ఉండాలి — 'percentile' ani normal ga ఎలా ardham chesukుంటారో ade vidhంగా ('nenu test rasina X% mandi kanna better ga score chesanu'). Vikram ni, atani score NULL, atanini poortiga exclude cheyandi. student_name, score, mariyu percentile ni return cheyandi, score descending order lo sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "mock_test_scores",
+          "cols": [
+            {
+              "n": "student_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "student_name",
+              "t": "TEXT",
+              "e": "Aarav"
+            },
+            {
+              "n": "score",
+              "t": "INTEGER",
+              "e": "92"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at the raw scores, including the no-show",
+            "ta": "Raw scores-a, no-show-um sேrndhu paarunga",
+            "hi": "Raw scores ko, no-show sameत dekho",
+            "te": "Raw scores ni, no-show తో patu chudandi"
+          },
+          "sql": "SELECT *\nFROM mock_test_scores\nORDER BY score DESC;",
+          "explain": {
+            "en": [
+              "Eight students registered, but only seven have an actual score — Vikram's score is NULL because he registered for the test and never showed up to attempt it, which is a completely different situation from a student who attempted it and scored a genuine 0.",
+              "Priya and Karthik are tied at exactly 85 — any percentile calculation has to give them the same percentile, since nothing in the data distinguishes how well they actually did relative to each other.",
+              "Scores range from Aarav's 92 down to Sneha's 55, with a real gap between Meera's 78 and the tied pair at 85 — that gap is exactly what a percentile number needs to reflect, roughly, once it's calculated.",
+              "Nothing is ranked yet — this step only confirms the shape of the real data before deciding how NULL and the tie should be handled."
+            ],
+            "ta": [
+              "Ettu students register pannirukkanga, aana ezhu perukku mattum-thaan actual score irukku — Vikram-oda score NULL, ention avaru test-kku register panni attempt panna varave illa, idhu test attempt panni genuine-a 0 score panna student-oda situation-la irundhu completely vera.",
+              "Priya matrum Karthik exact-a 85-la tie aagirukkanga — edhavadhu percentile calculation avangalukku same percentile-a kudukkanum, ention data-la avanga rendu perum eppadi relative-a irundhaanga nu edhuvum distinguish pannaadhu.",
+              "Scores Aarav-oda 92-la irundhu Sneha-oda 55 varaikkum irukku, Meera-oda 78-kkum tied pair 85-kkum idையில real-a gap irukku — andha gap-a dhaan percentile number, calculate panna apparam, roughly reflect pannanum.",
+              "Innum edhuvum rank pannala — indha step, NULL matrum tie-a eppadi handle pannanum-nu decide pannradhukku munnadi real data-oda shape-a confirm pannradhukku mattum."
+            ],
+            "hi": [
+              "Aath students register hue, lekin sirf saat ke paas hi actual score hai — Vikram ka score NULL hai kyunki usne test ke liye register kiya aur attempt karne kabhi aaya hi nahi, jo test attempt karke genuinely 0 score karne wale student se bilkul alag situation hai.",
+              "Priya aur Karthik exactly 85 par tied hain — koi bhi percentile calculation unhe same percentile deni chahiye, kyunki data mein kuch bhi yeh distinguish nahi karta ki unhone ek doosre ke muqable actually kitna achha kiya.",
+              "Scores Aarav ke 92 se lekar Sneha ke 55 tak jaate hain, Meera ke 78 aur tied pair 85 ke beech ek asli gap ke saath — yehi gap hai jo percentile number ko, calculate hone ke baad, roughly reflect karna hota hai.",
+              "Abhi kuch rank nahi hua — yeh step sirf yeh confirm karta hai ki NULL aur tie ko kaise handle karna hai yeh decide karne se pehle real data ka shape kya hai."
+            ],
+            "te": [
+              "Enimidi students register chesukunnaru, kaani edu mandi ki matrame actual score undi — Vikram score NULL, endukante atanu test ki register chesi attempt cheyadaniki ఎప్పుడూ raledu, idi test attempt chesi genuine ga 0 score chesina student kanna completely veru situation.",
+              "Priya mariyu Karthik exact ga 85 lో tie ayyaru — ఏదైనా percentile calculation vాalliki same percentile ivvali, endukante data lో emi ఒకరితో okaru relative ga ela chesaro distinguish cheyadu.",
+              "Scores Aarav 92 nunchi Sneha 55 varaku untayi, Meera 78 kii tied pair 85 kii madhya nijamైన gap tho — aa gap నే percentile number, calculate ayina tarvata, roughly reflect cheyali.",
+              "Inka emi rank avvatledu — ee step NULL mariyu tie ni ela handle cheyalo decide cheyakamunde real data shape ni confirm chestundi matrame."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "The trap: PERCENT_RANK ordered by score DESC puts the top scorer at 0",
+            "ta": "Trap: score DESC vachi order pannina PERCENT_RANK, top scorer-a 0-la vachidum",
+            "hi": "Trap: score DESC ke order mein PERCENT_RANK top scorer ko 0 par rakh deta hai",
+            "te": "Trap: score DESC order lో PERCENT_RANK top scorer ni 0 vaddha pettestundi"
+          },
+          "sql": "SELECT student_name, score,\n       ROUND(PERCENT_RANK() OVER (ORDER BY score DESC) * 100, 2) AS percentile_bug\nFROM mock_test_scores\nWHERE score IS NOT NULL\nORDER BY score DESC;",
+          "explain": {
+            "en": [
+              "WHERE score IS NOT NULL runs before PERCENT_RANK ever sees a row, so Vikram is correctly gone from this result and from the total count PERCENT_RANK divides by — his absence never gets treated as a score of 0.",
+              "PERCENT_RANK() is defined as (rank - 1) / (total_rows - 1), where rank comes from ordering by whatever ORDER BY inside OVER() says. Ordered by score DESC, the highest scorer is rank 1, and (1 - 1) / 6 is exactly 0 — Aarav, the best performer in the batch, gets a percentile_bug of 0.",
+              "Sneha, the lowest scorer, ends up at the opposite end: her rank is 7 out of 7, giving (7 - 1) / 6 = 1, or 100%. The direction is completely inverted from what 'percentile' means in everyday language, where a high percentile is supposed to mean a strong result, not a weak one.",
+              "Nothing about this query is a syntax error or a NULL-handling mistake — it runs cleanly and produces a plausible-looking table of numbers between 0 and 100. The only thing wrong is which direction ORDER BY was pointed, which is exactly the kind of bug that's easy to ship because the output never looks obviously broken."
+            ],
+            "ta": [
+              "WHERE score IS NOT NULL, PERCENT_RANK oru row-a paakkura munnadi run aagum, so Vikram indha result-la irundhum, PERCENT_RANK divide pannura total count-la irundhum correct-a pogiraaru — avanga illa-nu solradhu score 0-nu edhuvum treat pannaadhu.",
+              "PERCENT_RANK(), (rank - 1) / (total_rows - 1) nu define pannirukku, OVER()-kkulla irukkura ORDER BY sonna madhiri rank varum. score DESC vachi order pannumbodhu, highest scorer rank 1, matrum (1 - 1) / 6 exact-a 0 — Aarav, batch-la best performer, percentile_bug 0-a vaanguraaru.",
+              "Sneha, lowest scorer, opposite end-la varum: avanga rank 7-la 7, (7 - 1) / 6 = 1, alladhu 100%. 'Percentile' nu everyday language-la solradhu-la irundhu direction completely invert aagirukku, high percentile nu solradhu strong result-a irukkanum, weak onnu illa.",
+              "Indha query-la edhuvum syntax error alladhu NULL-handling mistake illa — idhu clean-a run aagi 0-kkum 100-kkum idையில plausible-a irukkura numbers table produce pannum. thappa irukkura onnu mattum ORDER BY எந்த direction-la point pannirukku nu-thaan, idhu exact-a ship panna easy-a irukkura bug, ention output eppavum obviously broken-a theriyaadhu."
+            ],
+            "hi": [
+              "WHERE score IS NOT NULL, PERCENT_RANK ke kisi row ko dekhne se pehle chalta hai, isliye Vikram is result se aur us total count se, jisse PERCENT_RANK divide karta hai, sahi se hat jaata hai — uski absence ko kabhi score 0 nahi maana jaata.",
+              "PERCENT_RANK() ko (rank - 1) / (total_rows - 1) ke roop mein define kiya gaya hai, jahan rank OVER() ke andar wale ORDER BY se aata hai. score DESC ke order mein, sabse zyada score karne wala rank 1 hai, aur (1 - 1) / 6 bilkul 0 hai — Aarav, batch ka best performer, percentile_bug 0 paata hai.",
+              "Sneha, sabse kam score karne wali, ulti taraf pahunch jaati hai: uska rank 7 mein se 7 hai, jo (7 - 1) / 6 = 1, ya 100% deta hai. Direction bilkul ulta hai us se jo 'percentile' everyday language mein matlab rakhta hai, jahan high percentile ka matlab strong result hona chahiye, weak nahi.",
+              "Is query mein na koi syntax error hai, na NULL-handling ki galti — yeh cleanly chalta hai aur 0 se 100 ke beech plausible dikhne wale numbers ka table produce karta hai. Sirf ek cheez galat hai: ORDER BY kis direction mein point kiya gaya tha, aur yeh bilkul waisa bug hai jo ship karna aasaan hai kyunki output kabhi obviously broken nahi dikhta."
+            ],
+            "te": [
+              "WHERE score IS NOT NULL, PERCENT_RANK ఏదైనా row ni chudakamunde run avutundi, so Vikram ee result nunchi, PERCENT_RANK divide chese total count nunchi correct ga potadu — atanu లేకపోవడాన్ని score 0 ani ఎప్పుడూ treat cheyaledu.",
+              "PERCENT_RANK() ni (rank - 1) / (total_rows - 1) ani define chesaru, OVER() lopala unna ORDER BY cheppinatte rank vastundi. score DESC order lో, highest scorer rank 1, mariyu (1 - 1) / 6 exact ga 0 — Aarav, batch lో best performer, percentile_bug 0 pondutadu.",
+              "Sneha, lowest scorer, opposite end lో vastundi: aame rank 7 lో 7, (7 - 1) / 6 = 1, leda 100% istundi. Direction completely invert ayyindi 'percentile' ante everyday language lో em ardham nunchi, akkada high percentile ante strong result ani ardham, weak kaadu.",
+              "Ee query lో ఏ syntax error kaani NULL-handling mistake kaani ledu — idi cleanly run ayyi 0 mariyu 100 madhya plausible ga kanipinche numbers table produce chestundi. tappu unna dди matrame ORDER BY ఏ direction lō point chesaro-nadi, idi exact ga ship cheyadaniki easy ga unde bug, endukante output ఎప్పుడూ obviously broken ga కనిపించదు."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: order by score ASC so a high score means a high percentile",
+            "ta": "Fix pannunga: score ASC vachi order pannunga, high score high percentile nu artham varum",
+            "hi": "Fix karo: score ko ASC order mein rakho taaki high score ka matlab high percentile ho",
+            "te": "Fix cheyandi: score ni ASC order lō pettandi, high score ante high percentile ani ardham"
+          },
+          "sql": "SELECT student_name, score,\n       ROUND(PERCENT_RANK() OVER (ORDER BY score ASC) * 100, 2) AS percentile\nFROM mock_test_scores\nWHERE score IS NOT NULL\nORDER BY score DESC;",
+          "explain": {
+            "en": [
+              "Flipping the window's ORDER BY to ASC changes what 'rank 1' means: now the lowest score is rank 1, so PERCENT_RANK counts up from the bottom of the batch instead of down from the top — a high score now genuinely earns a high percentile.",
+              "Aarav's score of 92 is now the highest-ranked row in the ASC ordering, landing at (7 - 1) / 6 = 1, a percentile of 100 — exactly the 'better than everyone else' result a top scorer should see.",
+              "Sneha's 55 is now rank 1 in the ASC ordering, giving (1 - 1) / 6 = 0 — the lowest scorer correctly lands at the bottom of the percentile scale instead of the top.",
+              "The outer ORDER BY score DESC is unrelated to the ASC inside OVER() — it only controls the order rows are displayed in the final result, purely for readability; it has no effect on how PERCENT_RANK itself was calculated, which is why Priya and Karthik still both land on the same percentile despite the display order sorting them by score."
+            ],
+            "ta": [
+              "Window-oda ORDER BY-a ASC-a maathradhu, 'rank 1' nu solradhu enna nu maathidum: ippo lowest score rank 1, so PERCENT_RANK batch-oda bottom-la irundhu count up pannum, top-la irundhu count down pannradhukku pathila — ippo high score genuine-a high percentile-a earn pannum.",
+              "Aarav-oda 92 score, ASC ordering-la ippo highest-ranked row, (7 - 1) / 6 = 1, percentile 100 la vandhu vீhikkum — top scorer paakkanum-nu solradhu 'yaariyum vida better' result exact-a.",
+              "Sneha-oda 55, ASC ordering-la ippo rank 1, (1 - 1) / 6 = 0 kudukkum — lowest scorer correct-a percentile scale-oda bottom-la varuvaanga, top-la illa.",
+              "Outer ORDER BY score DESC, OVER()-kkulla irukkura ASC-oda edhuvume sambandham illa — final result-la rows eppadi display aagum nu mattum-thaan control pannum, readability-kku mattum; PERCENT_RANK eppadi calculate aachu nu edhuvume affect pannaadhu, adhан Priya matrum Karthik display order avangala score vachi sort panninaalum rendum same percentile-la varuvaanga."
+            ],
+            "hi": [
+              "Window ke ORDER BY ko ASC mein flip karne se 'rank 1' ka matlab badal jaata hai: ab lowest score rank 1 hai, isliye PERCENT_RANK batch ke neeche se upar ki taraf count karta hai, upar se neeche count karne ki jagah — ab high score genuinely high percentile kamaata hai.",
+              "Aarav ka score 92 ab ASC ordering mein sabse zyada rank wali row hai, jo (7 - 1) / 6 = 1, 100 ka percentile deta hai — bilkul wahi 'sabse behtar' result jo ek top scorer ko dikhna chahiye.",
+              "Sneha ka 55 ab ASC ordering mein rank 1 hai, jo (1 - 1) / 6 = 0 deta hai — sabse kam score karne wali sahi se percentile scale ke neeche pahunchti hai, upar nahi.",
+              "Outer ORDER BY score DESC ka OVER() ke andar wale ASC se koi lena-dena nahi — yeh sirf yeh control karta hai ki final result mein rows kis order mein dikhein, sirf readability ke liye; ismein PERCENT_RANK khud kaise calculate hua uspar koi asar nahi padta, isiliye Priya aur Karthik display order unhe score se sort karne ke bawajood dono same percentile par hi aate hain."
+            ],
+            "te": [
+              "Window ORDER BY ni ASC ki flip cheyadam 'rank 1' ardham ni marustundi: ippudu lowest score rank 1, so PERCENT_RANK batch kింద nunchi paikaki count chestundi, paina nunchi kింద ki count cheyadam kanna — ippudu high score genuine ga high percentile earn chestundi.",
+              "Aarav score 92 ippudu ASC ordering lō highest-ranked row, (7 - 1) / 6 = 1, percentile 100 ki vachi padutundi — top scorer chudalsina 'andari kanna better' result exact ga.",
+              "Sneha 55 ippudu ASC ordering lō rank 1, (1 - 1) / 6 = 0 istundi — lowest scorer correct ga percentile scale kింద ki vastundi, paiki kaadu.",
+              "Outer ORDER BY score DESC, OVER() lopala unna ASC tho em sambandham ledu — final result lō rows ఏ order lō display avutayo matrame control chestundi, kevalam readability kosam; PERCENT_RANK ఎలా calculate ayyindo dానిపై em prabhavam ledu, anduke Priya mariyu Karthik display order vaallanni score prakaram sort chesina rendu same percentile ki వస్తారు."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nykaa: Rank customers into four loyalty… | TableNotFound</title>
-<meta name="description" content="Nykaa SQL practice question (mid): Rank customers into four loyalty tiers based on total_spend, using NTILE(4) ordered by… Free, runs live in your browser.">
-<link rel="canonical" href="https://www.tablenotfound.com/questions/nykaa-rank-customers-four-loyalty-tiers-totalspend-using.html">
+<title>Unacademy: student in mock_test_scores who… | TableNotFound</title>
+<meta name="description" content="Unacademy SQL practice question (mid): For each student in mock_test_scores who has a non-NULL score, calculate their… Free, runs live in your browser.">
+<link rel="canonical" href="https://www.tablenotfound.com/questions/unacademy-student-mocktestscores-nonnull-score-calculate.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -396,45 +396,45 @@ td{padding:14px 16px;vertical-align:middle}
 
   <div class="q-header">
     <div class="q-badges">
-      <span class="co-tag" style="background:color-mix(in srgb,#fc2779 13%,white);color:color-mix(in srgb,#fc2779 90%,black)">Nykaa</span>
+      <span class="co-tag" style="background:color-mix(in srgb,#7c4dff 13%,white);color:color-mix(in srgb,#7c4dff 90%,black)">Unacademy</span>
       <span class="diff-mid">mid</span>
-      <span class="chip">NTILE</span><span class="chip">CASE WHEN</span><span class="chip">Window Functions</span><span class="chip">ORDER BY</span><span class="chip">WHERE</span>
+      <span class="chip">PERCENT_RANK</span><span class="chip">Window Functions</span><span class="chip">RANK</span><span class="chip">ORDER BY</span><span class="chip">WHERE</span>
     </div>
-    <h1 class="q-h1">Rank customers into four loyalty tiers based on total_spend, using NTILE(4) ordered by total_spend descending, so the top-spending quarter becomes tier 1. Exclude any customer with a NULL total_spend entirely — they haven't made a purchase yet and shouldn't be tiered. Label tier 1 as 'Platinum', tier 2 as 'Gold', tier 3 as 'Silver', and tier 4 as 'Bronze'. Return customer_name, total_spend, and loyalty_tier, sorted by total_spend descending.</h1>
-    <p class="q-sub">Nykaa · Customer Loyalty Tiers — practice this real-world SQL scenario live in your browser.</p>
+    <h1 class="q-h1">For each student in mock_test_scores who has a non-NULL score, calculate their percentile as PERCENT_RANK() expressed as a percentage (0 to 100, rounded to 2 decimal places) such that the highest-scoring student ends up with a percentile near 100 and the lowest-scoring student ends up near 0 — matching how 'percentile' is normally understood ('I scored better than X% of test-takers'). Exclude Vikram, whose score is NULL, entirely. Return student_name, score, and percentile, sorted by score descending.</h1>
+    <p class="q-sub">Unacademy · Mock Test Percentiles — practice this real-world SQL scenario live in your browser.</p>
   </div>
 
-  <div class="story" style="--uc:#fc2779">
+  <div class="story" style="--uc:#7c4dff">
     <div class="story-bg"></div>
     <div class="story-top">
       <span class="story-lbl">📖 Story</span>
-      <span class="story-co">Nykaa · Customer Loyalty Tiers</span>
+      <span class="story-co">Unacademy · Mock Test Percentiles</span>
     </div>
-    <div class="story-body">Wednesday morning at Nykaa's Loyalty Program team. Marketing wants to launch a four-tier loyalty program — Platinum, Gold, Silver, Bronze — based purely on how much each customer has spent lifetime, with the top quarter of spenders becoming Platinum. One customer in the system has NULL total_spend because her account was created during a signup promotion but she's never actually completed a purchase — she shouldn't be ranked into any tier at all until she has real spend to rank.</div>
+    <div class="story-body">Thursday evening at Unacademy's Test Analytics team. Right after every mock test, students want one number that tells them where they stand: 'I beat this percentage of everyone who took the test.' The mock_test_scores table logs every registered student, but one of them, Vikram, registered and never actually attempted the test — his score is NULL, not zero, and he shouldn't factor into anyone's percentile at all. A first attempt at the percentile calculation looked fine syntactically and ran without any error, but the numbers it produced were backwards: the highest scorer in the batch came out with the worst percentile in the report.</div>
   </div>
 
   <div class="mission">
     <div class="mission-top">🎯 Your Mission</div>
-    <div class="mission-body">Rank customers into four loyalty tiers based on total_spend, using NTILE(4) ordered by total_spend descending, so the top-spending quarter becomes tier 1. Exclude any customer with a NULL total_spend entirely — they haven't made a purchase yet and shouldn't be tiered. Label tier 1 as 'Platinum', tier 2 as 'Gold', tier 3 as 'Silver', and tier 4 as 'Bronze'. Return customer_name, total_spend, and loyalty_tier, sorted by total_spend descending.</div>
+    <div class="mission-body">For each student in mock_test_scores who has a non-NULL score, calculate their percentile as PERCENT_RANK() expressed as a percentage (0 to 100, rounded to 2 decimal places) such that the highest-scoring student ends up with a percentile near 100 and the lowest-scoring student ends up near 0 — matching how 'percentile' is normally understood ('I scored better than X% of test-takers'). Exclude Vikram, whose score is NULL, entirely. Return student_name, score, and percentile, sorted by score descending.</div>
   </div>
 
   <div class="schema-wrap">
     <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem">📋 Table Structure</div>
     <div class="schema-cards">
       <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">customers</span></div>
+        <div class="sc-head">🗂 <span class="sc-name">mock_test_scores</span></div>
         <div><div class="sc-row">
-          <span class="sc-col">customer_id</span>
+          <span class="sc-col">student_id</span>
           <span class="sc-type">INTEGER</span>
           <span class="sc-eg">1</span>
         </div><div class="sc-row">
-          <span class="sc-col">customer_name</span>
+          <span class="sc-col">student_name</span>
           <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Aisha</span>
+          <span class="sc-eg">Aarav</span>
         </div><div class="sc-row">
-          <span class="sc-col">total_spend</span>
-          <span class="sc-type">REAL</span>
-          <span class="sc-eg">45000</span>
+          <span class="sc-col">score</span>
+          <span class="sc-type">INTEGER</span>
+          <span class="sc-eg">92</span>
         </div></div>
       </div>
     </div>
@@ -442,11 +442,11 @@ td{padding:14px 16px;vertical-align:middle}
 
   <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:1.5rem 0 .75rem">⚡ Step-by-Step Walkthrough</div>
   
-    <div class="step-card" style="--uc:#fc2779">
+    <div class="step-card" style="--uc:#7c4dff">
       <div class="step-head">
         <div class="step-num">1</div>
         <div class="step-info">
-          <div class="step-title">Look at the raw customer spend data</div>
+          <div class="step-title">Look at the raw scores, including the no-show</div>
         </div>
       </div>
       <div class="step-body">
@@ -454,55 +454,50 @@ td{padding:14px 16px;vertical-align:middle}
           <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
             <span class="ed-file">query.sql</span></div>
           <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
-FROM customers
-ORDER BY total_spend DESC;</code></pre>
+FROM mock_test_scores
+ORDER BY score DESC;</code></pre>
         </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">Ten customers have a real total_spend, ranging from Aisha's 45000 down to Juhi's 8000 — this is the pool the loyalty tiers need to be carved out of.</li><li class="xpl-point">Kavya's total_spend is NULL, not 0 — she signed up but has never actually bought anything, which is a fundamentally different situation from a customer who spent nothing on purpose; a 0 would still be a real number to rank, NULL isn't.</li><li class="xpl-point">10 doesn't divide evenly into 4 tiers — that mismatch is exactly the detail the next steps need to handle correctly rather than assuming every tier comes out the same size.</li><li class="xpl-point">Nothing is tiered yet — this step exists purely to see the full spend distribution before deciding where the tier boundaries fall.</li></ul></div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">Eight students registered, but only seven have an actual score — Vikram's score is NULL because he registered for the test and never showed up to attempt it, which is a completely different situation from a student who attempted it and scored a genuine 0.</li><li class="xpl-point">Priya and Karthik are tied at exactly 85 — any percentile calculation has to give them the same percentile, since nothing in the data distinguishes how well they actually did relative to each other.</li><li class="xpl-point">Scores range from Aarav's 92 down to Sneha's 55, with a real gap between Meera's 78 and the tied pair at 85 — that gap is exactly what a percentile number needs to reflect, roughly, once it's calculated.</li><li class="xpl-point">Nothing is ranked yet — this step only confirms the shape of the real data before deciding how NULL and the tie should be handled.</li></ul></div>
       </div>
     </div>
-    <div class="step-card" style="--uc:#fc2779">
+    <div class="step-card" style="--uc:#7c4dff">
       <div class="step-head">
         <div class="step-num">2</div>
         <div class="step-info">
-          <div class="step-title">NTILE(4) splits customers into four ordered buckets</div>
+          <div class="step-title">The trap: PERCENT_RANK ordered by score DESC puts the top scorer at 0</div>
         </div>
       </div>
       <div class="step-body">
         <div class="ed-win">
           <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
             <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT customer_name, total_spend,
-       NTILE(4) OVER (ORDER BY total_spend DESC) AS tier_num
-FROM customers
-WHERE total_spend IS NOT NULL
-ORDER BY total_spend DESC;</code></pre>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT student_name, score,
+       ROUND(PERCENT_RANK() OVER (ORDER BY score DESC) * 100, 2) AS percentile_bug
+FROM mock_test_scores
+WHERE score IS NOT NULL
+ORDER BY score DESC;</code></pre>
         </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">WHERE total_spend IS NOT NULL runs first and removes Kavya before NTILE ever sees the data — she never gets assigned a tier number at all, rather than landing in some default bucket by accident.</li><li class="xpl-point">NTILE(4) OVER (ORDER BY total_spend DESC) doesn't look at the spend values themselves to decide tier boundaries — it just takes the ordered rows and divides that ordering into 4 roughly equal-sized, consecutive groups. Tier 1 is simply 'the first quarter of rows in this order,' not 'everyone above some spend threshold.'</li><li class="xpl-point">10 customers split into 4 tiers can't come out perfectly even — NTILE hands the extra rows to the earliest tiers first, so tier 1 and tier 2 get 3 customers each while tier 3 and tier 4 get 2 each, rather than every tier trying to force an equal 2.5 customers.</li><li class="xpl-point">Divya (35000) lands in tier 2 while Chitra (38000) lands in tier 1, even though both are solidly high spenders — NTILE cares about rank position, not how close two spend values are to each other, so a close pair can end up split across a tier boundary.</li></ul></div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">WHERE score IS NOT NULL runs before PERCENT_RANK ever sees a row, so Vikram is correctly gone from this result and from the total count PERCENT_RANK divides by — his absence never gets treated as a score of 0.</li><li class="xpl-point">PERCENT_RANK() is defined as (rank - 1) / (total_rows - 1), where rank comes from ordering by whatever ORDER BY inside OVER() says. Ordered by score DESC, the highest scorer is rank 1, and (1 - 1) / 6 is exactly 0 — Aarav, the best performer in the batch, gets a percentile_bug of 0.</li><li class="xpl-point">Sneha, the lowest scorer, ends up at the opposite end: her rank is 7 out of 7, giving (7 - 1) / 6 = 1, or 100%. The direction is completely inverted from what 'percentile' means in everyday language, where a high percentile is supposed to mean a strong result, not a weak one.</li><li class="xpl-point">Nothing about this query is a syntax error or a NULL-handling mistake — it runs cleanly and produces a plausible-looking table of numbers between 0 and 100. The only thing wrong is which direction ORDER BY was pointed, which is exactly the kind of bug that's easy to ship because the output never looks obviously broken.</li></ul></div>
       </div>
     </div>
-    <div class="step-card" style="--uc:#fc2779">
+    <div class="step-card" style="--uc:#7c4dff">
       <div class="step-head">
         <div class="step-num">3</div>
         <div class="step-info">
-          <div class="step-title">Label each tier number with its loyalty name</div>
+          <div class="step-title">Fix it: order by score ASC so a high score means a high percentile</div>
         </div>
       </div>
       <div class="step-body">
         <div class="ed-win">
           <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
             <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT customer_name, total_spend,
-       CASE NTILE(4) OVER (ORDER BY total_spend DESC)
-         WHEN 1 THEN 'Platinum'
-         WHEN 2 THEN 'Gold'
-         WHEN 3 THEN 'Silver'
-         ELSE 'Bronze'
-       END AS loyalty_tier
-FROM customers
-WHERE total_spend IS NOT NULL
-ORDER BY total_spend DESC;</code></pre>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT student_name, score,
+       ROUND(PERCENT_RANK() OVER (ORDER BY score ASC) * 100, 2) AS percentile
+FROM mock_test_scores
+WHERE score IS NOT NULL
+ORDER BY score DESC;</code></pre>
         </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">This CASE uses the 'CASE expression WHEN value THEN ...' form rather than 'CASE WHEN condition THEN ...' — it's matching the NTILE() result against specific numbers 1, 2, 3, which is a shorter way to write what would otherwise need three separate WHEN NTILE(4) OVER (...) = 1 conditions repeating the whole window function each time.</li><li class="xpl-point">ELSE 'Bronze' quietly covers tier 4 without a WHEN 4 THEN 'Bronze' branch — that's safe here specifically because NTILE(4) can only ever produce 1, 2, 3, or 4, so ELSE and 'exactly tier 4' mean the same thing; the same ELSE shortcut would be a bug if the tier count ever changed to NTILE(5).</li><li class="xpl-point">Kavya still doesn't appear anywhere in this result — the WHERE clause filtering happens before NTILE and CASE ever run, so there was never a tier number for CASE to label in the first place.</li><li class="xpl-point">Platinum ends up with 3 customers and Bronze with 2 — the uneven group sizes from the previous step carry straight through into the labeled output, which is worth knowing before promising stakeholders 'exactly 25% of customers in each tier.'</li></ul></div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">Flipping the window's ORDER BY to ASC changes what 'rank 1' means: now the lowest score is rank 1, so PERCENT_RANK counts up from the bottom of the batch instead of down from the top — a high score now genuinely earns a high percentile.</li><li class="xpl-point">Aarav's score of 92 is now the highest-ranked row in the ASC ordering, landing at (7 - 1) / 6 = 1, a percentile of 100 — exactly the 'better than everyone else' result a top scorer should see.</li><li class="xpl-point">Sneha's 55 is now rank 1 in the ASC ordering, giving (1 - 1) / 6 = 0 — the lowest scorer correctly lands at the bottom of the percentile scale instead of the top.</li><li class="xpl-point">The outer ORDER BY score DESC is unrelated to the ASC inside OVER() — it only controls the order rows are displayed in the final result, purely for readability; it has no effect on how PERCENT_RANK itself was calculated, which is why Priya and Karthik still both land on the same percentile despite the display order sorting them by score.</li></ul></div>
       </div>
     </div>
 

@@ -117,5 +117,12 @@
       "sub": "Customer Loyalty Tiers",
       "c": "#fc2779",
       "difficulty": "mid"
+    },
+    {
+      "id": "unacademy",
+      "name": "Unacademy",
+      "sub": "Mock Test Percentiles",
+      "c": "#7c4dff",
+      "difficulty": "mid"
     }
   ]

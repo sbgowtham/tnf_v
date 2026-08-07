@@ -68,5 +68,12 @@
     "href": "/blog/where-vs-having-execution-order.html",
     "icon": "📝",
     "color": "#dbeafe"
+  },
+  {
+    "title": "NULLIF Explained",
+    "desc": "Sentinel values and division by zero",
+    "href": "/blog/nullif-sentinel-values-division-by-zero.html",
+    "icon": "📝",
+    "color": "#dbeafe"
   }
 ]
