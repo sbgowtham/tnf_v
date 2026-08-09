@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Numbers Stored as TEXT: Why '10' Sorts Before '2' | TableNotFound</title>
-<meta name="description" content="Why ORDER BY on a numeric-looking TEXT column scrambles the order, and WHERE col > 'N' can return zero rows even when rows clearly qualify — verified in SQLite, with the CAST fix.">
-<link rel="canonical" href="https://www.tablenotfound.com/blog/numbers-stored-as-text-sorting-trap.html">
+<title>BookMyShow: every movie_title in… | TableNotFound</title>
+<meta name="description" content="BookMyShow SQL practice question (mid): Find every movie_title in this_week_screenings that is a brand new release —… Free, runs live in your browser.">
+<link rel="canonical" href="https://www.tablenotfound.com/questions/bookmyshow-every-movietitle-thisweekscreenings-brand-new.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -271,22 +271,21 @@ td{padding:14px 16px;vertical-align:middle}
 }
 
 
-.article-wrap{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
+.static-wrap{max-width:820px;margin:0 auto;padding:2rem 1.5rem 6rem}
 .crumb{font-size:12px;font-weight:600;color:var(--t3);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:1.5rem}
 .crumb:hover{color:var(--t2)}
-.art-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
-.art-h1{font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:.5rem;color:var(--text);line-height:1.2}
-.art-meta{font-size:12px;color:var(--t3);margin-bottom:2.5rem}
-.art-section{margin:2.75rem 0}
-.art-section h2{font-size:19px;font-weight:700;color:var(--text);margin-bottom:.4rem}
-.art-section p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
-.art-section code{font-family:var(--fm);font-size:.88em;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
-.ed-win{margin:.75rem 0;border-radius:10px;overflow:hidden}
-.tbl-wrap{margin:.75rem 0}
-.null-cell{color:#ccc;font-style:italic}
-.cheat-table{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0}
-.cheat-table th,.cheat-table td{padding:8px 12px;text-align:left;border-bottom:1px solid rgba(0,0,0,.06)}
-.cheat-table th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3)}
+.q-header{padding:.5rem 0 1.75rem;animation:up .55s cubic-bezier(.22,1,.36,1) both}
+.q-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.q-h1{font-size:clamp(22px,4vw,32px);font-weight:800;line-height:1.35;letter-spacing:-.7px;margin-bottom:.5rem;color:var(--text)}
+.q-sub{font-size:13px;color:var(--t2)}
+.step-body{display:block}
+.xpl{display:block}
+.step-head{cursor:default}
+.step-num{background:rgba(255,255,255,.6)!important;color:var(--t2)!important}
+.cta-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.75rem}
+.cta-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:20px;border:none;cursor:pointer;font-family:var(--ff);font-size:13px;font-weight:700;text-decoration:none;background:linear-gradient(135deg,#7c5cfc,#c45cfc);color:#fff;box-shadow:0 3px 12px rgba(124,92,252,.35);transition:transform .18s}
+.cta-btn:hover{transform:translateY(-2px)}
+.cta-btn.secondary{background:rgba(255,255,255,.65);color:var(--t2);border:var(--bdr);box-shadow:none}
 
 </style>
 <style id="tnf-footer-style">
@@ -406,115 +405,137 @@ td{padding:14px 16px;vertical-align:middle}
   </div>
 </nav>
 
-<div class="article-wrap">
-  <a class="crumb" href="/">← Back to TableNotFound</a>
+<div class="static-wrap">
+  <a class="crumb" href="/">← All SQL Questions</a>
 
-  <div class="art-badges">
-    <span class="chip">SQL</span>
-    <span class="chip">Data Types</span>
-    <span class="chip">Data Quality</span>
+  <div class="q-header">
+    <div class="q-badges">
+      <span class="co-tag" style="background:color-mix(in srgb,#c4242b 13%,white);color:color-mix(in srgb,#c4242b 90%,black)">BookMyShow</span>
+      <span class="diff-mid">mid</span>
+      <span class="chip">INTERSECT</span><span class="chip">EXCEPT</span><span class="chip">UNION ALL</span><span class="chip">ORDER BY</span>
+    </div>
+    <h1 class="q-h1">Find every movie_title in this_week_screenings that is a brand new release — meaning it never appeared anywhere in last_week_screenings, across any city or showtime. Each movie should appear exactly once in the result, no matter how many screenings or cities it has this week. Return movie_title, sorted alphabetically.</h1>
+    <p class="q-sub">BookMyShow · Weekly Lineup Changes — practice this real-world SQL scenario live in your browser.</p>
   </div>
-  <h1 class="art-h1">Numbers Stored as TEXT</h1>
-  <div class="art-meta">Why '10' sorts before '2', and WHERE quantity > '8' can return nothing at all</div>
 
+  <div class="story" style="--uc:#c4242b">
+    <div class="story-bg"></div>
+    <div class="story-top">
+      <span class="story-lbl">📖 Story</span>
+      <span class="story-co">BookMyShow · Weekly Lineup Changes</span>
+    </div>
+    <div class="story-body">Monday morning at BookMyShow's Programming team. Every Monday, theatres refresh their weekly show schedule, and the team needs a quick lineup-change report: which movies are new releases this week that weren't showing at all last week, and which movies are continuing a second week in theatres. Each screening is logged per showtime and city, so a movie playing on multiple screens or in multiple cities shows up as several rows in the same week's table — the report needs to talk about movie titles, not individual screenings.</div>
+  </div>
+
+  <div class="mission">
+    <div class="mission-top">🎯 Your Mission</div>
+    <div class="mission-body">Find every movie_title in this_week_screenings that is a brand new release — meaning it never appeared anywhere in last_week_screenings, across any city or showtime. Each movie should appear exactly once in the result, no matter how many screenings or cities it has this week. Return movie_title, sorted alphabetically.</div>
+  </div>
+
+  <div class="schema-wrap">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem">📋 Table Structure</div>
+    <div class="schema-cards">
+      <div class="sc">
+        <div class="sc-head">🗂 <span class="sc-name">last_week_screenings</span></div>
+        <div><div class="sc-row">
+          <span class="sc-col">id</span>
+          <span class="sc-type">INTEGER</span>
+          <span class="sc-eg">1</span>
+        </div><div class="sc-row">
+          <span class="sc-col">movie_title</span>
+          <span class="sc-type">TEXT</span>
+          <span class="sc-eg">Pathaan</span>
+        </div><div class="sc-row">
+          <span class="sc-col">city</span>
+          <span class="sc-type">TEXT</span>
+          <span class="sc-eg">Chennai</span>
+        </div></div>
+      </div>
+      <div class="sc">
+        <div class="sc-head">🗂 <span class="sc-name">this_week_screenings</span></div>
+        <div><div class="sc-row">
+          <span class="sc-col">id</span>
+          <span class="sc-type">INTEGER</span>
+          <span class="sc-eg">7</span>
+        </div><div class="sc-row">
+          <span class="sc-col">movie_title</span>
+          <span class="sc-type">TEXT</span>
+          <span class="sc-eg">Jawan</span>
+        </div><div class="sc-row">
+          <span class="sc-col">city</span>
+          <span class="sc-type">TEXT</span>
+          <span class="sc-eg">Chennai</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:1.5rem 0 .75rem">⚡ Step-by-Step Walkthrough</div>
   
-    <div class="art-section">
-      <h2>1. Why this happens</h2>
-      <p>A column doesn't have to be declared TEXT for numbers to end up stored as text inside it — a CSV import, a JSON API response, or a spreadsheet export will happily hand a database the string <code>"10"</code> instead of the number <code>10</code>, and SQLite's relaxed typing will store it exactly as given. Every value still <em>looks</em> like a number when you eyeball the table. The problem only shows up the moment something tries to sort or compare those values, because a database sorting text doesn't count — it compares characters, left to right, the same way it would sort words in a dictionary.</p>
-    </div>
-
-    <div class="art-section">
-      <h2>2. The dataset</h2>
-      <p>Verified by actually running this against SQLite — not hand-computed. A small inventory table where <code>quantity</code> was imported from a CSV and landed as TEXT instead of INTEGER.</p>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">schema.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE inventory(
-  product_name TEXT,
-  quantity TEXT
-);
-
-INSERT INTO inventory VALUES
- ('Notebook','25'),
- ('Pen','5'),
- ('Stapler','100'),
- ('Eraser','2'),
- ('Marker','10');</code></pre>
+    <div class="step-card" style="--uc:#c4242b">
+      <div class="step-head">
+        <div class="step-num">1</div>
+        <div class="step-info">
+          <div class="step-title">Look at both weeks' screenings side by side</div>
+        </div>
       </div>
-      <div class="tbl-wrap"><table class="rt"><thead><tr><th>product_name</th><th>quantity</th></tr></thead><tbody><tr><td>Notebook</td><td>'25'</td></tr><tr><td>Pen</td><td>'5'</td></tr><tr><td>Stapler</td><td>'100'</td></tr><tr><td>Eraser</td><td>'2'</td></tr><tr><td>Marker</td><td>'10'</td></tr></tbody></table></div>
-      <p>Every value here is a perfectly ordinary-looking number. Nothing about glancing at this table suggests a problem — the trouble is entirely in the column's declared type, which doesn't show up in a normal <code>SELECT *</code>.</p>
-    </div>
-
-    <div class="art-section">
-      <h2>3. The bug: sorting scrambles the order</h2>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">bug.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
-FROM inventory
-ORDER BY quantity ASC;</code></pre>
+      <div class="step-body">
+        <div class="ed-win">
+          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+            <span class="ed-file">query.sql</span></div>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT 'last_week' AS week, movie_title, city
+FROM last_week_screenings
+UNION ALL
+SELECT 'this_week' AS week, movie_title, city
+FROM this_week_screenings
+ORDER BY movie_title, week;</code></pre>
+        </div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">last_week_screenings and this_week_screenings are two separate tables with the exact same two columns, so they can be stacked directly with UNION ALL — no deduplication here, this step is just about seeing every row from both tables together.</li><li class="xpl-point">Dunki and Jawan each show up more than once within a single week's table — a movie playing in two cities, or on two different screens, gets one row per showtime, not one row per movie.</li><li class="xpl-point">Fighter and Merry Christmas only ever appear tagged 'this_week' — there isn't a single 'last_week' row for either of them anywhere in this combined view.</li><li class="xpl-point">Nothing has been deduplicated or compared across weeks yet — this step only confirms what raw data actually exists in each table before asking which movies are new or continuing.</li></ul></div>
       </div>
-      <div class="tbl-wrap"><table class="rt"><thead><tr><th>product_name</th><th>quantity</th></tr></thead><tbody><tr><td>Marker</td><td>'10'</td></tr><tr><td>Stapler</td><td>'100'</td></tr><tr><td>Eraser</td><td>'2'</td></tr><tr><td>Notebook</td><td>'25'</td></tr><tr><td>Pen</td><td>'5'</td></tr></tbody></table></div>
-      <p>The lowest quantity on the shelf, 2, ends up third. The highest, 100, ends up second. This isn't close to sorted by quantity in any numeric sense — <code>10</code> and <code>100</code> jump to the front simply because they start with the character <code>'1'</code>, which sorts before <code>'2'</code>, <code>'5'</code>, and <code>'9'</code>.</p>
     </div>
-
-    <div class="art-section">
-      <h2>4. Why it happens</h2>
-      <p><code>quantity</code> is declared TEXT, so SQLite compares its values the way it compares any text: character by character, left to right, using each character's code point — exactly like sorting words alphabetically. <code>'100'</code> and <code>'2'</code> are compared by looking at their first characters first: <code>'1'</code> versus <code>'2'</code>. <code>'1'</code> comes first, so <code>'100'</code> sorts before <code>'2'</code>, no matter what the rest of either string says. The comparison never gets far enough to notice that one number is fifty times larger than the other, because it was never told these were numbers in the first place.</p>
-    </div>
-
-    <div class="art-section">
-      <h2>5. The same root cause breaks WHERE too</h2>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">where-bug.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
-FROM inventory
-WHERE quantity > '8';</code></pre>
+    <div class="step-card" style="--uc:#c4242b">
+      <div class="step-head">
+        <div class="step-num">2</div>
+        <div class="step-info">
+          <div class="step-title">Warm-up: INTERSECT finds movies playing in both weeks</div>
+        </div>
       </div>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">result</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>(0 rows)</code></pre>
+      <div class="step-body">
+        <div class="ed-win">
+          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+            <span class="ed-file">query.sql</span></div>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT movie_title FROM last_week_screenings
+INTERSECT
+SELECT movie_title FROM this_week_screenings
+ORDER BY movie_title;</code></pre>
+        </div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">INTERSECT keeps only the values that appear in the result of both SELECTs — a movie_title has to exist somewhere in last_week_screenings AND somewhere in this_week_screenings to survive.</li><li class="xpl-point">Jawan appears twice in last_week_screenings (Chennai and Mumbai) and Dunki appears twice in this_week_screenings (Mumbai and Chennai), but each still shows up exactly once in this result — INTERSECT, like UNION, always returns distinct values, regardless of how many duplicate rows fed into either side.</li><li class="xpl-point">city was deliberately left out of both SELECTs. If city had been included, Jawan playing in Chennai both weeks would match, but Jawan-in-Mumbai-last-week wouldn't match Jawan-in-Chennai-this-week as the same row — INTERSECT compares whole rows, so only the exact columns selected are what get compared.</li><li class="xpl-point">Three movies come back: Dunki, Jawan, Salaar — genuinely continuing into a second week, regardless of which city or how many screens they're on.</li></ul></div>
       </div>
-      <p>Three products — Marker (10), Notebook (25), Stapler (100) — clearly have more than 8 units in stock. This query returns nothing. <code>'10'</code>, <code>'25'</code>, and <code>'100'</code> all start with <code>'1'</code> or <code>'2'</code>, both of which sort before <code>'8'</code> as characters, so none of them count as "greater than" <code>'8'</code> in a text comparison — even though every one of them is numerically much larger.</p>
     </div>
-
-    <div class="art-section">
-      <h2>6. The fix: CAST before comparing</h2>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">fix.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
-FROM inventory
-ORDER BY CAST(quantity AS INTEGER) ASC;</code></pre>
+    <div class="step-card" style="--uc:#c4242b">
+      <div class="step-head">
+        <div class="step-num">3</div>
+        <div class="step-info">
+          <div class="step-title">EXCEPT finds movies this week that never showed last week</div>
+        </div>
       </div>
-      <div class="tbl-wrap"><table class="rt"><thead><tr><th>product_name</th><th>quantity</th></tr></thead><tbody><tr><td>Eraser</td><td>'2'</td></tr><tr><td>Pen</td><td>'5'</td></tr><tr><td>Marker</td><td>'10'</td></tr><tr><td>Notebook</td><td>'25'</td></tr><tr><td>Stapler</td><td>'100'</td></tr></tbody></table></div>
-      <p><code>CAST(quantity AS INTEGER)</code> converts each value to a real number before the comparison runs, so <code>ORDER BY</code> sorts 2, 5, 10, 25, 100 the way anyone would expect. The same fix applies directly to the WHERE version: <code>WHERE CAST(quantity AS INTEGER) > 8</code> correctly returns Marker, Notebook, and Stapler. <code>CAST</code> is a query-time patch — the more durable fix is correcting the column's type at the source (the import script, the table definition) so nothing downstream has to remember to cast it every time.</p>
+      <div class="step-body">
+        <div class="ed-win">
+          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+            <span class="ed-file">query.sql</span></div>
+          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT movie_title FROM this_week_screenings
+EXCEPT
+SELECT movie_title FROM last_week_screenings
+ORDER BY movie_title;</code></pre>
+        </div>
+        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">EXCEPT keeps values from the first SELECT that do not appear anywhere in the second SELECT's results — the order matters here, unlike INTERSECT: this_week EXCEPT last_week and last_week EXCEPT this_week ask two different questions.</li><li class="xpl-point">Dunki, Jawan, and Salaar — the same three movies INTERSECT just found — are correctly excluded here, since all three do appear somewhere in last_week_screenings even if not in the same city.</li><li class="xpl-point">Fighter and Merry Christmas are the only movie_titles left standing — every this_week_screenings row for either of them has no counterpart anywhere in last_week_screenings, which is exactly what a first-time release looks like.</li><li class="xpl-point">Animal and Pathaan don't appear in this result at all, even though they were real movies last week — EXCEPT only ever returns rows from the first SELECT, so a movie that dropped out of theatres entirely (in last_week but not this_week) simply has nothing to contribute here; that's a different question, answered by swapping which SELECT comes first.</li></ul></div>
+      </div>
     </div>
 
-    <div class="art-section">
-      <h2>7. Where this actually comes from</h2>
-      <p>Nobody sits down and deliberately declares a quantity column as TEXT. It happens through the side doors: a CSV loader that treats every column as text unless told otherwise, a JSON API that serializes all its numbers as quoted strings, a spreadsheet export where a "Format Cells as Text" setting leaked into a column, or a user-facing form field that was never validated as numeric before being saved. By the time the data lands in a table, it looks completely ordinary — which is exactly why this bug tends to survive for a long time before anyone notices the sort order is wrong.</p>
-    </div>
-
-    <div class="art-section">
-      <h2>8. Cheat sheet</h2>
-      <table class="cheat-table">
-        <thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead>
-        <tbody>
-          <tr><td>ORDER BY puts 10 before 2</td><td>Numeric-looking column is actually TEXT</td><td><code>ORDER BY CAST(col AS INTEGER)</code></td></tr>
-          <tr><td>WHERE col > 'N' returns too few or zero rows</td><td>Comparing TEXT lexicographically instead of numerically</td><td><code>WHERE CAST(col AS INTEGER) > N</code></td></tr>
-          <tr><td>Long-term fix</td><td>Import/ingestion never set the right column type</td><td>Correct the type at the source table or the load script</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="art-section">
-      <h2>9. Try it yourself</h2>
-      <p>This trap is quiet because the data never looks wrong — every value really is the number it claims to be, just spelled out as text instead of stored as one. The only way to catch it ahead of time is checking a column's actual declared type before trusting <code>ORDER BY</code> or a numeric <code>WHERE</code> comparison on it, especially on any column that came from a CSV, an API, or a spreadsheet rather than being typed by hand.</p>
-      <p><a href="/">Practice sorting and filtering live on TableNotFound →</a></p>
-    </div>
+  <div class="cta-row">
+    <a class="cta-btn" href="/">▶ Practice this live</a>
+    <a class="cta-btn secondary" href="/">← Browse all questions</a>
+  </div>
 </div>
 
 <footer id="tnf-footer">

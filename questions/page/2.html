@@ -5,10 +5,11 @@
      crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SQL Practice Questions — Page 2 of 2 | TableNotFound</title>
-<meta name="description" content="Browse SQL practice questions 11–20 of 20 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 2 of 2.">
+<title>SQL Practice Questions — Page 2 of 3 | TableNotFound</title>
+<meta name="description" content="Browse SQL practice questions 11–20 of 21 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 2 of 3.">
 <link rel="canonical" href="https://www.tablenotfound.com/questions/page/2.html">
 <link rel="prev" href="https://www.tablenotfound.com/">
+<link rel="next" href="https://www.tablenotfound.com/questions/page/3.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
 <style>
@@ -342,8 +343,17 @@ td{padding:14px 16px;vertical-align:middle}
           </tr>
         </thead>
         <tbody id="tbody">
-      <tr onclick="openQ('ola',1)">
+      <tr onclick="openQ('nykaa',1)">
         <td class="td-num">11</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/nykaa-rank-customers-four-loyalty-tiers-totalspend-using.html" onclick="event.preventDefault();event.stopPropagation();openQ('nykaa',1);"><div class="q-text">Rank customers into four loyalty tiers based on total_spend, using NTILE(4) ordered by total_spend descending, so the top-spending quarter becomes tier 1. Exclude any customer with a NULL total_spend entirely — they haven't made a purchase yet and shouldn't be tiered. Label tier 1 as 'Platinum', tier 2 as 'Gold', tier 3 as 'Silver', and tier 4 as 'Bronze'. Return customer_name, total_spend, and loyalty_tier, sorted by total_spend descending.</div><div class="q-concepts">NTILE · CASE WHEN · Window Functions</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#fc2779 13%,white);color:color-mix(in srgb,#fc2779 90%,black)">Nykaa</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('ola',1)">
+        <td class="td-num">12</td>
         <td class="td-q">
           <a class="q-link" href="/questions/ola-trips-table-sometimes-multiple-rows-tripid-logged.html" onclick="event.preventDefault();event.stopPropagation();openQ('ola',1);"><div class="q-text">The trips table sometimes has multiple rows for the same trip_id, logged because of app retries. For each trip_id, keep only the row with the most recent updated_at and discard the older duplicate rows. Return trip_id, driver_id, rider_id, fare, and updated_at for the deduplicated trips, sorted by trip_id.</div><div class="q-concepts">ROW_NUMBER · PARTITION BY · OVER</div></a>
         </td>
@@ -352,7 +362,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('snapchat',5)">
-        <td class="td-num">12</td>
+        <td class="td-num">13</td>
         <td class="td-q">
           <a class="q-link" href="/questions/snapchat-age-group-calculate-percentage-time-spent-sending.html" onclick="event.preventDefault();event.stopPropagation();openQ('snapchat',5);"><div class="q-text">For each age group, calculate the percentage of time spent sending snaps vs opening snaps out of total send+open time. Round to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE IN · GROUP BY</div></a>
         </td>
@@ -361,7 +371,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('spotify',1)">
-        <td class="td-num">13</td>
+        <td class="td-num">14</td>
         <td class="td-q">
           <a class="q-link" href="/questions/spotify-user-month-listeningstats-use-lag-find-users-previ.html" onclick="event.preventDefault();event.stopPropagation();openQ('spotify',1);"><div class="q-text">For each user and month in listening_stats, use LAG() to find that same user's previous month minutes_streamed (ordered by month). Treat a NULL minutes_streamed as 0 when comparing. Flag a row as churn_risk = 1 if minutes dropped by more than 50% compared to the previous month, otherwise churn_risk = 0. A user's first month in the data has no previous month to compare against, so churn_risk should be 0 for that row. Return user_name, month, minutes_streamed, previous_month_minutes, and churn_risk, sorted by user_name and month.</div><div class="q-concepts">LAG · PARTITION BY · COALESCE</div></a>
         </td>
@@ -370,7 +380,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('techcorp',1)">
-        <td class="td-num">14</td>
+        <td class="td-num">15</td>
         <td class="td-q">
           <a class="q-link" href="/questions/techcorp-employee-display-name-department-latest-performanc.html" onclick="event.preventDefault();event.stopPropagation();openQ('techcorp',1);"><div class="q-text">For each employee, display their name, department, latest performance rating, the previous performance rating (to track improvement), their ranking within the department, and whether their latest rating is above or below their department's average. Sort by department and ranking.</div><div class="q-concepts">Window Functions · ROW_NUMBER · RANK</div></a>
         </td>
@@ -379,7 +389,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('tinder',7)">
-        <td class="td-num">15</td>
+        <td class="td-num">16</td>
         <td class="td-q">
           <a class="q-link" href="/questions/tinder-user-count-total-number-likes-they-sent-others.html" onclick="event.preventDefault();event.stopPropagation();openQ('tinder',7);"><div class="q-text">For each user, count the total number of likes they have sent to others. Show user name along with the count, sorted by count in descending order.</div><div class="q-concepts">JOIN · GROUP BY · COUNT</div></a>
         </td>
@@ -388,7 +398,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('uber',1)">
-        <td class="td-num">16</td>
+        <td class="td-num">17</td>
         <td class="td-q">
           <a class="q-link" href="/questions/uber-rider-calculate-total-number-trips-theyve-taken.html" onclick="event.preventDefault();event.stopPropagation();openQ('uber',1);"><div class="q-text">For each rider, calculate the total number of trips they've taken and their average fare per trip. Treat any trip with a missing (NULL) fare_amount as 0 when calculating the average, rather than excluding it. Return rider_name, total_trips, and avg_fare (rounded to 2 decimal places), sorted by avg_fare in descending order.</div><div class="q-concepts">JOIN · GROUP BY · COUNT</div></a>
         </td>
@@ -397,7 +407,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('uber',4)">
-        <td class="td-num">17</td>
+        <td class="td-num">18</td>
         <td class="td-q">
           <a class="q-link" href="/questions/uber-total-earnings-driver-show-top-3-earning-drivers.html" onclick="event.preventDefault();event.stopPropagation();openQ('uber',4);"><div class="q-text">Find total earnings of each driver and show top 3 earning drivers per city.</div><div class="q-concepts">JOIN · GROUP BY · SUM</div></a>
         </td>
@@ -406,7 +416,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('unacademy',1)">
-        <td class="td-num">18</td>
+        <td class="td-num">19</td>
         <td class="td-q">
           <a class="q-link" href="/questions/unacademy-student-mocktestscores-nonnull-score-calculate.html" onclick="event.preventDefault();event.stopPropagation();openQ('unacademy',1);"><div class="q-text">For each student in mock_test_scores who has a non-NULL score, calculate their percentile as PERCENT_RANK() expressed as a percentage (0 to 100, rounded to 2 decimal places) such that the highest-scoring student ends up with a percentile near 100 and the lowest-scoring student ends up near 0 — matching how 'percentile' is normally understood ('I scored better than X% of test-takers'). Exclude Vikram, whose score is NULL, entirely. Return student_name, score, and percentile, sorted by score descending.</div><div class="q-concepts">PERCENT_RANK · Window Functions · RANK</div></a>
         </td>
@@ -415,20 +425,11 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('youtube',1)">
-        <td class="td-num">19</td>
+        <td class="td-num">20</td>
         <td class="td-q">
           <a class="q-link" href="/questions/youtube-video-calculate-percentage-viewers-watched-until.html" onclick="event.preventDefault();event.stopPropagation();openQ('youtube',1);"><div class="q-text">For each video, calculate the percentage of viewers who watched until the end out of all viewers who started the video. Round the result to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE · GROUP BY</div></a>
         </td>
         <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#1d4ed8 13%,white);color:color-mix(in srgb,#1d4ed8 90%,black)">Youtube</span></td>
-        <td class="td-diff"><span class="diff-mid">mid</span></td>
-        <td class="td-st"></td>
-      </tr>
-      <tr onclick="openQ('zomato',1)">
-        <td class="td-num">20</td>
-        <td class="td-q">
-          <a class="q-link" href="/questions/zomato-every-restaurant-never-had-cancelled-order-meaning.html" onclick="event.preventDefault();event.stopPropagation();openQ('zomato',1);"><div class="q-text">Find every restaurant that has never had a cancelled order — meaning it has zero orders with status = 'cancelled'. This includes restaurants with no orders at all, since they trivially satisfy 'never cancelled.' Use EXISTS or NOT EXISTS with a correlated subquery rather than aggregating and filtering afterward. Return restaurant_name and city, sorted alphabetically by restaurant_name.</div><div class="q-concepts">EXISTS · NOT EXISTS · Correlated Subquery</div></a>
-        </td>
-        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#e23744 13%,white);color:color-mix(in srgb,#e23744 90%,black)">Zomato</span></td>
         <td class="td-diff"><span class="diff-mid">mid</span></td>
         <td class="td-st"></td>
       </tr>
@@ -439,7 +440,9 @@ td{padding:14px 16px;vertical-align:middle}
       <a class="page-link page-prev" href="/" rel="prev">← Previous</a>
       <a class="page-link" href="/">1</a>
       <span class="page-link current" aria-current="page">2</span>
-      <div class="page-info">Page 2 of 2</div>
+      <a class="page-link" href="/questions/page/3.html">3</a>
+      <a class="page-link page-next" href="/questions/page/3.html" rel="next">Next →</a>
+      <div class="page-info">Page 2 of 3</div>
     </nav>
   </div>
 
@@ -453,7 +456,7 @@ let UM = []; // loaded dynamically from /questions/index.json
 /* PAGE_QUESTIONS: the exact {uid,qid} pairs pre-rendered into THIS page's tbody, in order.
    Written by scripts/generate-question-pages.js — boot() only ever fetches and renders
    these, so pagination can't be silently undone once JS loads. */
-let PAGE_QUESTIONS = [{"uid":"ola","qid":1},{"uid":"snapchat","qid":5},{"uid":"spotify","qid":1},{"uid":"techcorp","qid":1},{"uid":"tinder","qid":7},{"uid":"uber","qid":1},{"uid":"uber","qid":4},{"uid":"unacademy","qid":1},{"uid":"youtube","qid":1},{"uid":"zomato","qid":1}];
+let PAGE_QUESTIONS = [{"uid":"nykaa","qid":1},{"uid":"ola","qid":1},{"uid":"snapchat","qid":5},{"uid":"spotify","qid":1},{"uid":"techcorp","qid":1},{"uid":"tinder","qid":7},{"uid":"uber","qid":1},{"uid":"uber","qid":4},{"uid":"unacademy","qid":1},{"uid":"youtube","qid":1}];
 /* START_INDEX: 0-based rank of this page's first question among all questions.
    Written by scripts/generate-question-pages.js — keeps the "S.No" column in sync
    with the server-rendered numbering once renderTable() takes over after boot(). */

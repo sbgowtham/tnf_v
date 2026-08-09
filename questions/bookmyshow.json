@@ -1,0 +1,176 @@
+{
+  "setup": "CREATE TABLE last_week_screenings(id INTEGER,movie_title TEXT,city TEXT);\nCREATE TABLE this_week_screenings(id INTEGER,movie_title TEXT,city TEXT);\nINSERT INTO last_week_screenings VALUES\n (1,'Pathaan','Chennai'),\n (2,'Jawan','Chennai'),\n (3,'Jawan','Mumbai'),\n (4,'Dunki','Chennai'),\n (5,'Animal','Mumbai'),\n (6,'Salaar','Chennai');\nINSERT INTO this_week_screenings VALUES\n (7,'Jawan','Chennai'),\n (8,'Dunki','Mumbai'),\n (9,'Dunki','Chennai'),\n (10,'Fighter','Chennai'),\n (11,'Merry Christmas','Mumbai'),\n (12,'Salaar','Mumbai');",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "mid",
+      "cc": [
+        "INTERSECT",
+        "EXCEPT",
+        "UNION ALL",
+        "ORDER BY"
+      ],
+      "story": {
+        "en": "Monday morning at BookMyShow's Programming team. Every Monday, theatres refresh their weekly show schedule, and the team needs a quick lineup-change report: which movies are new releases this week that weren't showing at all last week, and which movies are continuing a second week in theatres. Each screening is logged per showtime and city, so a movie playing on multiple screens or in multiple cities shows up as several rows in the same week's table — the report needs to talk about movie titles, not individual screenings.",
+        "ta": "Monday morning BookMyShow-oda Programming team-la. Ovvoru Monday-um, theatres avanga weekly show schedule-a refresh pannuvanga, team-ku oru quick lineup-change report venum: intha week edhu edhu movies pudhusa release aagudhu, last week edhume show aagama irundhadhu, matrum edhu edhu movies rendaavadhu week-a theatres-la continue aagudhu. Ovvoru screening-um showtime matrum city vachi log aagum, so oru movie palavu screens-la alladhu palavu cities-la irundhaal, andha week table-la palavu rows-a varum — report-ku movie titles pathi pesanum, individual screenings pathi illa.",
+        "hi": "Monday morning BookMyShow ke Programming team mein. Har Monday, theatres apna weekly show schedule refresh karte hain, aur team ko ek quick lineup-change report chahiye: is hafte kaunsi movies bilkul nayi release hain jo pichhle hafte kahin bhi nahi chal rahi thi, aur kaunsi movies doosre hafte mein bhi theatres mein continue ho rahi hain. Har screening showtime aur city ke hisaab se log hoti hai, isliye ek movie agar kai cities ya screens mein chal rahi ho, to us hafte ki table mein uske kai rows ban jaate hain — report ko movie titles ke baare mein baat karni hai, individual screenings ke baare mein nahi.",
+        "te": "Monday morning BookMyShow Programming team lo. Prathi Monday, theatres vaalla weekly show schedule ni refresh chestaru, team ki oka quick lineup-change report kavali: ee week e movies kotha ga release avutunnayo, last week ekkada kuda show avvaledo, mariyu e movies rendo week theatres lo continue avutunnayo. Prathi screening showtime mariyu city prakaram log avutundi, so oka movie chala screens lo leda chala cities lo unte, aa week table lo chala rows ga kanipistundi — report movie titles gurinchi matlaadali, individual screenings gurinchi kaadu."
+      },
+      "question": {
+        "en": "Find every movie_title in this_week_screenings that is a brand new release — meaning it never appeared anywhere in last_week_screenings, across any city or showtime. Each movie should appear exactly once in the result, no matter how many screenings or cities it has this week. Return movie_title, sorted alphabetically.",
+        "ta": "this_week_screenings-la irukkura ovvoru movie_title-a-yum kandupidunga, adhu genuine-a pudhu release-a irukkanum — atharkiya, adhu edhavadhu city alladhu showtime-la last_week_screenings-la engum varaadhu-nu artham. Ovvoru movie-um result-la exact-a oru murai mattum varanum, indha week evvalavu screenings alladhu cities irundhaalum. movie_title-a return pannunga, alphabetical order-la sort pannunga.",
+        "hi": "this_week_screenings mein har us movie_title ko dhoondo jo bilkul nayi release ho — matlab, wo kisi bhi city ya showtime mein last_week_screenings mein kahin bhi nahi aayi. Har movie result mein exactly ek baar aana chahiye, chahe is hafte uski kitni bhi screenings ya cities hon. movie_title return karo, alphabetical order mein sort karke.",
+        "te": "this_week_screenings lo unna prathi movie_title ni kanugonandi, adi genuine ga kotha release ga undali — ante, adi e city leda showtime lo aina last_week_screenings lo ekkada kuda raledu ani ardham. Prathi movie result lo exact ga oka sari matrame randi, ee week enni screenings leda cities unna. movie_title ni return cheyandi, alphabetical order lo sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "last_week_screenings",
+          "cols": [
+            {
+              "n": "id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "movie_title",
+              "t": "TEXT",
+              "e": "Pathaan"
+            },
+            {
+              "n": "city",
+              "t": "TEXT",
+              "e": "Chennai"
+            }
+          ]
+        },
+        {
+          "name": "this_week_screenings",
+          "cols": [
+            {
+              "n": "id",
+              "t": "INTEGER",
+              "e": "7"
+            },
+            {
+              "n": "movie_title",
+              "t": "TEXT",
+              "e": "Jawan"
+            },
+            {
+              "n": "city",
+              "t": "TEXT",
+              "e": "Chennai"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at both weeks' screenings side by side",
+            "ta": "Rendu weeks-oda screenings-a side by side paarunga",
+            "hi": "Dono hafton ke screenings ko side by side dekho",
+            "te": "Rendu weeks screenings ni side by side chudandi"
+          },
+          "sql": "SELECT 'last_week' AS week, movie_title, city\nFROM last_week_screenings\nUNION ALL\nSELECT 'this_week' AS week, movie_title, city\nFROM this_week_screenings\nORDER BY movie_title, week;",
+          "explain": {
+            "en": [
+              "last_week_screenings and this_week_screenings are two separate tables with the exact same two columns, so they can be stacked directly with UNION ALL — no deduplication here, this step is just about seeing every row from both tables together.",
+              "Dunki and Jawan each show up more than once within a single week's table — a movie playing in two cities, or on two different screens, gets one row per showtime, not one row per movie.",
+              "Fighter and Merry Christmas only ever appear tagged 'this_week' — there isn't a single 'last_week' row for either of them anywhere in this combined view.",
+              "Nothing has been deduplicated or compared across weeks yet — this step only confirms what raw data actually exists in each table before asking which movies are new or continuing."
+            ],
+            "ta": [
+              "last_week_screenings matrum this_week_screenings rendu thani tables, exact-a same rendu columns vachirukku, so avangala UNION ALL vachi direct-a stack pannalaam — inga deduplication edhuvum illa, indha step rendu tables-oda ella row-um onnaa paakkuradhu-kku mattum thaan.",
+              "Dunki matrum Jawan rendum, oru week-oda table-kkulla onnukku mela varum — oru movie rendu cities-la, alladhu rendu vera screens-la play aana, showtime-kku oru row varum, movie-kku oru row illa.",
+              "Fighter matrum Merry Christmas eppavum 'this_week' nu tag pannirukkura idathula mattum-thaan varum — avangalukku 'last_week' nu oru row kooda indha combined view-la engum illa.",
+              "Innum edhuvum deduplicate alladhu weeks-kku idaiyil compare pannala — indha step, edhu movie pudhusu, edhu continuing-nu kekkura munnadi, ovvoru table-lyum enna raw data irukkunu confirm pannradhukku mattum."
+            ],
+            "hi": [
+              "last_week_screenings aur this_week_screenings do alag tables hain, bilkul same do columns ke saath, isliye unhe UNION ALL se seedhe stack kiya ja sakta hai — yahan koi deduplication nahi hai, yeh step sirf dono tables ki har row ko ek saath dekhne ke liye hai.",
+              "Dunki aur Jawan dono ek hafte ki table ke andar ek se zyada baar aate hain — agar koi movie do cities mein, ya do alag screens par chal rahi ho, to har showtime ke liye ek row banti hai, har movie ke liye ek row nahi.",
+              "Fighter aur Merry Christmas hamesha sirf 'this_week' tag ke saath dikhte hain — is combined view mein unme se kisi ke liye bhi ek bhi 'last_week' row kahin nahi hai.",
+              "Abhi kuch bhi deduplicate ya hafton ke beech compare nahi hua — yeh step sirf yeh confirm karta hai ki har table mein asal mein kaunsa raw data hai, yeh poochne se pehle ki kaunsi movies nayi hain ya continuing."
+            ],
+            "te": [
+              "last_week_screenings mariyu this_week_screenings rendu separate tables, exact ga same rendu columns tho, so vaatini UNION ALL tho direct ga stack cheyachu — ikkada deduplication emi ledu, ee step rendu tables prathi row ni kalipi chudadaniki matrame.",
+              "Dunki mariyu Jawan rendu oka week table lopala okasari kanna ekkuva sarlu kanipistayi — oka movie rendu cities lo, leda rendu different screens lo aithe, prathi showtime ki oka row vastundi, prathi movie ki oka row kaadu.",
+              "Fighter mariyu Merry Christmas eppudu 'this_week' ani tag chesina chota matrame kanipistayi — ee combined view lo vaatiki 'last_week' ani oka row kuda ekkada ledu.",
+              "Inka emi deduplicate kaani weeks madhya compare kaani avvatledu — ee step, e movies kotha, e continuing ani adagakamunde, prathi table lo emi raw data undo confirm chestundi matrame."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Warm-up: INTERSECT finds movies playing in both weeks",
+            "ta": "Warm-up: INTERSECT, rendu weeks-lyum play aagura movies-a kandupidikkum",
+            "hi": "Warm-up: INTERSECT dono hafton mein chalne wali movies dhoondta hai",
+            "te": "Warm-up: INTERSECT rendu weeks lo play ayye movies ni kanugontundi"
+          },
+          "sql": "SELECT movie_title FROM last_week_screenings\nINTERSECT\nSELECT movie_title FROM this_week_screenings\nORDER BY movie_title;",
+          "explain": {
+            "en": [
+              "INTERSECT keeps only the values that appear in the result of both SELECTs — a movie_title has to exist somewhere in last_week_screenings AND somewhere in this_week_screenings to survive.",
+              "Jawan appears twice in last_week_screenings (Chennai and Mumbai) and Dunki appears twice in this_week_screenings (Mumbai and Chennai), but each still shows up exactly once in this result — INTERSECT, like UNION, always returns distinct values, regardless of how many duplicate rows fed into either side.",
+              "city was deliberately left out of both SELECTs. If city had been included, Jawan playing in Chennai both weeks would match, but Jawan-in-Mumbai-last-week wouldn't match Jawan-in-Chennai-this-week as the same row — INTERSECT compares whole rows, so only the exact columns selected are what get compared.",
+              "Three movies come back: Dunki, Jawan, Salaar — genuinely continuing into a second week, regardless of which city or how many screens they're on."
+            ],
+            "ta": [
+              "INTERSECT, rendu SELECTs-oda result-lyum varura values-a mattum vachirukkum — oru movie_title last_week_screenings-lyum, this_week_screenings-lyum irukkanum, survive aaga.",
+              "Jawan last_week_screenings-la rendu murai varum (Chennai matrum Mumbai) matrum Dunki this_week_screenings-la rendu murai varum (Mumbai matrum Chennai), aana rendum indha result-la exact-a oru murai mattum varum — INTERSECT, UNION madhiri-thaan, eppavum distinct values-a mattum return pannum, edhavadhu side-la evvalavu duplicate rows irundhaalum.",
+              "city-a rendu SELECTs-lyum vendaam nu vittirukkom. city-a add pannirundhaal, Chennai-la rendu weeks-um play aagura Jawan match aagum, aana Jawan-Mumbai-last-week, Jawan-Chennai-this-week same row-a match aagaadhu — INTERSECT whole rows-a compare pannum, so select panna exact columns mattum-thaan compare aagum.",
+              "Moondru movies thirumbi varum: Dunki, Jawan, Salaar — genuine-a rendaavadhu week-kku continue aagudhu, edhavadhu city-la alladhu evvalavu screens-la irundhaalum."
+            ],
+            "hi": [
+              "INTERSECT sirf un values ko rakhta hai jo dono SELECTs ke result mein aate hain — ek movie_title ko survive karne ke liye last_week_screenings mein kahin aur this_week_screenings mein kahin exist karna hoga.",
+              "Jawan last_week_screenings mein do baar aata hai (Chennai aur Mumbai) aur Dunki this_week_screenings mein do baar aata hai (Mumbai aur Chennai), lekin dono is result mein exactly ek hi baar dikhte hain — INTERSECT, UNION ki tarah, hamesha distinct values hi return karta hai, chahe kisi bhi side mein kitne bhi duplicate rows kyun na ho.",
+              "city ko jaan-boojhkar dono SELECTs se bahar rakha gaya hai. Agar city include hoti, to Chennai mein dono hafte chalne wali Jawan match karti, lekin Jawan-Mumbai-last-week, Jawan-Chennai-this-week ke saath same row ki tarah match nahi karti — INTERSECT poori rows compare karta hai, isliye sirf select ki gayi exact columns hi compare hoti hain.",
+              "Teen movies wapas aati hain: Dunki, Jawan, Salaar — genuinely doosre hafte mein continue ho rahi hain, chahe kisi bhi city mein ho ya kitni bhi screens par ho."
+            ],
+            "te": [
+              "INTERSECT rendu SELECTs result lo unna values ni matrame unchutundi — oka movie_title last_week_screenings lo ekkadaina mariyu this_week_screenings lo ekkadaina undali, survive avvadaniki.",
+              "Jawan last_week_screenings lo rendu sarlu vastundi (Chennai mariyu Mumbai) mariyu Dunki this_week_screenings lo rendu sarlu vastundi (Mumbai mariyu Chennai), kaani rendu ee result lo exact ga oka sari matrame kanipistayi — INTERSECT, UNION la ede, eppudu distinct values ni matrame return chestundi, e side lo enni duplicate rows unna.",
+              "city ni rendu SELECTs lo kuda kavaligane pettaledu. city ni add chesi unte, Chennai lo rendu weeks kuda play ayye Jawan match avutundi, kaani Jawan-Mumbai-last-week, Jawan-Chennai-this-week same row ga match avvadu — INTERSECT whole rows ni compare chestundi, so select chesina exact columns matrame compare avutayi.",
+              "Mudu movies vastayi: Dunki, Jawan, Salaar — genuine ga rendo week ki continue avutunnayi, e city lo aina leda enni screens lo unna."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "EXCEPT finds movies this week that never showed last week",
+            "ta": "EXCEPT, last week edhume show aagaadha, indha week-oda movies-a kandupidikkum",
+            "hi": "EXCEPT un movies ko dhoondta hai jo is hafte hain lekin pichhle hafte kabhi nahi thi",
+            "te": "EXCEPT, last week eppudu show avvani, ee week movies ni kanugontundi"
+          },
+          "sql": "SELECT movie_title FROM this_week_screenings\nEXCEPT\nSELECT movie_title FROM last_week_screenings\nORDER BY movie_title;",
+          "explain": {
+            "en": [
+              "EXCEPT keeps values from the first SELECT that do not appear anywhere in the second SELECT's results — the order matters here, unlike INTERSECT: this_week EXCEPT last_week and last_week EXCEPT this_week ask two different questions.",
+              "Dunki, Jawan, and Salaar — the same three movies INTERSECT just found — are correctly excluded here, since all three do appear somewhere in last_week_screenings even if not in the same city.",
+              "Fighter and Merry Christmas are the only movie_titles left standing — every this_week_screenings row for either of them has no counterpart anywhere in last_week_screenings, which is exactly what a first-time release looks like.",
+              "Animal and Pathaan don't appear in this result at all, even though they were real movies last week — EXCEPT only ever returns rows from the first SELECT, so a movie that dropped out of theatres entirely (in last_week but not this_week) simply has nothing to contribute here; that's a different question, answered by swapping which SELECT comes first."
+            ],
+            "ta": [
+              "EXCEPT, mudhal SELECT-la irundhu rendaavadhu SELECT-oda results-la engum varaadha values-a mattum vachirukkum — inga order mukkiyam, INTERSECT madhiri illa: this_week EXCEPT last_week matrum last_week EXCEPT this_week rendu vera kelvi kekkum.",
+              "Dunki, Jawan, matrum Salaar — INTERSECT ippothaan kandupidicha andha moondru movies-um — inga correct-a exclude aaguranga, ention moondrum last_week_screenings-la edhavadhu idathula varum, same city-la illainaalum.",
+              "Fighter matrum Merry Christmas mattum-thaan nikkum movie_titles — avangalukku this_week_screenings-la irukkura ella row-um last_week_screenings-la engum counterpart illa, idhu-thaan first-time release eppadi irukkum-nu kaaturadhu.",
+              "Animal matrum Pathaan indha result-la engum varaadhu, last week real movies-a irundhaalum — EXCEPT eppavum mudhal SELECT-la irundhu rows mattum-thaan return pannum, so theatres-la irundhu completely drop aana oru movie (last_week-la irundhu, this_week-la illama) inga edhuvum contribute pannaadhu; adhu vera kelvi, edhu SELECT mudhalla varum-nu swap panni answer pannalaam."
+            ],
+            "hi": [
+              "EXCEPT pehle SELECT ke un values ko rakhta hai jo dusre SELECT ke results mein kahin nahi aate — yahan order maayne rakhta hai, INTERSECT ki tarah nahi: this_week EXCEPT last_week aur last_week EXCEPT this_week do alag sawaal poochte hain.",
+              "Dunki, Jawan, aur Salaar — wahi teen movies jo INTERSECT ne abhi dhoondi thi — yahan sahi se exclude ho jaati hain, kyunki teeno last_week_screenings mein kahin na kahin aati hain, chahe same city mein na ho.",
+              "Fighter aur Merry Christmas hi bache hue movie_titles hain — unme se kisi ke bhi har this_week_screenings row ka last_week_screenings mein kahin koi counterpart nahi hai, jo bilkul waisa dikhta hai jaisa ek first-time release dikhna chahiye.",
+              "Animal aur Pathaan is result mein kahin nahi dikhte, bhale hi wo pichhle hafte real movies thi — EXCEPT hamesha sirf pehle SELECT ki rows hi return karta hai, isliye theatres se poori tarah drop hui movie (last_week mein thi, this_week mein nahi) yahan kuch bhi contribute nahi karti; yeh ek alag sawaal hai, jiska jawaab kaunsa SELECT pehle aata hai use swap karke milta hai."
+            ],
+            "te": [
+              "EXCEPT, modati SELECT lo unna values lo rendo SELECT results lo ekkada kuda raani values ni matrame unchutundi — ikkada order important, INTERSECT la kaadu: this_week EXCEPT last_week mariyu last_week EXCEPT this_week rendu veru prashnalu adugutayi.",
+              "Dunki, Jawan, mariyu Salaar — INTERSECT ippude kanugonna aa mudu movies — ikkada correct ga exclude avutayi, endukante mudu last_week_screenings lo e chota aina kanipistayi, same city lo kakapoyina.",
+              "Fighter mariyu Merry Christmas matrame migilina movie_titles — vaatiki this_week_screenings lo unna prathi row ki last_week_screenings lo ekkada counterpart ledu, idi exact ga first-time release ela untundo ade.",
+              "Animal mariyu Pathaan ee result lo ekkada kanipinchavu, last week real movies aina — EXCEPT eppudu modati SELECT rows ni matrame return chestundi, so theatres nunchi poortiga drop ayina movie (last_week lo undi, this_week lo ledu) ikkada emi contribute cheyadu; adi veru prashna, e SELECT modata vastundo swap chesi answer cheyachu."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

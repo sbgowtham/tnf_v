@@ -82,5 +82,12 @@
     "href": "/blog/numbers-stored-as-text-sorting-trap.html",
     "icon": "📝",
     "color": "#dbeafe"
+  },
+  {
+    "title": "GROUP BY vs Window Functions",
+    "desc": "The aggregate that ate your rows",
+    "href": "/blog/group-by-vs-window-functions-collapsed-rows.html",
+    "icon": "📝",
+    "color": "#dbeafe"
   }
 ]

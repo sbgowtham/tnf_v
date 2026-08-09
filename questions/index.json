@@ -131,5 +131,12 @@
       "sub": "Habit Streak Calendars",
       "c": "#37352f",
       "difficulty": "hard"
+    },
+    {
+      "id": "bookmyshow",
+      "name": "BookMyShow",
+      "sub": "Weekly Lineup Changes",
+      "c": "#c4242b",
+      "difficulty": "mid"
     }
   ]

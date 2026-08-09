@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Numbers Stored as TEXT: Why '10' Sorts Before '2' | TableNotFound</title>
-<meta name="description" content="Why ORDER BY on a numeric-looking TEXT column scrambles the order, and WHERE col > 'N' can return zero rows even when rows clearly qualify — verified in SQLite, with the CAST fix.">
-<link rel="canonical" href="https://www.tablenotfound.com/blog/numbers-stored-as-text-sorting-trap.html">
+<title>GROUP BY vs Window Functions: The Aggregate That Ate Your Rows | TableNotFound</title>
+<meta name="description" content="Why GROUP BY silently collapses the individual rows you still needed, and why mixing an aggregate into a per-row SELECT without GROUP BY runs in SQLite instead of erroring — verified in SQLite, with the OVER (PARTITION BY ...) fix.">
+<link rel="canonical" href="https://www.tablenotfound.com/blog/group-by-vs-window-functions-collapsed-rows.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -411,109 +411,109 @@ td{padding:14px 16px;vertical-align:middle}
 
   <div class="art-badges">
     <span class="chip">SQL</span>
-    <span class="chip">Data Types</span>
-    <span class="chip">Data Quality</span>
+    <span class="chip">Window Functions</span>
+    <span class="chip">Aggregation</span>
   </div>
-  <h1 class="art-h1">Numbers Stored as TEXT</h1>
-  <div class="art-meta">Why '10' sorts before '2', and WHERE quantity > '8' can return nothing at all</div>
+  <h1 class="art-h1">GROUP BY vs Window Functions</h1>
+  <div class="art-meta">The aggregate that ate your rows</div>
 
   
     <div class="art-section">
       <h2>1. Why this happens</h2>
-      <p>A column doesn't have to be declared TEXT for numbers to end up stored as text inside it — a CSV import, a JSON API response, or a spreadsheet export will happily hand a database the string <code>"10"</code> instead of the number <code>10</code>, and SQLite's relaxed typing will store it exactly as given. Every value still <em>looks</em> like a number when you eyeball the table. The problem only shows up the moment something tries to sort or compare those values, because a database sorting text doesn't count — it compares characters, left to right, the same way it would sort words in a dictionary.</p>
+      <p><code>GROUP BY</code> and a window function's <code>OVER()</code> both compute an aggregate like <code>AVG()</code> across a set of related rows — that similarity is exactly what makes it easy to reach for the wrong one. <code>GROUP BY</code> collapses every row in a group down into a single summary row. A window function computes the same aggregate but leaves every original row exactly where it was, just with the aggregate attached as an extra column. Confusing the two doesn't produce a syntax error most of the time — it produces a result that's the wrong shape, and on SQLite specifically, sometimes a result that looks like the right shape while being quietly wrong underneath.</p>
     </div>
 
     <div class="art-section">
       <h2>2. The dataset</h2>
-      <p>Verified by actually running this against SQLite — not hand-computed. A small inventory table where <code>quantity</code> was imported from a CSV and landed as TEXT instead of INTEGER.</p>
+      <p>Verified by actually running this against SQLite — not hand-computed. Five employees across two departments.</p>
       <div class="ed-win">
         <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
           <span class="ed-file">schema.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE inventory(
-  product_name TEXT,
-  quantity TEXT
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE employees(
+  employee_id INTEGER,
+  employee_name TEXT,
+  department TEXT,
+  salary REAL
 );
 
-INSERT INTO inventory VALUES
- ('Notebook','25'),
- ('Pen','5'),
- ('Stapler','100'),
- ('Eraser','2'),
- ('Marker','10');</code></pre>
+INSERT INTO employees VALUES
+ (1,'Aarav','Engineering',90000),
+ (2,'Priya','Engineering',85000),
+ (3,'Karthik','Engineering',78000),
+ (4,'Meera','Sales',60000),
+ (5,'Rohan','Sales',55000);</code></pre>
       </div>
-      <div class="tbl-wrap"><table class="rt"><thead><tr><th>product_name</th><th>quantity</th></tr></thead><tbody><tr><td>Notebook</td><td>'25'</td></tr><tr><td>Pen</td><td>'5'</td></tr><tr><td>Stapler</td><td>'100'</td></tr><tr><td>Eraser</td><td>'2'</td></tr><tr><td>Marker</td><td>'10'</td></tr></tbody></table></div>
-      <p>Every value here is a perfectly ordinary-looking number. Nothing about glancing at this table suggests a problem — the trouble is entirely in the column's declared type, which doesn't show up in a normal <code>SELECT *</code>.</p>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>employee_id</th><th>employee_name</th><th>department</th><th>salary</th></tr></thead><tbody><tr><td>1</td><td>Aarav</td><td>Engineering</td><td>90000</td></tr><tr><td>2</td><td>Priya</td><td>Engineering</td><td>85000</td></tr><tr><td>3</td><td>Karthik</td><td>Engineering</td><td>78000</td></tr><tr><td>4</td><td>Meera</td><td>Sales</td><td>60000</td></tr><tr><td>5</td><td>Rohan</td><td>Sales</td><td>55000</td></tr></tbody></table></div>
+      <p>The goal: show each employee's salary next to their department's average, so it's obvious who's earning above or below the department norm — without losing anyone.</p>
     </div>
 
     <div class="art-section">
-      <h2>3. The bug: sorting scrambles the order</h2>
+      <h2>3. The bug: GROUP BY collapses the rows you still needed</h2>
       <div class="ed-win">
         <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
           <span class="ed-file">bug.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
-FROM inventory
-ORDER BY quantity ASC;</code></pre>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT department, ROUND(AVG(salary), 2) AS avg_salary
+FROM employees
+GROUP BY department;</code></pre>
       </div>
-      <div class="tbl-wrap"><table class="rt"><thead><tr><th>product_name</th><th>quantity</th></tr></thead><tbody><tr><td>Marker</td><td>'10'</td></tr><tr><td>Stapler</td><td>'100'</td></tr><tr><td>Eraser</td><td>'2'</td></tr><tr><td>Notebook</td><td>'25'</td></tr><tr><td>Pen</td><td>'5'</td></tr></tbody></table></div>
-      <p>The lowest quantity on the shelf, 2, ends up third. The highest, 100, ends up second. This isn't close to sorted by quantity in any numeric sense — <code>10</code> and <code>100</code> jump to the front simply because they start with the character <code>'1'</code>, which sorts before <code>'2'</code>, <code>'5'</code>, and <code>'9'</code>.</p>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>department</th><th>avg_salary</th></tr></thead><tbody><tr><td>Engineering</td><td>84333.33</td></tr><tr><td>Sales</td><td>57500</td></tr></tbody></table></div>
+      <p>Five employees became two rows. The department averages are correct, but every individual employee — the exact thing "who's above or below average" needs — is gone. <code>GROUP BY</code> did precisely what it's designed to do: it reduced the table to one row per group. That's the problem, not a malfunction.</p>
     </div>
 
     <div class="art-section">
-      <h2>4. Why it happens</h2>
-      <p><code>quantity</code> is declared TEXT, so SQLite compares its values the way it compares any text: character by character, left to right, using each character's code point — exactly like sorting words alphabetically. <code>'100'</code> and <code>'2'</code> are compared by looking at their first characters first: <code>'1'</code> versus <code>'2'</code>. <code>'1'</code> comes first, so <code>'100'</code> sorts before <code>'2'</code>, no matter what the rest of either string says. The comparison never gets far enough to notice that one number is fifty times larger than the other, because it was never told these were numbers in the first place.</p>
-    </div>
-
-    <div class="art-section">
-      <h2>5. The same root cause breaks WHERE too</h2>
+      <h2>4. The sneakier version: mixing an aggregate into a per-row SELECT</h2>
+      <p>Trying to patch this by simply adding the aggregate straight into a normal row-level query looks tempting:</p>
       <div class="ed-win">
         <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">where-bug.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
-FROM inventory
-WHERE quantity > '8';</code></pre>
+          <span class="ed-file">sneaky-bug.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT employee_name, department, salary, AVG(salary) AS avg_salary
+FROM employees;</code></pre>
       </div>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">result</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>(0 rows)</code></pre>
-      </div>
-      <p>Three products — Marker (10), Notebook (25), Stapler (100) — clearly have more than 8 units in stock. This query returns nothing. <code>'10'</code>, <code>'25'</code>, and <code>'100'</code> all start with <code>'1'</code> or <code>'2'</code>, both of which sort before <code>'8'</code> as characters, so none of them count as "greater than" <code>'8'</code> in a text comparison — even though every one of them is numerically much larger.</p>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>employee_name</th><th>department</th><th>salary</th><th>avg_salary</th></tr></thead><tbody><tr><td>Aarav</td><td>Engineering</td><td>90000</td><td>73600</td></tr></tbody></table></div>
+      <p>Five rows became <em>one</em>. SQLite doesn't raise an error for mixing a plain column with an aggregate and no <code>GROUP BY</code> — it silently collapses the whole result to a single row, arbitrarily picks one row's values for the non-aggregated columns (here, whichever row it visited first), and pairs them with the true aggregate computed over <em>all five</em> employees, not just Aarav's department. The output looks exactly like a normal row of data. Nothing about it signals that four employees vanished and the average shown has nothing to do with the row it's sitting next to. Other engines like PostgreSQL refuse to run this at all — SQLite's willingness to run it anyway makes this the most dangerous version of the mistake, because it doesn't even fail loudly.</p>
     </div>
 
     <div class="art-section">
-      <h2>6. The fix: CAST before comparing</h2>
+      <h2>5. Why it happens</h2>
+      <p><code>GROUP BY</code> works in two phases: first it partitions rows into groups, then it reduces each group to exactly one output row. There is no path back to the original per-row detail once that reduction happens — it isn't hidden somewhere, it's genuinely gone from the result set. A window function skips the reduction step entirely: <code>OVER (PARTITION BY department)</code> tells the aggregate which rows to consider when computing its value, but every row from the original table still gets its own line in the output, with the computed aggregate just tacked on as one more column per row.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>6. The fix: a window function keeps every row</h2>
       <div class="ed-win">
         <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
           <span class="ed-file">fix.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
-FROM inventory
-ORDER BY CAST(quantity AS INTEGER) ASC;</code></pre>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT employee_name, department, salary,
+       ROUND(AVG(salary) OVER (PARTITION BY department), 2) AS dept_avg_salary,
+       ROUND(salary - AVG(salary) OVER (PARTITION BY department), 2) AS diff_from_avg
+FROM employees
+ORDER BY department, salary DESC;</code></pre>
       </div>
-      <div class="tbl-wrap"><table class="rt"><thead><tr><th>product_name</th><th>quantity</th></tr></thead><tbody><tr><td>Eraser</td><td>'2'</td></tr><tr><td>Pen</td><td>'5'</td></tr><tr><td>Marker</td><td>'10'</td></tr><tr><td>Notebook</td><td>'25'</td></tr><tr><td>Stapler</td><td>'100'</td></tr></tbody></table></div>
-      <p><code>CAST(quantity AS INTEGER)</code> converts each value to a real number before the comparison runs, so <code>ORDER BY</code> sorts 2, 5, 10, 25, 100 the way anyone would expect. The same fix applies directly to the WHERE version: <code>WHERE CAST(quantity AS INTEGER) > 8</code> correctly returns Marker, Notebook, and Stapler. <code>CAST</code> is a query-time patch — the more durable fix is correcting the column's type at the source (the import script, the table definition) so nothing downstream has to remember to cast it every time.</p>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>employee_name</th><th>department</th><th>salary</th><th>dept_avg_salary</th><th>diff_from_avg</th></tr></thead><tbody><tr><td>Aarav</td><td>Engineering</td><td>90000</td><td>84333.33</td><td>5666.67</td></tr><tr><td>Priya</td><td>Engineering</td><td>85000</td><td>84333.33</td><td>666.67</td></tr><tr><td>Karthik</td><td>Engineering</td><td>78000</td><td>84333.33</td><td>-6333.33</td></tr><tr><td>Meera</td><td>Sales</td><td>60000</td><td>57500</td><td>2500</td></tr><tr><td>Rohan</td><td>Sales</td><td>55000</td><td>57500</td><td>-2500</td></tr></tbody></table></div>
+      <p>All five employees are still here. <code>PARTITION BY department</code> tells <code>AVG(salary)</code> to compute separately for Engineering's three rows and Sales's two rows, but the partitioning only controls which rows get averaged together — it never removes a row from the output the way <code>GROUP BY</code> does. <code>diff_from_avg</code> — plain subtraction against the window function's result — is what actually answers "who's above or below average," and it only exists because every employee's own row survived long enough to be subtracted from.</p>
     </div>
 
     <div class="art-section">
-      <h2>7. Where this actually comes from</h2>
-      <p>Nobody sits down and deliberately declares a quantity column as TEXT. It happens through the side doors: a CSV loader that treats every column as text unless told otherwise, a JSON API that serializes all its numbers as quoted strings, a spreadsheet export where a "Format Cells as Text" setting leaked into a column, or a user-facing form field that was never validated as numeric before being saved. By the time the data lands in a table, it looks completely ordinary — which is exactly why this bug tends to survive for a long time before anyone notices the sort order is wrong.</p>
+      <h2>7. When GROUP BY is genuinely the right call</h2>
+      <p>None of this makes <code>GROUP BY</code> the wrong tool in general — it's the right one whenever the actual deliverable is the summary itself, not the detail underneath it. "What's the average salary per department" for a budgeting dashboard is a <code>GROUP BY</code> question — nobody asked for individual employees, so collapsing to one row per department is exactly correct, not a loss. The test is simple: if the final answer needs to name a specific row from the original table alongside its group's aggregate, that's a window function question. If the final answer is only the aggregate, <code>GROUP BY</code> is doing exactly its job.</p>
     </div>
 
     <div class="art-section">
       <h2>8. Cheat sheet</h2>
       <table class="cheat-table">
-        <thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead>
+        <thead><tr><th>Need</th><th>Use</th><th>Row count in output</th></tr></thead>
         <tbody>
-          <tr><td>ORDER BY puts 10 before 2</td><td>Numeric-looking column is actually TEXT</td><td><code>ORDER BY CAST(col AS INTEGER)</code></td></tr>
-          <tr><td>WHERE col > 'N' returns too few or zero rows</td><td>Comparing TEXT lexicographically instead of numerically</td><td><code>WHERE CAST(col AS INTEGER) > N</code></td></tr>
-          <tr><td>Long-term fix</td><td>Import/ingestion never set the right column type</td><td>Correct the type at the source table or the load script</td></tr>
+          <tr><td>Only the summary (one row per group)</td><td><code>GROUP BY</code></td><td>Reduced to number of groups</td></tr>
+          <tr><td>Every row, plus its group's aggregate</td><td>Window function with <code>OVER (PARTITION BY ...)</code></td><td>Unchanged — same as input</td></tr>
+          <tr><td>A per-row column mixed with a raw aggregate, no GROUP BY</td><td>Neither — SQLite silently collapses to one arbitrary row</td><td>1, and it's meaningless</td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="art-section">
       <h2>9. Try it yourself</h2>
-      <p>This trap is quiet because the data never looks wrong — every value really is the number it claims to be, just spelled out as text instead of stored as one. The only way to catch it ahead of time is checking a column's actual declared type before trusting <code>ORDER BY</code> or a numeric <code>WHERE</code> comparison on it, especially on any column that came from a CSV, an API, or a spreadsheet rather than being typed by hand.</p>
-      <p><a href="/">Practice sorting and filtering live on TableNotFound →</a></p>
+      <p>The tell isn't the SQL syntax, which looks almost identical between the broken and correct versions — it's the question being asked. "Give me one number per group" and "give me every row, with a group-level number attached" are different requests, and only one of them is what <code>GROUP BY</code> was built to answer. Before reaching for <code>GROUP BY</code> on a query that also needs individual rows, it's worth checking whether the actual requirement quietly needs <code>OVER (PARTITION BY ...)</code> instead.</p>
+      <p><a href="/">Practice window functions live on TableNotFound →</a></p>
     </div>
 </div>
 

@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4004192157095824"
+     crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Numbers Stored as TEXT: Why '10' Sorts Before '2' | TableNotFound</title>
-<meta name="description" content="Why ORDER BY on a numeric-looking TEXT column scrambles the order, and WHERE col > 'N' can return zero rows even when rows clearly qualify — verified in SQLite, with the CAST fix.">
-<link rel="canonical" href="https://www.tablenotfound.com/blog/numbers-stored-as-text-sorting-trap.html">
+<title>SQL Practice Questions — Page 3 of 3 | TableNotFound</title>
+<meta name="description" content="Browse SQL practice questions 21–21 of 21 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 3 of 3.">
+<link rel="canonical" href="https://www.tablenotfound.com/questions/page/3.html">
+<link rel="prev" href="https://www.tablenotfound.com/questions/page/2.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
 <style>
-
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --ff:'Sora',sans-serif;--fm:'JetBrains Mono',monospace;
@@ -269,25 +272,6 @@ td{padding:14px 16px;vertical-align:middle}
   th:nth-child(4),td:nth-child(4){display:none}
   .menu-btn span{display:none}
 }
-
-
-.article-wrap{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
-.crumb{font-size:12px;font-weight:600;color:var(--t3);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:1.5rem}
-.crumb:hover{color:var(--t2)}
-.art-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
-.art-h1{font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:.5rem;color:var(--text);line-height:1.2}
-.art-meta{font-size:12px;color:var(--t3);margin-bottom:2.5rem}
-.art-section{margin:2.75rem 0}
-.art-section h2{font-size:19px;font-weight:700;color:var(--text);margin-bottom:.4rem}
-.art-section p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
-.art-section code{font-family:var(--fm);font-size:.88em;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
-.ed-win{margin:.75rem 0;border-radius:10px;overflow:hidden}
-.tbl-wrap{margin:.75rem 0}
-.null-cell{color:#ccc;font-style:italic}
-.cheat-table{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0}
-.cheat-table th,.cheat-table td{padding:8px 12px;text-align:left;border-bottom:1px solid rgba(0,0,0,.06)}
-.cheat-table th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3)}
-
 </style>
 <style id="tnf-footer-style">
 #tnf-footer{margin-top:3rem;padding:1.5rem 1rem 2rem;text-align:center;border-top:1px solid rgba(128,128,128,.22)}
@@ -301,8 +285,14 @@ td{padding:14px 16px;vertical-align:middle}
 <div class="bg"></div>
 
 <nav class="nav">
-  <a href="/" class="logo" style="text-decoration:none;color:inherit"><span class="logo-tag">Table</span><span class="logo-rest">NotFound</span></a>
+ <a href="/" class="logo" style="text-decoration:none;color:inherit"><span class="logo-tag">Table</span><span class="logo-rest">NotFound</span></a>
   <div class="nav-gap"></div>
+  <div class="langs">
+    <button class="lb on" onclick="setLang('en')">EN</button>
+    <button class="lb" onclick="setLang('ta')">Tamil</button>
+    <button class="lb" onclick="setLang('hi')">Hindi</button>
+    <button class="lb" onclick="setLang('te')">Telugu</button>
+  </div>
   <div class="nav-menu" id="navmenu">
     <button class="menu-btn" onclick="toggleMenu()">
       <span>Learn</span>
@@ -310,213 +300,513 @@ td{padding:14px 16px;vertical-align:middle}
     </button>
     <div class="dropdown" id="dropdown">
       <div class="dropdown-header">Visualizers &amp; Guides</div>
-      <div id="learn-links">
-      <a class="dropdown-item" href="/learn/ctrlz-stack-demo.html" target="_blank">
-        <div class="di-icon" style="background:#fef3c7">🏗️</div>
-        <div class="di-text">
-          <span class="di-title">System Design ctrlz</span>
-          <span class="di-sub">How ctrlz works</span>
-        </div>
-      </a>
-      <a class="dropdown-item" href="/learn/de_road_map.html" target="_blank">
-        <div class="di-icon" style="background:#fef3c7">🏗️</div>
-        <div class="di-text">
-          <span class="di-title">Data Engineering Road Map</span>
-          <span class="di-sub">DE Road Map</span>
-        </div>
-      </a>
-      <a class="dropdown-item" href="/learn/datalayers.html" target="_blank">
-        <div class="di-icon" style="background:#fef3c7">🏗️</div>
-        <div class="di-text">
-          <span class="di-title">Data Layers</span>
-          <span class="di-sub">DataLayers</span>
-        </div>
-      </a>
-      <a class="dropdown-item" href="/blog/row-number-vs-rank-vs-dense-rank.html" target="_blank">
-        <div class="di-icon" style="background:#dbeafe">📝</div>
-        <div class="di-text">
-          <span class="di-title">ROW_NUMBER vs RANK vs DENSE_RANK</span>
-          <span class="di-sub">Window functions explained</span>
-        </div>
-      </a>
-      <a class="dropdown-item" href="/blog/in-vs-exists-vs-join.html" target="_blank">
-        <div class="di-icon" style="background:#dbeafe">📝</div>
-        <div class="di-text">
-          <span class="di-title">IN vs EXISTS vs JOIN</span>
-          <span class="di-sub">The NOT IN NULL trap explained</span>
-        </div>
-      </a>
-      <a class="dropdown-item" href="/blog/left-join-where-clause-trap.html" target="_blank">
-        <div class="di-icon" style="background:#dbeafe">📝</div>
-        <div class="di-text">
-          <span class="di-title">LEFT JOIN vs INNER JOIN</span>
-          <span class="di-sub">The WHERE clause trap explained</span>
-        </div>
-      </a>
-      <a class="dropdown-item" href="/blog/count-star-vs-count-column-null-trap.html" target="_blank">
-        <div class="di-icon" style="background:#dbeafe">📝</div>
-        <div class="di-text">
-          <span class="di-title">COUNT(*) vs COUNT(column)</span>
-          <span class="di-sub">The NULL trap explained</span>
-        </div>
-      </a>
-      <a class="dropdown-item" href="/blog/union-vs-union-all-silent-row-drop.html" target="_blank">
-        <div class="di-icon" style="background:#dbeafe">📝</div>
-        <div class="di-text">
-          <span class="di-title">UNION vs UNION ALL</span>
-          <span class="di-sub">The silent row drop explained</span>
-        </div>
-      </a>
-      <a class="dropdown-item" href="/blog/between-timestamps-missing-last-day.html" target="_blank">
-        <div class="di-icon" style="background:#dbeafe">📝</div>
-        <div class="di-text">
-          <span class="di-title">BETWEEN with Timestamps</span>
-          <span class="di-sub">The missing last day explained</span>
-        </div>
-      </a>
-      <a class="dropdown-item" href="/blog/where-vs-having-execution-order.html" target="_blank">
-        <div class="di-icon" style="background:#dbeafe">📝</div>
-        <div class="di-text">
-          <span class="di-title">WHERE vs HAVING</span>
-          <span class="di-sub">Why aggregates can't go in WHERE</span>
-        </div>
-      </a>
-      <a class="dropdown-item" href="/blog/nullif-sentinel-values-division-by-zero.html" target="_blank">
-        <div class="di-icon" style="background:#dbeafe">📝</div>
-        <div class="di-text">
-          <span class="di-title">NULLIF Explained</span>
-          <span class="di-sub">Sentinel values and division by zero</span>
-        </div>
-      </a>
-      <a class="dropdown-item" href="/blog/numbers-stored-as-text-sorting-trap.html" target="_blank">
-        <div class="di-icon" style="background:#dbeafe">📝</div>
-        <div class="di-text">
-          <span class="di-title">Numbers Stored as TEXT</span>
-          <span class="di-sub">Why '10' sorts before '2'</span>
-        </div>
-      </a>
-      <a class="dropdown-item" href="/blog/group-by-vs-window-functions-collapsed-rows.html" target="_blank">
-        <div class="di-icon" style="background:#dbeafe">📝</div>
-        <div class="di-text">
-          <span class="di-title">GROUP BY vs Window Functions</span>
-          <span class="di-sub">The aggregate that ate your rows</span>
-        </div>
-      </a></div>
+      <div id="learn-links"></div>
     </div>
+  </div>
+  <div class="dbs">
+    <div class="orb spin" id="orb"></div>
+    <span id="dbtxt">Starting…</span>
   </div>
 </nav>
 
-<div class="article-wrap">
-  <a class="crumb" href="/">← Back to TableNotFound</a>
-
-  <div class="art-badges">
-    <span class="chip">SQL</span>
-    <span class="chip">Data Types</span>
-    <span class="chip">Data Quality</span>
+<div class="wrap">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag"><span class="hero-dot"></span>Free · In-browser · No signup</div>
+    <h1 class="hero-h">Practice SQL with<br><em>real company scenarios.</em></h1>
+    <p class="hero-sub">Click any question below, write SQL, run it live in your browser, and understand every concept in your language.</p>
   </div>
-  <h1 class="art-h1">Numbers Stored as TEXT</h1>
-  <div class="art-meta">Why '10' sorts before '2', and WHERE quantity > '8' can return nothing at all</div>
 
-  
-    <div class="art-section">
-      <h2>1. Why this happens</h2>
-      <p>A column doesn't have to be declared TEXT for numbers to end up stored as text inside it — a CSV import, a JSON API response, or a spreadsheet export will happily hand a database the string <code>"10"</code> instead of the number <code>10</code>, and SQLite's relaxed typing will store it exactly as given. Every value still <em>looks</em> like a number when you eyeball the table. The problem only shows up the moment something tries to sort or compare those values, because a database sorting text doesn't count — it compares characters, left to right, the same way it would sort words in a dictionary.</p>
-    </div>
-
-    <div class="art-section">
-      <h2>2. The dataset</h2>
-      <p>Verified by actually running this against SQLite — not hand-computed. A small inventory table where <code>quantity</code> was imported from a CSV and landed as TEXT instead of INTEGER.</p>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">schema.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE inventory(
-  product_name TEXT,
-  quantity TEXT
-);
-
-INSERT INTO inventory VALUES
- ('Notebook','25'),
- ('Pen','5'),
- ('Stapler','100'),
- ('Eraser','2'),
- ('Marker','10');</code></pre>
+  <!-- QUESTION TABLE -->
+  <div class="panel">
+    <div class="toolbar">
+      <span class="toolbar-stat" id="tstat">1 question</span>
+      <div class="toolbar-gap"></div>
+      <div class="filters">
+        <button class="fb on" onclick="filt('all',this)">All</button>
+        <button class="fb" onclick="filt('easy',this)">Easy</button>
+        <button class="fb" onclick="filt('mid',this)">Mid</button>
+        <button class="fb" onclick="filt('hard',this)">Hard</button>
       </div>
-      <div class="tbl-wrap"><table class="rt"><thead><tr><th>product_name</th><th>quantity</th></tr></thead><tbody><tr><td>Notebook</td><td>'25'</td></tr><tr><td>Pen</td><td>'5'</td></tr><tr><td>Stapler</td><td>'100'</td></tr><tr><td>Eraser</td><td>'2'</td></tr><tr><td>Marker</td><td>'10'</td></tr></tbody></table></div>
-      <p>Every value here is a perfectly ordinary-looking number. Nothing about glancing at this table suggests a problem — the trouble is entirely in the column's declared type, which doesn't show up in a normal <code>SELECT *</code>.</p>
     </div>
-
-    <div class="art-section">
-      <h2>3. The bug: sorting scrambles the order</h2>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">bug.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
-FROM inventory
-ORDER BY quantity ASC;</code></pre>
-      </div>
-      <div class="tbl-wrap"><table class="rt"><thead><tr><th>product_name</th><th>quantity</th></tr></thead><tbody><tr><td>Marker</td><td>'10'</td></tr><tr><td>Stapler</td><td>'100'</td></tr><tr><td>Eraser</td><td>'2'</td></tr><tr><td>Notebook</td><td>'25'</td></tr><tr><td>Pen</td><td>'5'</td></tr></tbody></table></div>
-      <p>The lowest quantity on the shelf, 2, ends up third. The highest, 100, ends up second. This isn't close to sorted by quantity in any numeric sense — <code>10</code> and <code>100</code> jump to the front simply because they start with the character <code>'1'</code>, which sorts before <code>'2'</code>, <code>'5'</code>, and <code>'9'</code>.</p>
-    </div>
-
-    <div class="art-section">
-      <h2>4. Why it happens</h2>
-      <p><code>quantity</code> is declared TEXT, so SQLite compares its values the way it compares any text: character by character, left to right, using each character's code point — exactly like sorting words alphabetically. <code>'100'</code> and <code>'2'</code> are compared by looking at their first characters first: <code>'1'</code> versus <code>'2'</code>. <code>'1'</code> comes first, so <code>'100'</code> sorts before <code>'2'</code>, no matter what the rest of either string says. The comparison never gets far enough to notice that one number is fifty times larger than the other, because it was never told these were numbers in the first place.</p>
-    </div>
-
-    <div class="art-section">
-      <h2>5. The same root cause breaks WHERE too</h2>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">where-bug.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
-FROM inventory
-WHERE quantity > '8';</code></pre>
-      </div>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">result</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>(0 rows)</code></pre>
-      </div>
-      <p>Three products — Marker (10), Notebook (25), Stapler (100) — clearly have more than 8 units in stock. This query returns nothing. <code>'10'</code>, <code>'25'</code>, and <code>'100'</code> all start with <code>'1'</code> or <code>'2'</code>, both of which sort before <code>'8'</code> as characters, so none of them count as "greater than" <code>'8'</code> in a text comparison — even though every one of them is numerically much larger.</p>
-    </div>
-
-    <div class="art-section">
-      <h2>6. The fix: CAST before comparing</h2>
-      <div class="ed-win">
-        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-          <span class="ed-file">fix.sql</span></div>
-        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
-FROM inventory
-ORDER BY CAST(quantity AS INTEGER) ASC;</code></pre>
-      </div>
-      <div class="tbl-wrap"><table class="rt"><thead><tr><th>product_name</th><th>quantity</th></tr></thead><tbody><tr><td>Eraser</td><td>'2'</td></tr><tr><td>Pen</td><td>'5'</td></tr><tr><td>Marker</td><td>'10'</td></tr><tr><td>Notebook</td><td>'25'</td></tr><tr><td>Stapler</td><td>'100'</td></tr></tbody></table></div>
-      <p><code>CAST(quantity AS INTEGER)</code> converts each value to a real number before the comparison runs, so <code>ORDER BY</code> sorts 2, 5, 10, 25, 100 the way anyone would expect. The same fix applies directly to the WHERE version: <code>WHERE CAST(quantity AS INTEGER) > 8</code> correctly returns Marker, Notebook, and Stapler. <code>CAST</code> is a query-time patch — the more durable fix is correcting the column's type at the source (the import script, the table definition) so nothing downstream has to remember to cast it every time.</p>
-    </div>
-
-    <div class="art-section">
-      <h2>7. Where this actually comes from</h2>
-      <p>Nobody sits down and deliberately declares a quantity column as TEXT. It happens through the side doors: a CSV loader that treats every column as text unless told otherwise, a JSON API that serializes all its numbers as quoted strings, a spreadsheet export where a "Format Cells as Text" setting leaked into a column, or a user-facing form field that was never validated as numeric before being saved. By the time the data lands in a table, it looks completely ordinary — which is exactly why this bug tends to survive for a long time before anyone notices the sort order is wrong.</p>
-    </div>
-
-    <div class="art-section">
-      <h2>8. Cheat sheet</h2>
-      <table class="cheat-table">
-        <thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead>
-        <tbody>
-          <tr><td>ORDER BY puts 10 before 2</td><td>Numeric-looking column is actually TEXT</td><td><code>ORDER BY CAST(col AS INTEGER)</code></td></tr>
-          <tr><td>WHERE col > 'N' returns too few or zero rows</td><td>Comparing TEXT lexicographically instead of numerically</td><td><code>WHERE CAST(col AS INTEGER) > N</code></td></tr>
-          <tr><td>Long-term fix</td><td>Import/ingestion never set the right column type</td><td>Correct the type at the source table or the load script</td></tr>
-        </tbody>
+    <div class="note">⚠️ <strong>Note:</strong> These questions may or may not have been asked at the companies shown — the goal is to teach SQL through real-world usecases.</div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Question</th>
+            <th>Company</th>
+            <th>Difficulty</th>
+            <th>✓</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+      <tr onclick="openQ('zomato',1)">
+        <td class="td-num">21</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/zomato-every-restaurant-never-had-cancelled-order-meaning.html" onclick="event.preventDefault();event.stopPropagation();openQ('zomato',1);"><div class="q-text">Find every restaurant that has never had a cancelled order — meaning it has zero orders with status = 'cancelled'. This includes restaurants with no orders at all, since they trivially satisfy 'never cancelled.' Use EXISTS or NOT EXISTS with a correlated subquery rather than aggregating and filtering afterward. Return restaurant_name and city, sorted alphabetically by restaurant_name.</div><div class="q-concepts">EXISTS · NOT EXISTS · Correlated Subquery</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#e23744 13%,white);color:color-mix(in srgb,#e23744 90%,black)">Zomato</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+    </tbody>
       </table>
     </div>
+    <nav id="pagination" class="pagination" aria-label="Question list pages">
+      <a class="page-link page-prev" href="/questions/page/2.html" rel="prev">← Previous</a>
+      <a class="page-link" href="/">1</a>
+      <a class="page-link" href="/questions/page/2.html">2</a>
+      <span class="page-link current" aria-current="page">3</span>
+      <div class="page-info">Page 3 of 3</div>
+    </nav>
+  </div>
 
-    <div class="art-section">
-      <h2>9. Try it yourself</h2>
-      <p>This trap is quiet because the data never looks wrong — every value really is the number it claims to be, just spelled out as text instead of stored as one. The only way to catch it ahead of time is checking a column's actual declared type before trusting <code>ORDER BY</code> or a numeric <code>WHERE</code> comparison on it, especially on any column that came from a CSV, an API, or a spreadsheet rather than being typed by hand.</p>
-      <p><a href="/">Practice sorting and filtering live on TableNotFound →</a></p>
-    </div>
+  <!-- QUESTION VIEW — appears below the table when a row is clicked -->
+  <div id="qview" style="display:none"></div>
 </div>
 
+<script>
+/* ── UNIVERSE CONFIG ── */
+let UM = []; // loaded dynamically from /questions/index.json
+/* PAGE_QUESTIONS: the exact {uid,qid} pairs pre-rendered into THIS page's tbody, in order.
+   Written by scripts/generate-question-pages.js — boot() only ever fetches and renders
+   these, so pagination can't be silently undone once JS loads. */
+let PAGE_QUESTIONS = [{"uid":"zomato","qid":1}];
+/* START_INDEX: 0-based rank of this page's first question among all questions.
+   Written by scripts/generate-question-pages.js — keeps the "S.No" column in sync
+   with the server-rendered numbering once renderTable() takes over after boot(). */
+let START_INDEX = 20;
+
+/* ── STATE ── */
+let SQL=null, db=null, lang='en';
+let aU=null, aQ=null;
+const SS={};        // step state
+const CACHE={};     // uid → questions[]
+const SETUP_CACHE={};// uid → setup SQL string
+let ALL=[];         // flat: {q, uid, uni}
+let activeFilter='all';
+let SLUGS={};        // "uid:qid" → static-page slug, from /questions/slugs.json (generated, not hand-maintained)
+
+/* ── ENGINE ── */
+async function initEngine(){
+  try{
+    SQL = await initSqlJs({locateFile:f=>`https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${f}`});
+    setOrb('on','Ready');
+  }catch(e){setOrb('','Error');}
+}
+function setOrb(s,m){
+  document.getElementById('orb').className='orb'+(s?' '+s:'');
+  document.getElementById('dbtxt').textContent=m;
+}
+function loadDb(uid){
+  if(!SQL)return;
+  try{
+    if(db){try{db.close()}catch(e){} db=null;}
+    db=new SQL.Database();
+    const setup = SETUP_CACHE[uid] || '';
+    setup.split(';').map(s=>s.trim()).filter(Boolean).forEach(s=>db.run(s+';'));
+  }catch(e){setOrb('','DB error: '+e.message);}
+}
+function runSQL(sql){
+  if(!db)return{error:'No database loaded'};
+  try{
+    const r=db.exec(sql.trim());
+    if(!r||!r.length)return{empty:true};
+    return{cols:r[0].columns,rows:r[0].values};
+  }catch(e){return{error:e.message};}
+}
+
+/* ── FETCH QUESTIONS ── */
+async function fetchQ(uid){
+  if(Array.isArray(CACHE[uid]))return CACHE[uid];
+  try{
+    const r = await fetch('/questions/'+uid+'.json');
+    if(!r.ok){ CACHE[uid]=[]; return []; }
+    const data = await r.json();
+    const setup = data.setup || '';
+    const questions = Array.isArray(data) ? data : (data.questions || []);
+    SETUP_CACHE[uid] = setup;
+    CACHE[uid] = questions;
+  }catch(e){
+    console.error('fetch failed for '+uid+'.json: '+e.message);
+    CACHE[uid]=[];
+  }
+  return CACHE[uid];
+}
+
+async function fetchSlugs(){
+  try{
+    const r = await fetch('/questions/slugs.json');
+    if(r.ok) SLUGS = await r.json();
+  }catch(e){ /* row links just fall back to SPA-only click */ }
+}
+
+/* ── LANG ── */
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('.lb').forEach(b=>{
+    const m={EN:'en',Tamil:'ta',Hindi:'hi',Telugu:'te'};
+    b.classList.toggle('on',m[b.textContent]===l);
+  });
+  if(aQ)renderQV();
+}
+
+/**
+ * tx() — smart text extractor
+ * Handles: plain string | {en,ta,hi,te} string map | {en,ta,hi,te} array map
+ * Returns: string (for simple text) | string[] (for point-by-point explain arrays)
+ */
+function tx(o){
+  if(typeof o==='string') return o;
+  const val = o && (o[lang] || o.en);
+  if(Array.isArray(val)) return val;   // ← array of points
+  return val || '';
+}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+/**
+ * renderExplain() — renders explain as point list (array) or paragraph (string)
+ */
+function renderExplain(step){
+  const exp = tx(step.explain);
+  if(Array.isArray(exp)){
+    const points = exp.map(p=>`<li class="xpl-point">${p}</li>`).join('');
+    return `<div class="xpl-label">💡 Explanation</div><ul class="xpl-list">${points}</ul>`;
+  }
+  return `<div class="xpl-text">${exp}</div>`;
+}
+
+/* ── LOAD ALL & BUILD TABLE ── */
+async function boot(){
+  setOrb('spin','Loading questions…');
+  // tbody already has server-rendered rows from build time — no placeholder needed here,
+  // renderTable() below overwrites it with the live version once data is fetched.
+
+  try{
+    const r = await fetch('/questions/index.json');
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    UM = await r.json();
+  }catch(e){
+    document.getElementById('tbody').innerHTML =
+      '<tr><td colspan="5" class="tbl-msg" style="color:#dc2626">'+
+      '❌ Could not load <strong>questions/index.json</strong>. Make sure it exists in your GitHub repo.</td></tr>';
+    await initEngine();
+    return;
+  }
+
+  const neededUids = [...new Set(PAGE_QUESTIONS.map(p => p.uid))];
+  await Promise.all([...neededUids.map(uid => fetchQ(uid)), fetchSlugs()]);
+
+  ALL = [];
+  PAGE_QUESTIONS.forEach(({uid, qid}) => {
+    const uni = UM.find(u => u.id === uid);
+    const q = (CACHE[uid] || []).find(qq => qq.id === qid);
+    if (uni && q) ALL.push({q, uid, uni});
+  });
+
+  await initEngine();
+
+  if(ALL.length === 0){
+    document.getElementById('tbody').innerHTML =
+      '<tr><td colspan="5" class="tbl-msg" style="color:#dc2626">'+
+      '❌ Questions not found. Check that the <strong>questions/</strong> folder is deployed on Vercel.'+
+      '</td></tr>';
+    document.getElementById('tstat').textContent = '0 questions';
+    return;
+  }
+  renderTable();
+}
+
+function filt(f,btn){
+  activeFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderTable();
+}
+
+function renderTable(){
+  const list = activeFilter==='all' ? ALL : ALL.filter(({q})=>q.diff===activeFilter);
+  document.getElementById('tstat').textContent=`${list.length} question${list.length!==1?'s':''}`;
+  const tbody=document.getElementById('tbody');
+  if(!list.length){
+    tbody.innerHTML='<tr><td colspan="5" class="tbl-msg">No questions found.</td></tr>';
+    return;
+  }
+  tbody.innerHTML=list.map(({q,uid,uni},i)=>{
+    const done=q.steps.every((_,si)=>SS[`${uid}_${q.id}_${si}`]?.ran);
+    const active=aQ&&aQ.id===q.id&&aU===uid;
+    const slug=SLUGS[`${uid}:${q.id}`];
+    const qCell=`<div class="q-text">${tx(q.question)}</div><div class="q-concepts">${(q.cc||[]).slice(0,3).join(' · ')}</div>`;
+    return `<tr onclick="openQ('${uid}',${q.id})" class="${active?'active-row':''}">
+      <td class="td-num">${START_INDEX+i+1}</td>
+      <td class="td-q">${slug
+        ? `<a class="q-link" href="/questions/${slug}.html" onclick="event.preventDefault();event.stopPropagation();openQ('${uid}',${q.id});">${qCell}</a>`
+        : qCell}
+      </td>
+      <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,${uni.c} 13%,white);color:color-mix(in srgb,${uni.c} 90%,black)">${uni.name}</span></td>
+      <td class="td-diff"><span class="diff-${q.diff}">${q.diff}</span></td>
+      <td class="td-st">${done?'✅':''}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── OPEN QUESTION ── */
+async function openQ(uid,id){
+  if(aU!==uid){
+    aU=uid;
+    loadDb(uid);
+  }
+  aQ=(CACHE[uid]||[]).find(q=>q.id===id)||null;
+  renderTable();
+  renderQV();
+  setTimeout(()=>document.getElementById('qview').scrollIntoView({behavior:'smooth',block:'start'}),60);
+}
+
+/* ── RENDER QUESTION VIEW ── */
+function renderQV(){
+  const qv=document.getElementById('qview');
+  if(!aQ){qv.style.display='none';return;}
+  qv.style.display='block';
+  const q=aQ;
+  const uni=UM.find(u=>u.id===aU);
+  const uc=uni?.c||'#7c5cfc';
+  const done=q.steps.filter((_,si)=>SS[`${aU}_${q.id}_${si}`]?.ran).length;
+  const total=q.steps.length;
+  const pct=total?Math.round(done/total*100):0;
+
+  let h=`<div class="qv-inner" style="--uc:${uc}">`;
+
+  // Progress
+  h+=`<div class="prog">
+    <span class="prog-label">${uni?.name} · Progress</span>
+    <div class="prog-pips">${q.steps.map((_,si)=>
+      `<div class="pip${SS[`${aU}_${q.id}_${si}`]?.ran?' done':''}"></div>`
+    ).join('')}</div>
+    <span class="prog-pct">${pct}%</span>
+  </div>`;
+
+  // Concept chips
+  h+=`<div class="chips">${(q.cc||[]).map(c=>`<span class="chip">${c}</span>`).join('')}
+    <span class="chip chip-d">${q.diff.toUpperCase()}</span></div>`;
+
+  // Story
+  h+=`<div class="story">
+    <div class="story-bg"></div>
+    <div class="story-top">
+      <span class="story-lbl">📖 Story</span>
+      <span class="story-co">${uni?.name} · ${uni?.sub}</span>
+    </div>
+    <div class="story-body">${tx(q.story)}</div>
+  </div>`;
+
+  // Mission
+  h+=`<div class="mission">
+    <div class="mission-top">🎯 Your Mission</div>
+    <div class="mission-body">${tx(q.question)}</div>
+  </div>`;
+
+  // Schema
+  if(q.schemas?.length){
+    h+=`<div class="schema-wrap">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem">📋 Table Structure</div>
+      <div class="schema-cards">${q.schemas.map(s=>`
+        <div class="sc">
+          <div class="sc-head">🗂 <span class="sc-name">${s.name}</span></div>
+          <div>${s.cols.map(c=>`<div class="sc-row">
+            <span class="sc-col">${c.n}</span>
+            <span class="sc-type">${c.t}</span>
+            <span class="sc-eg">${c.e}</span>
+          </div>`).join('')}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // Steps
+  h+=`<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem">⚡ Step-by-Step Walkthrough</div>`;
+  q.steps.forEach((step,si)=>{
+    const key=`${aU}_${q.id}_${si}`;
+    const st=SS[key]||{};
+    const isDone=!!st.ran, isOpen=!!st.open;
+    const curSql=st.sql!==undefined?st.sql:step.sql;
+    const rows=Math.max(4,(curSql.match(/\n/g)||[]).length+2);
+    h+=`<div class="step-card${isDone?' done':''}" id="sc_${key}">
+      <div class="step-head" onclick="tog('${key}')">
+        <div class="step-num">${isDone?'✓':si+1}</div>
+        <div class="step-info">
+          <div class="step-title">${tx(step.title)}</div>
+          <div class="step-hint">${isDone?'✅ Done — try editing the query!':'Click to expand'}</div>
+        </div>
+        <div class="step-arr" id="sa_${key}">▾</div>
+      </div>
+      <div class="step-body" id="sb_${key}" ${isOpen?'style="display:block"':''}>
+        <div class="ed-win">
+          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+            <span class="ed-file">query.sql</span></div>
+          <textarea class="ed-ta" id="ta_${key}" rows="${rows}" spellcheck="false">${curSql}</textarea>
+        </div>
+        <div class="act">
+          <button class="btn-go" id="rb_${key}" onclick="runS('${key}',${si})"
+            style="background:linear-gradient(135deg,${uc},color-mix(in srgb,${uc} 60%,#fc5c9c));box-shadow:0 3px 12px color-mix(in srgb,${uc} 38%,transparent)">
+            ▶ Run Query
+          </button>
+          <button class="btn-rst" onclick="rstS('${key}',${si})">↺ Reset</button>
+          <span class="row-ct" id="rc_${key}"></span>
+        </div>
+        <div id="rs_${key}"></div>
+        <div class="xpl" id="xp_${key}">
+          ${renderExplain(step)}
+        </div>
+      </div>
+    </div>`;
+  });
+
+  if(done===total&&total>0){
+    h+=`<div class="win"><div class="win-bg"></div><div class="win-shine"></div>
+      <span class="win-e">🏆</span>
+      <div class="win-t">Quest Complete!</div>
+      <div class="win-s">All ${total} steps done. Edit the SQL to explore variations!</div>
+    </div>`;
+  }
+
+  h+='</div>';
+  qv.innerHTML=h;
+}
+
+/* ── STEP INTERACTIONS ── */
+function tog(key){
+  if(!SS[key])SS[key]={};
+  SS[key].open=!SS[key].open;
+  const sb=document.getElementById('sb_'+key);
+  const sa=document.getElementById('sa_'+key);
+  const sc=document.getElementById('sc_'+key);
+  if(sb)sb.style.display=SS[key].open?'block':'none';
+  if(sc)sc.classList.toggle('open',SS[key].open);
+  if(sa)sa.style.transform=SS[key].open?'rotate(180deg)':'';
+}
+function rstS(key,si){
+  if(!aQ)return;
+  const ta=document.getElementById('ta_'+key);
+  if(ta)ta.value=aQ.steps[si]?.sql||'';
+  if(!SS[key])SS[key]={};
+  SS[key].sql=aQ.steps[si]?.sql;
+}
+function runS(key,si){
+  const ta=document.getElementById('ta_'+key);if(!ta)return;
+  const sql=ta.value.trim();
+  if(!SS[key])SS[key]={};SS[key].sql=sql;
+  const rb=document.getElementById('rb_'+key),rs=document.getElementById('rs_'+key),
+        rc=document.getElementById('rc_'+key),xp=document.getElementById('xp_'+key);
+  if(rb){rb.disabled=true;rb.textContent='⏳ Running…';}
+  setTimeout(()=>{
+    const r=runSQL(sql);
+    if(r.error){
+      rs.innerHTML=`<div style="padding:0 1.125rem .875rem"><div class="err-b">❌ ${esc(r.error)}</div></div>`;
+      if(rc)rc.textContent='';
+    }else if(r.empty){
+      rs.innerHTML=`<div style="padding:0 1.125rem .875rem"><div class="ok-b">✅ Query ran — no rows returned.</div></div>`;
+      if(rc)rc.textContent='0 rows';
+      SS[key].ran=true;
+    }else{
+      rs.innerHTML=`<div class="res"><div class="res-lbl"><span class="res-dot"></span>Result — ${r.rows.length} row${r.rows.length!==1?'s':''}</div>${mkTbl(r.cols,r.rows)}</div>`;
+      if(rc)rc.textContent='';
+      SS[key].ran=true;
+    }
+    if(SS[key].ran){
+      const sc=document.getElementById('sc_'+key);
+      if(sc){
+        sc.classList.add('done');
+        const n=sc.querySelector('.step-num');
+        if(n){
+          const uc=UM.find(u=>u.id===aU)?.c||'#7c5cfc';
+          n.style.background=`linear-gradient(135deg,${uc},color-mix(in srgb,${uc} 60%,#fc5c9c))`;
+          n.style.color='#fff';n.style.borderColor='transparent';n.textContent='✓';
+        }
+        const hint=sc.querySelector('.step-hint');
+        if(hint){hint.textContent='✅ Done — try editing the query!';hint.style.color='#22c55e';}
+      }
+      if(xp)xp.style.display='block';
+      burst();
+    }
+    const uc=UM.find(u=>u.id===aU)?.c||'#7c5cfc';
+    if(rb){rb.disabled=false;rb.textContent='▶ Run Query';
+      rb.style.background=`linear-gradient(135deg,${uc},color-mix(in srgb,${uc} 60%,#fc5c9c))`;}
+    updProg();renderTable();
+  },20);
+}
+function mkTbl(cols,rows){
+  let h=`<div class="tbl-wrap"><table class="rt"><thead><tr>`;
+  cols.forEach(c=>h+=`<th>${esc(String(c))}</th>`);
+  h+='</tr></thead><tbody>';
+  rows.slice(0,80).forEach(row=>{
+    h+='<tr>';row.forEach(cell=>h+=cell===null
+      ?`<td><span class="nv">NULL</span></td>`:`<td>${esc(String(cell))}</td>`);h+='</tr>';
+  });
+  if(rows.length>80)h+=`<tr><td colspan="${cols.length}" style="text-align:center;color:#aaa;padding:8px;font-size:11px">…${rows.length-80} more rows</td></tr>`;
+  return h+'</tbody></table></div>';
+}
+function updProg(){
+  if(!aQ)return;
+  const q=aQ,done=q.steps.filter((_,si)=>SS[`${aU}_${q.id}_${si}`]?.ran).length,total=q.steps.length;
+  const pct=total?Math.round(done/total*100):0;
+  document.querySelectorAll('.pip').forEach((el,i)=>{
+    el.classList.toggle('done',!!SS[`${aU}_${q.id}_${i}`]?.ran);
+  });
+  const p=document.querySelector('.prog-pct');if(p)p.textContent=pct+'%';
+  if(done===total&&total>0&&!document.querySelector('.win')){
+    const uc=UM.find(u=>u.id===aU)?.c||'#7c5cfc';
+    const inner=document.getElementById('qview')?.querySelector('.qv-inner');
+    if(inner){
+      const w=document.createElement('div');w.className='win';w.style.setProperty('--uc',uc);
+      w.innerHTML=`<div class="win-bg"></div><div class="win-shine"></div><span class="win-e">🏆</span><div class="win-t">Quest Complete!</div><div class="win-s">All ${total} steps done. Edit the SQL to explore!</div>`;
+      inner.appendChild(w);
+    }
+  }
+}
+function burst(){
+  const cc=['#f97316','#3b82f6','#ec4899','#8b5cf6','#10b981','#fbbf24','#ef4444','#06b6d4'];
+  for(let i=0;i<18;i++){
+    const el=document.createElement('div');el.className='cf';
+    el.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${cc[Math.floor(Math.random()*cc.length)]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-delay:${Math.random()*.5}s;animation-duration:${1.8+Math.random()*1.5}s;`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),3200);
+  }
+}
+
+boot();
+
+/* ── LEARN MENU ── */
+function toggleMenu(){
+  document.getElementById('navmenu').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  const m=document.getElementById('navmenu');
+  if(m&&!m.contains(e.target))m.classList.remove('open');
+});
+async function loadLearnLinks(){
+  try{
+    const r=await fetch('/learn/index.json');
+    if(!r.ok)return;
+    const items=await r.json();
+    const container=document.getElementById('learn-links');
+    if(!items.length){container.innerHTML='<div class="dropdown-empty">No items yet</div>';return;}
+    container.innerHTML=items.map(item=>{
+      const url=item.href||`/learn/${item.file}`;
+      return `
+      <a class="dropdown-item" href="${url}" target="_blank">
+        <div class="di-icon" style="background:${item.color||'#f3f0ff'}">${item.icon||'📄'}</div>
+        <div class="di-text">
+          <span class="di-title">${item.title}</span>
+          <span class="di-sub">${item.desc||''}</span>
+        </div>
+      </a>`;
+    }).join('');
+  }catch(e){}
+}
+loadLearnLinks();
+</script>
 <footer id="tnf-footer">
       <nav class="tnf-footer-links">
       <a href="/about.html">About</a>
@@ -526,13 +816,5 @@ ORDER BY CAST(quantity AS INTEGER) ASC;</code></pre>
       </nav>
       <div class="tnf-footer-copy">© 2026 TableNotFound</div>
     </footer>
-
-<script>
-function toggleMenu(){document.getElementById('navmenu').classList.toggle('open');}
-document.addEventListener('click', e => {
-  const m=document.getElementById('navmenu');
-  if(m&&!m.contains(e.target))m.classList.remove('open');
-});
-</script>
 </body>
 </html>
