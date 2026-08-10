@@ -369,8 +369,17 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-diff"><span class="diff-mid">mid</span></td>
         <td class="td-st"></td>
       </tr>
-      <tr onclick="openQ('duolingo',1)">
+      <tr onclick="openQ('cred',1)">
         <td class="td-num">4</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/cred-user-find-every-reward-category-they-not-successfu.html" onclick="event.preventDefault();event.stopPropagation();openQ('cred',1);"><div class="q-text">For each user, find every reward category they have NOT successfully redeemed any points in this month — meaning either they have no redemption row for that category at all, or their only redemption row for that category has a NULL points_redeemed (a reversed attempt). Build the full user-times-category universe first, since a missed category has no row to start from in redemptions. Return user_name and category_name for every missed combination, sorted by user_name then category_name.</div><div class="q-concepts">CROSS JOIN · LEFT JOIN · WHERE</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#1a1a2e 13%,white);color:color-mix(in srgb,#1a1a2e 90%,black)">CRED</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('duolingo',1)">
+        <td class="td-num">5</td>
         <td class="td-q">
           <a class="q-link" href="/questions/duolingo-user-learningactivity-calculate-totalxp-sum-xpearn.html" onclick="event.preventDefault();event.stopPropagation();openQ('duolingo',1);"><div class="q-text">For each user in learning_activity, calculate total_xp as the sum of xp_earned (treating a NULL xp_earned, from a streak-freeze day, as 0). Calculate avg_xp_per_day as the average xp_earned across all logged days for that user, also treating NULL as 0 — a freeze day should pull the average down, not be excluded from it. Calculate language_count as the number of distinct languages the user has activity for, and languages_list as those distinct language names joined into a single comma-separated string, sorted alphabetically. Return user_name, total_xp, avg_xp_per_day (rounded to 2 decimal places), language_count, and languages_list, sorted by total_xp in descending order.</div><div class="q-concepts">GROUP_CONCAT · COALESCE · COUNT(DISTINCT)</div></a>
         </td>
@@ -379,7 +388,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('flipkart',1)">
-        <td class="td-num">5</td>
+        <td class="td-num">6</td>
         <td class="td-q">
           <a class="q-link" href="/questions/flipkart-suppliers-average-product-unit-price-greater-categ.html" onclick="event.preventDefault();event.stopPropagation();openQ('flipkart',1);"><div class="q-text">Find suppliers whose average product unit price is greater than the average unit price of all suppliers in the same category. Return the supplier name, category, and average unit price. Sort the results by category and then by average unit price in descending order.</div><div class="q-concepts">JOIN · GROUP BY · AVG</div></a>
         </td>
@@ -388,7 +397,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('groww',1)">
-        <td class="td-num">6</td>
+        <td class="td-num">7</td>
         <td class="td-q">
           <a class="q-link" href="/questions/groww-user-portfoliosnapshots-ignoring-any-row-where.html" onclick="event.preventDefault();event.stopPropagation();openQ('groww',1);"><div class="q-text">For each user in portfolio_snapshots, ignoring any row where portfolio_value is NULL, find their first_value (portfolio_value on their earliest snapshot_date) and last_value (portfolio_value on their most recent snapshot_date). Calculate growth_amount as last_value minus first_value, and growth_pct as that difference as a percentage of first_value, rounded to 2 decimal places. Return one row per user_name with first_value, last_value, growth_amount, and growth_pct, sorted by growth_pct in descending order.</div><div class="q-concepts">FIRST_VALUE · LAST_VALUE · Window Functions</div></a>
         </td>
@@ -397,7 +406,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('meesho',1)">
-        <td class="td-num">7</td>
+        <td class="td-num">8</td>
         <td class="td-q">
           <a class="q-link" href="/questions/meesho-reseller-calculate-net-revenue-total-value-deliver.html" onclick="event.preventDefault();event.stopPropagation();openQ('meesho',1);"><div class="q-text">For each reseller, calculate net revenue as the total value of delivered orders minus the total value of RTO (returned) orders. Only include resellers with at least 5 total orders. Rank resellers within their product category by net revenue, using DENSE_RANK so tied resellers share a rank. Also calculate the running total of net revenue within each category, ordered by rank (and by reseller name to break ties consistently). Return reseller_name, category, total_orders, net_revenue, category_rank, and running_net_revenue, sorted by category, then rank, then reseller name.</div><div class="q-concepts">JOIN · CASE WHEN · GROUP BY</div></a>
         </td>
@@ -406,7 +415,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('myntra',1)">
-        <td class="td-num">8</td>
+        <td class="td-num">9</td>
         <td class="td-q">
           <a class="q-link" href="/questions/myntra-products-total-sales-quantity-greater-average.html" onclick="event.preventDefault();event.stopPropagation();openQ('myntra',1);"><div class="q-text">Find products whose total sales quantity is greater than the average total sales quantity of products from the same brand. Return the product name, brand and total sales quantity. Sort the result by brand and total sales quantity in descending order.</div><div class="q-concepts">JOIN · GROUP BY · SUM</div></a>
         </td>
@@ -415,21 +424,12 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('netflix',1)">
-        <td class="td-num">9</td>
+        <td class="td-num">10</td>
         <td class="td-q">
           <a class="q-link" href="/questions/netflix-tv-show-calculate-completion-percentage-users.html" onclick="event.preventDefault();event.stopPropagation();openQ('netflix',1);"><div class="q-text">For each TV show, calculate the completion percentage based on users who started Episode 1 versus users who watched the final episode. Round the result to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE IN · GROUP BY</div></a>
         </td>
         <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#1d4ed8 13%,white);color:color-mix(in srgb,#1d4ed8 90%,black)">Netflix</span></td>
         <td class="td-diff"><span class="diff-mid">mid</span></td>
-        <td class="td-st"></td>
-      </tr>
-      <tr onclick="openQ('notion',1)">
-        <td class="td-num">10</td>
-        <td class="td-q">
-          <a class="q-link" href="/questions/notion-habit-morning-meditation-build-full-calendar-seven.html" onclick="event.preventDefault();event.stopPropagation();openQ('notion',1);"><div class="q-text">For the habit 'Morning Meditation', build a full calendar of all seven days from 2026-08-01 through 2026-08-07 using a recursive CTE, then LEFT JOIN it against habit_logs to find that habit's status on each day. Label each day's status as 'Completed' if completed = 1, 'Skipped' if completed = 0, and 'No Data' if there's no matching row in habit_logs at all for that day. Return day and status for all seven days, sorted by day.</div><div class="q-concepts">Recursive CTE · LEFT JOIN · CASE WHEN</div></a>
-        </td>
-        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#37352f 13%,white);color:color-mix(in srgb,#37352f 90%,black)">Notion</span></td>
-        <td class="td-diff"><span class="diff-hard">hard</span></td>
         <td class="td-st"></td>
       </tr>
     </tbody>
@@ -454,7 +454,7 @@ let UM = []; // loaded dynamically from /questions/index.json
 /* PAGE_QUESTIONS: the exact {uid,qid} pairs pre-rendered into THIS page's tbody, in order.
    Written by scripts/generate-question-pages.js — boot() only ever fetches and renders
    these, so pagination can't be silently undone once JS loads. */
-let PAGE_QUESTIONS = [{"uid":"airbnb","qid":1},{"uid":"amazon","qid":1},{"uid":"bookmyshow","qid":1},{"uid":"duolingo","qid":1},{"uid":"flipkart","qid":1},{"uid":"groww","qid":1},{"uid":"meesho","qid":1},{"uid":"myntra","qid":1},{"uid":"netflix","qid":1},{"uid":"notion","qid":1}];
+let PAGE_QUESTIONS = [{"uid":"airbnb","qid":1},{"uid":"amazon","qid":1},{"uid":"bookmyshow","qid":1},{"uid":"cred","qid":1},{"uid":"duolingo","qid":1},{"uid":"flipkart","qid":1},{"uid":"groww","qid":1},{"uid":"meesho","qid":1},{"uid":"myntra","qid":1},{"uid":"netflix","qid":1}];
 /* START_INDEX: 0-based rank of this page's first question among all questions.
    Written by scripts/generate-question-pages.js — keeps the "S.No" column in sync
    with the server-rendered numbering once renderTable() takes over after boot(). */

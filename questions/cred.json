@@ -1,0 +1,191 @@
+{
+  "setup": "CREATE TABLE users(user_id INTEGER,user_name TEXT);\nCREATE TABLE categories(category_id INTEGER,category_name TEXT);\nCREATE TABLE redemptions(redemption_id INTEGER,user_id INTEGER,category_id INTEGER,points_redeemed INTEGER);\nINSERT INTO users VALUES (1,'Aarav'),(2,'Priya'),(3,'Rohan'),(4,'Meera'),(5,'Karthik');\nINSERT INTO categories VALUES (1,'Travel'),(2,'Dining'),(3,'Shopping'),(4,'Fuel'),(5,'Entertainment');\nINSERT INTO redemptions VALUES\n (1,1,1,500),\n (2,1,2,300),\n (3,2,3,800),\n (4,2,4,200),\n (5,2,1,150),\n (6,2,2,NULL),\n (7,3,1,400),(8,3,2,250),(9,3,3,600),(10,3,4,300),\n (11,4,1,350),(12,4,2,500),(13,4,3,200),(14,4,4,450),\n (15,5,1,100),(16,5,2,150),(17,5,3,700),(18,5,4,250);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "mid",
+      "cc": [
+        "CROSS JOIN",
+        "LEFT JOIN",
+        "WHERE",
+        "ORDER BY"
+      ],
+      "story": {
+        "en": "Tuesday morning at CRED's Rewards team. The rewards catalog has five spending categories — Travel, Dining, Shopping, Fuel, Entertainment — and the team wants to nudge each user toward categories they haven't touched this month, to boost engagement. redemptions only has a row when a user actually redeemed points in a category, so a category a user never engaged with simply has no row at all. One redemption is also sitting with a NULL points_redeemed — the redemption was initiated but reversed before it completed, so it shouldn't count as the user having actually engaged with that category.",
+        "ta": "Tuesday morning CRED-oda Rewards team-la. Rewards catalog-la anju spending categories irukku — Travel, Dining, Shopping, Fuel, Entertainment — team-ku ovvoru user-ayum, indha month touch pannaadha categories-a nokki nudge pannanum, engagement-a boost panna. redemptions-la, user real-a oru category-la points redeem pannina mattum-thaan oru row irukkum, so user edhavadhu category-oda engage pannaadhu-nu irundhaal, andha category-kku row-e irukkaadhu. Oru redemption-um NULL points_redeemed vachi irukku — andha redemption start aachu aana complete aagura munnadi reverse aachu, so user andha category-la genuine-a engage pannaanga-nu count pannakoodadhu.",
+        "hi": "Tuesday morning CRED ke Rewards team mein. Rewards catalog mein paanch spending categories hain — Travel, Dining, Shopping, Fuel, Entertainment — team har user ko un categories ki taraf nudge karna chahti hai jinhe usne is mahine touch nahi kiya, taaki engagement badhe. redemptions mein tabhi ek row hoti hai jab user ne asal mein kisi category mein points redeem kiye ho, isliye jis category se user ne engage hi nahi kiya, uske liye koi row hi nahi hoti. Ek redemption bhi NULL points_redeemed ke saath pada hai — wo redemption shuru hua tha lekin complete hone se pehle reverse ho gaya, isliye use us category mein user ka genuine engagement nahi maanna chahiye.",
+        "te": "Tuesday morning CRED Rewards team lo. Rewards catalog lo aidu spending categories unnayi — Travel, Dining, Shopping, Fuel, Entertainment — team prathi user ni, ee month touch cheyani categories vaipu nudge cheyali, engagement boost cheyadaniki. redemptions lo user nijamga oka category lo points redeem chesinapudu matrame oka row untundi, so user e category tho engage kaakapothe, aa category ki row e undadu. Oka redemption kuda NULL points_redeemed tho undi — aa redemption start ayyindi kaani complete avvakamunde reverse ayyindi, so user aa category lo genuine ga engage ayyaru ani count cheyakudadu."
+      },
+      "question": {
+        "en": "For each user, find every reward category they have NOT successfully redeemed any points in this month — meaning either they have no redemption row for that category at all, or their only redemption row for that category has a NULL points_redeemed (a reversed attempt). Build the full user-times-category universe first, since a missed category has no row to start from in redemptions. Return user_name and category_name for every missed combination, sorted by user_name then category_name.",
+        "ta": "Ovvoru user-kkum, ee month edhavadhu points-a successful-a redeem pannaadha ella reward category-a-yum kandupidunga — atharkiya, andha category-kku edhavadhu redemption row-e illa, alladhu andha category-kku irukkura mattum oru redemption row NULL points_redeemed vachirukku (reverse aana attempt). Mudhalla full user-times-category universe-a build pannunga, ention missed category-kku redemptions-la start panna edhume row illa. Ovvoru missed combination-kkum user_name matrum category_name-a return pannunga, user_name apparam category_name-la sort pannunga.",
+        "hi": "Har user ke liye, is mahine jin reward categories mein usne successfully koi points redeem nahi kiye unhe dhoondo — matlab, ya to us category ke liye koi redemption row hi nahi hai, ya us category ke liye jo ek redemption row hai uska points_redeemed NULL hai (ek reverse hua attempt). Pehle full user-times-category universe banao, kyunki missed category ke liye redemptions mein shuru karne ko koi row hoti hi nahi. Har missed combination ke liye user_name aur category_name return karo, user_name phir category_name ke hisaab se sort karke.",
+        "te": "Prathi user ki, ee month e reward category lo successful ga points redeem cheyaledo aa anni categories ni kanugonandi — ante, aa category ki edaina redemption row e ledu, leda aa category ki unna oka redemption row NULL points_redeemed tho undi (reverse ayina attempt). Modata full user-times-category universe ni build cheyandi, endukante missed category ki redemptions lo start cheyadaniki row e undadu. Prathi missed combination ki user_name mariyu category_name ni return cheyandi, user_name tarvata category_name lo sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "users",
+          "cols": [
+            {
+              "n": "user_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "user_name",
+              "t": "TEXT",
+              "e": "Aarav"
+            }
+          ]
+        },
+        {
+          "name": "categories",
+          "cols": [
+            {
+              "n": "category_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "category_name",
+              "t": "TEXT",
+              "e": "Travel"
+            }
+          ]
+        },
+        {
+          "name": "redemptions",
+          "cols": [
+            {
+              "n": "redemption_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "user_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "category_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "points_redeemed",
+              "t": "INTEGER",
+              "e": "500"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Build the full user-times-category universe with CROSS JOIN",
+            "ta": "CROSS JOIN vachi full user-times-category universe-a build pannunga",
+            "hi": "CROSS JOIN se full user-times-category universe banao",
+            "te": "CROSS JOIN tho full user-times-category universe ni build cheyandi"
+          },
+          "sql": "SELECT u.user_name, c.category_name\nFROM users u\nCROSS JOIN categories c\nORDER BY u.user_name, c.category_name;",
+          "explain": {
+            "en": [
+              "CROSS JOIN pairs every row in users with every row in categories — no ON clause, no matching condition, just every possible combination. Five users times five categories produces exactly twenty-five rows.",
+              "This is the one join type where nothing needs to relate the two tables at all — users and categories share no common column, and CROSS JOIN doesn't need one, because it isn't matching anything, it's generating combinations.",
+              "Nobody has actually redeemed anything in Entertainment yet — it's the newest category — and Aarav in particular hasn't touched Fuel or Shopping either. This table isn't a record of what happened, it's every combination that could possibly appear in redemptions, whether it does or not.",
+              "redemptions itself will never contain a row for a category a user skipped entirely — this CROSS JOIN result is what makes it possible to notice that absence at all, the same way the recursive CTE date range made it possible to notice a missing day."
+            ],
+            "ta": [
+              "CROSS JOIN, users-la irukkura ovvoru row-um categories-la irukkura ovvoru row-um pair pannum — ON clause illa, matching condition illa, edhavadhu possible combination mattum thaan. Anju users anju categories vachi exact-a irubathi-anju rows produce pannum.",
+              "Idhu-thaan rendu tables-a edhavadhu relate panna theva illaadha oru join type — users matrum categories-kku common column edhuvum illa, CROSS JOIN-kkum edhuvum theva illa, ention adhu edhuvume match pannala, combinations-a generate pannuthu.",
+              "Innum yaarum Entertainment-la edhuvume redeem pannala — adhu-thaan pudhu category — matrum Aarav Fuel alladhu Shopping-a-yum touch pannala. Indha table enna nadandhudhu-nu record illa, redemptions-la varakoodiya ella combination-um, adhu vandhaalum varaadhaalum.",
+              "redemptions-la, user completely skip pannina category-kku oru row eppavum irukkaadhu — indha CROSS JOIN result-thaan andha absence-a notice panna mudiyum vaikkiradhu, recursive CTE date range oru missing day-a notice panna vachadhu madhiri thaan."
+            ],
+            "hi": [
+              "CROSS JOIN, users ki har row ko categories ki har row ke saath pair karta hai — koi ON clause nahi, koi matching condition nahi, bas har possible combination. Paanch users paanch categories se exactly pachchees rows banate hain.",
+              "Yeh ek aisa join type hai jahan dono tables ko relate karne ki koi zaroorat hi nahi hoti — users aur categories mein koi common column nahi hai, aur CROSS JOIN ko iski zaroorat bhi nahi, kyunki yeh kuch match nahi kar raha, sirf combinations generate kar raha hai.",
+              "Abhi tak koi bhi Entertainment mein kuch redeem nahi kiya hai — yeh sabse nayi category hai — aur Aarav ne khaaskar Fuel ya Shopping ko bhi touch nahi kiya. Yeh table kya hua uska record nahi hai, yeh har wo combination hai jo redemptions mein aa sakti thi, chahe aayi ho ya na aayi ho.",
+              "redemptions mein us category ke liye kabhi koi row nahi hogi jise user ne poori tarah skip kiya — yehi CROSS JOIN result hai jo us absence ko notice karna sambhav banata hai, bilkul waise hi jaise recursive CTE date range ne ek missing din ko notice karna sambhav banaya tha."
+            ],
+            "te": [
+              "CROSS JOIN, users lo unna prathi row ni categories lo unna prathi row tho pair chestundi — ON clause ledu, matching condition ledu, kevalam prathi possible combination. Aidu users aidu categories tho exact ga iravai-aidu rows produce chestayi.",
+              "Idi rendu tables ni relate cheyalsina avasaram leni oka join type — users mariyu categories ki common column emi ledu, CROSS JOIN ki kuda avasaram ledu, endukante adi emi match cheyadu, combinations ni generate chestundi.",
+              "Inka evaru Entertainment lo emi redeem cheyaledu — adi kotha category — mariyu Aarav Fuel leda Shopping ni kuda touch cheyaledu. Ee table emi jarigindo record kaadu, redemptions lo raagalige prathi combination, adi vachina raakapoina.",
+              "redemptions lo, user poortiga skip chesina category ki oka row eppudu undadu — ee CROSS JOIN result ne aa absence ni notice cheyadam possible chestundi, recursive CTE date range oka missing day ni notice cheyadam possible chesinatte."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "LEFT JOIN redemptions, but only count a successful one",
+            "ta": "redemptions-a LEFT JOIN pannunga, aana successful-a irukkura ondrai mattum count pannunga",
+            "hi": "redemptions ko LEFT JOIN karo, lekin sirf successful wale ko count karo",
+            "te": "redemptions ni LEFT JOIN cheyandi, kaani successful aina danini matrame count cheyandi"
+          },
+          "sql": "SELECT u.user_name, c.category_name, r.points_redeemed\nFROM users u\nCROSS JOIN categories c\nLEFT JOIN redemptions r\n  ON r.user_id = u.user_id AND r.category_id = c.category_id AND r.points_redeemed IS NOT NULL\nORDER BY u.user_name, c.category_name;",
+          "explain": {
+            "en": [
+              "r.points_redeemed IS NOT NULL sits inside the ON clause, not a separate WHERE — that keeps it part of what counts as a match during the join itself, so a category with only a failed redemption still gets treated as unmatched rather than being filtered out after the fact.",
+              "Priya's Dining row does exist in redemptions, but because its points_redeemed is NULL, the join condition's IS NOT NULL check fails for it — Priya-Dining comes back with points_redeemed as NULL here, exactly as if no redemptions row existed for that pairing at all.",
+              "Aarav's Fuel and Shopping rows show NULL points_redeemed for a different, simpler reason — there's genuinely no row in redemptions for either combination, so the LEFT JOIN has nothing to match regardless of the extra condition.",
+              "Aarav's Travel and Dining, and Priya's Fuel, Shopping, and Travel, all show their real point values — those are the combinations with a genuine, successful redemption behind them."
+            ],
+            "ta": [
+              "r.points_redeemed IS NOT NULL, ON clause-kkulla irukku, thani WHERE illa — idhu join nadakkumbodhu-thaan match-a irukkuradhu-la part-a irukkum, so failed redemption mattum irukkura category, apparam filter aagura maadhiri illama, unmatched-a treat aagum.",
+              "Priya-oda Dining row redemptions-la irukku, aana points_redeemed NULL-a irukkura ention, join condition-oda IS NOT NULL check adharkku fail aagum — Priya-Dining inga points_redeemed NULL-a thirumbi varum, andha pairing-kku edhavadhu redemptions row-e illaadha maadhiri thaan.",
+              "Aarav-oda Fuel matrum Shopping rows vera, simple-aana reason-kku NULL points_redeemed kaatum — andha rendu combination-kkum redemptions-la genuine-a edhavadhu row-e illa, so extra condition edhu irundhaalum LEFT JOIN-kku match panna edhuvum illa.",
+              "Aarav-oda Travel matrum Dining, Priya-oda Fuel, Shopping, matrum Travel, ella-vayum avanga real point values-a kaatum — adhu genuine-a, successful redemption irukkura combinations."
+            ],
+            "hi": [
+              "r.points_redeemed IS NOT NULL, ON clause ke andar hai, alag WHERE nahi — isse yeh join hone ke dauraan hi match hone ka hissa banta hai, isliye sirf failed redemption wali category ko baad mein filter karne ki jagah unmatched maana jaata hai.",
+              "Priya ki Dining row redemptions mein hai, lekin uska points_redeemed NULL hone ki wajah se, join condition ka IS NOT NULL check uske liye fail ho jaata hai — Priya-Dining yahan points_redeemed NULL ke saath wapas aata hai, bilkul waise jaise us pairing ke liye koi redemptions row thi hi nahi.",
+              "Aarav ki Fuel aur Shopping rows ek alag, simple reason se NULL points_redeemed dikhati hain — dono combinations ke liye redemptions mein genuinely koi row hai hi nahi, isliye extra condition kuch bhi ho, LEFT JOIN ke paas match karne ko kuch hai hi nahi.",
+              "Aarav ka Travel aur Dining, aur Priya ka Fuel, Shopping, aur Travel, sab apne real point values dikhate hain — yeh wo combinations hain jinke peeche ek genuine, successful redemption hai."
+            ],
+            "te": [
+              "idi join jarige samayamlo e match ayye danilo part avutundi, so failed redemption matrame unna category, tarvata filter avvakunda, unmatched ga treat avutundi.",
+              "Priya Dining row redemptions lo real ga undi, kaani daani points_redeemed NULL kabatti, join condition lo IS NOT NULL check pass avvadu — so Priya-Dining ikkada points_redeemed NULL tho vastundi, idi redemptions lo aa pairing ki row lekunda unnatte result istundi.",
+              "Aarav Fuel mariyu Shopping rows veru, simple reason ki NULL points_redeemed chupistayi — aa rendu combinations ki redemptions lo genuine ga row e ledu, so extra condition emaina unna LEFT JOIN ki match cheyadaniki emi ledu.",
+              "Aarav Travel mariyu Dining, Priya Fuel, Shopping, mariyu Travel, anni vaalla real point values chupistayi — ivi genuine, successful redemption unna combinations."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Keep only the combinations with no successful redemption",
+            "ta": "Successful redemption illaadha combinations-a mattum vachirukkunga",
+            "hi": "Sirf un combinations ko rakho jinme koi successful redemption nahi hai",
+            "te": "Successful redemption leni combinations ni matrame unchandi"
+          },
+          "sql": "SELECT u.user_name, c.category_name\nFROM users u\nCROSS JOIN categories c\nLEFT JOIN redemptions r\n  ON r.user_id = u.user_id AND r.category_id = c.category_id AND r.points_redeemed IS NOT NULL\nWHERE r.redemption_id IS NULL\nORDER BY u.user_name, c.category_name;",
+          "explain": {
+            "en": [
+              "WHERE r.redemption_id IS NULL checks a column from the right side of the LEFT JOIN, not points_redeemed again — after step 2's join condition, a row that failed to match has every column from redemptions come back NULL, including redemption_id, so checking it here is just asking 'did this pairing fail to find a successful redemption.'",
+              "Eight rows survive: Aarav-Fuel, Aarav-Shopping, Priya-Dining, and every single user's Entertainment row — nobody has redeemed anything in that brand-new category yet. Two genuine no-shows, one reversed attempt, and a category with zero adoption across the board all get treated the same correct way here, even though only Priya-Dining has a literal row sitting in redemptions.",
+              "Aarav-Travel, Aarav-Dining, Priya-Fuel, Priya-Shopping, Priya-Travel, and every Travel, Dining, Shopping, and Fuel combination for Rohan, Meera, and Karthik are all missing from this result — every one of them matched a real, successful redemption back in step 2, so they correctly don't belong in a list of categories someone hasn't engaged with.",
+              "Without the CROSS JOIN from step 1, there would be no Aarav-Fuel or Aarav-Shopping row to begin with — a query built only from redemptions and a plain WHERE clause can only ever filter rows that already exist, and a genuinely missing combination was never a row to filter in the first place."
+            ],
+            "ta": [
+              "WHERE r.redemption_id IS NULL, LEFT JOIN-oda right side-la irundhu oru column check pannum, points_redeemed-a marupadiyum illa — step 2-oda join condition-kku apparam, match aagaadha row-kku redemptions-la irundhu ella column-um NULL-a thirumbi varum, redemption_id serndhu, so inga check pannuradhu 'indha pairing successful redemption kandupidikkaadha' nu kekkuradhu thaan.",
+              "Ettu rows survive aagum: Aarav-Fuel, Aarav-Shopping, Priya-Dining, matrum ovvoru user-oda Entertainment row-um — indha pudhu category-la yaarum innum edhuvum redeem pannala. Rendu genuine-a varaadhavai, oru reversed attempt, matrum zero adoption irukkura oru category, ella-vayum correct-a same maadhiri treat aagum, Priya-Dining mattum-thaan redemptions-la literal-a row vachirukku na kooda.",
+              "Aarav-Travel, Aarav-Dining, Priya-Fuel, Priya-Shopping, Priya-Travel, matrum Rohan, Meera, Karthik-oda ella Travel, Dining, Shopping, Fuel combinations-um indha result-la illa — avanga ella-vayum step 2-la real-a, successful redemption-oda match aachu, so yaaravadhu engage pannaadha categories list-la avanga sariyaana idam illa.",
+              "Step 1-oda CROSS JOIN illama, Aarav-Fuel alladhu Aarav-Shopping nu oru row-e mudhalla irukkaadhu — redemptions matrum plain WHERE clause vachi mattum build panna oru query, already irukkura rows-a mattum-thaan filter panna mudiyum, genuine-a missing-a irukkura combination mudhalla filter panna oru row-a irundhadhu-e illa."
+            ],
+            "hi": [
+              "WHERE r.redemption_id IS NULL, LEFT JOIN ke right side ke ek column ko check karta hai, points_redeemed ko dobara nahi — step 2 ke join condition ke baad, match na hone wali row ke redemptions ke sabhi columns NULL wapas aate hain, redemption_id samet, isliye yahan check karna bas yeh poochna hai 'kya is pairing ko koi successful redemption nahi mila.'",
+              "Aath rows survive karti hain: Aarav-Fuel, Aarav-Shopping, Priya-Dining, aur har user ki Entertainment row — is bilkul nayi category mein abhi tak kisi ne kuch redeem nahi kiya. Do genuine no-shows, ek reversed attempt, aur zero adoption wali ek category, sabko sahi se same tarike se treat kiya jaata hai, bhale hi unme se sirf Priya-Dining ke paas redemptions mein literal row ho.",
+              "Aarav-Travel, Aarav-Dining, Priya-Fuel, Priya-Shopping, Priya-Travel, aur Rohan, Meera, Karthik ke sabhi Travel, Dining, Shopping, Fuel combinations is result mein missing hain — inme se har ek step 2 mein ek real, successful redemption se match hui thi, isliye unhone engage nahi ki categories ki list mein unki jagah sahi se nahi banti.",
+              "Step 1 ke CROSS JOIN ke bina, Aarav-Fuel ya Aarav-Shopping ki koi row shuru mein hoti hi nahi — sirf redemptions aur ek plain WHERE clause se banaya gaya query sirf un rows ko filter kar sakta hai jo pehle se exist karti hain, aur ek genuinely missing combination shuru se hi filter karne ko koi row thi hi nahi."
+            ],
+            "te": [
+              "WHERE r.redemption_id IS NULL, LEFT JOIN right side nunchi oka column ni check chestundi, points_redeemed malli kaadu — step 2 join condition tarvata, match avvani row ki redemptions nunchi anni columns NULL ga vastayi, redemption_id tho saha, so ikkada check cheyadam 'ee pairing successful redemption dorakaledha' ani adagadam matrame.",
+              "Enimidi rows survive avutayi: Aarav-Fuel, Aarav-Shopping, Priya-Dining, mariyu prathi user Entertainment row — ee kotha category lo inka evaru emi redeem cheyaledu. Rendu genuine no-shows, oka reversed attempt, mariyu zero adoption unna oka category, anni correct ga same vidhamga treat avutayi, vaatilo Priya-Dining ki matrame redemptions lo literal row unna.",
+              "Aarav-Travel, Aarav-Dining, Priya-Fuel, Priya-Shopping, Priya-Travel, mariyu Rohan, Meera, Karthik anni Travel, Dining, Shopping, Fuel combinations ee result lo ledu — vaatilo prathi okati step 2 lo real, successful redemption tho match ayyindi, so evaraina engage kaani categories list lo vaalla sthanam correct ga ledu.",
+              "Step 1 CROSS JOIN lekunda, Aarav-Fuel leda Aarav-Shopping ani oka row modatlo undadu — redemptions mariyu plain WHERE clause tho matrame build chesina query, already unna rows ni matrame filter chestundi, genuine ga missing ayina combination modatlo filter cheyadaniki row ga ledu."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

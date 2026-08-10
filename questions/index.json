@@ -138,5 +138,12 @@
       "sub": "Weekly Lineup Changes",
       "c": "#c4242b",
       "difficulty": "mid"
+    },
+    {
+      "id": "cred",
+      "name": "CRED",
+      "sub": "Missed Reward Categories",
+      "c": "#1a1a2e",
+      "difficulty": "mid"
     }
   ]
