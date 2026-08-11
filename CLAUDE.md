@@ -26,11 +26,35 @@ The user regularly asks two things, almost verbatim:
 2. **Pick a genuinely new SQL concept** (a function/clause never used before) + a **fresh company/use-case** not already used.
 3. **Design the dataset by hand, then verify every query result with `node -e` using `node:sqlite`** (bundled SQLite ~3.53, superset of the 3.45 baseline) — never hand-compute expected output, always run it. This project's questions have a strong pattern: **include a genuine NULL that changes the answer** (not a token one) — e.g. NULL meaning "hasn't happened yet" vs 0, or a NULL that needs `COALESCE`/`WHERE ... IS NOT NULL` before a window function runs correctly. This is what makes the soft NULL-warning in the validator go away and gives each question real teaching value.
 4. **Write `questions/<company>.json`** matching the exact schema used by every other file: top-level `{setup, questions: [...]}`, each question has `{id, diff, cc, story, question, schemas, steps}`. `story`/`question`/step `title`/step `explain` all need `en`, `ta`, `hi`, `te` translations (Tanglish/Hinglish/Tenglish style — English technical terms kept in English, everything else transliterated colloquially — match the tone of existing files, e.g. `ola.json` or `zomato.json`). Each step's `explain` is an array of 4 prose bullets per language, each one teaching something specific and non-obvious about that exact query (not generic filler). 3 steps per question is the norm: (1) raw data, (2) intermediate/warm-up or the "trap" version, (3) final corrected/complete query.
+   **CRITICAL — ta/hi/te must be PURE LATIN SCRIPT, zero native Unicode characters, ever.** This has broken repeatedly (10 question files got fixed on 2026-08-08 after native Tamil/Hindi/Telugu script, Cyrillic homoglyphs, and stray macron diacritics crept into what was supposed to be transliteration). It happens from writing fast/on autopilot, not from a deliberate choice. **Immediately after writing or editing any translation field, run this scanner on the file before doing anything else**:
+   ```python
+   python3 -c "
+   import json, unicodedata
+   ALLOWED_EXTRA = set('₹—–\'\"\"…→✓✗×÷°')
+   def is_emoji(c):
+       return unicodedata.category(c) in ('So',) or ord(c) in range(0x1F000, 0x1FFFF) or ord(c) == 0xFE0F
+   def scan(obj, path=''):
+       results = []
+       if isinstance(obj, str):
+           bad = [c for c in obj if ord(c) > 127 and c not in ALLOWED_EXTRA and not is_emoji(c)]
+           if bad: results.append((path, bad, obj))
+       elif isinstance(obj, dict):
+           for k, v in obj.items(): results.extend(scan(v, f'{path}.{k}' if path else k))
+       elif isinstance(obj, list):
+           for i, v in enumerate(obj): results.extend(scan(v, f'{path}[{i}]'))
+       return results
+   data = json.load(open('questions/<company>.json', encoding='utf-8'))
+   hits = scan(data)
+   print('contamination found:', len(hits))
+   for p,b,s in hits: print(p,b)
+   "
+   ```
+   Zero hits required before moving on. If it finds something, fix it and re-run — don't assume one pass caught everything.
 5. **Add an entry to `questions/index.json`**: `{id, name, sub, c (hex color, pick something visually distinct from existing ones), difficulty}`.
-6. **Validate**: `node scripts/validate-questions.js` — must show 0 failures for the new file (2 pre-existing unrelated failures on netflix/youtube are expected and not yours to fix unless asked).
+6. **Validate**: `node scripts/validate-questions.js` — must show 0 failures for the new file (2 pre-existing unrelated failures on netflix/youtube are expected and not yours to fix unless asked). If the table count is below 5 rows, expand the dataset (don't just accept the failure) — and if you add rows after already writing the explain text, go back and fix any explain bullets that cite specific counts (row totals, "how many survive" etc.) so they match the final data.
 7. **Regenerate static pages**: `node scripts/generate-question-pages.js` — this rebuilds every `questions/*.html` page, updates `questions/slugs.json`, and rebuilds the paginated listing (`index.html` + `questions/page/N.html`).
 8. **Regenerate sitemap**: `node scripts/generate-sitemap.js`.
-9. Sanity-check the final query's actual output one more time via `node:sqlite` and report the diff summary to the user. Do not commit/push unless explicitly asked.
+9. Sanity-check the final query's actual output one more time via `node:sqlite`, and re-run the contamination scanner against the *generated* HTML page too (not just the JSON) before reporting done. Do not commit/push unless explicitly asked.
 
 ### Adding a new blog post
 
@@ -55,17 +79,20 @@ The user regularly asks two things, almost verbatim:
 - Pagination is 10 questions/page. `index.html` is page 1, `questions/page/N.html` for the rest. Row numbering (`START_INDEX`) must stay correct across pages — this was a real bug fixed on 2026-07-28: the client-side `renderTable()` JS re-numbers rows after fetching `questions/index.json`, and needs a `START_INDEX` baked into each page (not just page-1-relative `i+1`) or page 2+ shows `1, 2, 3...` instead of `11, 12, 13...` after the JS hydration kicks in.
 - Company/question detail HTML pages get **content-derived slugs** (not `company-id`), regenerated by `generate-question-pages.js`, which also warns about orphaned stale files (never auto-deletes them).
 
-## State as of 2026-08-05
+## State as of 2026-08-11
 
-**Companies used (17)**, each with their standout concept(s) — pick something NOT in this list for the headline concept of a new question:
+**Companies used (22)**, each with their standout concept(s) — pick something NOT in this list for the headline concept of a new question:
 - airbnb: Self JOIN, COALESCE, Date Comparison (overlapping reservations / double-booking)
 - amazon: strftime, COALESCE, GROUP BY
+- bookmyshow: INTERSECT, EXCEPT, UNION ALL (weekly movie lineup: continuing vs new releases)
+- cred: CROSS JOIN, LEFT JOIN (full user×category universe to detect missed reward categories)
 - duolingo: GROUP_CONCAT, COALESCE, AVG NULL-sensitivity
 - flipkart: Correlated Subquery, HAVING
 - groww: FIRST_VALUE, LAST_VALUE (+ the LAST_VALUE default-frame gotcha), CTE
 - meesho: DENSE_RANK, Running Total, CASE WHEN
 - myntra: Correlated Subquery, HAVING
 - netflix: COUNT(DISTINCT), CASE WHEN
+- notion: Recursive CTE (date-spine generation), LEFT JOIN, CASE WHEN
 - nykaa: NTILE (+ uneven-bucket-size gotcha), CASE WHEN expression form
 - ola: ROW_NUMBER, PARTITION BY, CTE (dedup via ranking)
 - snapchat: WHERE IN, CASE WHEN
@@ -73,12 +100,13 @@ The user regularly asks two things, almost verbatim:
 - techcorp: RANK, DENSE_RANK, ROW_NUMBER, LAG, LEAD, AVG OVER (kitchen-sink window fn showcase)
 - tinder: basic JOIN/GROUP BY/COUNT
 - uber: basic JOIN/GROUP BY/SUM/AVG/COALESCE
+- unacademy: PERCENT_RANK (+ the ORDER BY direction inversion gotcha), RANK
 - youtube: COUNT(DISTINCT), CASE WHEN
 - zomato: EXISTS, NOT EXISTS, Correlated Subquery (anti-join pattern)
 
-**Concepts NOT yet used in any question** (good candidates for next time): `PERCENT_RANK`, `NULLIF`, `CAST`, `UNION`/`UNION ALL` (only covered in a blog, not a question), `BETWEEN` (only covered in a blog), subquery in `FROM` (derived table), `RECURSIVE CTE`, `EXCEPT`/`INTERSECT`, plain `MIN`/`MAX` as headline concept, `LIKE`, `CROSS JOIN`, `IN (subquery)` form.
+**Concepts NOT yet used in any question** (good candidates for next time): `NULLIF` (covered in a blog, not a question), `CAST` (used as a blog fix, never a question's headline), subquery in `FROM` (derived table — distinct syntax from CTE even though related), `LIKE`, plain `MIN`/`MAX` as headline concept, `IN (subquery)` form, `GROUP BY ... HAVING COUNT(DISTINCT ...)` combos not yet explored, window frame variants beyond what FIRST_VALUE/LAST_VALUE/running-total already covered (e.g. `ROWS BETWEEN N PRECEDING AND N FOLLOWING` for a moving average).
 
-**Blog posts (7)** — each a distinct "silent wrong result" SQL gotcha, verified in SQLite:
+**Blog posts (10)** — each a distinct "silent wrong result" SQL gotcha, verified in SQLite:
 1. `row-number-vs-rank-vs-dense-rank.html` — ranking-function ties
 2. `in-vs-exists-vs-join.html` — the `NOT IN` + NULL trap
 3. `left-join-where-clause-trap.html` — WHERE on right-table column cancels a LEFT JOIN
@@ -86,8 +114,11 @@ The user regularly asks two things, almost verbatim:
 5. `union-vs-union-all-silent-row-drop.html` — UNION's implicit dedup drops real duplicate-looking rows
 6. `between-timestamps-missing-last-day.html` — `BETWEEN` date bounds silently exclude the last day's timestamps
 7. `where-vs-having-execution-order.html` — aggregates can't go in `WHERE`, logical execution order
+8. `nullif-sentinel-values-division-by-zero.html` — `-1`-as-placeholder sentinel values poisoning `AVG()`, plus safe division
+9. `numbers-stored-as-text-sorting-trap.html` — a numeric-looking TEXT column sorts/compares lexicographically
+10. `group-by-vs-window-functions-collapsed-rows.html` — `GROUP BY` collapses rows you still needed; SQLite silently allows mixing an aggregate into a per-row SELECT with no `GROUP BY` at all
 
-Good next blog candidates: `GROUP BY` vs window functions (collapsing vs keeping rows), implicit type coercion / string-number comparison, self-join gaps-and-islands, `NULLIF`/division-by-zero, subquery-in-FROM vs JOIN.
+Good next blog candidates: implicit type coercion beyond the TEXT-numbers case (e.g. comparing genuinely different types, or a DISTINCT-on-multiple-columns misconception), self-join gaps-and-islands (consecutive-run detection), subquery-in-FROM vs JOIN (correctness/readability trade-off), correlated subquery performance (N+1-style row-by-row re-execution), `CAST` failure/truncation behavior.
 
 ## Key scripts (all in `scripts/`)
 - `generate-question-pages.js` — rebuilds all `questions/*.html`, `slugs.json`, `index.html`, `questions/page/N.html`. Run after any question or index.json change.

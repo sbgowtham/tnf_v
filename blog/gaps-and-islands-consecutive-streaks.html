@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Groww: user in portfolio_snapshots… | TableNotFound</title>
-<meta name="description" content="Groww SQL practice question (mid): For each user in portfolio_snapshots, ignoring any row where portfolio_value is NULL,… Free, runs live in your browser.">
-<link rel="canonical" href="https://www.tablenotfound.com/questions/groww-user-portfoliosnapshots-ignoring-any-row-where.html">
+<title>Gaps and Islands: Finding Consecutive Streaks Without a Loop | TableNotFound</title>
+<meta name="description" content="Why MAX(date) - MIN(date) and COUNT(DISTINCT date) both lie about streak length when there are gaps — verified in SQLite, with the classic ROW_NUMBER-minus-date grouping trick.">
+<link rel="canonical" href="https://www.tablenotfound.com/blog/gaps-and-islands-consecutive-streaks.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -271,21 +271,22 @@ td{padding:14px 16px;vertical-align:middle}
 }
 
 
-.static-wrap{max-width:820px;margin:0 auto;padding:2rem 1.5rem 6rem}
+.article-wrap{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
 .crumb{font-size:12px;font-weight:600;color:var(--t3);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:1.5rem}
 .crumb:hover{color:var(--t2)}
-.q-header{padding:.5rem 0 1.75rem;animation:up .55s cubic-bezier(.22,1,.36,1) both}
-.q-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
-.q-h1{font-size:clamp(22px,4vw,32px);font-weight:800;line-height:1.35;letter-spacing:-.7px;margin-bottom:.5rem;color:var(--text)}
-.q-sub{font-size:13px;color:var(--t2)}
-.step-body{display:block}
-.xpl{display:block}
-.step-head{cursor:default}
-.step-num{background:rgba(255,255,255,.6)!important;color:var(--t2)!important}
-.cta-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.75rem}
-.cta-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:20px;border:none;cursor:pointer;font-family:var(--ff);font-size:13px;font-weight:700;text-decoration:none;background:linear-gradient(135deg,#7c5cfc,#c45cfc);color:#fff;box-shadow:0 3px 12px rgba(124,92,252,.35);transition:transform .18s}
-.cta-btn:hover{transform:translateY(-2px)}
-.cta-btn.secondary{background:rgba(255,255,255,.65);color:var(--t2);border:var(--bdr);box-shadow:none}
+.art-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.art-h1{font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:.5rem;color:var(--text);line-height:1.2}
+.art-meta{font-size:12px;color:var(--t3);margin-bottom:2.5rem}
+.art-section{margin:2.75rem 0}
+.art-section h2{font-size:19px;font-weight:700;color:var(--text);margin-bottom:.4rem}
+.art-section p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
+.art-section code{font-family:var(--fm);font-size:.88em;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
+.ed-win{margin:.75rem 0;border-radius:10px;overflow:hidden}
+.tbl-wrap{margin:.75rem 0}
+.null-cell{color:#ccc;font-style:italic}
+.cheat-table{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0}
+.cheat-table th,.cheat-table td{padding:8px 12px;text-align:left;border-bottom:1px solid rgba(0,0,0,.06)}
+.cheat-table th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3)}
 
 </style>
 <style id="tnf-footer-style">
@@ -412,141 +413,120 @@ td{padding:14px 16px;vertical-align:middle}
   </div>
 </nav>
 
-<div class="static-wrap">
-  <a class="crumb" href="/">← All SQL Questions</a>
+<div class="article-wrap">
+  <a class="crumb" href="/">← Back to TableNotFound</a>
 
-  <div class="q-header">
-    <div class="q-badges">
-      <span class="co-tag" style="background:color-mix(in srgb,#00d09c 13%,white);color:color-mix(in srgb,#00d09c 90%,black)">Groww</span>
-      <span class="diff-mid">mid</span>
-      <span class="chip">FIRST_VALUE</span><span class="chip">LAST_VALUE</span><span class="chip">Window Functions</span><span class="chip">PARTITION BY</span><span class="chip">CTE</span>
-    </div>
-    <h1 class="q-h1">For each user in portfolio_snapshots, ignoring any row where portfolio_value is NULL, find their first_value (portfolio_value on their earliest snapshot_date) and last_value (portfolio_value on their most recent snapshot_date). Calculate growth_amount as last_value minus first_value, and growth_pct as that difference as a percentage of first_value, rounded to 2 decimal places. Return one row per user_name with first_value, last_value, growth_amount, and growth_pct, sorted by growth_pct in descending order.</h1>
-    <p class="q-sub">Groww · Portfolio Growth Tracking — practice this real-world SQL scenario live in your browser.</p>
+  <div class="art-badges">
+    <span class="chip">SQL</span>
+    <span class="chip">Window Functions</span>
+    <span class="chip">Dates &amp; Time</span>
   </div>
+  <h1 class="art-h1">Gaps and Islands</h1>
+  <div class="art-meta">Finding consecutive streaks in pure SQL, without a loop</div>
 
-  <div class="story" style="--uc:#00d09c">
-    <div class="story-bg"></div>
-    <div class="story-top">
-      <span class="story-lbl">📖 Story</span>
-      <span class="story-co">Groww · Portfolio Growth Tracking</span>
-    </div>
-    <div class="story-body">Sunday evening at Groww's Investor Insights team. portfolio_snapshots logs a user's total portfolio value every time it's captured — usually monthly, but a sync job that ran on 2026-06-15 for one user failed partway through and logged a row with no value at all, a placeholder that shouldn't be treated as a real data point. The team wants a simple growth signal for every investor: their portfolio value on their very first recorded snapshot compared against their most recent one, to spot who's actually growing and who's been quietly losing money since they started.</div>
-  </div>
-
-  <div class="mission">
-    <div class="mission-top">🎯 Your Mission</div>
-    <div class="mission-body">For each user in portfolio_snapshots, ignoring any row where portfolio_value is NULL, find their first_value (portfolio_value on their earliest snapshot_date) and last_value (portfolio_value on their most recent snapshot_date). Calculate growth_amount as last_value minus first_value, and growth_pct as that difference as a percentage of first_value, rounded to 2 decimal places. Return one row per user_name with first_value, last_value, growth_amount, and growth_pct, sorted by growth_pct in descending order.</div>
-  </div>
-
-  <div class="schema-wrap">
-    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem">📋 Table Structure</div>
-    <div class="schema-cards">
-      <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">portfolio_snapshots</span></div>
-        <div><div class="sc-row">
-          <span class="sc-col">id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">1</span>
-        </div><div class="sc-row">
-          <span class="sc-col">user_name</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Aarav</span>
-        </div><div class="sc-row">
-          <span class="sc-col">snapshot_date</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">2026-05-01</span>
-        </div><div class="sc-row">
-          <span class="sc-col">portfolio_value</span>
-          <span class="sc-type">REAL</span>
-          <span class="sc-eg">100000</span>
-        </div></div>
-      </div>
-    </div>
-  </div>
-
-  <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:1.5rem 0 .75rem">⚡ Step-by-Step Walkthrough</div>
   
-    <div class="step-card" style="--uc:#00d09c">
-      <div class="step-head">
-        <div class="step-num">1</div>
-        <div class="step-info">
-          <div class="step-title">Look at the raw snapshots, including the failed sync</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT *
-FROM portfolio_snapshots
-ORDER BY user_name, snapshot_date;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">portfolio_snapshots has one row per capture, not one row per user — user_name repeats across every date a snapshot was taken, and the three users have different numbers of snapshots (Aarav has more than Karthik, who joined later).</li><li class="xpl-point">Aarav's 2026-06-15 row has NULL portfolio_value — the sync job that day failed partway through, so a row got logged with a date but no actual value; it isn't a genuine zero and shouldn't count as a real data point.</li><li class="xpl-point">Karthik's earliest snapshot is 2026-06-01, a full month after Aarav's and Priya's earliest ones — 'first snapshot' has to mean each user's own earliest date, not some shared calendar date across all three.</li><li class="xpl-point">Nothing is compared yet — this step only confirms which rows are real data points and which one is a gap that needs to be excluded before any first/last comparison happens.</li></ul></div>
-      </div>
-    </div>
-    <div class="step-card" style="--uc:#00d09c">
-      <div class="step-head">
-        <div class="step-num">2</div>
-        <div class="step-info">
-          <div class="step-title">See the trap: LAST_VALUE without an explicit frame just returns the current row</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT user_name, snapshot_date, portfolio_value,
-       FIRST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) AS first_value,
-       LAST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) AS last_value_bug
-FROM portfolio_snapshots
-WHERE portfolio_value IS NOT NULL
-ORDER BY user_name, snapshot_date;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">WHERE portfolio_value IS NOT NULL runs before the window functions ever see a row, so Aarav's failed-sync row is gone from this result entirely — filtering out a bad row is simpler than trying to make FIRST_VALUE or LAST_VALUE skip NULLs mid-calculation.</li><li class="xpl-point">FIRST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) behaves exactly as expected: every row for a given user shows that same user's earliest portfolio_value, 100000 for every one of Aarav's rows.</li><li class="xpl-point">LAST_VALUE looks like it should be the mirror image of FIRST_VALUE, but last_value_bug for every single row is identical to that row's own portfolio_value — Aarav's 2026-05-01 row reports a last_value_bug of 100000, not his actual latest value of 121000.</li><li class="xpl-point">Neither FIRST_VALUE nor LAST_VALUE was given an explicit window frame here. SQL's default frame for an ORDER BY'd window is 'from the start of the partition up to the current row' — for FIRST_VALUE that default happens to give the right answer (the earliest row is always in range), but for LAST_VALUE it means 'the last row of whatever's been seen so far,' which is just the current row itself.</li></ul></div>
-      </div>
-    </div>
-    <div class="step-card" style="--uc:#00d09c">
-      <div class="step-head">
-        <div class="step-num">3</div>
-        <div class="step-info">
-          <div class="step-title">Fix LAST_VALUE with an explicit frame, then collapse to one row per user</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>WITH filtered AS (
-  SELECT user_name, snapshot_date, portfolio_value
-  FROM portfolio_snapshots
-  WHERE portfolio_value IS NOT NULL
-),
-bounds AS (
-  SELECT user_name,
-         FIRST_VALUE(portfolio_value) OVER (PARTITION BY user_name ORDER BY snapshot_date) AS first_value,
-         LAST_VALUE(portfolio_value) OVER (
-           PARTITION BY user_name ORDER BY snapshot_date
-           ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
-         ) AS last_value
-  FROM filtered
-)
-SELECT DISTINCT user_name,
-       first_value,
-       last_value,
-       last_value - first_value AS growth_amount,
-       ROUND((last_value - first_value) * 100.0 / first_value, 2) AS growth_pct
-FROM bounds
-ORDER BY growth_pct DESC;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING widens the frame to the entire partition for every row, not just up to the current one — now LAST_VALUE genuinely means 'the last row of this whole user's data,' regardless of which row is currently being evaluated.</li><li class="xpl-point">bounds still has one row per snapshot, with first_value and last_value repeated identically across every row for a user — SELECT DISTINCT in the outer query collapses that down to exactly one summary row per user_name, since first_value and last_value are now the same for all of a user's rows.</li><li class="xpl-point">Karthik is the one case where growth is negative: his first_value of 75000 is higher than his last_value of 68000, and growth_amount correctly comes out as -7000 rather than something that needs a separate CASE WHEN to handle — subtraction already handles a decline the same way it handles growth.</li><li class="xpl-point">growth_pct uses 100.0, not 100, as the multiplier — a plain 100 would force integer arithmetic in some engines and silently truncate the percentage; 100.0 keeps the whole expression in floating point so Karthik's -9.33% doesn't get rounded down to -9 or worse before ROUND ever runs.</li></ul></div>
-      </div>
+    <div class="art-section">
+      <h2>1. Why this happens</h2>
+      <p>"How long is the current streak" sounds like it needs a loop — walk the dates one at a time, keep a running counter, reset it the moment a day is skipped. SQL doesn't have a natural "look at the previous row and remember something" primitive for that, so the instinct is to reach for whatever aggregate is lying around — <code>MIN()</code>, <code>MAX()</code>, <code>COUNT()</code> — and hope the math works out. It doesn't, because none of those functions know or care whether the days in between were actually present.</p>
     </div>
 
-  <div class="cta-row">
-    <a class="cta-btn" href="/">▶ Practice this live</a>
-    <a class="cta-btn secondary" href="/">← Browse all questions</a>
-  </div>
+    <div class="art-section">
+      <h2>2. The dataset</h2>
+      <p>Verified by actually running this against SQLite — not hand-computed. One user's daily check-ins over ten days, with two gaps: nothing on the 4th, and nothing on the 6th.</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">schema.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE checkins(
+  user_name TEXT,
+  checkin_date TEXT
+);
+
+INSERT INTO checkins VALUES
+ ('Aarav','2026-08-01'),
+ ('Aarav','2026-08-02'),
+ ('Aarav','2026-08-03'),
+ ('Aarav','2026-08-05'),
+ ('Aarav','2026-08-07'),
+ ('Aarav','2026-08-08'),
+ ('Aarav','2026-08-09'),
+ ('Aarav','2026-08-10');</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>user_name</th><th>checkin_date</th></tr></thead><tbody><tr><td>Aarav</td><td>2026-08-01</td></tr><tr><td>Aarav</td><td>2026-08-02</td></tr><tr><td>Aarav</td><td>2026-08-03</td></tr><tr><td>Aarav</td><td>2026-08-05</td></tr><tr><td>Aarav</td><td>2026-08-07</td></tr><tr><td>Aarav</td><td>2026-08-08</td></tr><tr><td>Aarav</td><td>2026-08-09</td></tr><tr><td>Aarav</td><td>2026-08-10</td></tr></tbody></table></div>
+      <p>There are genuinely three separate streaks buried in here: the 1st–3rd (3 days), the 5th alone (1 day), and the 7th–10th (4 days) — the longest real streak is 4 days, not 8 and not 10.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>3. The bug: span and count both lie about gaps</h2>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">bug.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT
+  COUNT(DISTINCT checkin_date) AS total_checkin_days,
+  julianday(MAX(checkin_date)) - julianday(MIN(checkin_date)) + 1 AS naive_span_days
+FROM checkins;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>total_checkin_days</th><th>naive_span_days</th></tr></thead><tbody><tr><td>8</td><td>10</td></tr></tbody></table></div>
+      <p><code>COUNT(DISTINCT checkin_date)</code> says 8 — true, but it's a total, not a streak; it has no idea whether those 8 days were consecutive or scattered across a year. <code>MAX - MIN + 1</code> says 10 — the width of the date range, which silently assumes every single day inside that range was checked in, gaps included. Neither number is wrong about what it's measuring. Both are wrong the moment someone reads them as "the streak length," because neither one is actually checking for contiguity.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>4. Why it happens</h2>
+      <p><code>MIN</code>, <code>MAX</code>, and <code>COUNT</code> each collapse a whole column down to one number, and in doing that they throw away the one thing that matters here: the order and adjacency of the rows relative to each other. A gap and a genuine unbroken run look identical to <code>COUNT(DISTINCT ...)</code> as long as the total number of days matches, and look identical to <code>MAX - MIN</code> as long as the first and last date match. Finding a real streak needs something that can tell "the day right after this one" from "the day three days after this one" — which means it needs each row's position relative to its neighbors, not just the column's overall min, max, or count.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>5. The fix: a stable key for every consecutive run</h2>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">key.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT checkin_date,
+       ROW_NUMBER() OVER (ORDER BY checkin_date) AS rn,
+       julianday(checkin_date) - ROW_NUMBER() OVER (ORDER BY checkin_date) AS island_key
+FROM checkins
+ORDER BY checkin_date;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>checkin_date</th><th>rn</th><th>island_key</th></tr></thead><tbody><tr><td>2026-08-01</td><td>1</td><td>2461252.5</td></tr><tr><td>2026-08-02</td><td>2</td><td>2461252.5</td></tr><tr><td>2026-08-03</td><td>3</td><td>2461252.5</td></tr><tr><td>2026-08-05</td><td>4</td><td>2461253.5</td></tr><tr><td>2026-08-07</td><td>5</td><td>2461254.5</td></tr><tr><td>2026-08-08</td><td>6</td><td>2461254.5</td></tr><tr><td>2026-08-09</td><td>7</td><td>2461254.5</td></tr><tr><td>2026-08-10</td><td>8</td><td>2461254.5</td></tr></tbody></table></div>
+      <p>This is the classic gaps-and-islands trick: subtract a plain row number from the date, converted to a number via <code>julianday()</code>. <code>ROW_NUMBER()</code> always increases by exactly 1 per row. When the date also increases by exactly 1 per row — a genuine consecutive run — the subtraction lands on the exact same value every time, because both sides are climbing in lockstep. The first three rows all land on <code>2461252.5</code>. The moment a gap breaks that lockstep (the jump from the 3rd to the 5th), the date jumps by 2 but <code>rn</code> only jumps by 1, so the subtraction lands on a new value — and every row after that keeps landing on <em>that</em> new value, until the next gap shifts it again.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>6. Turning the key into real streaks</h2>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">fix.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>WITH numbered AS (
+  SELECT checkin_date,
+         julianday(checkin_date) - ROW_NUMBER() OVER (ORDER BY checkin_date) AS island_key
+  FROM checkins
+)
+SELECT MIN(checkin_date) AS streak_start,
+       MAX(checkin_date) AS streak_end,
+       COUNT(*) AS streak_length
+FROM numbered
+GROUP BY island_key
+ORDER BY streak_start;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>streak_start</th><th>streak_end</th><th>streak_length</th></tr></thead><tbody><tr><td>2026-08-01</td><td>2026-08-03</td><td>3</td></tr><tr><td>2026-08-05</td><td>2026-08-05</td><td>1</td></tr><tr><td>2026-08-07</td><td>2026-08-10</td><td>4</td></tr></tbody></table></div>
+      <p><code>island_key</code> is constant within a streak and different across streaks, so <code>GROUP BY island_key</code> does exactly what a hand-written loop would have done — it clusters consecutive dates together without ever needing to compare one row to the next explicitly. <code>MIN</code>/<code>MAX</code>/<code>COUNT</code> are the same functions from the buggy version, but now they're being asked to summarize one genuine island at a time instead of the whole table at once — which is the only thing that changed, and it's the whole fix.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>7. Cheat sheet</h2>
+      <table class="cheat-table">
+        <thead><tr><th>Question</th><th>Naive approach</th><th>What breaks it</th></tr></thead>
+        <tbody>
+          <tr><td>How many days total?</td><td><code>COUNT(DISTINCT date)</code></td><td>Nothing — this one's actually correct for that question</td></tr>
+          <tr><td>How long is the longest streak?</td><td><code>MAX(date) - MIN(date) + 1</code></td><td>Assumes every day in the range is present, gaps included</td></tr>
+          <tr><td>How long is the longest streak? (correct)</td><td><code>date - ROW_NUMBER() OVER (...)</code>, then <code>GROUP BY</code> that key</td><td>Nothing — the constant-within-a-run property handles gaps automatically</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="art-section">
+      <h2>8. Try it yourself</h2>
+      <p>The trick generalizes past dates — subtracting a row number from any column that's supposed to increase by a fixed step per row (an integer ID, a sequence number) produces the same constant-within-a-run behavior, which is why "gaps and islands" shows up in inventory numbering and log sequence analysis just as often as it shows up in streak counting. The one thing worth double-checking every time: the <code>ORDER BY</code> inside the window function has to match the column being subtracted from, or the row numbers and the dates stop climbing in lockstep and the whole trick falls apart silently.</p>
+      <p><a href="/">Practice window functions live on TableNotFound →</a></p>
+    </div>
 </div>
 
 <footer id="tnf-footer">

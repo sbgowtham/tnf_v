@@ -2,17 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.tablenotfound.com/</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/page/2.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/page/3.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
@@ -32,182 +32,187 @@
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/row-number-vs-rank-vs-dense-rank.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/in-vs-exists-vs-join.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/left-join-where-clause-trap.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/count-star-vs-count-column-null-trap.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/union-vs-union-all-silent-row-drop.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/between-timestamps-missing-last-day.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/where-vs-having-execution-order.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/nullif-sentinel-values-division-by-zero.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/numbers-stored-as-text-sorting-trap.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/group-by-vs-window-functions-collapsed-rows.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.tablenotfound.com/blog/gaps-and-islands-consecutive-streaks.html</loc>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/uber-total-earnings-driver-show-top-3-earning-drivers.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/uber-rider-calculate-total-number-trips-theyve-taken.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/snapchat-age-group-calculate-percentage-time-spent-sending.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/tinder-user-count-total-number-likes-they-sent-others.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/netflix-tv-show-calculate-completion-percentage-users.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/youtube-video-calculate-percentage-viewers-watched-until.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/myntra-products-total-sales-quantity-greater-average.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/flipkart-suppliers-average-product-unit-price-greater-categ.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/techcorp-employee-display-name-department-latest-performanc.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/amazon-customer-calculate-total-number-orders-order-amoun.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/meesho-reseller-calculate-net-revenue-total-value-deliver.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/ola-trips-table-sometimes-multiple-rows-tripid-logged.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/spotify-user-month-listeningstats-use-lag-find-users-previ.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/duolingo-user-learningactivity-calculate-totalxp-sum-xpearn.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/airbnb-every-pair-reservations-listing-stay-dates-genuine.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/zomato-every-restaurant-never-had-cancelled-order-meaning.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/groww-user-portfoliosnapshots-ignoring-any-row-where.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/nykaa-rank-customers-four-loyalty-tiers-totalspend-using.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/unacademy-student-mocktestscores-nonnull-score-calculate.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/notion-habit-morning-meditation-build-full-calendar-seven.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/bookmyshow-every-movietitle-thisweekscreenings-brand-new.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/questions/cred-user-find-every-reward-category-they-not-successfu.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/about.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/contact.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/terms.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/privacy.html</loc>
-    <lastmod>2026-08-09</lastmod>
+    <lastmod>2026-08-11</lastmod>
     <priority>0.3</priority>
   </url>
 </urlset>
