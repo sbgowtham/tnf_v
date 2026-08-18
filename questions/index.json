@@ -145,5 +145,12 @@
       "sub": "Missed Reward Categories",
       "c": "#1a1a2e",
       "difficulty": "mid"
+    },
+    {
+      "id": "zepto",
+      "name": "Zepto",
+      "sub": "Dark Store Revenue Trends",
+      "c": "#0891b2",
+      "difficulty": "hard"
     }
   ]

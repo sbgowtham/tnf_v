@@ -1,0 +1,161 @@
+{
+  "setup": "CREATE TABLE zepto_daily_sales(id INTEGER,store_name TEXT,sale_date TEXT,revenue REAL);\nINSERT INTO zepto_daily_sales VALUES\n (1,'Koramangala','2026-08-01',42000),\n (2,'Koramangala','2026-08-02',45500),\n (3,'Koramangala','2026-08-03',41000),\n (4,'Koramangala','2026-08-04',NULL),\n (5,'Koramangala','2026-08-05',48000),\n (6,'Koramangala','2026-08-06',46500),\n (7,'Koramangala','2026-08-07',51000),\n (8,'Indiranagar','2026-08-01',30000),\n (9,'Indiranagar','2026-08-02',31500),\n (10,'Indiranagar','2026-08-03',33000),\n (11,'Indiranagar','2026-08-04',34500),\n (12,'Indiranagar','2026-08-05',36000),\n (13,'Indiranagar','2026-08-06',37500),\n (14,'Indiranagar','2026-08-07',39000);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "hard",
+      "cc": [
+        "ROWS BETWEEN",
+        "Window Functions",
+        "PARTITION BY",
+        "COALESCE"
+      ],
+      "story": {
+        "en": "Monday morning at Zepto's Growth Ops team. zepto_daily_sales logs each dark store's daily revenue. Koramangala's store was shut for a compressor repair on 2026-08-04, so that day's revenue was left NULL instead of being logged as a number — it's a trading gap, not a genuine zero-revenue day. The team wants a smooth 3-day moving average of revenue per store to spot real demand trends without one noisy day throwing off the read, and the closure must not get counted as a day the store actually earned zero.",
+        "ta": "Monday morning Zepto-oda Growth Ops team-la. zepto_daily_sales, ovvoru dark store-oda daily revenue-a log pannum. Koramangala store 2026-08-04-la compressor repair-kkaga close aachu, so andha naal revenue NULL-a irundhuchu, oru number-a log aagala — idhu trading gap, genuine-a zero-revenue naal illa. Team-ku ovvoru store-kkum smooth 3-day moving average of revenue venum, real demand trends-a kandupidikkaradhukku, oru noisy naal read-a kalakkama irukkanum, matrum closure-a store real-a zero sambadhicha naal-nu count pannakoodadhu.",
+        "hi": "Monday subah Zepto ki Growth Ops team mein. zepto_daily_sales har dark store ki daily revenue log karta hai. Koramangala store 2026-08-04 ko compressor repair ke liye band tha, isliye us din ka revenue NULL reh gaya, number ke roop mein log nahi hua — yeh trading gap hai, genuinely zero-revenue wala din nahi. Team ko har store ke liye revenue ka smooth 3-day moving average chahiye, real demand trends dekhne ke liye bina kisi ek noisy din ke read ko bigade, aur closure ko aisa din nahi maanna chahiye jab store ne sach mein zero kamaya ho.",
+        "te": "Monday morning Zepto Growth Ops team lo. zepto_daily_sales prathi dark store daily revenue ni log chestundi. Koramangala store 2026-08-04 na compressor repair kosam close ayyindi, so aa roju revenue NULL ga undipoyindi, number ga log avvaledu — idi trading gap, genuine ga zero-revenue roju kaadu. Team ki prathi store ki revenue ki smooth 3-day moving average kavali, real demand trends kanugonadaniki, oka noisy roju read ni chedagottakunda, mariyu closure ni store nijamga zero sampadincha roju ani count cheyakudadu."
+      },
+      "question": {
+        "en": "For each store in zepto_daily_sales, excluding any row where revenue is NULL (the store was closed, not a zero-revenue day), compute a 3-day moving average of revenue ordered by sale_date — the average of the current trading day and the two trading days immediately before it (fewer days if not enough history exists yet). Return store_name, sale_date, revenue, and moving_avg_3day rounded to 2 decimal places, sorted by store_name and sale_date.",
+        "ta": "zepto_daily_sales-la ovvoru store-kkum, revenue NULL-a irukkura row-a (store close aana naal, zero-revenue naal illa) exclude panni, sale_date order-la revenue-oda 3-day moving average-a calculate pannunga — current trading day matrum adhukku mun irundha rendu trading days-oda average (podhumaana history illainna konjam naal mattum). store_name, sale_date, revenue, matrum moving_avg_3day-a 2 decimal places-kku round panni return pannunga, store_name matrum sale_date-la sort pannunga.",
+        "hi": "zepto_daily_sales mein har store ke liye, jis row mein revenue NULL hai (store band tha, zero-revenue din nahi) use exclude karke, sale_date ke order mein revenue ka 3-day moving average calculate karo — current trading din aur usse pehle ke do trading dino ka average (agar itna history nahi hai to kam din). store_name, sale_date, revenue, aur moving_avg_3day ko 2 decimal places tak round karke return karo, store_name aur sale_date ke hisaab se sort karke.",
+        "te": "zepto_daily_sales lo prathi store ki, revenue NULL unna row ni (store close ayina roju, zero-revenue roju kaadu) exclude chesi, sale_date order lo revenue 3-day moving average ni calculate cheyandi — current trading roju mariyu dani mundhu unna rendu trading rojula average (saripoyinanta history lekapothe takkuva rojulu). store_name, sale_date, revenue, mariyu moving_avg_3day ni 2 decimal places ki round chesi return cheyandi, store_name mariyu sale_date prakaram sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "zepto_daily_sales",
+          "cols": [
+            {
+              "n": "id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "store_name",
+              "t": "TEXT",
+              "e": "Koramangala"
+            },
+            {
+              "n": "sale_date",
+              "t": "TEXT",
+              "e": "2026-08-01"
+            },
+            {
+              "n": "revenue",
+              "t": "REAL",
+              "e": "42000"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at the raw daily revenue, including the day Koramangala was closed",
+            "ta": "Raw daily revenue-a paarunga, Koramangala close aana naal-um serndhu",
+            "hi": "Raw daily revenue ko dekho, Koramangala band wale din samet",
+            "te": "Raw daily revenue ni chudandi, Koramangala close ayina roju tho patu"
+          },
+          "sql": "SELECT *\nFROM zepto_daily_sales\nORDER BY store_name, sale_date;",
+          "explain": {
+            "en": [
+              "zepto_daily_sales has one row per store per calendar day, not one row per store — store_name repeats across all seven dates for both Koramangala and Indiranagar, with every date from 2026-08-01 to 2026-08-07 covered for both.",
+              "Koramangala's 2026-08-04 row has revenue = NULL. This isn't a day the store earned zero — the ops note for that day is a compressor repair that kept the store shut, so no orders were fulfilled and no real revenue number exists to log.",
+              "Indiranagar has no gaps at all — every day from 08-01 to 08-07 has a real revenue value climbing steadily from 30000 to 39000, which makes it a clean baseline to compare Koramangala's noisier week against.",
+              "Nothing is averaged yet — this step only confirms revenue is genuinely missing for one day, not legitimately zero, which matters because the next two steps handle that missing day very differently."
+            ],
+            "ta": [
+              "zepto_daily_sales-la ovvoru store-kkum ovvoru calendar day-kkum oru row irukku, oru store-kkum oru row illa — Koramangala matrum Indiranagar rendu store-kkum ella 7 dates-layum store_name repeat aagum, 2026-08-01 munnu 2026-08-07 varaikkum ella date-um cover aagirukku.",
+              "Koramangala-oda 2026-08-04 row-la revenue NULL-a irukku. Idhu store zero sambadhicha naal illa — andha naal-oda ops note compressor repair-nu solradhu, store close-a irundhuchu, so orders edhuvum fulfill aagala, real revenue number log panna edhuvum illa.",
+              "Indiranagar-kku edhuvum gap illa — 08-01 munnu 08-07 varaikkum ella naal-um real revenue value irukku, 30000-la irundhu 39000 varaikkum steady-a climb aagudhu, idhu Koramangala-oda noisy week-a compare panna oru clean baseline-a irukku.",
+              "Innum edhuvum average pannala — indha step, oru naal-kku revenue genuine-a missing-nu confirm pannradhukku mattum, legitimately zero illa, adhu matter pannum enaa adutha rendu steps andha missing naal-a romba differentaana approach-la handle pannum."
+            ],
+            "hi": [
+              "zepto_daily_sales mein har store ke har calendar din ke liye ek row hai, har store ke liye ek row nahi — Koramangala aur Indiranagar dono ke saatho dino mein store_name repeat hota hai, 2026-08-01 se 2026-08-07 tak har date dono ke liye cover hoti hai.",
+              "Koramangala ki 2026-08-04 wali row mein revenue NULL hai. Yeh koi aisa din nahi jab store ne zero kamaya — us din ka ops note kehta hai compressor repair ki wajah se store band tha, isliye koi order fulfill nahi hua, aur log karne ke liye koi real revenue number tha hi nahi.",
+              "Indiranagar mein koi gap nahi hai — 08-01 se 08-07 tak har din ka real revenue value hai, jo steadily 30000 se 39000 tak badhta hai, isliye yeh Koramangala ke noisy week ko compare karne ke liye ek saaf baseline ban jaata hai.",
+              "Abhi kuch bhi average nahi hua hai — yeh step sirf yeh confirm karta hai ki ek din ka revenue genuinely missing hai, legitimately zero nahi, jo matter isliye karta hai kyunki agle do steps us missing din ko bahut alag tarike se handle karte hain."
+            ],
+            "te": [
+              "zepto_daily_sales lo prathi store ki prathi calendar roju ki oka row untundi, prathi store ki oka row kaadu — Koramangala mariyu Indiranagar rendintiki anni edu dates lo store_name repeat avutundi, 2026-08-01 nunchi 2026-08-07 varaku prathi date rendintiki cover avutundi.",
+              "Koramangala 2026-08-04 row lo revenue NULL undi. Idi store zero sampadincha roju kaadu — aa roju ops note prakaram compressor repair valla store close ayyindi, so e order fulfill avvaledu, log cheyadaniki real revenue number ye ledu.",
+              "Indiranagar ki e gap ledu — 08-01 nunchi 08-07 varaku prathi rojuki real revenue value undi, 30000 nunchi 39000 varaku steady ga perugutundi, idi Koramangala noisy week tho compare cheyadaniki oka clean baseline avutundi.",
+              "Inka emi average avvaledu — ee step kevalam oka roju revenue genuine ga missing ani confirm chestundi, legitimately zero kaadu, adi matter avutundi endukante tarvata rendu steps aa missing roju ni chala veruga handle chestayi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "See the trap: COALESCE-ing the closed day to 0 revenue before averaging",
+            "ta": "Trap-a paarunga: average panna munnadi closed day-a 0 revenue-a COALESCE panradhu",
+            "hi": "Trap dekho: average nikaalne se pehle closed din ko 0 revenue mein COALESCE karna",
+            "te": "Trap ni chudandi: average cheyakamunde closed roju ni 0 revenue ki COALESCE cheyadam"
+          },
+          "sql": "SELECT store_name, sale_date, revenue,\n       ROUND(AVG(COALESCE(revenue,0)) OVER (\n         PARTITION BY store_name ORDER BY sale_date\n         ROWS BETWEEN 2 PRECEDING AND CURRENT ROW\n       ), 2) AS moving_avg_wrong\nFROM zepto_daily_sales\nORDER BY store_name, sale_date;",
+          "explain": {
+            "en": [
+              "AVG(COALESCE(revenue,0)) OVER (PARTITION BY store_name ORDER BY sale_date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) forces the closed day's NULL into a literal 0 before the window function ever runs, treating 2026-08-04 exactly like a trading day that earned zero rupees.",
+              "The damage isn't limited to 08-04 itself — because the frame looks back two rows, the fabricated 0 also drags down the moving averages on 08-05 and 08-06, so one closure corrupts three days of trend data, not one.",
+              "The distortion is concrete in the numbers: 08-05's moving_avg_wrong comes out to 29666.67, barely more than half of the 44833.33 the same day shows once the closed day is properly excluded — a demand dashboard reading this would wrongly flag a crash that never happened.",
+              "This is the same COALESCE(x,0) pattern that correctly fixes NULLs in several other questions on this site — the trap here is that COALESCE is the wrong tool exactly when NULL means 'no trading happened' rather than 'the true value is zero'."
+            ],
+            "ta": [
+              "AVG(COALESCE(revenue,0)) OVER (PARTITION BY store_name ORDER BY sale_date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW), window function run aagura munnadi-e closed day-oda NULL-a literal 0-a force pannidum, 2026-08-04-a zero rupees sambadhicha trading day madhiri treat pannum.",
+              "Damage 08-04-kku mattum limit aagala — frame rendu row back paakkum-nu ention, andha fabricated 0, 08-05 matrum 08-06-oda moving averages-a-um drag pannidum, so oru closure moondru naal trend data-a corrupt pannidum, oru naal illa.",
+              "Numbers-la distortion concrete-a irukku: 08-05-oda moving_avg_wrong 29666.67-a varum, closed day-a correct-a exclude pannina appuram andha naal-oda 44833.33-la pathi kooda illa — indha demand dashboard-a paarkkura yaaru-um nadakkaadha oru crash-a wrong-a flag pannuvanga.",
+              "Idhu indha site-oda vera pala questions-la NULLs-a correct-a fix panna use aagura same COALESCE(x,0) pattern-thaan — inga trap enna-nu na, NULL 'trading nadakkala' nu artham vachirukkumbodhu, 'true value zero' nu artham vachirukkaadhu bodhu, COALESCE wrong tool aagiduchu."
+            ],
+            "hi": [
+              "AVG(COALESCE(revenue,0)) OVER (PARTITION BY store_name ORDER BY sale_date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW), window function chalne se pehle hi closed din ke NULL ko ek literal 0 mein badal deta hai, 2026-08-04 ko bilkul waise treat karke jaise wo din zero rupaye kama ke gaya ho.",
+              "Damage sirf 08-04 tak seemit nahi hai — kyunki frame do rows peeche dekhta hai, wahi fabricated 0, 08-05 aur 08-06 ke moving averages ko bhi neeche khinch deta hai, isliye ek closure teen dino ke trend data ko kharaab karta hai, ek din ko nahi.",
+              "Numbers mein distortion saaf dikhta hai: 08-05 ka moving_avg_wrong 29666.67 aata hai, jabki closed din ko sahi se exclude karne ke baad usi din ka 44833.33 aata hai, iska aadha bhi mushkil se hai — is number ko dekhne wala demand dashboard ek aisa crash flag kar dega jo kabhi hua hi nahi.",
+              "Yeh wahi COALESCE(x,0) pattern hai jo is site ke kai aur questions mein NULLs ko sahi tarike se fix karta hai — yahan trap yeh hai ki COALESCE galat tool hai jab NULL ka matlab 'trading hui hi nahi' ho, na ki 'asli value zero hai'."
+            ],
+            "te": [
+              "AVG(COALESCE(revenue,0)) OVER (PARTITION BY store_name ORDER BY sale_date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW), window function run avvakamunde closed roju NULL ni literal 0 ga force chestundi, 2026-08-04 ni zero rupees sampadincha trading roju la treat chestundi.",
+              "Damage 08-04 ki matrame parimitham kaadu — frame rendu rows venakki chustundi kabatti, aa fabricated 0, 08-05 mariyu 08-06 moving averages ni kuda laagi taggistundi, so oka closure mudu rojula trend data ni corrupt chestundi, oka roju kaadu.",
+              "Numbers lo distortion clear ga kanipistundi: 08-05 moving_avg_wrong 29666.67 ga vastundi, closed roju ni correct ga exclude chesina tarvata aa roju 44833.33 vastundi — adi daani half kuda kaadu; ee number chusina demand dashboard, eppudu jaraganidi oka crash ni wrong ga flag chestundi.",
+              "Idi ee site lo unna itara konni questions lo NULLs ni correct ga fix chese ade COALESCE(x,0) pattern — ikkada trap enti ante, NULL ki ardham 'trading jaragaledu' ani unnappudu COALESCE wrong tool avutundi, 'true value zero' ani kaadu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: drop closed days before windowing, then take the 3-day moving average",
+            "ta": "Fix pannunga: windowing panna munnadi closed days-a drop pannunga, apparam 3-day moving average edunga",
+            "hi": "Fix karo: windowing se pehle closed dino ko drop karo, phir 3-day moving average nikaalo",
+            "te": "Fix cheyandi: windowing cheyakamunde closed rojula ni drop cheyandi, tarvata 3-day moving average teesukondi"
+          },
+          "sql": "SELECT store_name, sale_date, revenue,\n       ROUND(AVG(revenue) OVER (\n         PARTITION BY store_name ORDER BY sale_date\n         ROWS BETWEEN 2 PRECEDING AND CURRENT ROW\n       ), 2) AS moving_avg_3day\nFROM zepto_daily_sales\nWHERE revenue IS NOT NULL\nORDER BY store_name, sale_date;",
+          "explain": {
+            "en": [
+              "WHERE revenue IS NOT NULL runs before the window function ever sees a row, so the closed day disappears from Koramangala's history entirely instead of being padded with a fabricated value.",
+              "ROWS BETWEEN 2 PRECEDING AND CURRENT ROW now looks back over trading days that actually happened — for 08-05 that's 08-02 (45500) and 08-03 (41000) plus 08-05 itself (48000), giving 44833.33, nowhere near the 29666.67 the 0-padded version produced.",
+              "Early rows in each partition — 08-01 and 08-02 for both stores — don't have two full preceding trading days yet, so the frame just uses however many exist so far, which is why moving_avg_3day equals the raw revenue on the very first day of each store's history.",
+              "Indiranagar's numbers are identical in both the trap and fix versions because it never had a closed day — this bug stays completely invisible unless the data actually has a gap, which is exactly why it can sit undetected in a dashboard until a store shuts for a day."
+            ],
+            "ta": [
+              "WHERE revenue IS NOT NULL, window function oru row-a paakkura munnadi-e run aagum, so closed day Koramangala-oda history-la irundhu completely poyidum, fabricated value vachi pad pannradhukku pathila.",
+              "ROWS BETWEEN 2 PRECEDING AND CURRENT ROW ippo real-a nadandha trading days-a-thaan back paakkum — 08-05-kku adhu 08-02 (45500) matrum 08-03 (41000) plus 08-05-e (48000), 44833.33 kudukkum, 0-padded version kudukkura 29666.67-kku pakkathula kooda illa.",
+              "Ovvoru partition-oda early rows — rendu store-kkum 08-01 matrum 08-02 — innum rendu full preceding trading days illa, so frame edhuvum ippavaikkum irukko adhu mattum use pannum, adhaan ovvoru store-oda history-oda first naal-la moving_avg_3day, raw revenue-oda same-a irukkum.",
+              "Indiranagar-oda numbers trap matrum fix rendu versions-layum same-a irukku, enaa adhukku edhuvum closed day-e illa — indha bug data-la genuine-a gap irundhaa mattum-thaan theriyum, adhaan oru store oru naal close aagura varaikkum dashboard-la kandupidikkama irukkum."
+            ],
+            "hi": [
+              "WHERE revenue IS NOT NULL, window function ke kisi row ko dekhne se pehle hi chal jaata hai, isliye closed din Koramangala ki history se poori tarah gayab ho jaata hai, kisi fabricated value se pad kiye jaane ke bajaye.",
+              "ROWS BETWEEN 2 PRECEDING AND CURRENT ROW ab sirf un trading dino ko peeche dekhta hai jo asal mein hue — 08-05 ke liye woh 08-02 (45500) aur 08-03 (41000) plus khud 08-05 (48000) hai, jo 44833.33 deta hai, 0-padded version ke 29666.67 ke aas-paas bhi nahi.",
+              "Har partition ki shuruaati rows — dono store ke 08-01 aur 08-02 — ke paas abhi do poori preceding trading days nahi hain, isliye frame jitni bhi ab tak maujood hain wahi use karta hai, isi wajah se har store ki history ke pehle din moving_avg_3day raw revenue ke barabar hota hai.",
+              "Indiranagar ke numbers trap aur fix dono versions mein same hain kyunki usme kabhi koi closed din tha hi nahi — yeh bug tab tak poori tarah chhupa rehta hai jab tak data mein genuinely koi gap na ho, isi wajah se yeh dashboard mein tab tak nazar nahi aata jab tak koi store ek din ke liye band na ho jaaye."
+            ],
+            "te": [
+              "WHERE revenue IS NOT NULL, window function edaina row ni chudakamunde run avutundi, so closed roju Koramangala history nunchi poortiga potundi, fabricated value tho pad cheyadam kanna.",
+              "ROWS BETWEEN 2 PRECEDING AND CURRENT ROW ippudu nijamga jarigina trading rojula venakki chustundi — 08-05 ki avi 08-02 (45500) mariyu 08-03 (41000) plus 08-05 (48000), 44833.33 istundi, 0-padded version icchina 29666.67 daggaraga kuda ledu.",
+              "Prathi partition modati rows — rendu store 08-01 mariyu 08-02 — inka rendu full preceding trading days ledu, so frame ippativaraku unnavi matrame use chestundi, anduke prathi store history modati roju moving_avg_3day raw revenue tho same ga untundi.",
+              "Indiranagar numbers trap mariyu fix rendu versions lo same ga untayi endukante daaniki eppudu closed roju e ledu — ee bug data lo genuine ga gap unte matrame kanipistundi, anduke oka store oka roju close ayye varaku idi dashboard lo pattapadadu."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
