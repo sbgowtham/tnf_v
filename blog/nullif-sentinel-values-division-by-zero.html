@@ -250,10 +250,11 @@ td{padding:14px 16px;vertical-align:middle}
   display:none;position:absolute;top:calc(100% + 8px);right:0;
   background:var(--glass2);border:var(--bdr);border-radius:var(--r);
   box-shadow:0 12px 40px rgba(0,0,0,.13);backdrop-filter:var(--blur);
-  min-width:240px;overflow:hidden;z-index:200;
+  min-width:240px;max-height:min(70vh,480px);overflow-x:hidden;overflow-y:auto;z-index:200;
+  overscroll-behavior:contain;
 }
 .nav-menu.open .dropdown{display:block}
-.dropdown-header{padding:.5rem 1rem;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);border-bottom:var(--bdr);background:rgba(255,255,255,.4)}
+.dropdown-header{position:sticky;top:0;padding:.5rem 1rem;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);border-bottom:var(--bdr);background:rgba(255,255,255,.85);backdrop-filter:var(--blur);z-index:1}
 .dropdown-item{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;text-decoration:none;color:var(--text);transition:background .14s;border-bottom:1px solid rgba(0,0,0,.04)}
 .dropdown-item:last-child{border-bottom:none}
 .dropdown-item:hover{background:rgba(255,255,255,.55)}
