@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Techcorp: employee display their name,… | TableNotFound</title>
-<meta name="description" content="Techcorp SQL practice question (mid): For each employee, display their name, department, latest performance rating, the… Free, runs live in your browser.">
-<link rel="canonical" href="https://www.tablenotfound.com/questions/techcorp-employee-display-name-department-latest-performanc.html">
+<title>CAST's Silent Truncation | TableNotFound</title>
+<meta name="description" content="Why CAST(text AS REAL) never errors on bad input in SQLite — it silently parses whatever numeric prefix it can find, verified in SQLite with the fix and a cheat sheet.">
+<link rel="canonical" href="https://www.tablenotfound.com/blog/cast-silent-truncation-trap.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
@@ -271,21 +271,22 @@ td{padding:14px 16px;vertical-align:middle}
 }
 
 
-.static-wrap{max-width:820px;margin:0 auto;padding:2rem 1.5rem 6rem}
+.article-wrap{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 6rem;line-height:1.7}
 .crumb{font-size:12px;font-weight:600;color:var(--t3);text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:1.5rem}
 .crumb:hover{color:var(--t2)}
-.q-header{padding:.5rem 0 1.75rem;animation:up .55s cubic-bezier(.22,1,.36,1) both}
-.q-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
-.q-h1{font-size:clamp(22px,4vw,32px);font-weight:800;line-height:1.35;letter-spacing:-.7px;margin-bottom:.5rem;color:var(--text)}
-.q-sub{font-size:13px;color:var(--t2)}
-.step-body{display:block}
-.xpl{display:block}
-.step-head{cursor:default}
-.step-num{background:rgba(255,255,255,.6)!important;color:var(--t2)!important}
-.cta-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.75rem}
-.cta-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:20px;border:none;cursor:pointer;font-family:var(--ff);font-size:13px;font-weight:700;text-decoration:none;background:linear-gradient(135deg,#7c5cfc,#c45cfc);color:#fff;box-shadow:0 3px 12px rgba(124,92,252,.35);transition:transform .18s}
-.cta-btn:hover{transform:translateY(-2px)}
-.cta-btn.secondary{background:rgba(255,255,255,.65);color:var(--t2);border:var(--bdr);box-shadow:none}
+.art-badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.art-h1{font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:.5rem;color:var(--text);line-height:1.2}
+.art-meta{font-size:12px;color:var(--t3);margin-bottom:2.5rem}
+.art-section{margin:2.75rem 0}
+.art-section h2{font-size:19px;font-weight:700;color:var(--text);margin-bottom:.4rem}
+.art-section p{font-size:14.5px;color:var(--t2);margin-bottom:.9rem}
+.art-section code{font-family:var(--fm);font-size:.88em;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px}
+.ed-win{margin:.75rem 0;border-radius:10px;overflow:hidden}
+.tbl-wrap{margin:.75rem 0}
+.null-cell{color:#ccc;font-style:italic}
+.cheat-table{width:100%;border-collapse:collapse;font-size:13px;margin:.75rem 0}
+.cheat-table th,.cheat-table td{padding:8px 12px;text-align:left;border-bottom:1px solid rgba(0,0,0,.06)}
+.cheat-table th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3)}
 
 </style>
 <style id="tnf-footer-style">
@@ -419,198 +420,149 @@ td{padding:14px 16px;vertical-align:middle}
   </div>
 </nav>
 
-<div class="static-wrap">
-  <a class="crumb" href="/">← All SQL Questions</a>
+<div class="article-wrap">
+  <a class="crumb" href="/">← Back to TableNotFound</a>
 
-  <div class="q-header">
-    <div class="q-badges">
-      <span class="co-tag" style="background:color-mix(in srgb,#9c27b0 13%,white);color:color-mix(in srgb,#9c27b0 90%,black)">Techcorp</span>
-      <span class="diff-mid">mid</span>
-      <span class="chip">Window Functions</span><span class="chip">ROW_NUMBER</span><span class="chip">RANK</span><span class="chip">DENSE_RANK</span><span class="chip">LAG</span><span class="chip">LEAD</span><span class="chip">AVG OVER</span><span class="chip">ORDER BY</span>
-    </div>
-    <h1 class="q-h1">For each employee, display their name, department, latest performance rating, the previous performance rating (to track improvement), their ranking within the department, and whether their latest rating is above or below their department's average. Sort by department and ranking.</h1>
-    <p class="q-sub">Techcorp · Performance Ranking — practice this real-world SQL scenario live in your browser.</p>
+  <div class="art-badges">
+    <span class="chip">SQL</span>
+    <span class="chip">Type Coercion</span>
+    <span class="chip">Data Quality</span>
   </div>
+  <h1 class="art-h1">CAST's Silent Truncation</h1>
+  <div class="art-meta">Why casting bad TEXT to a number never throws an error — it just guesses</div>
 
-  <div class="story" style="--uc:#9c27b0">
-    <div class="story-bg"></div>
-    <div class="story-top">
-      <span class="story-lbl">📖 Story</span>
-      <span class="story-co">Techcorp · Performance Ranking</span>
-    </div>
-    <div class="story-body">Friday morning at TechCorp's HR department. The HR Manager is preparing the quarterly performance review and compensation analysis. She needs to identify top performers within each department, track their performance improvement over time, and compare individual performance against department averages. Using window functions, she can rank employees, compare their current ratings with previous reviews, and identify those performing above their department's average.</div>
-  </div>
-
-  <div class="mission">
-    <div class="mission-top">🎯 Your Mission</div>
-    <div class="mission-body">For each employee, display their name, department, latest performance rating, the previous performance rating (to track improvement), their ranking within the department, and whether their latest rating is above or below their department's average. Sort by department and ranking.</div>
-  </div>
-
-  <div class="schema-wrap">
-    <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem">📋 Table Structure</div>
-    <div class="schema-cards">
-      <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">employees</span></div>
-        <div><div class="sc-row">
-          <span class="sc-col">employee_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">1001</span>
-        </div><div class="sc-row">
-          <span class="sc-col">employee_name</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Rajesh Kumar</span>
-        </div><div class="sc-row">
-          <span class="sc-col">department</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">Sales</span>
-        </div><div class="sc-row">
-          <span class="sc-col">hire_date</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">2020-03-15</span>
-        </div><div class="sc-row">
-          <span class="sc-col">salary</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">45000</span>
-        </div></div>
-      </div>
-      <div class="sc">
-        <div class="sc-head">🗂 <span class="sc-name">performance</span></div>
-        <div><div class="sc-row">
-          <span class="sc-col">performance_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">1</span>
-        </div><div class="sc-row">
-          <span class="sc-col">employee_id</span>
-          <span class="sc-type">INTEGER</span>
-          <span class="sc-eg">1001</span>
-        </div><div class="sc-row">
-          <span class="sc-col">review_date</span>
-          <span class="sc-type">TEXT</span>
-          <span class="sc-eg">2024-01-15</span>
-        </div><div class="sc-row">
-          <span class="sc-col">rating</span>
-          <span class="sc-type">DECIMAL</span>
-          <span class="sc-eg">3.5</span>
-        </div></div>
-      </div>
-    </div>
-  </div>
-
-  <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin:1.5rem 0 .75rem">⚡ Step-by-Step Walkthrough</div>
-  
-    <div class="step-card" style="--uc:#9c27b0">
-      <div class="step-head">
-        <div class="step-num">1</div>
-        <div class="step-info">
-          <div class="step-title">Get the latest performance rating for each employee</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>WITH latest_ratings AS (
-  SELECT e.employee_id,
-         e.employee_name,
-         e.department,
-         p.rating AS latest_rating,
-         p.review_date,
-         ROW_NUMBER() OVER (PARTITION BY e.employee_id ORDER BY p.review_date DESC) AS rn
-  FROM employees e
-  JOIN performance p ON e.employee_id = p.employee_id
-)
-SELECT employee_id,
-       employee_name,
-       department,
-       latest_rating,
-       review_date
-FROM latest_ratings
-WHERE rn = 1;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">The employees table stores employee information, while the performance table contains multiple performance reviews for each employee. To get the latest rating for each employee, we use a window function approach.</li><li class="xpl-point">ROW_NUMBER() OVER (PARTITION BY e.employee_id ORDER BY p.review_date DESC) assigns a unique number to each performance review within an employee partition, ordered by review date in descending order. The most recent review gets rn=1.</li><li class="xpl-point">PARTITION BY e.employee_id divides the performance records into separate groups for each employee. Each partition is ordered independently.</li><li class="xpl-point">ORDER BY p.review_date DESC ensures that within each employee's partition, the most recent review gets row number 1.</li><li class="xpl-point">WHERE rn = 1 filters to keep only the latest performance record for each employee.</li><li class="xpl-point">This step prepares the foundation for the next steps where we'll compare current ratings with previous ratings and calculate rankings.</li></ul></div>
-      </div>
-    </div>
-    <div class="step-card" style="--uc:#9c27b0">
-      <div class="step-head">
-        <div class="step-num">2</div>
-        <div class="step-info">
-          <div class="step-title">Get both latest and previous performance ratings using LAG window function</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>WITH all_ratings AS (
-  SELECT e.employee_id,
-         e.employee_name,
-         e.department,
-         p.rating,
-         p.review_date,
-         LAG(p.rating) OVER (PARTITION BY e.employee_id ORDER BY p.review_date) AS previous_rating,
-         ROW_NUMBER() OVER (PARTITION BY e.employee_id ORDER BY p.review_date DESC) AS rn
-  FROM employees e
-  JOIN performance p ON e.employee_id = p.employee_id
-)
-SELECT employee_id,
-       employee_name,
-       department,
-       rating AS latest_rating,
-       previous_rating,
-       ROUND(rating - COALESCE(previous_rating, 0), 2) AS improvement
-FROM all_ratings
-WHERE rn = 1;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">LAG() is a window function that accesses the previous row's value within the same partition. In this case, it retrieves the rating from the employee's previous performance review.</li><li class="xpl-point">LAG(p.rating) OVER (PARTITION BY e.employee_id ORDER BY p.review_date) gets the rating from the chronologically previous review for each employee. For the first review of an employee, LAG returns NULL.</li><li class="xpl-point">By using PARTITION BY e.employee_id and ORDER BY p.review_date (in ascending order, not descending), we ensure that LAG correctly identifies the previous review in chronological order.</li><li class="xpl-point">COALESCE(previous_rating, 0) handles the case where there is no previous review (first review), replacing NULL with 0 for calculation purposes.</li><li class="xpl-point">ROUND(rating - COALESCE(previous_rating, 0), 2) calculates the improvement: the difference between the latest rating and the previous rating.</li><li class="xpl-point">WHERE rn = 1 filters to keep only the latest performance review for each employee, now enriched with previous rating and improvement metrics.</li></ul></div>
-      </div>
-    </div>
-    <div class="step-card" style="--uc:#9c27b0">
-      <div class="step-head">
-        <div class="step-num">3</div>
-        <div class="step-info">
-          <div class="step-title">Rank employees within their department and compare against department average</div>
-        </div>
-      </div>
-      <div class="step-body">
-        <div class="ed-win">
-          <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
-            <span class="ed-file">query.sql</span></div>
-          <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>WITH employee_performance AS (
-  SELECT e.employee_id,
-         e.employee_name,
-         e.department,
-         p.rating AS latest_rating,
-         LAG(p.rating) OVER (PARTITION BY e.employee_id ORDER BY p.review_date) AS previous_rating,
-         ROW_NUMBER() OVER (PARTITION BY e.employee_id ORDER BY p.review_date DESC) AS rn,
-         RANK() OVER (PARTITION BY e.department ORDER BY p.rating DESC) AS dept_rank,
-         ROUND(AVG(p.rating) OVER (PARTITION BY e.department), 2) AS dept_avg_rating
-  FROM employees e
-  JOIN performance p ON e.employee_id = p.employee_id
-)
-SELECT employee_id,
-       employee_name,
-       department,
-       latest_rating,
-       COALESCE(previous_rating, 0) AS previous_rating,
-       ROUND(latest_rating - COALESCE(previous_rating, 0), 2) AS improvement,
-       dept_rank,
-       dept_avg_rating,
-       CASE WHEN latest_rating &gt; dept_avg_rating THEN 'Above Average' 
-            WHEN latest_rating = dept_avg_rating THEN 'At Average'
-            ELSE 'Below Average' 
-       END AS performance_vs_dept
-FROM employee_performance
-WHERE rn = 1
-ORDER BY department, dept_rank;</code></pre>
-        </div>
-        <div class="xpl"><div class="xpl-label">💡 Explanation</div><ul class="xpl-list"><li class="xpl-point">This step combines multiple window functions to provide a comprehensive performance analysis for each employee.</li><li class="xpl-point">RANK() OVER (PARTITION BY e.department ORDER BY p.rating DESC) ranks employees within their department based on their latest rating. Employees with the same rating get the same rank, and the next rank skips accordingly.</li><li class="xpl-point">AVG(p.rating) OVER (PARTITION BY e.department) calculates the average rating for each department. This window function operates on all rows within each department partition.</li><li class="xpl-point">The window frame includes all rows in the partition by default, so this calculates the average of all performance ratings in that department.</li><li class="xpl-point">LAG() is used again to get the previous rating for improvement tracking.</li><li class="xpl-point">The CASE statement compares each employee's latest rating against their department's average to classify them as 'Above Average', 'At Average', or 'Below Average'.</li><li class="xpl-point">WHERE rn = 1 ensures we're working with the latest performance record for each employee.</li><li class="xpl-point">ORDER BY department, dept_rank organizes the output by department and then by ranking within that department.</li></ul></div>
-      </div>
+    <div class="art-section">
+      <h2>1. Why this happens</h2>
+      <p>Real tables end up with numeric-looking data stored as <code>TEXT</code> more often than anyone plans for — a CSV import that never set column types, a legacy system that dumped every field as a string, a form field nobody validated. The instinct is to <code>CAST</code> it to a number at query time and move on. In most programming languages, trying to convert <code>"pending"</code> or <code>"2,500"</code> into a number throws an exception you can't miss. SQLite doesn't work that way. <code>CAST(x AS REAL)</code> and <code>CAST(x AS INTEGER)</code> never raise an error for bad input — they read the string left to right, keep whatever looks like a valid number at the start, and silently stop the instant they hit a character that doesn't fit. Nothing breaks. The number is just wrong, and it looks exactly as legitimate as a correct one.</p>
     </div>
 
-  <div class="cta-row">
-    <a class="cta-btn" href="/">▶ Practice this live</a>
-    <a class="cta-btn secondary" href="/">← Browse all questions</a>
-  </div>
+    <div class="art-section">
+      <h2>2. The dataset</h2>
+      <p>Verified by actually running this against SQLite — not hand-computed. A freelance platform's <code>payout_requests</code> table, imported from a legacy CSV where <code>amount_text</code> was left as <code>TEXT</code>. Most rows are clean, but the export used a comma as a thousands separator in one of Priya's rows, and one of Rahul's payouts hadn't settled yet so someone typed the word <code>pending</code> into the amount column instead of leaving it NULL.</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">schema.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>CREATE TABLE payout_requests(
+  id INTEGER,
+  freelancer_name TEXT,
+  amount_text TEXT
+);
+
+INSERT INTO payout_requests VALUES
+ (1,'Priya','15000'),
+ (2,'Priya','2,500'),
+ (3,'Rahul','8000'),
+ (4,'Rahul','9500.50'),
+ (5,'Rahul','pending'),
+ (6,'Kavya','12000'),
+ (7,'Kavya','6800');</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>id</th><th>freelancer_name</th><th>amount_text</th></tr></thead><tbody>
+<tr><td>1</td><td>Priya</td><td>15000</td></tr>
+<tr><td>2</td><td>Priya</td><td>2,500</td></tr>
+<tr><td>3</td><td>Rahul</td><td>8000</td></tr>
+<tr><td>4</td><td>Rahul</td><td>9500.50</td></tr>
+<tr><td>5</td><td>Rahul</td><td>pending</td></tr>
+<tr><td>6</td><td>Kavya</td><td>12000</td></tr>
+<tr><td>7</td><td>Kavya</td><td>6800</td></tr>
+</tbody></table></div>
+      <p>Priya's real total across both payouts should be 15000 + 2500 = <strong>17500</strong>. Rahul's should be 8000 + 9500.50 = <strong>17500.50</strong>, with one payout still pending. Kavya has no dirty data at all — her two rows are clean numbers.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>3. The bug</h2>
+      <p>"Total payout per freelancer" reaches for the obvious cast:</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">bug.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT freelancer_name, SUM(CAST(amount_text AS REAL)) AS total_payout_bug
+FROM payout_requests
+GROUP BY freelancer_name;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>freelancer_name</th><th>total_payout_bug</th></tr></thead><tbody>
+<tr><td>Kavya</td><td>18800</td></tr>
+<tr><td>Priya</td><td>15002</td></tr>
+<tr><td>Rahul</td><td>17500.5</td></tr>
+</tbody></table></div>
+      <p>Rahul and Kavya happen to come out right — more on why in a moment. Priya doesn't. Her real total is 17500, and the query reports <strong>15002</strong>, a shortfall of 2498 with zero errors, zero warnings, and a result that looks exactly as plausible as a correct one would. Nobody staring at this query would think to double-check it — <code>SUM(CAST(...))</code> is about as ordinary as SQL gets.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>4. Why it happens</h2>
+      <p>SQLite's <code>CAST</code> doesn't validate — it scans. Given a string, it walks left to right consuming a leading run of digits, at most one decimal point, and an optional sign, and stops the moment it meets anything else. Whatever it consumed becomes the number; if it consumed nothing at all, the result is <code>0</code>.</p>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>amount_text</th><th>CAST(amount_text AS REAL)</th></tr></thead><tbody>
+<tr><td>'15000'</td><td>15000</td></tr>
+<tr><td>'2,500'</td><td>2</td></tr>
+<tr><td>'9500.50'</td><td>9500.5</td></tr>
+<tr><td>'pending'</td><td>0</td></tr>
+</tbody></table></div>
+      <p><code>'2,500'</code> parses the leading <code>2</code>, then hits a comma — a character that isn't part of a number — and stops right there, discarding <code>,500</code> entirely. <code>'pending'</code> doesn't start with anything numeric at all, so the scan consumes zero characters and <code>CAST</code> falls back to <code>0</code>. That's also exactly why Rahul's total came out correct by accident: adding <code>0</code> for his pending payout doesn't change a sum, even though the row itself is meaningless. Priya's row is the dangerous one, because the corrupted value isn't <code>0</code> — it's a plausible-looking number that's just wrong.</p>
+      <p>This leniency is SQLite-specific, not a SQL standard guarantee. PostgreSQL's <code>CAST('2,500' AS NUMERIC)</code> raises a hard <code>invalid input syntax for type numeric</code> error and aborts the statement instead of guessing. Writing a query against SQLite and assuming it will behave the same way in Postgres — or the reverse — is its own trap.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>5. The fix</h2>
+      <p>Don't let a value that fails to actually be a number silently become <code>0</code>. Normalize the formatting SQLite can't parse through on its own, validate what's left with <code>GLOB</code>, and only cast rows that pass — while still counting the ones that didn't, instead of letting them vanish.</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">fix.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT freelancer_name,
+       SUM(CASE WHEN REPLACE(amount_text, ',', '') GLOB '[0-9]*'
+                 AND REPLACE(amount_text, ',', '') NOT GLOB '*[^0-9.]*'
+            THEN CAST(REPLACE(amount_text, ',', '') AS REAL) END) AS total_payout,
+       SUM(CASE WHEN REPLACE(amount_text, ',', '') GLOB '[0-9]*'
+                 AND REPLACE(amount_text, ',', '') NOT GLOB '*[^0-9.]*'
+            THEN 1 ELSE 0 END) AS settled_count,
+       SUM(CASE WHEN NOT (REPLACE(amount_text, ',', '') GLOB '[0-9]*'
+                 AND REPLACE(amount_text, ',', '') NOT GLOB '*[^0-9.]*')
+            THEN 1 ELSE 0 END) AS unparseable_count
+FROM payout_requests
+GROUP BY freelancer_name;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>freelancer_name</th><th>total_payout</th><th>settled_count</th><th>unparseable_count</th></tr></thead><tbody>
+<tr><td>Kavya</td><td>18800</td><td>2</td><td>0</td></tr>
+<tr><td>Priya</td><td>17500</td><td>2</td><td>0</td></tr>
+<tr><td>Rahul</td><td>17500.5</td><td>2</td><td>1</td></tr>
+</tbody></table></div>
+      <p><code>REPLACE(amount_text, ',', '')</code> strips the thousands separator SQLite's scanner would otherwise choke on, turning <code>'2,500'</code> into <code>'2500'</code> before <code>CAST</code> ever sees it. The <code>GLOB</code> pair checks that what's left actually starts with a digit and contains nothing but digits and a decimal point — <code>'pending'</code> fails that check outright, so it's excluded from <code>total_payout</code> rather than silently averaged in as a zero. <code>settled_count</code> and <code>unparseable_count</code> reuse the exact same condition to make the gap visible: Rahul now clearly shows 1 unparseable payout instead of that row disappearing into a correct-looking total.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>6. CAST's other trap: it truncates, it doesn't round</h2>
+      <p>Even with clean, fully numeric input, <code>CAST(x AS INTEGER)</code> has a second gotcha worth knowing: it truncates toward zero instead of rounding to the nearest integer.</p>
+      <div class="ed-win">
+        <div class="ed-bar"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+          <span class="ed-file">bonus.sql</span></div>
+        <pre class="ed-ta" style="margin:0;overflow-x:auto;white-space:pre"><code>SELECT CAST(9.9 AS INTEGER) AS a,
+       CAST(9.4 AS INTEGER) AS b,
+       CAST(-9.9 AS INTEGER) AS c;</code></pre>
+      </div>
+      <div class="tbl-wrap"><table class="rt"><thead><tr><th>expression</th><th>result</th></tr></thead><tbody>
+<tr><td>CAST(9.9 AS INTEGER)</td><td>9</td></tr>
+<tr><td>CAST(9.4 AS INTEGER)</td><td>9</td></tr>
+<tr><td>CAST(-9.9 AS INTEGER)</td><td>-9</td></tr>
+</tbody></table></div>
+      <p><code>9.9</code> becomes <code>9</code>, not <code>10</code> — <code>CAST</code> simply chops off everything after the decimal point rather than asking which integer is closer. <code>-9.9</code> becomes <code>-9</code> for the same reason: truncating toward zero, not rounding down (a true floor would give <code>-10</code>). Anywhere the intent is "nearest whole number," <code>ROUND(x)</code> is the right call — <code>CAST(x AS INTEGER)</code> is for discarding the fractional part on purpose, not for rounding.</p>
+    </div>
+
+    <div class="art-section">
+      <h2>7. Cheat sheet</h2>
+      <table class="cheat-table">
+        <thead><tr><th>Situation</th><th>Pattern</th><th>What it buys you</th></tr></thead>
+        <tbody>
+          <tr><td>Thousands separator in TEXT</td><td><code>CAST(REPLACE(col, ',', '') AS REAL)</code></td><td>Strips the character that would otherwise stop the scan early</td></tr>
+          <tr><td>Non-numeric placeholder text</td><td><code>col GLOB '[0-9]*' AND col NOT GLOB '*[^0-9.]*'</code></td><td>Rejects rows that aren't really numbers instead of letting them silently become 0</td></tr>
+          <tr><td>Need the nearest whole number</td><td><code>ROUND(x)</code>, not <code>CAST(x AS INTEGER)</code></td><td>Rounds to nearest instead of truncating toward zero</td></tr>
+          <tr><td>Cross-engine safety</td><td>Validate before casting, don't rely on SQLite's leniency</td><td>PostgreSQL/MySQL raise errors on the same bad input SQLite silently guesses at</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="art-section">
+      <h2>8. Try it yourself</h2>
+      <p>This bug is dangerous precisely because it never announces itself. A malformed row doesn't crash the query or show up as an obvious NULL — it just quietly contributes a smaller (or larger) number than it should, and the total still looks like a real number. The only real defense is treating every <code>TEXT</code>-typed "number" column as guilty until validated: check what <code>CAST</code> actually does to your edge cases before trusting it inside a <code>SUM</code>.</p>
+      <p><a href="/">Practice type coercion live on TableNotFound →</a></p>
+    </div>
 </div>
 
 <footer id="tnf-footer">

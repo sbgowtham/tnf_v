@@ -96,5 +96,12 @@
     "href": "/blog/gaps-and-islands-consecutive-streaks.html",
     "icon": "📝",
     "color": "#dbeafe"
+  },
+  {
+    "title": "CAST's Silent Truncation",
+    "desc": "Why bad TEXT quietly becomes 0 instead of an error",
+    "href": "/blog/cast-silent-truncation-trap.html",
+    "icon": "📝",
+    "color": "#dbeafe"
   }
 ]

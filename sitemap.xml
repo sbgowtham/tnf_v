@@ -32,57 +32,62 @@
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/row-number-vs-rank-vs-dense-rank.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/in-vs-exists-vs-join.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/left-join-where-clause-trap.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/count-star-vs-count-column-null-trap.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/union-vs-union-all-silent-row-drop.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/between-timestamps-missing-last-day.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/where-vs-having-execution-order.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/nullif-sentinel-values-division-by-zero.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/numbers-stored-as-text-sorting-trap.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/group-by-vs-window-functions-collapsed-rows.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/blog/gaps-and-islands-consecutive-streaks.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.tablenotfound.com/blog/cast-silent-truncation-trap.html</loc>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
@@ -202,22 +207,22 @@
   </url>
   <url>
     <loc>https://www.tablenotfound.com/about.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/contact.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/terms.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://www.tablenotfound.com/privacy.html</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <priority>0.3</priority>
   </url>
 </urlset>
