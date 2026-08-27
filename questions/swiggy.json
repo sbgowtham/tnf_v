@@ -1,0 +1,156 @@
+{
+  "setup": "CREATE TABLE swiggy_kitchen_orders(id INTEGER,kitchen_name TEXT,order_status TEXT);\nINSERT INTO swiggy_kitchen_orders VALUES\n (1,'Andheri Kitchen','cancelled'),\n (2,'Andheri Kitchen','delivered'),\n (3,'Andheri Kitchen','delivered'),\n (4,'Andheri Kitchen','delivered'),\n (5,'Andheri Kitchen','delivered'),\n (6,'Andheri Kitchen','delivered'),\n (7,'Andheri Kitchen','delivered'),\n (8,'Andheri Kitchen','delivered'),\n (9,'Andheri Kitchen',NULL),\n (10,'Andheri Kitchen',NULL),\n (11,'Bandra Kitchen','cancelled'),\n (12,'Bandra Kitchen','cancelled'),\n (13,'Bandra Kitchen','cancelled'),\n (14,'Bandra Kitchen','delivered'),\n (15,'Bandra Kitchen','delivered'),\n (16,'Bandra Kitchen','delivered'),\n (17,'Bandra Kitchen','delivered'),\n (18,'Bandra Kitchen','delivered'),\n (19,'Bandra Kitchen','delivered'),\n (20,'Bandra Kitchen','delivered'),\n (21,'Powai Kitchen','cancelled'),\n (22,'Powai Kitchen','cancelled'),\n (23,'Powai Kitchen','delivered'),\n (24,'Powai Kitchen','delivered'),\n (25,'Powai Kitchen','delivered'),\n (26,'Powai Kitchen','delivered'),\n (27,'Powai Kitchen','delivered'),\n (28,'Powai Kitchen','delivered'),\n (29,'Powai Kitchen',NULL),\n (30,'Powai Kitchen',NULL);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "hard",
+      "cc": [
+        "Derived Table",
+        "Subquery in FROM",
+        "CASE WHEN",
+        "HAVING"
+      ],
+      "story": {
+        "en": "Wednesday afternoon at Swiggy's Kitchen Health team. swiggy_kitchen_orders logs every order placed at a dark kitchen along with its order_status. A kitchen gets flagged for review when more than 20% of its resolved orders end up cancelled. Some rows have order_status = NULL — the order is still out for delivery or being prepared, with no final outcome yet, so it hasn't actually resolved as either a delivery or a cancellation. The team wants a clean list of every kitchen currently over the 20% cancellation threshold, and an in-transit order must not be counted as if it were a completed, non-cancelled order.",
+        "ta": "Wednesday afternoon Swiggy-oda Kitchen Health team-la. swiggy_kitchen_orders, dark kitchen-la place aana ovvoru order-a, adhoda order_status-oda log pannum. Oru kitchen-oda resolved orders-la 20%-kku mela cancel aayirundha, andha kitchen review-kku flag aagum. Sila rows-la order_status = NULL-a irukku — order innum delivery-kku poyirukku alladhu prepare panradhu nadakkudhu, innum final outcome edhuvum illa, so idhu delivery-o cancellation-o-nu resolve aagala. Team-ku 20% cancellation threshold-a mela irukkura ella kitchens-oda clean list venum, matrum oru in-transit order-a completed, non-cancelled order madhiri count pannakoodadhu.",
+        "hi": "Wednesday dopahar Swiggy ki Kitchen Health team mein. swiggy_kitchen_orders, dark kitchen mein place hui har order ko uske order_status ke saath log karta hai. Jab kisi kitchen ke resolved orders mein se 20% se zyada cancel ho jaate hain, to us kitchen ko review ke liye flag kar diya jaata hai. Kuch rows mein order_status = NULL hai — order abhi delivery ke liye nikla hua hai ya prepare ho raha hai, koi final outcome nahi aaya, isliye yeh na to delivery hai na cancellation. Team ko har us kitchen ki saaf list chahiye jo abhi 20% cancellation threshold se upar hai, aur ek in-transit order ko complete, non-cancelled order jaisa count nahi karna chahiye.",
+        "te": "Wednesday madhyahnam Swiggy Kitchen Health team lo. swiggy_kitchen_orders, dark kitchen lo place ayina prathi order ni dani order_status tho patu log chestundi. Oka kitchen resolved orders lo 20% kanna ekkuva cancel aithe, aa kitchen review kosam flag avutundi. Konni rows lo order_status = NULL undi — order inka delivery ki veltondi leda prepare avutondi, inka final outcome ledu, so idi delivery ga gani cancellation ga gani resolve avvaledu. Team ki ippudu 20% cancellation threshold dati unna prathi kitchen clean list kavali, mariyu oka in-transit order ni completed, non-cancelled order la count cheyakudadu."
+      },
+      "question": {
+        "en": "Using a subquery in the FROM clause, first compute for each kitchen_name in swiggy_kitchen_orders: cancelled_count (orders with order_status = 'cancelled'), total_resolved (orders where order_status is not NULL), and cancellation_rate as cancelled_count divided by total_resolved times 100, rounded to 2 decimal places. Then, in the outer query, return only the kitchens where cancellation_rate is greater than 20, with columns kitchen_name, cancelled_count, total_resolved, and cancellation_rate, sorted by cancellation_rate in descending order.",
+        "ta": "FROM clause-la oru subquery use panni, muthalla swiggy_kitchen_orders-la ovvoru kitchen_name-kkum calculate pannunga: cancelled_count (order_status = 'cancelled' irukkura orders), total_resolved (order_status NULL illama irukkura orders), matrum cancellation_rate-a cancelled_count-a total_resolved-la divide panni 100-a multiply panni, 2 decimal places-kku round pannunga. Apparam, outer query-la, cancellation_rate 20-kku mela irukkura kitchens-a mattum return pannunga, kitchen_name, cancelled_count, total_resolved, matrum cancellation_rate columns-oda, cancellation_rate descending order-la sort pannunga.",
+        "hi": "FROM clause mein ek subquery use karke, sabse pehle swiggy_kitchen_orders mein har kitchen_name ke liye calculate karo: cancelled_count (jinke order_status = 'cancelled' hai), total_resolved (jinke order_status NULL nahi hai), aur cancellation_rate ko cancelled_count ko total_resolved se divide karke 100 se multiply karke, 2 decimal places tak round karo. Phir, outer query mein, sirf un kitchens ko return karo jinka cancellation_rate 20 se zyada hai, kitchen_name, cancelled_count, total_resolved, aur cancellation_rate columns ke saath, cancellation_rate ke descending order mein sort karke.",
+        "te": "FROM clause lo oka subquery vadi, modata swiggy_kitchen_orders lo prathi kitchen_name ki calculate cheyandi: cancelled_count (order_status = 'cancelled' unna orders), total_resolved (order_status NULL kaani orders), mariyu cancellation_rate ni cancelled_count ni total_resolved tho divide chesi 100 tho multiply chesi, 2 decimal places ki round cheyandi. Tarvata, outer query lo, cancellation_rate 20 kanna ekkuva unna kitchens ni matrame return cheyandi, kitchen_name, cancelled_count, total_resolved, mariyu cancellation_rate columns tho, cancellation_rate descending order lo sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "swiggy_kitchen_orders",
+          "cols": [
+            {
+              "n": "id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "kitchen_name",
+              "t": "TEXT",
+              "e": "Andheri Kitchen"
+            },
+            {
+              "n": "order_status",
+              "t": "TEXT",
+              "e": "cancelled"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at the raw orders, including the ones still in transit",
+            "ta": "Raw orders-a paarunga, innum in-transit-la irukkuravaga serndhu",
+            "hi": "Raw orders ko dekho, abhi in-transit wale samet",
+            "te": "Raw orders ni chudandi, inka in-transit lo unnavi tho patu"
+          },
+          "sql": "SELECT *\nFROM swiggy_kitchen_orders\nORDER BY kitchen_name, id;",
+          "explain": {
+            "en": [
+              "swiggy_kitchen_orders has one row per order, not one row per kitchen — kitchen_name repeats across every order, and all three kitchens (Andheri, Bandra, Powai) have exactly 10 orders logged each.",
+              "Two kitchens have order_status = NULL rows: Andheri has 2, Powai has 2. That NULL isn't a fourth status value sitting alongside 'delivered' and 'cancelled' — it means the order hasn't reached a final outcome yet, it's still in transit.",
+              "Bandra Kitchen has no NULL rows at all — every one of its 10 orders has already resolved to either 'delivered' or 'cancelled', which makes it a useful control: its numbers won't change no matter how the NULL handling is written.",
+              "Nothing is aggregated yet — this step only confirms which rows represent a genuine final outcome and which ones are still pending, a distinction the next two steps handle very differently."
+            ],
+            "ta": [
+              "swiggy_kitchen_orders-la ovvoru order-kkum oru row irukku, oru kitchen-kkum oru row illa — kitchen_name ovvoru order-layum repeat aagum, matrum moondru kitchens-um (Andheri, Bandra, Powai) exact-a 10 orders vera vera log aagirukku.",
+              "Rendu kitchens-la order_status = NULL rows irukku: Andheri-kku 2, Powai-kku 2. Andha NULL, 'delivered' matrum 'cancelled'-oda serndhu iruntha naanaam status value illa — idhu artham order innum final outcome-a adaiyala, innum in-transit-la irukku.",
+              "Bandra Kitchen-kku edhuvum NULL rows illa — adhoda 10 orders-layum ella oru row-um already 'delivered' alladhu 'cancelled'-a resolve aagirukku, idhu oru useful control-a irukku: NULL handling eppadi eludhinaalum adhoda numbers maaraadhu.",
+              "Innum edhuvum aggregate pannala — indha step, edhu genuine-a oru final outcome-a represent pannuthu, edhu innum pending-a irukku-nu confirm pannradhukku mattum, adutha rendu steps andha difference-a romba differentaana approach-la handle pannum."
+            ],
+            "hi": [
+              "swiggy_kitchen_orders mein har order ke liye ek row hai, har kitchen ke liye ek row nahi — kitchen_name har order mein repeat hota hai, aur teeno kitchens (Andheri, Bandra, Powai) mein se har ek mein exactly 10 orders log hain.",
+              "Do kitchens mein order_status = NULL wali rows hain: Andheri mein 2, Powai mein 2. Woh NULL 'delivered' aur 'cancelled' ke saath khadi koi chauthi status value nahi hai — iska matlab hai order abhi final outcome tak nahi pahuncha, woh abhi bhi in-transit hai.",
+              "Bandra Kitchen mein koi NULL row hi nahi hai — uske sabhi 10 orders pehle se hi 'delivered' ya 'cancelled' mein resolve ho chuke hain, jo ise ek useful control banata hai: NULL handling chahe jaise bhi likhi jaaye, uske numbers nahi badlenge.",
+              "Abhi kuch bhi aggregate nahi hua — yeh step sirf yeh confirm karta hai ki kaunsi rows genuinely ek final outcome represent karti hain aur kaunsi abhi bhi pending hain, ek antar jise agle do steps bahut alag tarike se handle karte hain."
+            ],
+            "te": [
+              "swiggy_kitchen_orders lo prathi order ki oka row untundi, prathi kitchen ki oka row kaadu — kitchen_name prathi order lo repeat avutundi, mariyu mudu kitchens (Andheri, Bandra, Powai) prathi okkati ki exact ga 10 orders log ayyayi.",
+              "Rendu kitchens lo order_status = NULL rows unnayi: Andheri ki 2, Powai ki 2. Aa NULL ante 'delivered' mariyu 'cancelled' tho patu unna nalugova status value kaadu — dani ardham order inka final outcome ki cheralaledu, inka in-transit lo undi ani.",
+              "Bandra Kitchen ki e NULL rows ledu — dani 10 orders anni already 'delivered' leda 'cancelled' ga resolve ayyayi, idi oka useful control avutundi: NULL handling ela rasina dani numbers marav.",
+              "Inka emi aggregate avvaledu — ee step kevalam evi genuine ga final outcome ni represent chestunnayo, evi inka pending ga unnayo ani confirm chestundi, ee tedani tarvata rendu steps chala veruga handle chestayi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "See the trap: HAVING with COUNT(*) hides a kitchen that should be flagged",
+            "ta": "Trap-a paarunga: COUNT(*)-oda HAVING, flag aaganum-nu irukkura oru kitchen-a hide pannudhu",
+            "hi": "Trap dekho: COUNT(*) wala HAVING ek aisi kitchen ko chhupa deta hai jise flag hona chahiye tha",
+            "te": "Trap ni chudandi: COUNT(*) tho unna HAVING, flag avvalsina oka kitchen ni dachipedutundi"
+          },
+          "sql": "SELECT kitchen_name,\n       SUM(CASE WHEN order_status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled_count,\n       COUNT(*) AS total_orders,\n       ROUND(SUM(CASE WHEN order_status = 'cancelled' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS cancellation_rate_wrong\nFROM swiggy_kitchen_orders\nGROUP BY kitchen_name\nHAVING cancellation_rate_wrong > 20\nORDER BY cancellation_rate_wrong DESC;",
+          "explain": {
+            "en": [
+              "COUNT(*) counts every row in the group, in-transit orders included — so Powai Kitchen's denominator here is 10 (2 cancelled + 6 delivered + 2 still in transit), not the 8 orders that have actually resolved one way or the other.",
+              "That inflated denominator dilutes cancellation_rate_wrong for Powai down to exactly 20.00 — and since the filter is cancellation_rate_wrong > 20, a rate of exactly 20 doesn't qualify, so Powai silently disappears from the result entirely.",
+              "Only Bandra Kitchen shows up here, at 30%. Bandra happens to have zero in-transit orders, so COUNT(*) and a resolved-only count give it the identical answer — this trap is invisible on any kitchen without pending orders, which is exactly why it can sit unnoticed for weeks.",
+              "HAVING is the right clause here, not WHERE — cancellation_rate_wrong is built from SUM and COUNT, and WHERE isn't allowed to see aggregate results at all, so wrong denominator aside, this query is at least filtering at the correct stage of execution."
+            ],
+            "ta": [
+              "COUNT(*), group-la irukkura ella row-um count pannum, in-transit orders-um serthu — so Powai Kitchen-oda denominator inga 10 (2 cancelled + 6 delivered + 2 innum in-transit), edhavadhu oru vazhi-la real-a resolve aana 8 orders illa.",
+              "Andha inflate aana denominator, Powai-oda cancellation_rate_wrong-a exact-a 20.00-kku dilute pannudhu — filter cancellation_rate_wrong > 20 nu irukkura ention, exact-a 20 iruntha qualify aagaadhu, so Powai result-la irundhu silent-a maraiyum.",
+              "Bandra Kitchen mattum-thaan inga varum, 30%-la. Bandra-kku zero in-transit orders irukku, so COUNT(*) matrum resolved-only count rendum same answer-a kudukkum — indha trap, pending orders illaadha edhavadhu kitchen-la invisible-a irukkum, adhaan weeks-kanakku kandupidikkama irukkalaam.",
+              "Inga WHERE illa, HAVING-thaan correct clause — cancellation_rate_wrong, SUM matrum COUNT-a vachi build aagirukku, WHERE-kku aggregate results-a paakka mudiyaadhu, so wrong denominator thavira, indha query correct stage-la-thaan filter pannudhu."
+            ],
+            "hi": [
+              "COUNT(*), group ki har row ko count karta hai, in-transit orders samet — isliye Powai Kitchen ka denominator yahan 10 hai (2 cancelled + 6 delivered + 2 abhi in-transit), na ki woh 8 orders jo asal mein kisi na kisi tarah resolve ho chuke hain.",
+              "Woh phoola hua denominator Powai ke cancellation_rate_wrong ko bilkul 20.00 tak dilute kar deta hai — aur filter cancellation_rate_wrong > 20 hai, isliye exactly 20 ka rate qualify nahi karta, isliye Powai result se chupke se gayab ho jaata hai.",
+              "Yahan sirf Bandra Kitchen dikhta hai, 30% par. Bandra ke paas zero in-transit orders hain, isliye COUNT(*) aur sirf-resolved count dono same jawab dete hain — yeh trap kisi bhi aisi kitchen par invisible rehta hai jiske paas pending orders na ho, isi wajah se yeh hafton tak nazar hi nahi aata.",
+              "Yahan HAVING sahi clause hai, WHERE nahi — cancellation_rate_wrong SUM aur COUNT se bana hai, aur WHERE ko aggregate results dikhne hi nahi diye jaate, isliye galat denominator ko chhod kar, yeh query kam se kam sahi stage par filter kar rahi hai."
+            ],
+            "te": [
+              "COUNT(*), group lo prathi row ni count chestundi, in-transit orders tho patu — so Powai Kitchen denominator ikkada 10 (2 cancelled + 6 delivered + 2 inka in-transit), nijamga edo oka vidhamga resolve ayina 8 orders kaadu.",
+              "Aa inflate ayina denominator, Powai cancellation_rate_wrong ni exact ga 20.00 ki dilute chestundi — filter cancellation_rate_wrong > 20 ani undi kabatti, exact ga 20 unte qualify avvadu, so Powai result nunchi silent ga marugavutundi.",
+              "Bandra Kitchen matrame ikkada kanipistundi, 30 percent tho. Bandra ki in-transit orders sunna, so COUNT(*) mariyu resolved-only count rendintiki okate answer vastundi. Pending orders leni prati kitchen ki ee trap kanipinchadu, anduke idi vaarala varaku evvariki teliyakunda migilipotundi.",
+              "Ikkada WHERE kaadu, HAVING correct clause — cancellation_rate_wrong, SUM mariyu COUNT nunchi build ayyindi, mariyu WHERE ki aggregate results kanipinchavu, so tappu denominator pakkana pettina, ee query correct stage lo filter chestundi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: pre-aggregate resolved orders in a derived table, then filter cleanly",
+            "ta": "Fix pannunga: resolved orders-a derived table-la pre-aggregate pannunga, apparam clean-a filter pannunga",
+            "hi": "Fix karo: resolved orders ko derived table mein pre-aggregate karo, phir saaf tarike se filter karo",
+            "te": "Fix cheyandi: resolved orders ni derived table lo pre-aggregate cheyandi, tarvata clean ga filter cheyandi"
+          },
+          "sql": "SELECT kitchen_name, cancelled_count, total_resolved, cancellation_rate\nFROM (\n  SELECT kitchen_name,\n         SUM(CASE WHEN order_status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled_count,\n         COUNT(order_status) AS total_resolved,\n         ROUND(SUM(CASE WHEN order_status = 'cancelled' THEN 1 ELSE 0 END) * 100.0 / COUNT(order_status), 2) AS cancellation_rate\n  FROM swiggy_kitchen_orders\n  GROUP BY kitchen_name\n) AS kitchen_stats\nWHERE cancellation_rate > 20\nORDER BY cancellation_rate DESC;",
+          "explain": {
+            "en": [
+              "COUNT(order_status) — not COUNT(*) — is the fix at its core: COUNT() skips NULL automatically, so Powai's total_resolved comes out to 8, not 10, correctly leaving out its 2 in-transit orders.",
+              "That single change moves Powai's cancellation_rate from a diluted 20.00 to its real 25.00 — clearly above the 20% threshold now, and clearly a kitchen that deserves review.",
+              "The inner query — everything inside FROM (...) AS kitchen_stats — runs to completion first, producing a small, already-aggregated 3-row result with plain ordinary columns; the outer WHERE cancellation_rate > 20 then filters that like any normal table, no aggregate functions or GROUP BY-stage restrictions to work around.",
+              "This is the real reason to reach for a derived table over repeating a HAVING expression: kitchen_stats.cancellation_rate is a genuine output column of the subquery, filterable and sortable the same way on any SQL engine — unlike leaning on a SELECT-list alias inside HAVING, which SQLite happens to allow but isn't something every engine guarantees."
+            ],
+            "ta": [
+              "COUNT(order_status) — COUNT(*) illa — idhu-thaan main fix: COUNT() automatic-a NULL-a skip pannum, so Powai-oda total_resolved 8-a varum, 10 illa, correct-a adhoda 2 in-transit orders-a leave out pannum.",
+              "Andha oru change, Powai-oda cancellation_rate-a dilute aana 20.00-la irundhu real-a 25.00-kku maatrudhu — ippo clearly 20% threshold-kku mela, clearly review-kku thagudhi irukkura kitchen.",
+              "Inner query — FROM (...) AS kitchen_stats-oda ulla ella-um — first-a complete-a run aagum, small-a, already-aggregated 3-row result-a plain ordinary columns-oda produce pannum; apparam outer WHERE cancellation_rate > 20, adha normal table madhiri filter pannum, aggregate functions alladhu GROUP BY-stage restrictions edhuvum work-around panna theva illa.",
+              "Idhu-thaan derived table-a use pannradhukku real reason, HAVING expression-a repeat panradhukku pathila: kitchen_stats.cancellation_rate, subquery-oda genuine output column, edhavadhu SQL engine-layum same madhiri filter matrum sort panna mudiyum — SELECT-list alias-a HAVING-la lean panradhu madhiri illa, adha SQLite allow pannum aana ella engine-um guarantee pannaadhu."
+            ],
+            "hi": [
+              "COUNT(order_status) — COUNT(*) nahi — yehi asli fix hai: COUNT() automatically NULL ko skip karta hai, isliye Powai ka total_resolved 8 aata hai, 10 nahi, sahi se uske 2 in-transit orders ko chhod kar.",
+              "Yeh ek change Powai ke cancellation_rate ko diluted 20.00 se asal 25.00 tak badal deta hai — ab saaf saaf 20% threshold se upar, aur saaf saaf ek aisi kitchen jo review deserve karti hai.",
+              "Inner query — FROM (...) AS kitchen_stats ke andar sab kuch — pehle poori tarah chalti hai, ek chhota, pehle se aggregate hua 3-row result plain ordinary columns ke saath banati hai; phir outer WHERE cancellation_rate > 20 use kisi bhi normal table ki tarah filter karta hai, koi aggregate functions ya GROUP BY-stage restrictions se bachne ki zaroorat nahi.",
+              "Yahi asli wajah hai ki HAVING expression ko repeat karne ke bajaye derived table ka sahara liya jaaye: kitchen_stats.cancellation_rate subquery ka ek genuine output column hai, jise kisi bhi SQL engine par usi tarah filter aur sort kiya ja sakta hai — HAVING ke andar SELECT-list alias par bharosa karne jaisa nahi, jise SQLite allow kar deta hai lekin har engine guarantee nahi karta."
+            ],
+            "te": [
+              "COUNT(order_status) — COUNT(*) kaadu — idi e asalu fix: COUNT() automatic ga NULL ni skip chestundi, so Powai total_resolved 8 ga vastundi, 10 kaadu, correct ga dani 2 in-transit orders ni vadilesi.",
+              "Aa oka change, Powai cancellation_rate ni diluted 20.00 nunchi nijamaina 25.00 ki marustundi — ippudu clear ga 20% threshold kanna ekkuva, clear ga review avasaram unna kitchen.",
+              "Inner query — FROM (...) AS kitchen_stats lopala anni — modata poortiga run avutundi, chinna, already-aggregated 3-row result ni plain ordinary columns tho isthundi; tarvata outer WHERE cancellation_rate > 20 danini e normal table la ayina filter chestundi, aggregate functions leda GROUP BY-stage restrictions emi avasaram ledu.",
+              "Idi e derived table vadalsina asalu karanam, HAVING expression ni repeat cheyadam kanna: kitchen_stats.cancellation_rate ante subquery ki genuine output column, e SQL engine mida ayina same ga filter mariyu sort cheyacchu — HAVING lopala SELECT-list alias mida aadharapadatam la kaadu, danini SQLite allow chestundi kaani prati engine guarantee cheyadu."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

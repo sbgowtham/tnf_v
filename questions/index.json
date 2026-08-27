@@ -152,5 +152,12 @@
       "sub": "Dark Store Revenue Trends",
       "c": "#0891b2",
       "difficulty": "hard"
+    },
+    {
+      "id": "swiggy",
+      "name": "Swiggy",
+      "sub": "Kitchen Cancellation Rates",
+      "c": "#fc8019",
+      "difficulty": "hard"
     }
   ]
