@@ -159,5 +159,12 @@
       "sub": "Kitchen Cancellation Rates",
       "c": "#fc8019",
       "difficulty": "hard"
+    },
+    {
+      "id": "razorpay",
+      "name": "Razorpay",
+      "sub": "Merchant Settlement Fees",
+      "c": "#3395ff",
+      "difficulty": "mid"
     }
   ]

@@ -1,0 +1,166 @@
+{
+  "setup": "CREATE TABLE razorpay_merchant_txns(id INTEGER,merchant_name TEXT,txn_status TEXT,gateway_fee REAL,refund_amount REAL);\nINSERT INTO razorpay_merchant_txns VALUES\n (1,'Craftsy Home','success',12.50,NULL),\n (2,'Craftsy Home','success',15.00,200.00),\n (3,'Craftsy Home','success',10.00,NULL),\n (4,'Craftsy Home','failed',-1,NULL),\n (5,'Craftsy Home','failed',-1,NULL),\n (6,'Craftsy Home','success',18.00,NULL),\n (7,'Vivid Mart','success',20.00,NULL),\n (8,'Vivid Mart','success',22.00,NULL),\n (9,'Vivid Mart','success',19.00,NULL),\n (10,'Vivid Mart','success',21.00,50.00),\n (11,'Vivid Mart','failed',-1,NULL),\n (12,'Orbit Foods','success',30.00,NULL),\n (13,'Orbit Foods','success',28.00,NULL),\n (14,'Orbit Foods','success',32.00,100.00),\n (15,'Orbit Foods','success',29.00,NULL);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "mid",
+      "cc": [
+        "NULLIF",
+        "AVG",
+        "SUM",
+        "COALESCE"
+      ],
+      "story": {
+        "en": "Tuesday morning at Razorpay's Merchant Finance team. razorpay_merchant_txns logs every transaction attempt for a merchant, along with gateway_fee (what Razorpay charged for processing it) and refund_amount (money sent back to the customer, if any). Failed transactions never actually got charged a fee — but a legacy import logged gateway_fee = -1 for every one of them instead of leaving it NULL, a placeholder someone chose years ago. refund_amount, on the other hand, is a genuine NULL whenever a transaction was never refunded — nobody invented a placeholder for that column. The team wants each merchant's real average fee on transactions that actually incurred one, plus their total refunded amount, without the -1 placeholder being mistaken for an actual fee.",
+        "ta": "Tuesday morning Razorpay-oda Merchant Finance team-la. razorpay_merchant_txns, oru merchant-oda ovvoru transaction attempt-a, adhoda gateway_fee (Razorpay andha transaction-a process panna vangina fee) matrum refund_amount (customer-kku thirumba anupina paisa, irundha) oda log pannum. Failed transactions-kku edhuvum fee charge aagave illa — aana oru legacy import, andha ella transactions-kkum gateway_fee = -1-nu log panniduchu, NULL-a vidradhukku pathila, yaaro years munnadi thaeraedhutha placeholder. refund_amount-a paatha, adhu vera kadhai — oru transaction refund aagaadhapo adhu genuine NULL-a irukkum, andha column-kku yaaru-um placeholder invent pannala. Team-ku ovvoru merchant-oda real average fee venum, genuine-a fee apply aagura transactions-la, matrum avanga total refunded amount, -1 placeholder-a real fee-nu thappa edukkama.",
+        "hi": "Tuesday subah Razorpay ki Merchant Finance team mein. razorpay_merchant_txns har merchant ke har transaction attempt ko, uske gateway_fee (jo Razorpay ne usse process karne ke liye charge kiya) aur refund_amount (customer ko wapas gaya paisa, agar koi ho) ke saath log karta hai. Failed transactions par kabhi koi fee charge hui hi nahi — lekin ek legacy import ne un sabke gateway_fee = -1 log kar diya, NULL chhodne ke bajaye, jo saalon pehle kisi ne chuna hua ek placeholder tha. refund_amount ki kahani alag hai — jab bhi koi transaction kabhi refund nahi hui, woh genuinely NULL hai, us column ke liye kisi ne koi placeholder invent nahi kiya. Team ko har merchant ka asli average fee chahiye, un transactions par jinpar genuinely fee lagti hai, aur unka total refunded amount, -1 placeholder ko asli fee samajhe bina.",
+        "te": "Tuesday morning Razorpay Merchant Finance team lo. razorpay_merchant_txns prathi merchant prathi transaction attempt ni, dani gateway_fee (Razorpay danini process cheyadaniki vasulu chesina fee) mariyu refund_amount (customer ki thirigi vellina dabbu, unte) tho patu log chestundi. Failed transactions ki e fee ye vasulu avvaledu — kaani oka legacy import vaatanni gateway_fee = -1 ani log chesindi, NULL ga vadalakunda, edo years kritam evaraina enchukunna placeholder. refund_amount katha veru — e transaction eppudaina refund avvakapothe adi genuine ga NULL ga untundi, aa column ki evvaru placeholder kanugonaledu. Team ki prathi merchant real average fee kavali, genuine ga fee apply ayye transactions mida, mariyu vaalla total refunded amount, -1 placeholder ni nijamaina fee ani tappuga theesukokunda."
+      },
+      "question": {
+        "en": "For each merchant_name in razorpay_merchant_txns, compute avg_fee as the average gateway_fee across transactions where a fee genuinely applies — treating any gateway_fee of -1 as not a real fee — rounded to 2 decimal places, and total_refunded as the sum of refund_amount (treating merchants with no refunds at all as 0 instead of NULL). Return merchant_name, avg_fee, and total_refunded, sorted by merchant_name.",
+        "ta": "razorpay_merchant_txns-la ovvoru merchant_name-kkum, avg_fee-a calculate pannunga — genuine-a fee apply aagura transactions-oda average gateway_fee-a, gateway_fee -1-a irundha adha real fee-nu treat pannaama — 2 decimal places-kku round pannunga, matrum total_refunded-a refund_amount-oda sum-a (edhavadhu refund-e illaadha merchants-a NULL-kku pathila 0-nu treat pannunga). merchant_name, avg_fee, matrum total_refunded-a return pannunga, merchant_name-la sort pannunga.",
+        "hi": "razorpay_merchant_txns mein har merchant_name ke liye, avg_fee calculate karo — un transactions ka average gateway_fee jinpar genuinely fee lagti hai, gateway_fee -1 ho to use asli fee na maankar — 2 decimal places tak round karke, aur total_refunded ko refund_amount ke sum ke roop mein (jin merchants ka koi refund hi nahi hua unhe NULL ke bajaye 0 maan kar). merchant_name, avg_fee, aur total_refunded return karo, merchant_name ke hisaab se sort karke.",
+        "te": "razorpay_merchant_txns lo prathi merchant_name ki, avg_fee ni calculate cheyandi — genuine ga fee apply ayye transactions average gateway_fee, gateway_fee -1 unte danini real fee ga treat cheyakunda — 2 decimal places ki round chesi, mariyu total_refunded ni refund_amount sum ga (e refund e ledu unna merchants ni NULL ki badulu 0 ga treat chesi). merchant_name, avg_fee, mariyu total_refunded ni return cheyandi, merchant_name prakaram sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "razorpay_merchant_txns",
+          "cols": [
+            {
+              "n": "id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "merchant_name",
+              "t": "TEXT",
+              "e": "Craftsy Home"
+            },
+            {
+              "n": "txn_status",
+              "t": "TEXT",
+              "e": "success"
+            },
+            {
+              "n": "gateway_fee",
+              "t": "REAL",
+              "e": "12.5"
+            },
+            {
+              "n": "refund_amount",
+              "t": "REAL",
+              "e": "200"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at the raw transactions, including the -1 placeholder fees",
+            "ta": "Raw transactions-a paarunga, -1 placeholder fees-um serndhu",
+            "hi": "Raw transactions ko dekho, -1 placeholder fees samet",
+            "te": "Raw transactions ni chudandi, -1 placeholder fees tho patu"
+          },
+          "sql": "SELECT *\nFROM razorpay_merchant_txns\nORDER BY merchant_name, id;",
+          "explain": {
+            "en": [
+              "razorpay_merchant_txns has one row per transaction attempt, not one row per merchant — merchant_name repeats across every transaction, and Craftsy Home has 6 rows, Vivid Mart has 5, Orbit Foods has 4.",
+              "Every failed transaction has gateway_fee = -1 — Craftsy Home has two of them, Vivid Mart has one. A failed transaction was never actually charged anything; -1 is a placeholder a legacy import chose, not a genuine fee value and not a genuine NULL either.",
+              "refund_amount tells a different story: it's a real NULL on every transaction that was never refunded, and a real positive number on the handful that were (one each for Craftsy Home, Vivid Mart, and Orbit Foods). Nobody invented a fake number for 'no refund' — that column already uses NULL the way NULL is meant to be used.",
+              "Nothing is aggregated yet — this step only sets up the contrast the next two steps depend on: gateway_fee hides a fake NULL as -1, while refund_amount uses a real one, and they need to be handled completely differently."
+            ],
+            "ta": [
+              "razorpay_merchant_txns-la ovvoru transaction attempt-kkum oru row irukku, oru merchant-kkum oru row illa — merchant_name ovvoru transaction-layum repeat aagum, Craftsy Home-kku 6 rows, Vivid Mart-kku 5, Orbit Foods-kku 4 irukku.",
+              "Ella failed transaction-kkum gateway_fee = -1 irukku — Craftsy Home-kku rendu, Vivid Mart-kku onnu. Failed transaction-la edhuvum real-a charge aagave illa; -1 nu solradhu legacy import thaeraedhutha placeholder, genuine fee value-um illa, genuine NULL-um illa.",
+              "refund_amount vera kadhai solludhu: refund aagaadha ella transaction-layum real NULL, matrum refund aana konjam transactions-la (Craftsy Home, Vivid Mart, Orbit Foods ovvondrukkum onnu vidham) real positive number irukku. 'refund illa'-nu solla yaaru-um fake number invent pannala — andha column NULL-a andha vazhi-la thaan use pannirukku.",
+              "Innum edhuvum aggregate pannala — indha step, adutha rendu steps depend aagura contrast-a mattum set up pannudhu: gateway_fee, fake NULL-a -1-a hide pannudhu, refund_amount real NULL use pannudhu, rendum completely differentaana approach venum."
+            ],
+            "hi": [
+              "razorpay_merchant_txns mein har transaction attempt ke liye ek row hai, har merchant ke liye ek row nahi — merchant_name har transaction mein repeat hota hai, Craftsy Home ke 6 rows hain, Vivid Mart ke 5, Orbit Foods ke 4.",
+              "Har failed transaction mein gateway_fee = -1 hai — Craftsy Home ke do hain, Vivid Mart ka ek. Failed transaction par asal mein kabhi kuch charge hua hi nahi; -1 ek legacy import ka chuna hua placeholder hai, na genuine fee value, na genuine NULL.",
+              "refund_amount ek alag kahani batata hai: jo transaction kabhi refund nahi hui uspar yeh genuinely NULL hai, aur jo thodi si refund hui unpar (Craftsy Home, Vivid Mart, Orbit Foods mein se har ek mein ek-ek) real positive number hai. 'refund nahi hua' bataane ke liye kisi ne fake number invent nahi kiya — us column ne NULL ka istemal bilkul jaise hona chahiye waise kiya hai.",
+              "Abhi kuch bhi aggregate nahi hua — yeh step sirf agle do steps jis contrast par depend karte hain use set up karta hai: gateway_fee ek fake NULL ko -1 ke roop mein chhupata hai, jabki refund_amount ek real NULL use karta hai, aur dono ko bilkul alag tarike se handle karna padega."
+            ],
+            "te": [
+              "razorpay_merchant_txns lo prathi transaction attempt ki oka row untundi, prathi merchant ki oka row kaadu — merchant_name prathi transaction lo repeat avutundi, Craftsy Home ki 6 rows, Vivid Mart ki 5, Orbit Foods ki 4 unnayi.",
+              "Prathi failed transaction ki gateway_fee = -1 undi — Craftsy Home ki rendu, Vivid Mart ki okati. Failed transaction ki nijamga emi charge avvaledu; -1 ante legacy import enchukunna placeholder, genuine fee value kaadu, genuine NULL kuda kaadu.",
+              "refund_amount veru katha chebutundi: e transaction refund avvakapothe adi genuine ga NULL, mariyu konni transactions ki (Craftsy Home, Vivid Mart, Orbit Foods lo prathi okkatiki okati) real positive number undi. 'refund ledu' ani cheppadaniki evvaru fake number kanugonaledu — aa column NULL ni saripoyina vidhamga vadindi.",
+              "Inka emi aggregate avvaledu — ee step tarvata rendu steps meeda unde contrast ni matrame set up chestundi: gateway_fee fake NULL ni -1 la dachipedutundi, refund_amount real NULL vadutundi, rendintiki completely veru veru handling kavali."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "See the trap: AVG(gateway_fee) treats -1 like a real fee",
+            "ta": "Trap-a paarunga: AVG(gateway_fee), -1-a real fee madhiri treat pannudhu",
+            "hi": "Trap dekho: AVG(gateway_fee), -1 ko asli fee jaisa treat karta hai",
+            "te": "Trap ni chudandi: AVG(gateway_fee), -1 ni real fee la treat chestundi"
+          },
+          "sql": "SELECT merchant_name,\n       ROUND(AVG(gateway_fee), 2) AS avg_fee_wrong,\n       SUM(refund_amount) AS total_refunded\nFROM razorpay_merchant_txns\nGROUP BY merchant_name\nORDER BY merchant_name;",
+          "explain": {
+            "en": [
+              "AVG(gateway_fee) sums every value in the group and divides by the count, and -1 is just an ordinary number to it — Craftsy Home's two failed transactions pull -1 and -1 into that sum right alongside four genuine fees.",
+              "Craftsy Home's avg_fee_wrong comes out to 8.92, when every one of its four real fees (12.50, 15.00, 10.00, 18.00) is above 10 — a merchant with consistently decent fees ends up looking like it barely charges anything.",
+              "Orbit Foods has zero failed transactions, so avg_fee_wrong for it is already correct at 29.75 — this bug is completely invisible on any merchant without a failed transaction, which is exactly the kind of thing that passes every spot check until the wrong merchant happens to look at their own numbers.",
+              "total_refunded is already correct here, with no special handling at all — SUM(refund_amount) just skips the genuine NULLs on its own, which is the whole point: a real NULL never needed fixing in the first place."
+            ],
+            "ta": [
+              "AVG(gateway_fee), group-la irukkura ella value-um sum panni count-a divide pannum, -1-kku adhu ordinary number mattum-thaan — Craftsy Home-oda rendu failed transactions, -1 matrum -1-a andha sum-la naanku genuine fees-oda serthu serkkum.",
+              "Craftsy Home-oda avg_fee_wrong 8.92-a varum, aana adhoda naanku real fees-um (12.50, 15.00, 10.00, 18.00) 10-kku mela irukku — consistently nalla fees vaangura merchant, barely charge pannura madhiri kaanbikkum.",
+              "Orbit Foods-kku failed transactions zero, so adhukku avg_fee_wrong already correct-a 29.75-a irukku — indha bug, failed transaction illaadha edhavadhu merchant-la completely invisible-a irukkum, adhaan thavaraana merchant thangaloda own numbers-a paarkkura varaikkum ella spot check-um pass aagum.",
+              "total_refunded inga already correct-a irukku, edhavadhu special handling illama — SUM(refund_amount) genuine NULLs-a thanaa skip pannum, adhaan main point: real NULL-kku aarambathula edhuvum fix pannanum-nu theva illa."
+            ],
+            "hi": [
+              "AVG(gateway_fee), group ke har value ko sum karke count se divide karta hai, aur -1 uske liye bas ek ordinary number hai — Craftsy Home ke do failed transactions, -1 aur -1, us sum mein chaar genuine fees ke saath mil jaate hain.",
+              "Craftsy Home ka avg_fee_wrong 8.92 aata hai, jabki uski chaaron real fees (12.50, 15.00, 10.00, 18.00) 10 se upar hain — consistently achhi fees lene wala merchant, mushkil se kuch charge karne wala dikhta hai.",
+              "Orbit Foods ke paas zero failed transactions hain, isliye uske liye avg_fee_wrong pehle se hi sahi hai, 29.75 — yeh bug kisi bhi aise merchant par bilkul invisible hota hai jiske paas koi failed transaction na ho, isi wajah se yeh tab tak har spot check paas kar jaata hai jab tak galat merchant khud apne numbers na dekh le.",
+              "total_refunded yahan pehle se hi sahi hai, bina kisi special handling ke — SUM(refund_amount) genuine NULLs ko khud hi skip kar deta hai, yehi asli baat hai: ek real NULL ko shuru se hi fix karne ki zaroorat nahi thi."
+            ],
+            "te": [
+              "AVG(gateway_fee), group lo prathi value ni sum chesi count tho divide chestundi, -1 daaniki oka ordinary number matrame — Craftsy Home rendu failed transactions, -1 mariyu -1, aa sum lo nalugu genuine fees tho patu kalustayi.",
+              "Craftsy Home avg_fee_wrong 8.92 ga vastundi, kaani dani nalugu real fees (12.50, 15.00, 10.00, 18.00) anni 10 kanna ekkuva — consistently manchi fees theesukune merchant, koddiga matrame charge chesinatte kanipistundi.",
+              "Orbit Foods ki failed transactions zero, so daaniki avg_fee_wrong already correct ga 29.75 undi — ee bug, failed transaction leni e merchant mida completely kanipinchadu, anduke tappu merchant tana numbers chusukune varaku prathi spot check pass avutundi.",
+              "total_refunded ikkada already correct ga undi, e special handling lekunda — SUM(refund_amount) genuine NULLs ni automatic ga skip chestundi, adi e asalu point: real NULL ki modatlo em fix cheyalsina avasaram ledu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: NULLIF turns the fake -1 into a real NULL",
+            "ta": "Fix pannunga: NULLIF, fake -1-a real NULL-a maatrudhu",
+            "hi": "Fix karo: NULLIF, fake -1 ko asli NULL mein badal deta hai",
+            "te": "Fix cheyandi: NULLIF, fake -1 ni real NULL ga marustundi"
+          },
+          "sql": "SELECT merchant_name,\n       ROUND(AVG(NULLIF(gateway_fee, -1)), 2) AS avg_fee,\n       COALESCE(SUM(refund_amount), 0) AS total_refunded\nFROM razorpay_merchant_txns\nGROUP BY merchant_name\nORDER BY merchant_name;",
+          "explain": {
+            "en": [
+              "NULLIF(gateway_fee, -1) checks each value against -1: if it matches, the expression returns NULL instead; if it doesn't, the original gateway_fee passes through untouched. Every real fee is unaffected — only the placeholder rows change.",
+              "AVG() already knows how to skip a genuine NULL, so once NULLIF turns -1 into NULL, Craftsy Home's average is computed from exactly its four real fees: (12.50+15.00+10.00+18.00)/4 = 13.88, not 8.92.",
+              "No WHERE txn_status = 'success' filter was needed anywhere — NULLIF does the same job at the value level that a status filter would have done at the row level, and it works even on a table that never had a status column to filter on.",
+              "COALESCE(SUM(refund_amount), 0) is added defensively for a merchant with zero refunds at all, where SUM would otherwise return NULL instead of 0 — none of these three merchants happens to hit that case, but the query is written to handle it correctly if a fourth merchant with no refunds ever shows up."
+            ],
+            "ta": [
+              "NULLIF(gateway_fee, -1), ovvoru value-a -1-oda check pannum: match aana, andha expression NULL-a return pannum; match aagaainaal, original gateway_fee thodaama pass aagum. Ella real fee-um affect aagaadhu — placeholder rows mattum-thaan maarum.",
+              "AVG()-kku already genuine NULL-a skip panna theriyum, so NULLIF -1-a NULL-a maatrina appuram, Craftsy Home-oda average adhoda exact-a naanku real fees-la irundhu calculate aagum: (12.50+15.00+10.00+18.00)/4 = 13.88, 8.92 illa.",
+              "Enga-um WHERE txn_status = 'success' filter theva padala — NULLIF, status filter row-level-la panna venuma vela, value-level-la pannudhu, matrum idhu status column-e illaadha table-la kooda work aagum.",
+              "COALESCE(SUM(refund_amount), 0), refund-e illaadha oru merchant-kkaga defensively add pannirukku, andha case-la SUM otherwise 0-kku pathila NULL return pannum — indha moondru merchants-layum andha case hit aagaadhu, aana naanaam merchant refund illaama vandha correct-a handle panna indha query eludhirukku."
+            ],
+            "hi": [
+              "NULLIF(gateway_fee, -1) har value ko -1 se check karta hai: agar match ho jaaye, to expression NULL return karta hai; agar match na ho, to asli gateway_fee bina chhue pass ho jaata hai. Har real fee unaffected rehti hai — sirf placeholder wali rows badalti hain.",
+              "AVG() ko pehle se hi genuine NULL skip karna aata hai, isliye jab NULLIF -1 ko NULL mein badal deta hai, Craftsy Home ka average uski exactly chaar real fees se calculate hota hai: (12.50+15.00+10.00+18.00)/4 = 13.88, 8.92 nahi.",
+              "Kahin bhi WHERE txn_status = 'success' filter ki zaroorat nahi padi — NULLIF wahi kaam value-level par karta hai jo ek status filter row-level par karta, aur yeh us table par bhi kaam karta hai jiske paas kabhi status column filter karne ke liye tha hi nahi.",
+              "COALESCE(SUM(refund_amount), 0) us merchant ke liye defensively add kiya gaya hai jiska bilkul koi refund na ho, jahan SUM 0 ke bajaye NULL return kar deta — in teeno merchants mein se koi bhi is case mein nahi aata, lekin query is tarah likhi gayi hai ki agar koi chautha bina-refund wala merchant aa jaaye to bhi sahi kaam kare."
+            ],
+            "te": [
+              "NULLIF(gateway_fee, -1) prathi value ni -1 tho check chestundi: match aithe, aa expression NULL ni return chestundi; match avvakapothe, original gateway_fee muttukokunda pass avutundi. Prathi real fee unaffected ga untundi — placeholder rows matrame marutayi.",
+              "AVG() ki already genuine NULL ni skip cheyadam telusu, so NULLIF -1 ni NULL ga marchaka, Craftsy Home average dani exact ga nalugu real fees nunchi calculate avutundi: (12.50+15.00+10.00+18.00)/4 = 13.88, 8.92 kaadu.",
+              "Ekkada kuda WHERE txn_status = 'success' filter avasaram ledu — NULLIF, status filter row-level lo cheseda pani ni value-level lo chestundi, mariyu idi e status column ye leni table mida kuda work avutundi.",
+              "COALESCE(SUM(refund_amount), 0) e refund e leni merchant kosam defensive ga add cheyabadindi, aa case lo SUM 0 ki badulu NULL return chestundi — ee mudu merchants lo evaru aa case ki randaru, kaani nalugova refund leni merchant vaste correct ga handle cheyadaniki ee query rayabadindi."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
