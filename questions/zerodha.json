@@ -1,0 +1,166 @@
+{
+  "setup": "CREATE TABLE zerodha_clients(id INTEGER,client_name TEXT,account_type TEXT,email TEXT,kyc_status TEXT);\nINSERT INTO zerodha_clients VALUES\n (1,'Aarav Enterprises','corporate','aarav.mehta@gmail.com','pending'),\n (2,'Bhavana Textiles','corporate','contact@bhavanatextiles.com','verified'),\n (3,'Chetan & Co','corporate',NULL,'pending'),\n (4,'Divya Traders','individual','divya.k@gmail.com','verified'),\n (5,'Ekta Foods Pvt Ltd','corporate','ekta.sharma@yahoo.com','pending'),\n (6,'Farhan Motors','corporate','info@farhanmotors.co.in','verified'),\n (7,'Gopal Singh','individual','gopal.singh@hotmail.com','verified'),\n (8,'Harsha Apparels','corporate',NULL,'pending'),\n (9,'Ishaan Logistics','corporate','ishaan.r@hotmail.com','pending'),\n (10,'Jyoti Diagnostics','corporate','admin@jyotidiagnostics.com','verified'),\n (11,'Kunal Verma','individual',NULL,'verified'),\n (12,'Lakshya Steel','corporate','lakshya.owner@gmail.com','pending');",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "mid",
+      "cc": [
+        "LIKE",
+        "WHERE",
+        "IS NULL",
+        "ORDER BY"
+      ],
+      "story": {
+        "en": "Wednesday afternoon at Zerodha's Compliance desk. zerodha_clients holds every trading account — client_name, account_type ('individual' or 'corporate'), the email on file, and kyc_status. Company policy says a corporate trading account must be reachable at a proper company email, not a free personal inbox — gmail.com, yahoo.com, and hotmail.com addresses are all against policy for corporate accounts (individual accounts can use whatever email they like). Some corporate accounts don't even have an email on file yet — the relationship manager is still chasing it — and that email is a genuine NULL there, not an empty string or a made-up placeholder. The compliance team wants every corporate account that either uses a banned personal domain or has no email at all, so they can chase it down before the next audit.",
+        "ta": "Wednesday afternoon Zerodha-oda Compliance desk-la. zerodha_clients-la ella trading account-um irukku — client_name, account_type ('individual' illa 'corporate'), file-la irukkura email, matrum kyc_status. Company policy sollradhu, oru corporate trading account-kku proper company email-thaan irukkanum, free personal inbox illa — gmail.com, yahoo.com, matrum hotmail.com address ella-um corporate accounts-kku policy-kku edhiraana (individual accounts edhu venaalum email use pannalam). Konjam corporate accounts-kku innum email file-la kooda illa — relationship manager andha vaangikitu irukkaru — andha email genuine NULL, empty string illa illa engaiyo oru fake placeholder illa. Compliance team-kku ban panna personal domain use panna, illana email edhuvum illaadha ella corporate account-um venum, adutha audit-kku munnadi andha vishayathoda pinnadi poga.",
+        "hi": "Wednesday afternoon Zerodha ke Compliance desk mein. zerodha_clients mein har trading account hai — client_name, account_type ('individual' ya 'corporate'), file par jo email hai, aur kyc_status. Company policy kehti hai ki ek corporate trading account ka email asli company wala hona chahiye, free personal inbox nahi — gmail.com, yahoo.com, aur hotmail.com wale address corporate accounts ke liye policy ke khilaaf hain (individual accounts jo chahe woh email use kar sakte hain). Kuch corporate accounts ke paas abhi email file mein hai hi nahi — relationship manager abhi bhi peeche pada hua hai — aur woh email genuinely NULL hai, na koi empty string, na koi banaya hua placeholder. Compliance team ko har woh corporate account chahiye jo banned personal domain use kare ya jiske paas koi email hi na ho, taaki agle audit se pehle uska peecha kiya ja sake.",
+        "te": "Wednesday afternoon Zerodha Compliance desk lo. zerodha_clients lo prathi trading account undi — client_name, account_type ('individual' leda 'corporate'), file lo unna email, mariyu kyc_status. Company policy prakaram, oka corporate trading account ki proper company email undali, free personal inbox kaadu — gmail.com, yahoo.com, mariyu hotmail.com address anni corporate accounts ki policy ki vyathirekam (individual accounts em email aina use cheyochu). Konni corporate accounts ki inka email file lo ledu — relationship manager inka daani venta padutunnaru — aa email genuine ga NULL, empty string kaadu, evaraina kanugonna fake placeholder kaadu. Compliance team ki banned personal domain vadutunna leda email ye leni prathi corporate account kavali, tarvatha audit ki mundu daanni follow avvadaniki."
+      },
+      "question": {
+        "en": "For each account in zerodha_clients where account_type is 'corporate', return client_name and email for accounts that either use a personal email domain (gmail.com, yahoo.com, or hotmail.com) or have no email on file at all. Sort by client_name.",
+        "ta": "zerodha_clients-la account_type 'corporate'-a irukkura ovvoru account-kkum, personal email domain (gmail.com, yahoo.com, illana hotmail.com) use pannura, illana email edhuvum file-la illaadha accounts-oda client_name matrum email-a return pannunga. client_name-la sort pannunga.",
+        "hi": "zerodha_clients mein jahan account_type 'corporate' hai, un accounts ka client_name aur email return karo jo ya to personal email domain (gmail.com, yahoo.com, ya hotmail.com) use karte hain, ya jinke paas koi email file mein hai hi nahi. client_name ke hisaab se sort karo.",
+        "te": "zerodha_clients lo account_type 'corporate' unna prathi account ki, personal email domain (gmail.com, yahoo.com, leda hotmail.com) vadutunna leda email e file lo ledu unna accounts ki client_name mariyu email ni return cheyandi. client_name prakaram sort cheyandi."
+      },
+      "schemas": [
+        {
+          "name": "zerodha_clients",
+          "cols": [
+            {
+              "n": "id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "client_name",
+              "t": "TEXT",
+              "e": "Aarav Enterprises"
+            },
+            {
+              "n": "account_type",
+              "t": "TEXT",
+              "e": "corporate"
+            },
+            {
+              "n": "email",
+              "t": "TEXT",
+              "e": "aarav.mehta@gmail.com"
+            },
+            {
+              "n": "kyc_status",
+              "t": "TEXT",
+              "e": "pending"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at the raw client list, corporate and individual mixed together",
+            "ta": "Raw client list-a paarunga, corporate matrum individual serndhu",
+            "hi": "Raw client list ko dekho, corporate aur individual mile-jule",
+            "te": "Raw client list ni chudandi, corporate mariyu individual kalisi"
+          },
+          "sql": "SELECT *\nFROM zerodha_clients\nORDER BY id;",
+          "explain": {
+            "en": [
+              "zerodha_clients has 12 rows total: 9 corporate accounts and 3 individual accounts (Divya Traders, Gopal Singh, Kunal Verma) — the personal-email-domain policy only applies to the corporate ones.",
+              "Four corporate accounts already use personal domains right in the raw data — Aarav Enterprises and Lakshya Steel on gmail.com, Ekta Foods Pvt Ltd on yahoo.com, and Ishaan Logistics on hotmail.com.",
+              "Chetan & Co and Harsha Apparels are corporate accounts with email = NULL, not an empty string — the relationship manager simply hasn't collected it yet, and that's a genuine NULL, not a stand-in for anything.",
+              "Kunal Verma, an individual account, also has a NULL email — but individual accounts aren't covered by the corporate-domain policy at all, so that NULL should never show up in the final flagged list no matter how the query is written."
+            ],
+            "ta": [
+              "zerodha_clients-la total 12 rows irukku: 9 corporate accounts matrum 3 individual accounts (Divya Traders, Gopal Singh, Kunal Verma) — personal-email-domain policy corporate accounts-kku mattum-thaan apply aagum.",
+              "Naanku corporate accounts already raw data-lyae personal domain use pannudhu — Aarav Enterprises matrum Lakshya Steel gmail.com-la, Ekta Foods Pvt Ltd yahoo.com-la, matrum Ishaan Logistics hotmail.com-la.",
+              "Chetan & Co matrum Harsha Apparels corporate accounts, avanga email = NULL, empty string illa — relationship manager innum andha email vaangala, adhu genuine NULL, edhukkum stand-in illa.",
+              "Kunal Verma, oru individual account, adhukkum NULL email irukku — aana individual accounts-kku corporate-domain policy apply aagave aagadhu, so andha NULL, query eppadi eludhinaalum final flagged list-la varave koodadhu."
+            ],
+            "hi": [
+              "zerodha_clients mein total 12 rows hain: 9 corporate accounts aur 3 individual accounts (Divya Traders, Gopal Singh, Kunal Verma) — personal-email-domain policy sirf corporate accounts par hi lagti hai.",
+              "Chaar corporate accounts pehle se hi raw data mein personal domain use kar rahe hain — Aarav Enterprises aur Lakshya Steel gmail.com par, Ekta Foods Pvt Ltd yahoo.com par, aur Ishaan Logistics hotmail.com par.",
+              "Chetan & Co aur Harsha Apparels corporate accounts hain jinka email = NULL hai, empty string nahi — relationship manager ne abhi tak woh email collect hi nahi kiya, aur yeh genuinely NULL hai, kisi cheez ka stand-in nahi.",
+              "Kunal Verma, ek individual account, uska bhi email NULL hai — lekin individual accounts par corporate-domain policy lagti hi nahi, isliye yeh NULL final flagged list mein kabhi nahi aana chahiye, query chahe kaise bhi likhi jaaye."
+            ],
+            "te": [
+              "zerodha_clients lo total 12 rows unnayi: 9 corporate accounts mariyu 3 individual accounts (Divya Traders, Gopal Singh, Kunal Verma) — personal-email-domain policy corporate accounts ki matrame apply avutundi.",
+              "Nalugu corporate accounts already raw data lo personal domain vadutunnayi — Aarav Enterprises mariyu Lakshya Steel gmail.com lo, Ekta Foods Pvt Ltd yahoo.com lo, mariyu Ishaan Logistics hotmail.com lo.",
+              "Chetan & Co mariyu Harsha Apparels corporate accounts, vaalla email = NULL, empty string kaadu — relationship manager inka aa email collect cheyaledu, adi genuine NULL, edaniki stand-in kaadu.",
+              "Kunal Verma, oka individual account, daaniki kuda NULL email undi — kaani individual accounts ki corporate-domain policy apply avvadu, so aa NULL, query ela rasina final flagged list lo raakudadu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "See the trap: LIKE alone silently drops the NULL emails",
+            "ta": "Trap-a paarunga: LIKE mattum irundha NULL emails-a silent-a drop pannudhu",
+            "hi": "Trap dekho: sirf LIKE se NULL emails chupchaap drop ho jaate hain",
+            "te": "Trap ni chudandi: LIKE matrame unte NULL emails silent ga drop avutayi"
+          },
+          "sql": "SELECT client_name, email\nFROM zerodha_clients\nWHERE account_type = 'corporate'\n  AND (email LIKE '%@gmail.com' OR email LIKE '%@yahoo.com' OR email LIKE '%@hotmail.com')\nORDER BY client_name;",
+          "explain": {
+            "en": [
+              "This returns exactly 4 rows — Aarav Enterprises, Ekta Foods Pvt Ltd, Ishaan Logistics, and Lakshya Steel — every corporate account whose email actually matches one of the three banned domains.",
+              "Chetan & Co and Harsha Apparels vanish completely, even though a missing email is arguably the bigger compliance gap of the two — you can't even verify a domain you don't have on file.",
+              "The reason is SQL's three-valued logic: email LIKE '%@gmail.com' doesn't evaluate to FALSE when email is NULL, it evaluates to NULL, and every OR chained onto a NULL email stays NULL too, so WHERE drops the row exactly like it would drop a genuine non-match.",
+              "This is easy to miss because the query looks complete — it checks all three banned domains — and it only breaks on the specific accounts where the relationship manager hasn't done their job yet, which is exactly the audit's blind spot."
+            ],
+            "ta": [
+              "Idhu exact-a 4 rows-a return pannudhu — Aarav Enterprises, Ekta Foods Pvt Ltd, Ishaan Logistics, matrum Lakshya Steel — moondru banned domain-la edhavadhu onnukku match aagura ella corporate account-um.",
+              "Chetan & Co matrum Harsha Apparels completely maaya aayidum, missing email-nu solradhu andha rendukkum periya compliance gap-a irundhaalum kooda — file-la illaadha domain-a verify pannave mudiyadhu.",
+              "Idhukku reason SQL-oda three-valued logic: email LIKE '%@gmail.com', email NULL-a irundha FALSE-a evaluate aagadhu, adhu NULL-a evaluate aagum, NULL email-oda chain aana ella OR-um NULL-a-thaan irukkum, so WHERE, genuine non-match-a drop pannura madhiri-yae andha row-a drop pannidum.",
+              "Idhu miss panradhu easy, enna-na query complete-a irukkura madhiri kaanum — moondru banned domain-um check pannudhu — aana relationship manager veyla panna accounts-la mattum-thaan break aagum, adhu-thaan audit-oda blind spot."
+            ],
+            "hi": [
+              "Yeh bilkul 4 rows return karta hai — Aarav Enterprises, Ekta Foods Pvt Ltd, Ishaan Logistics, aur Lakshya Steel — har corporate account jiska email teeno banned domains mein se kisi ek se match karta hai.",
+              "Chetan & Co aur Harsha Apparels poori tarah gayab ho jaate hain, jabki missing email shayad in dono mein sabse badi compliance gap hai — file mein hai hi nahi to domain verify kaise karoge.",
+              "Wajah hai SQL ka three-valued logic: email LIKE '%@gmail.com', jab email NULL ho to FALSE nahi hota, NULL hota hai, aur NULL email par chained har OR bhi NULL hi rehta hai, isliye WHERE us row ko waise hi drop karta hai jaise ek genuine non-match ko karta.",
+              "Yeh miss karna aasaan hai kyunki query dekhne mein complete lagti hai — teeno banned domains check karti hai — aur yeh sirf un accounts par toot-ti hai jahan relationship manager ne apna kaam nahi kiya, jo bilkul audit ka blind spot hai."
+            ],
+            "te": [
+              "Idi exact ga 4 rows return chestundi — Aarav Enterprises, Ekta Foods Pvt Ltd, Ishaan Logistics, mariyu Lakshya Steel — mudu banned domains lo edaina okatiki match ayye prathi corporate account.",
+              "Chetan & Co mariyu Harsha Apparels completely marayipotayi, missing email ane di ee rendintiki peddha compliance gap aina — file lo lekunda domain ni verify cheyalemu kada.",
+              "Idi ki karanam SQL three-valued logic: email LIKE '%@gmail.com', email NULL unte FALSE ga evaluate avvadu, adi NULL ga evaluate avutundi, NULL email tho chain aina prathi OR kuda NULL ga untundi, so WHERE, genuine non-match ni drop chesinatte aa row ni kuda drop chestundi.",
+              "Idi miss cheyadam easy, endukante query complete ga kanipistundi — mudu banned domains anni check chestundi — kaani relationship manager pani cheyani accounts meeda matrame break avutundi, adi exact ga audit blind spot."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: explicit IS NULL brings the missing-email accounts back in",
+            "ta": "Fix pannunga: explicit IS NULL, missing-email accounts-a thirumba kondu varum",
+            "hi": "Fix karo: explicit IS NULL, missing-email accounts ko wapas le aata hai",
+            "te": "Fix cheyandi: explicit IS NULL, missing-email accounts ni tirigi techindi"
+          },
+          "sql": "SELECT client_name, email\nFROM zerodha_clients\nWHERE account_type = 'corporate'\n  AND (email LIKE '%@gmail.com' OR email LIKE '%@yahoo.com' OR email LIKE '%@hotmail.com' OR email IS NULL)\nORDER BY client_name;",
+          "explain": {
+            "en": [
+              "Adding OR email IS NULL as its own explicit condition inside the parentheses restores Chetan & Co and Harsha Apparels, bringing the result to the full 6 rows the compliance team actually needs to review.",
+              "IS NULL is the only correct way to test for NULL in SQL — email = NULL would have the exact same silent-failure problem as the LIKE conditions, since = NULL also evaluates to NULL instead of TRUE, never matching anything.",
+              "account_type = 'corporate' still does its job correctly throughout, because none of the three individual accounts have account_type = 'corporate' — that comparison was never the problem, only the OR'd LIKE conditions on a nullable column were.",
+              "Kunal Verma's NULL email, on an individual account, is filtered out by account_type = 'corporate' before the email conditions are even evaluated — proving the fix only had to reach the corporate rows, not every NULL email in the table."
+            ],
+            "ta": [
+              "Parentheses-kkulla OR email IS NULL-a adhoda own explicit condition-a add panna, Chetan & Co matrum Harsha Apparels-a thirumba kondu varum, compliance team actually review panna vendiya full 6 rows-a result-la kondu varum.",
+              "SQL-la NULL-a test panna correct vazhi IS NULL mattum-thaan — email = NULL, LIKE conditions-la irukkura silent-failure problem exact-a-vae irukkum, enna-na = NULL-um TRUE-kku pathila NULL-a-vae evaluate aagum, edhuvum match aagadhu.",
+              "account_type = 'corporate' innum correct-a veyla pannikittu irukku, enna-na moondru individual accounts-layum account_type = 'corporate' illa — andha comparison edhume problem illa, nullable column-la irukkura OR'd LIKE conditions mattum-thaan problem.",
+              "Kunal Verma-oda NULL email, oru individual account-la, email conditions evaluate aagara munnadiyae account_type = 'corporate' vachu filter aagidum — fix, table-la irukkura ella NULL email-um illa, corporate rows-a mattum-thaan reach panna vendiyadhu-nu prove pannudhu."
+            ],
+            "hi": [
+              "Parentheses ke andar OR email IS NULL ko apni ek explicit condition ke roop mein add karne se Chetan & Co aur Harsha Apparels wapas aa jaate hain, aur result compliance team ko jo actually review karna hai un poore 6 rows tak pahunch jaata hai.",
+              "SQL mein NULL test karne ka sahi tareeka sirf IS NULL hai — email = NULL mein bhi bilkul wahi silent-failure problem hoti jo LIKE conditions mein thi, kyunki = NULL bhi TRUE ke bajaye NULL hi evaluate hota hai, kabhi kuch match nahi karta.",
+              "account_type = 'corporate' poori tarah sahi kaam karta rehta hai, kyunki teeno individual accounts mein se kisi ka bhi account_type = 'corporate' nahi hai — yeh comparison kabhi problem thi hi nahi, sirf nullable column par OR'd LIKE conditions problem thi.",
+              "Kunal Verma ka NULL email, jo ek individual account par hai, email conditions evaluate hone se pehle hi account_type = 'corporate' se filter ho jaata hai — yeh saabit karta hai ki fix ko sirf corporate rows tak pahunchna tha, table ke har NULL email tak nahi."
+            ],
+            "te": [
+              "Parentheses lopala OR email IS NULL ni dani sontha explicit condition ga add cheyadam valla Chetan & Co mariyu Harsha Apparels tirigi vastayi, compliance team actual ga review cheyalsina full 6 rows result ki vastayi.",
+              "SQL lo NULL ni test cheyadaniki correct dari IS NULL matrame — email = NULL ki kuda LIKE conditions ki unna exact same silent-failure problem untundi, endukante = NULL kuda TRUE ki badulu NULL ga matrame evaluate avutundi, edi match avvadu.",
+              "account_type = 'corporate' inka correct ga pani chestune undi, endukante mudu individual accounts lo evariki kuda account_type = 'corporate' ledu — aa comparison eppudu problem kaadu, nullable column meeda unna OR'd LIKE conditions matrame problem.",
+              "Kunal Verma NULL email, oka individual account meeda, email conditions evaluate avvakamunde account_type = 'corporate' tho filter ayipotundi — fix, table lo unna prathi NULL email ki kaadu, corporate rows ki matrame reach avvalsi undi ani prove chestundi."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

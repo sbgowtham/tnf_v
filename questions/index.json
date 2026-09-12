@@ -166,5 +166,12 @@
       "sub": "Merchant Settlement Fees",
       "c": "#3395ff",
       "difficulty": "mid"
+    },
+    {
+      "id": "zerodha",
+      "name": "Zerodha",
+      "sub": "Corporate KYC Screening",
+      "c": "#6366f1",
+      "difficulty": "mid"
     }
   ]
