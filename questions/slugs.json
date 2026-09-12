@@ -23,5 +23,6 @@
   "cred:1": "cred-user-find-every-reward-category-they-not-successfu",
   "zepto:1": "zepto-store-zeptodailysales-excluding-any-row-where",
   "swiggy:1": "swiggy-using-subquery-clause-first-compute-kitchenname",
-  "razorpay:1": "razorpay-merchantname-razorpaymerchanttxns-compute-avgfee"
+  "razorpay:1": "razorpay-merchantname-razorpaymerchanttxns-compute-avgfee",
+  "zerodha:1": "zerodha-account-zerodhaclients-where-accounttype-corporate"
 }
