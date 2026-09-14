@@ -187,5 +187,12 @@
       "sub": "Text-Stored Price Filtering",
       "c": "#b45309",
       "difficulty": "mid"
+    },
+    {
+      "id": "policybazaar",
+      "name": "PolicyBazaar",
+      "sub": "Cross-Sell Policy Analysis",
+      "c": "#1e3a8a",
+      "difficulty": "hard"
     }
   ]

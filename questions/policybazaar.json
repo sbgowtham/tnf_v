@@ -1,0 +1,161 @@
+{
+  "setup": "CREATE TABLE policybazaar_purchases(purchase_id INTEGER,customer_name TEXT,policy_category TEXT,premium_amount REAL);\nINSERT INTO policybazaar_purchases VALUES\n (1,'Ananya Rao','Health',12000),\n (2,'Ananya Rao','Motor',8000),\n (3,'Bharath Iyer','Health',9000),\n (4,'Bharath Iyer','Health',9500),\n (5,'Chitra Menon','Life',5000),\n (6,'Chitra Menon','Travel',NULL),\n (7,'Devika Nair','Health',NULL),\n (8,'Devika Nair','Motor',NULL),\n (9,'Esha Kapoor','Health',15000),\n (10,'Farah Sheikh','Motor',7000),\n (11,'Farah Sheikh','Health',6000),\n (12,'Farah Sheikh','Travel',9000);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "hard",
+      "cc": [
+        "HAVING",
+        "COUNT(DISTINCT)",
+        "GROUP BY",
+        "COALESCE"
+      ],
+      "story": {
+        "en": "Monday morning at PolicyBazaar's Cross-Sell Analytics team. policybazaar_purchases logs one row per policy a customer has bought, with policy_category ('Health', 'Motor', 'Life', 'Travel') and the premium_amount they paid. A cross-sell success is a customer who has bought at least 2 different kinds of policy, not just 2 policies — someone who bought two separate Health policies from two different insurers is still only a Health customer, not a cross-sell win. A handful of purchases also have premium_amount = NULL, because the policy has been issued but the payment gateway hasn't confirmed the premium yet — it's a genuine 'we don't have that number yet,' not a premium of zero. The team wants every cross-sell customer along with how many distinct categories they hold and their total premium.",
+        "ta": "Monday morning PolicyBazaar-oda Cross-Sell Analytics team-la. policybazaar_purchases-la, customer vaangina ovvoru policy-kkum oru row irukku, policy_category ('Health', 'Motor', 'Life', 'Travel') matrum avanga kattina premium_amount-oda serthu. Cross-sell success-nu solradhu 2 policies vaangina customer illa, 2 vidhamaana policy vaangina customer-thaan — rendu vera vera insurer-la irundhu rendu Health policies vaangina customer, innum-um Health customer-thaan, cross-sell win illa. Konjam purchases-kkum premium_amount = NULL irukku, ention policy issue aaiducho, aana payment gateway innum premium confirm pannala — idhu genuine-a 'ippo andha number namma kitta illa' nu solradhu, zero premium illa. Team-ku ella cross-sell customer-um venum, avanga kitta ethana distinct categories irukku matrum avangaloda total premium-um serthu.",
+        "hi": "Monday morning PolicyBazaar ki Cross-Sell Analytics team mein. policybazaar_purchases mein customer ne jo bhi policy khareedi hai uske liye ek row hoti hai, policy_category ('Health', 'Motor', 'Life', 'Travel') aur unhone jo premium_amount diya uske saath. Cross-sell success wo customer hai jisne kam se kam 2 alag tarah ki policy khareedi ho, sirf 2 policies nahi — jisne do alag insurers se do Health policies khareedi hain, wo abhi bhi sirf Health customer hai, cross-sell win nahi. Kuch purchases mein premium_amount = NULL bhi hai, kyunki policy issue ho chuki hai lekin payment gateway ne abhi tak premium confirm nahi kiya — yeh genuinely 'abhi hamare paas woh number hai hi nahi' hai, zero premium nahi. Team ko har cross-sell customer chahiye, saath mein unke paas kitni distinct categories hain aur unka total premium bhi.",
+        "te": "Monday morning PolicyBazaar Cross-Sell Analytics team lo. policybazaar_purchases lo customer konna prathi policy ki oka row untundi, policy_category ('Health', 'Motor', 'Life', 'Travel') mariyu vaallu katina premium_amount tho patu. Cross-sell success ante 2 policies konna customer kaadu, 2 veru veru tarahalu policy konna customer — rendu veru veru insurers nunchi rendu Health policies konna customer, inka Health customer matrame, cross-sell win kaadu. Konni purchases ki premium_amount = NULL kuda undi, endukante policy issue ayyindi kaani payment gateway inka premium confirm cheyaledu — idi genuine ga 'ippudu aa number ma daggara ledu' ani, zero premium kaadu. Team ki prathi cross-sell customer kavali, vaalla daggara enni distinct categories unnayo mariyu vaalla total premium tho patu."
+      },
+      "question": {
+        "en": "For each customer_name in policybazaar_purchases, count the number of DISTINCT policy_category values they've purchased and sum their premium_amount (using 0 for a customer whose premiums are entirely unconfirmed, instead of NULL). Return only customers with at least 2 distinct categories — a customer with 2 purchases in the same category doesn't count as cross-sell. Return customer_name, distinct_categories, and total_premium, sorted by customer_name.",
+        "ta": "policybazaar_purchases-la ovvoru customer_name-kkum, avanga vaangina DISTINCT policy_category values-oda enniyaka count pannunga matrum avangaloda premium_amount-a sum pannunga (ella premium-um unconfirmed-a irukkura customer-kku, NULL-kku pathila 0 use pannunga). Kammasa 2 distinct categories irukkura customers-a mattum return pannunga — oru category-la 2 purchases panna customer cross-sell-a count aagadhu. customer_name, distinct_categories, matrum total_premium-a return pannunga, customer_name-la sort pannunga.",
+        "hi": "policybazaar_purchases mein har customer_name ke liye, unhone khareede hue DISTINCT policy_category values ki ginti karo aur unka premium_amount sum karo (jis customer ke saare premiums unconfirmed hain, uske liye NULL ke bajaye 0 use karo). Sirf un customers ko return karo jinke paas kam se kam 2 distinct categories hain — ek hi category mein 2 purchases karne wala customer cross-sell nahi maana jaata. customer_name, distinct_categories, aur total_premium return karo, customer_name ke hisaab se sort karke.",
+        "te": "policybazaar_purchases lo prathi customer_name ki, vaallu konna DISTINCT policy_category values sankhya ni count cheyandi mariyu vaalla premium_amount ni sum cheyandi (anni premiums unconfirmed unna customer ki, NULL ki badulu 0 vadandi). Kanisam 2 distinct categories unna customers ni matrame return cheyandi — oka category lo 2 purchases chesina customer cross-sell ga count avvadu. customer_name, distinct_categories, mariyu total_premium ni return cheyandi, customer_name prakaram sort chesi."
+      },
+      "schemas": [
+        {
+          "name": "policybazaar_purchases",
+          "cols": [
+            {
+              "n": "purchase_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "customer_name",
+              "t": "TEXT",
+              "e": "Ananya Rao"
+            },
+            {
+              "n": "policy_category",
+              "t": "TEXT",
+              "e": "Health"
+            },
+            {
+              "n": "premium_amount",
+              "t": "REAL",
+              "e": "12000"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at every purchase, one row per policy bought",
+            "ta": "Ovvoru purchase-a-yum paarunga, vaangina oru policy-kku oru row",
+            "hi": "Har purchase ko dekho, khareedi hui har policy ke liye ek row",
+            "te": "Prathi purchase ni chudandi, konna prathi policy ki oka row"
+          },
+          "sql": "SELECT *\nFROM policybazaar_purchases\nORDER BY customer_name, purchase_id;",
+          "explain": {
+            "en": [
+              "policybazaar_purchases has 12 rows across 6 customers — Ananya Rao, Bharath Iyer, Chitra Menon, and Devika Nair each show up twice, Farah Sheikh three times, and only Esha Kapoor has just one purchase.",
+              "Bharath Iyer's two rows are both policy_category = 'Health' — two purchases, but the same category both times, bought from two different insurers he compared on the platform.",
+              "Devika Nair's two rows both have premium_amount = NULL — both her policies (Health and Motor) were issued through PolicyBazaar, but the payment gateway hasn't confirmed either premium yet, so there's genuinely no number to report for her at all right now.",
+              "Chitra Menon has one NULL premium out of two purchases (Travel is pending, Life already paid) — that's a partial NULL, different from Devika's case where every single one of her purchases is still unconfirmed."
+            ],
+            "ta": [
+              "policybazaar_purchases-la 6 customers-a serthu 12 rows irukku — Ananya Rao, Bharath Iyer, Chitra Menon, matrum Devika Nair thala oruthar rendu murai varuranga, Farah Sheikh moondru murai, matrum Esha Kapoor mattum-thaan oru purchase vachirukanga.",
+              "Bharath Iyer-oda rendu rows-um policy_category = 'Health' — rendu purchases, aana rendu murai-yum same category, adhu-vum platform-la avaru compare panna rendu vera vera insurers-la irundhu vaangina.",
+              "Devika Nair-oda rendu rows-um premium_amount = NULL vachirukku — avangaloda rendu policies-um (Health matrum Motor) PolicyBazaar vazhi issue aayirukku, aana payment gateway innum edhavadhu premium confirm pannala, so avangalukku ippo report panna genuine-a edhuvum number-e illa.",
+              "Chitra Menon-kku rendu purchases-la oru NULL premium irukku (Travel pending-a irukku, Life already pay pannirukanga) — idhu partial NULL, Devika-oda case-la irundhu vera, avanga ella purchase-um innum unconfirmed-a irukku."
+            ],
+            "hi": [
+              "policybazaar_purchases mein 6 customers mein 12 rows hain — Ananya Rao, Bharath Iyer, Chitra Menon, aur Devika Nair mein se har ek do baar dikhta hai, Farah Sheikh teen baar, aur sirf Esha Kapoor ka ek hi purchase hai.",
+              "Bharath Iyer ki dono rows mein policy_category = 'Health' hai — do purchases, lekin dono baar wahi category, do alag insurers se khareedi jinhe usne platform par compare kiya tha.",
+              "Devika Nair ki dono rows mein premium_amount = NULL hai — unki dono policies (Health aur Motor) PolicyBazaar ke through issue hui hain, lekin payment gateway ne abhi tak koi bhi premium confirm nahi kiya, isliye abhi unke liye report karne ko genuinely koi number hai hi nahi.",
+              "Chitra Menon ke do purchases mein se ek NULL premium hai (Travel pending hai, Life ka payment ho chuka hai) — yeh partial NULL hai, Devika ke case se alag, jahan unki har ek purchase abhi bhi unconfirmed hai."
+            ],
+            "te": [
+              "policybazaar_purchases lo 6 customers lo 12 rows unnayi — Ananya Rao, Bharath Iyer, Chitra Menon, mariyu Devika Nair prathi okkaru rendu sarlu kanipistaru, Farah Sheikh mudu sarlu, mariyu Esha Kapoor ki matrame oka purchase undi.",
+              "Bharath Iyer rendu rows lo policy_category = 'Health' — rendu purchases, kaani rendu sarlu okate category, platform lo atanu compare chesina rendu veru veru insurers nunchi konnadi.",
+              "Devika Nair rendu rows lo premium_amount = NULL undi — vaalla rendu policies (Health mariyu Motor) PolicyBazaar dwara issue ayyayi, kaani payment gateway inka e premium confirm cheyaledu, so ippudu vaalla kosam report cheyadaniki genuine ga e number ledu.",
+              "Chitra Menon ki rendu purchases lo oka NULL premium undi (Travel pending, Life already pay chesaru) — idi partial NULL, Devika case kanna veru, akkada vaalla prathi purchase inka unconfirmed ga undi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "See the trap: COUNT() without DISTINCT treats repeat purchases as cross-sell",
+            "ta": "Trap-a paarunga: DISTINCT illaadha COUNT(), repeat purchases-a cross-sell-nu nenaikkum",
+            "hi": "Trap dekho: DISTINCT ke bina COUNT() repeat purchases ko cross-sell maan leta hai",
+            "te": "Trap ni chudandi: DISTINCT lekunda COUNT(), repeat purchases ni cross-sell ani anukuntundi"
+          },
+          "sql": "SELECT customer_name,\n       COUNT(policy_category) AS category_count_wrong,\n       SUM(premium_amount) AS total_premium\nFROM policybazaar_purchases\nGROUP BY customer_name\nHAVING COUNT(policy_category) >= 2\nORDER BY customer_name;",
+          "explain": {
+            "en": [
+              "This flags Bharath Iyer as a cross-sell success with category_count_wrong = 2, even though every one of his purchases is a Health policy — COUNT(policy_category) counts non-NULL rows, not distinct values, so two Health purchases count exactly the same as one Health and one Motor purchase.",
+              "Ananya Rao, Chitra Menon, and Farah Sheikh happen to get the right answer here too, but only by coincidence — none of them has a repeated category, so counting rows and counting distinct categories give the same number for them.",
+              "Devika Nair's total_premium shows up as NULL in this result, not 0 — SUM(premium_amount) has nothing but NULLs to add for her, and SUM over an all-NULL group returns NULL, which looks like missing data rather than a genuine zero-so-far.",
+              "Both problems pass silently: nothing errors, and the row count even looks reasonable — the only way to catch Bharath being wrongly included is to actually look at which category he bought, not just how many rows he has."
+            ],
+            "ta": [
+              "Idhu Bharath Iyer-a cross-sell success-nu category_count_wrong = 2-oda flag pannudhu, avaroda ella purchase-um Health policy-a irundhaalum kooda — COUNT(policy_category), non-NULL rows-a count pannum, distinct values illa, so rendu Health purchases, oru Health matrum oru Motor purchase madhiri exact-a same-a count aagum.",
+              "Ananya Rao, Chitra Menon, matrum Farah Sheikh-kku inga sariyaana answer vandhudhu, aana coincidence-a mattum-thaan — avangaloda edhavadhu category repeat aagala, so rows-a count pannradhu-um distinct categories-a count pannradhu-um avangalukku same number-a kodukkum.",
+              "Devika Nair-oda total_premium indha result-la NULL-a varum, 0 illa — SUM(premium_amount)-kku avangaloda serkka NULLs mattum-thaan irukku, matrum ella-NULL group-oda mela SUM, NULL-a return pannum, adhu missing data madhiri kaanum, genuine-a zero-so-far madhiri illama.",
+              "Rendu problem-um silent-a pass aagum: edhuvum error aagadhu, row count kooda reasonable-a-thaan kaanum — Bharath thappa include aanadha catch panna ondrae vazhi, avaru ethana rows vachirukaru-nu paakkuradhu illa, avaru edha category vaanginaru-nu actual-a paakkuradhu."
+            ],
+            "hi": [
+              "Yeh Bharath Iyer ko cross-sell success ke roop mein category_count_wrong = 2 ke saath flag karta hai, jabki uska har ek purchase ek Health policy hai — COUNT(policy_category) non-NULL rows count karta hai, distinct values nahi, isliye do Health purchases bilkul waise hi count hote hain jaise ek Health aur ek Motor purchase.",
+              "Ananya Rao, Chitra Menon, aur Farah Sheikh ka bhi yahan sahi jawab aa jaata hai, lekin sirf coincidence se — inme se kisi ki bhi category repeat nahi hui, isliye rows count karna aur distinct categories count karna, dono unke liye same number deta hai.",
+              "Devika Nair ka total_premium is result mein NULL dikhta hai, 0 nahi — SUM(premium_amount) ke paas uske liye jodne ko sirf NULLs hain, aur ek poori tarah NULL group par SUM, NULL return karta hai, jo genuinely abhi tak zero hone jaisa nahi, missing data jaisa dikhta hai.",
+              "Dono problems chupchaap pass ho jaate hain: kuch bhi error nahi hota, aur row count bhi reasonable dikhta hai — Bharath ko galat tarike se shaamil hone ko pakadne ka ek hi tareeka hai, ki asal mein dekho usne kaunsi category khareedi, sirf uske paas kitni rows hain yeh nahi."
+            ],
+            "te": [
+              "Idi Bharath Iyer ni cross-sell success ani category_count_wrong = 2 tho flag chestundi, atani prathi purchase Health policy aina — COUNT(policy_category) non-NULL rows ni count chestundi, distinct values kaadu, so rendu Health purchases, oka Health mariyu oka Motor purchase la exact ga same ga count avutayi.",
+              "Ananya Rao, Chitra Menon, mariyu Farah Sheikh ki kuda ikkada correct answer vastundi, kaani coincidence tho matrame — vaallalo evariki category repeat avvaledu, so rows count cheyadam mariyu distinct categories count cheyadam vaalliki same number istundi.",
+              "Devika Nair total_premium ee result lo NULL ga kanipistundi, 0 kaadu — SUM(premium_amount) ki aame kosam add cheyadaniki NULLs matrame unnayi, mariyu anni-NULL group meeda SUM, NULL return chestundi, adi genuine ga zero-so-far la kaakunda, missing data la kanipistundi.",
+              "Rendu problems silent ga pass avutayi: emi error avvadu, row count kuda reasonable ga kanipistundi — Bharath tappuga include ayyadu ani pattukovadaniki okate dari, atanu enni rows kaligunnado kaadu, atanu e category konnado actual ga chudadam."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: COUNT(DISTINCT ...) plus COALESCE for the all-NULL group",
+            "ta": "Fix pannunga: COUNT(DISTINCT ...) matrum ella-NULL group-kku COALESCE",
+            "hi": "Fix karo: COUNT(DISTINCT ...) aur all-NULL group ke liye COALESCE",
+            "te": "Fix cheyandi: COUNT(DISTINCT ...) mariyu anni-NULL group kosam COALESCE"
+          },
+          "sql": "SELECT customer_name,\n       COUNT(DISTINCT policy_category) AS distinct_categories,\n       COALESCE(SUM(premium_amount), 0) AS total_premium\nFROM policybazaar_purchases\nGROUP BY customer_name\nHAVING COUNT(DISTINCT policy_category) >= 2\nORDER BY customer_name;",
+          "explain": {
+            "en": [
+              "COUNT(DISTINCT policy_category) counts unique category values only, so Bharath Iyer's two Health purchases collapse into 1 distinct category — he correctly drops out of the HAVING COUNT(DISTINCT policy_category) >= 2 filter entirely.",
+              "Four customers come back now — Ananya Rao, Chitra Menon, Devika Nair, and Farah Sheikh — the customers who genuinely hold at least two different kinds of policy.",
+              "Devika Nair's total_premium now shows 0 instead of NULL, because COALESCE(SUM(premium_amount), 0) only kicks in when SUM itself comes back NULL — for every other customer here, at least one real premium exists, so SUM already works and COALESCE never has to intervene.",
+              "Esha Kapoor and Bharath Iyer are both correctly absent from this result, but for different reasons — Esha genuinely has only one policy, while Bharath has two policies that happen to be the same kind; COUNT(DISTINCT ...) is what tells those two apart, plain COUNT(...) never could."
+            ],
+            "ta": [
+              "COUNT(DISTINCT policy_category), unique category values-a mattum count pannum, so Bharath Iyer-oda rendu Health purchases 1 distinct category-a collapse aagum — avaru HAVING COUNT(DISTINCT policy_category) >= 2 filter-la irundhu correct-a completely veliya poidum.",
+              "Ippo naanku customers thirumbi varuvanga — Ananya Rao, Chitra Menon, Devika Nair, matrum Farah Sheikh — genuine-a kammasa rendu vidhamaana policy vachirukkura customers.",
+              "Devika Nair-oda total_premium ippo 0-a varum, NULL illa, ention COALESCE(SUM(premium_amount), 0), SUM thani-a NULL-a thirumbina mattum-thaan kick aagum — inga marra ella customer-kkum, kammasa oru real premium irukku, so SUM already work pannudhu, COALESCE intervene panna theva-e illa.",
+              "Esha Kapoor matrum Bharath Iyer rendu-perum indha result-la correct-a illama irukanga, aana vera vera reasons-kkaaga — Esha-kku genuine-a oru policy mattum-thaan irukku, Bharath-kku rendu policies irukku aana rendum same kind-a irukku; COUNT(DISTINCT ...) thaan indha rendu-a vera-a solladhu, plain COUNT(...)-kku endrume mudiyaadhu."
+            ],
+            "hi": [
+              "COUNT(DISTINCT policy_category) sirf unique category values ginta hai, isliye Bharath Iyer ke do Health purchases 1 distinct category mein simat jaate hain — wo HAVING COUNT(DISTINCT policy_category) >= 2 filter se poori tarah sahi tarike se bahar ho jaata hai.",
+              "Ab chaar customers wapas aate hain — Ananya Rao, Chitra Menon, Devika Nair, aur Farah Sheikh — wo customers jinke paas genuinely kam se kam do alag tarah ki policy hai.",
+              "Devika Nair ka total_premium ab NULL ke bajaye 0 dikhata hai, kyunki COALESCE(SUM(premium_amount), 0) tabhi kaam karta hai jab SUM khud NULL wapas aaye — baaki har customer ke liye yahan, kam se kam ek asli premium maujood hai, isliye SUM pehle se hi sahi kaam karta hai aur COALESCE ko kabhi beech mein aana hi nahi padta.",
+              "Esha Kapoor aur Bharath Iyer dono is result se sahi tarike se gayab hain, lekin alag-alag wajahon se — Esha ke paas genuinely sirf ek policy hai, jabki Bharath ke paas do policies hain jo ek hi tarah ki nikli — COUNT(DISTINCT ...) hi hai jo in dono mein farak batata hai, plain COUNT(...) kabhi nahi bata sakta tha."
+            ],
+            "te": [
+              "COUNT(DISTINCT policy_category) unique category values ni matrame count chestundi, so Bharath Iyer rendu Health purchases 1 distinct category ga collapse avutayi — atanu HAVING COUNT(DISTINCT policy_category) >= 2 filter nunchi completely correct ga bayata padipotadu.",
+              "Ippudu nalugu customers tirigi vastaru — Ananya Rao, Chitra Menon, Devika Nair, mariyu Farah Sheikh — genuine ga kanisam rendu veru veru tarahalu policy unna customers.",
+              "Devika Nair total_premium ippudu 0 ga kanipistundi, NULL kaadu, endukante COALESCE(SUM(premium_amount), 0) SUM tanu NULL ga tirigi vachinapudu matrame kick avutundi — ikkada migatha prathi customer ki, kanisam oka real premium undi, so SUM already work chestundi, COALESCE eppudu intervene avvalsina avasaram ledu.",
+              "Esha Kapoor mariyu Bharath Iyer iddaru ee result nunchi correct ga ledu, kaani veru veru karananalaki — Esha ki genuine ga oka policy matrame undi, Bharath ki rendu policies unnayi kaani rendu okate rakam — COUNT(DISTINCT ...) ne ee rendintini veru ga cheputundi, plain COUNT(...) ki eppudu cheppalemu."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
