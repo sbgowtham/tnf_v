@@ -173,5 +173,19 @@
       "sub": "Corporate KYC Screening",
       "c": "#6366f1",
       "difficulty": "mid"
+    },
+    {
+      "id": "blinkit",
+      "name": "Blinkit",
+      "sub": "Supplier Quality Flags",
+      "c": "#0c831f",
+      "difficulty": "hard"
+    },
+    {
+      "id": "cars24",
+      "name": "Cars24",
+      "sub": "Text-Stored Price Filtering",
+      "c": "#b45309",
+      "difficulty": "mid"
     }
   ]

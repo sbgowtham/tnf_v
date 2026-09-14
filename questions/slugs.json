@@ -24,5 +24,7 @@
   "zepto:1": "zepto-store-zeptodailysales-excluding-any-row-where",
   "swiggy:1": "swiggy-using-subquery-clause-first-compute-kitchenname",
   "razorpay:1": "razorpay-merchantname-razorpaymerchanttxns-compute-avgfee",
-  "zerodha:1": "zerodha-account-zerodhaclients-where-accounttype-corporate"
+  "zerodha:1": "zerodha-account-zerodhaclients-where-accounttype-corporate",
+  "blinkit:1": "blinkit-productname-every-product-blinkitproducts-supplier",
+  "cars24:1": "cars24-carmodel-price-number-aliased-every-listing-cars24"
 }

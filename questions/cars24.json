@@ -1,0 +1,160 @@
+{
+  "setup": "CREATE TABLE cars24_listings(id INTEGER,car_model TEXT,price_text TEXT,mileage_kmpl REAL);\nINSERT INTO cars24_listings VALUES\n (1,'Maruti Swift VXI 2019','450000',22.5),\n (2,'Hyundai Creta SX 2021','1150000',16.8),\n (3,'Honda City VX 2020','900000',17.4),\n (4,'Tata Nexon XM 2018','620000',21.5),\n (5,'Maruti Alto K10 2017','285000',24.7),\n (6,'Toyota Innova Crysta 2019',NULL,14.0),\n (7,'Mahindra XUV500 W8 2018','980000',15.2),\n (8,'Hyundai i20 Sportz 2020','650000',20.1),\n (9,'Kia Seltos HTX 2021','1050000',16.5);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "mid",
+      "cc": [
+        "CAST",
+        "WHERE",
+        "ORDER BY"
+      ],
+      "story": {
+        "en": "Saturday morning at Cars24's Inventory Pricing desk. cars24_listings holds every used car currently listed, but price_text was imported straight from an old spreadsheet years ago and stored as TEXT — every value looks like a number ('450000', '1150000'), but SQLite treats the whole column as plain text, quotes and all. One listing, Toyota Innova Crysta 2019, has price_text = NULL because the seller and buyer are still negotiating and there's genuinely no final number to record yet — that's different from a price of zero. The pricing team wants every listing priced above 500000 so they can route it to the premium-inventory team, sorted from most to least expensive.",
+        "ta": "Saturday morning Cars24-oda Inventory Pricing desk-la. cars24_listings-la ippo list aayirukkura ella used car-um irukku, aana price_text-a years munnadi oru old spreadsheet-la irundhu neraiya import panniducha, TEXT-a store panniducha — ovvoru value-um number madhiri-thaan kaanum ('450000', '1150000'), aana SQLite andha column mothama plain text-a-thaan treat pannum, quotes-oda serthu. Oru listing, Toyota Innova Crysta 2019, price_text = NULL vachirukku, ention seller matrum buyer innum negotiate pannikittu irukanga, genuine-a innum final number record panna edhuvum illa — idhu zero price-la irundhu vera. Pricing team-ku 500000-kku mela price irukkura ella listing-um venum, premium-inventory team-kku route pannaradhukku, mosta expensive-la irundhu least expensive-a sort panni.",
+        "hi": "Saturday morning Cars24 ke Inventory Pricing desk mein. cars24_listings mein abhi list ki hui har used car hai, lekin price_text kaafi saal pehle ek purani spreadsheet se seedha import hua tha aur TEXT ke roop mein store kiya gaya — har value number jaisi dikhti hai ('450000', '1150000'), lekin SQLite poori column ko bilkul plain text hi maanta hai, quotes samet. Ek listing, Toyota Innova Crysta 2019, ka price_text = NULL hai kyunki seller aur buyer abhi bhi negotiate kar rahe hain aur genuinely abhi tak koi final number record karne layak hai hi nahi — yeh zero price se alag hai. Pricing team ko 500000 se upar wali har listing chahiye taaki wo unhe premium-inventory team ko route kar sake, sabse mehnge se sabse sasta sort karke.",
+        "te": "Saturday morning Cars24 Inventory Pricing desk lo. cars24_listings lo ippudu list ayina prathi used car undi, kaani price_text years kritam oka old spreadsheet nunchi neruga import chesi, TEXT ga store chesaru — prathi value number la kanipistundi ('450000', '1150000'), kaani SQLite aa column ni motham plain text ga matrame treat chestundi, quotes tho patu. Oka listing, Toyota Innova Crysta 2019, price_text = NULL undi, endukante seller mariyu buyer inka negotiate chestunnaru, genuine ga inka final number record cheyadaniki emi ledu — idi zero price kanna veru. Pricing team ki 500000 kanna ekkuva price unna prathi listing kavali, premium-inventory team ki route cheyadaniki, ekkuva nunchi takkuva ki sort chesi."
+      },
+      "question": {
+        "en": "Return car_model and the price as a number (aliased price) for every listing in cars24_listings priced above 500000. Use CAST to convert price_text to a numeric type before comparing — a plain string comparison on price_text gives the wrong answer. Sort by price descending.",
+        "ta": "cars24_listings-la 500000-kku mela price irukkura ella listing-kkum, car_model matrum price-a number-a (price-nu alias pannunga) return pannunga. Compare pannura munnadiyae price_text-a numeric type-kku maatra CAST use pannunga — price_text-la plain string comparison pannina thappaana answer varum. price-la descending-a sort pannunga.",
+        "hi": "cars24_listings mein 500000 se upar wali har listing ke liye car_model aur price ko ek number ke roop mein (price naam se alias karke) return karo. Compare karne se pehle price_text ko numeric type mein badalne ke liye CAST use karo — price_text par plain string comparison galat answer deta hai. price ke hisaab se descending sort karo.",
+        "te": "cars24_listings lo 500000 kanna ekkuva price unna prathi listing ki car_model mariyu price ni number ga (price ani alias chesi) return cheyandi. Compare cheyakamunde price_text ni numeric type ki marchadaniki CAST vadandi — price_text meeda plain string comparison tappu answer istundi. price prakaram descending sort cheyandi."
+      },
+      "schemas": [
+        {
+          "name": "cars24_listings",
+          "cols": [
+            {
+              "n": "id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "car_model",
+              "t": "TEXT",
+              "e": "Maruti Swift VXI 2019"
+            },
+            {
+              "n": "price_text",
+              "t": "TEXT",
+              "e": "450000"
+            },
+            {
+              "n": "mileage_kmpl",
+              "t": "REAL",
+              "e": "22.5"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at the raw listings, prices stored as TEXT",
+            "ta": "Raw listings-a paarunga, prices TEXT-a store aayirukku",
+            "hi": "Raw listings ko dekho, prices TEXT ke roop mein store hain",
+            "te": "Raw listings ni chudandi, prices TEXT ga store ayyayi"
+          },
+          "sql": "SELECT *\nFROM cars24_listings\nORDER BY id;",
+          "explain": {
+            "en": [
+              "cars24_listings has 9 rows, and price_text is declared TEXT, not INTEGER or REAL — a legacy import kept every price as a plain digit string like '450000' instead of an actual number.",
+              "Two of the priciest cars, Hyundai Creta SX 2021 at '1150000' and Kia Seltos HTX 2021 at '1050000', are seven-digit strings, while a cheaper car like Maruti Swift VXI 2019 at '450000' is only six digits — that digit-count mismatch is exactly what's about to cause trouble.",
+              "Toyota Innova Crysta 2019 has price_text = NULL, not '0' or an empty string — the seller and buyer are still negotiating, and Cars24 genuinely doesn't have a final number to record yet.",
+              "Nothing is filtered or compared yet — this step exists purely to see the raw TEXT values as they actually are, string quotes and all."
+            ],
+            "ta": [
+              "cars24_listings-la 9 rows irukku, price_text TEXT-a declare pannirukkanga, INTEGER alladhu REAL illa — legacy import ovvoru price-a-yum '450000' madhiri plain digit string-a vachirukku, real number-a illa.",
+              "Rendu expensive-aana cars, Hyundai Creta SX 2021 '1150000'-um Kia Seltos HTX 2021 '1050000'-um, seven-digit strings, aana Maruti Swift VXI 2019 '450000' madhiri cheap-aana car six digits mattum-thaan — indha digit-count mismatch-thaan adutha problem create pannapogudhu.",
+              "Toyota Innova Crysta 2019-kku price_text = NULL irukku, '0' alladhu empty string illa — seller matrum buyer innum negotiate pannikittu irukkanga, Cars24-kku genuine-a innum record panna final number-e illa.",
+              "Innum edhuvum filter alladhu compare pannala — indha step raw TEXT values-a avai actual-a eppadi irukkumo apdiyae paakkuradhu-kku mattum, string quotes-oda serthu."
+            ],
+            "hi": [
+              "cars24_listings mein 9 rows hain, aur price_text TEXT declare kiya gaya hai, INTEGER ya REAL nahi — legacy import ne har price ko '450000' jaisi plain digit string mein rakha, asli number mein nahi.",
+              "Do sabse mehngi cars, Hyundai Creta SX 2021 '1150000' par aur Kia Seltos HTX 2021 '1050000' par, saat-digit strings hain, jabki Maruti Swift VXI 2019 jaisi sasti car '450000' par sirf chhe digits hai — yehi digit-count mismatch aage problem create karne wala hai.",
+              "Toyota Innova Crysta 2019 ka price_text = NULL hai, '0' ya empty string nahi — seller aur buyer abhi bhi negotiate kar rahe hain, aur Cars24 ke paas genuinely abhi record karne ke liye koi final number hai hi nahi.",
+              "Abhi kuch bhi filter ya compare nahi hua — yeh step sirf raw TEXT values ko waise hi dekhne ke liye hai jaise wo asal mein hain, string quotes samet."
+            ],
+            "te": [
+              "cars24_listings lo 9 rows unnayi, price_text TEXT ga declare chesaru, INTEGER leda REAL kaadu — legacy import prathi price ni '450000' la plain digit string ga pettindi, real number ga kaadu.",
+              "Rendu ekkuva price unna cars, Hyundai Creta SX 2021 '1150000' mariyu Kia Seltos HTX 2021 '1050000', seven-digit strings, kaani Maruti Swift VXI 2019 la takkuva price unna car '450000' six digits matrame — ee digit-count mismatch ne tarvatha problem create cheyabotondi.",
+              "Toyota Innova Crysta 2019 ki price_text = NULL undi, '0' leda empty string kaadu — seller mariyu buyer inka negotiate chestunnaru, Cars24 daggara genuine ga inka record cheyadaniki final number ledu.",
+              "Inka emi filter leda compare avvaledu — ee step raw TEXT values avi actual ga ela unnayo chudadaniki matrame, string quotes tho patu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "See the trap: comparing price_text as a string picks the wrong cars",
+            "ta": "Trap-a paarunga: price_text-a string-a compare panna thappaana cars vandhudum",
+            "hi": "Trap dekho: price_text ko string ki tarah compare karne se galat cars aa jaati hain",
+            "te": "Trap ni chudandi: price_text ni string ga compare cheste tappu cars vastayi"
+          },
+          "sql": "SELECT car_model, price_text\nFROM cars24_listings\nWHERE price_text > '500000'\nORDER BY price_text DESC;",
+          "explain": {
+            "en": [
+              "This returns only 4 cars — Mahindra XUV500 (980000), Honda City (900000), Hyundai i20 Sportz (650000), and Tata Nexon (620000) — and misses the two most expensive cars in the entire table.",
+              "Hyundai Creta SX at 1150000 and Kia Seltos at 1050000 both vanish, even though they're worth more than every car that did make the list — '1150000' > '500000' compares FALSE because SQLite compares TEXT character by character, and '1' comes before '5' as the very first character, no matter how many digits follow.",
+              "This is a genuine trap, not a rounding error: a seven-digit price beginning with '1' will always lose to the six-digit '500000' in a plain string comparison, no matter how large the actual number behind it is.",
+              "Toyota Innova Crysta's NULL price_text correctly stays out of this result too — NULL > '500000' evaluates to NULL, not TRUE, so no special-casing was needed for the one listing that has no price yet."
+            ],
+            "ta": [
+              "Idhu 4 cars mattum-thaan return pannudhu — Mahindra XUV500 (980000), Honda City (900000), Hyundai i20 Sportz (650000), matrum Tata Nexon (620000) — matrum mothama table-la irukkura rendu mosta expensive cars-a miss pannudhu.",
+              "Hyundai Creta SX (1150000) matrum Kia Seltos (1050000) rendum maaya aayidum, list-la varra ella car-ayum vida avai adhiga value-oda irundhaalum kooda — '1150000' > '500000' FALSE-a compare aagum, ention SQLite, TEXT-a character by character compare pannum, '1', '5'-kku munnadi varum first character-a, ethana digits piragu vandhalum.",
+              "Idhu genuine trap, rounding error illa: '1' vachu start aagura seven-digit price, plain string comparison-la six-digit '500000'-kku endrume thoolvi adaiyum, adhoda pinnadi irukkura actual number ethana periusa irundhaalum sari.",
+              "Toyota Innova Crysta-oda NULL price_text-um correct-a indha result-la irundhu veliya irukkum — NULL > '500000' NULL-a evaluate aagum, TRUE illa, so price innum illaadha andha oru listing-kku special-casing edhuvum theva illa."
+            ],
+            "hi": [
+              "Yeh sirf 4 cars return karti hai — Mahindra XUV500 (980000), Honda City (900000), Hyundai i20 Sportz (650000), aur Tata Nexon (620000) — aur poori table ki do sabse mehngi cars ko miss kar deti hai.",
+              "Hyundai Creta SX (1150000) aur Kia Seltos (1050000) dono gayab ho jaate hain, jabki wo list mein aayi har car se zyada value ki hain — '1150000' > '500000' FALSE compare hota hai kyunki SQLite TEXT ko character by character compare karta hai, aur '1', '5' se pehle aata hai sabse pehle character mein, chahe uske baad kitne bhi digits hon.",
+              "Yeh genuine trap hai, rounding error nahi: '1' se shuru hone wali saat-digit price, plain string comparison mein hamesha chhe-digit '500000' se haar jaayegi, chahe uske peeche asli number kitna bhi bada ho.",
+              "Toyota Innova Crysta ka NULL price_text bhi is result se sahi tarike se bahar rehta hai — NULL > '500000' NULL evaluate hota hai, TRUE nahi, isliye jis ek listing ka abhi koi price hi nahi hai uske liye kisi special-casing ki zaroorat nahi padi."
+            ],
+            "te": [
+              "Idi 4 cars matrame return chestundi — Mahindra XUV500 (980000), Honda City (900000), Hyundai i20 Sportz (650000), mariyu Tata Nexon (620000) — mariyu motham table lo unna rendu ekkuva price unna cars ni miss chestundi.",
+              "Hyundai Creta SX (1150000) mariyu Kia Seltos (1050000) rendu marayipotayi, list lo vachina prathi car kanna ekkuva value unna, kaani — '1150000' > '500000' FALSE ga compare avutundi, endukante SQLite, TEXT ni character by character compare chestundi, '1' ante '5' kanna mundu vastundi first character lo, tarvatha entha digits unna sare.",
+              "Idi genuine trap, rounding error kaadu: '1' tho start ayye seven-digit price, plain string comparison lo eppudu six-digit '500000' ki odipotundi, dani venuka unna actual number entha peddadaina sare.",
+              "Toyota Innova Crysta NULL price_text kuda correct ga ee result nunchi bayata untundi — NULL > '500000' NULL ga evaluate avutundi, TRUE kaadu, so price inka leni aa oka listing ki special-casing avasaram ledu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: CAST(price_text AS REAL) compares the actual numbers",
+            "ta": "Fix pannunga: CAST(price_text AS REAL), actual numbers-a compare pannum",
+            "hi": "Fix karo: CAST(price_text AS REAL) asli numbers ko compare karta hai",
+            "te": "Fix cheyandi: CAST(price_text AS REAL) actual numbers ni compare chestundi"
+          },
+          "sql": "SELECT car_model, CAST(price_text AS REAL) AS price\nFROM cars24_listings\nWHERE CAST(price_text AS REAL) > 500000\nORDER BY price DESC;",
+          "explain": {
+            "en": [
+              "CAST(price_text AS REAL) converts each digit string into an actual floating-point number before the comparison ever runs, so 1150000 and 1050000 compare correctly against 500000 as the numbers they always were.",
+              "Six cars come back now, correctly sorted by price descending from Hyundai Creta SX at 1150000 down to Tata Nexon at 620000 — the two cars the string comparison silently dropped are now right at the top of the list.",
+              "Maruti Swift (450000) and Maruti Alto (285000) are correctly excluded either way, since both really are below 500000 — the bug in step 2 only ever bit the high end of the range, which is exactly why it's easy to miss on a small dataset.",
+              "CAST(NULL AS REAL) is still just NULL, so Toyota Innova Crysta's negotiation-pending listing needed no extra handling here either — a genuine NULL, once again, turns out to be the one thing in this query that was never actually broken."
+            ],
+            "ta": [
+              "CAST(price_text AS REAL), comparison run aagura munnadiyae ovvoru digit string-a-yum real floating-point number-a maatrum, so 1150000-um 1050000-um 500000-kku edhirila avai eppovum irundha number-aa correct-a compare aagum.",
+              "Ippo aaru cars thirumbi varum, Hyundai Creta SX (1150000) irundhu Tata Nexon (620000) varaikkum price descending-a correct-a sort aayirukkum — string comparison silent-a drop pannina rendu cars ippo list-oda romba top-la irukkanga.",
+              "Maruti Swift (450000) matrum Maruti Alto (285000) eppadi irundhaalum correct-a exclude aaidum, ention rendum genuine-a 500000-kku keezha irukku — step 2-la irukkura bug range-oda high end-a mattum-thaan bite pannuchu, adhaan small dataset-la miss panna easy-a irukkuradhukku reason.",
+              "CAST(NULL AS REAL) innum NULL-a-thaan irukkum, so Toyota Innova Crysta-oda negotiation-pending listing-kku inga extra handling edhuvum theva illa — genuine NULL, innoru murai, indha query-la yeppovum break aaga vendiya adhavadhu-nu vera onnum illa-nu prove aagudhu."
+            ],
+            "hi": [
+              "CAST(price_text AS REAL) comparison chalne se pehle hi har digit string ko asli floating-point number mein badal deta hai, isliye 1150000 aur 1050000, 500000 ke against sahi tarah se un numbers ke roop mein compare hote hain jo wo hamesha se the.",
+              "Ab chhe cars wapas aati hain, Hyundai Creta SX (1150000) se lekar Tata Nexon (620000) tak price ke hisaab se sahi descending sorted — jo do cars string comparison ne chupchaap drop kar di thi, wo ab list mein bilkul upar hain.",
+              "Maruti Swift (450000) aur Maruti Alto (285000) dono hi tarike se sahi tarah exclude hoti hain, kyunki dono genuinely 500000 se neeche hain — step 2 ka bug sirf range ke upper hisse ko hi kaatta tha, isi wajah se choti dataset mein ise miss karna aasaan hai.",
+              "CAST(NULL AS REAL) abhi bhi bas NULL hi hai, isliye Toyota Innova Crysta ki negotiation-pending listing ko yahan bhi kisi extra handling ki zaroorat nahi padi — ek genuine NULL, ek baar phir, saabit karta hai ki wahi is query mein woh cheez thi jo kabhi tooti hi nahi thi."
+            ],
+            "te": [
+              "CAST(price_text AS REAL), comparison run avvakamunde prathi digit string ni real floating-point number ga marustundi, so 1150000 mariyu 1050000, 500000 ki vyathirekam ga avi eppudu unna number laage correct ga compare avutayi.",
+              "Ippudu aru cars tirigi vastayi, Hyundai Creta SX (1150000) nunchi Tata Nexon (620000) varaku price descending ga correct ga sort ayyayi — string comparison silent ga drop chesina rendu cars ippudu list top lo unnayi.",
+              "Maruti Swift (450000) mariyu Maruti Alto (285000) ela unna correct ga exclude avutayi, endukante rendu genuine ga 500000 kanna takkuva unnayi — step 2 lo unna bug range high end ni matrame kottindi, adi anduke chinna dataset lo miss cheyadam easy.",
+              "CAST(NULL AS REAL) inka NULL ga matrame untundi, so Toyota Innova Crysta negotiation-pending listing ki ikkada kuda extra handling avasaram ledu — genuine NULL, marokasari, ee query lo eppudu nijamga break avvani okka vishayam ani prove chestundi."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

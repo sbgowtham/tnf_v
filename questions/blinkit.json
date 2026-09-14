@@ -1,0 +1,181 @@
+{
+  "setup": "CREATE TABLE blinkit_products(product_id INTEGER,product_name TEXT,category TEXT,supplier_id INTEGER);\nCREATE TABLE blinkit_quality_flags(flag_id INTEGER,supplier_id INTEGER,reason TEXT);\nINSERT INTO blinkit_products VALUES\n (1,'Amul Milk 1L','Dairy',101),\n (2,'Britannia Bread','Bakery',102),\n (3,'Lays Chips','Snacks',103),\n (4,'Maggi Noodles','Instant Food',101),\n (5,'Real Juice','Beverages',104),\n (6,'Parle-G Biscuits','Snacks',102),\n (7,'Nescafe Coffee','Beverages',105),\n (8,'Fortune Oil','Grocery',103);\nINSERT INTO blinkit_quality_flags VALUES\n (1,104,'Packaging damage complaints'),\n (2,NULL,'Anonymous complaint, supplier under investigation'),\n (3,105,'Delayed delivery causing spoilage'),\n (4,103,'Stale inventory reported multiple times'),\n (5,106,'Blacklisted after a past recall, no live products currently');",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "hard",
+      "cc": [
+        "NOT IN",
+        "Subquery",
+        "LEFT JOIN",
+        "IS NOT NULL"
+      ],
+      "story": {
+        "en": "Friday evening at Blinkit's Supplier Quality team. blinkit_products lists every product currently live on the app along with the supplier_id that stocks it, and blinkit_quality_flags logs a row every time a supplier gets flagged for a complaint. Three suppliers have been flagged for concrete reasons — packaging damage, delivery delays, stale inventory — but one complaint came in anonymously through the app's feedback form before anyone could trace it back to a specific supplier, so that flag row has supplier_id = NULL. That's a genuine 'we don't know which supplier yet,' not 'no supplier at all,' and it's still sitting in the table waiting to be resolved. Procurement wants a list of every product whose supplier has never been flagged, so those suppliers can be auto-approved for the next reorder cycle without a manual review.",
+        "ta": "Friday evening Blinkit-oda Supplier Quality team-la. blinkit_products, app-la ippo live-a irukkura ella product-a-yum, adha stock pannura supplier_id-oda serthu list pannum, matrum blinkit_quality_flags, oru supplier complaint-kaaga flag aagumbodhu ovvoru murai oru row log pannum. Moondru suppliers concrete reasons-kkaaga flag aayirukkanga — packaging damage, delivery delays, stale inventory — aana oru complaint app-oda feedback form-la anonymous-a vandhudhu, yaaru-um adha specific supplier-kku trace panna mudiyara munnadi, so andha flag row-kku supplier_id = NULL. Idhu genuine-a 'ippo yaaru supplier-nu therila' nu solradhu, 'supplier-e illa' nu illa, adhu innum table-la resolve aaga kaathirundhu vachirukku. Procurement-kku edhavadhu complaint-e illaadha supplier-oda ella product-oda list-um venum, adha suppliers-a manual review illama adutha reorder cycle-kku auto-approve pannalam-nu.",
+        "hi": "Friday evening Blinkit ke Supplier Quality team mein. blinkit_products mein app par abhi live har product uske supplier_id ke saath list hota hai jo use stock karta hai, aur blinkit_quality_flags mein jab bhi koi supplier complaint ke liye flag hota hai to ek row log hoti hai. Teen suppliers ko concrete reasons ke liye flag kiya gaya hai — packaging damage, delivery delays, stale inventory — lekin ek complaint app ke feedback form se anonymously aayi thi, kisi ke use kisi specific supplier tak trace karne se pehle, isliye us flag row mein supplier_id = NULL hai. Yeh genuinely 'abhi pata nahi kaunsa supplier hai' hai, 'koi supplier hai hi nahi' nahi, aur woh abhi bhi table mein resolve hone ka intezaar kar rahi hai. Procurement ko har us product ki list chahiye jiske supplier ko kabhi flag nahi kiya gaya, taaki wo suppliers agle reorder cycle ke liye manual review ke bina auto-approve ho saken.",
+        "te": "Friday evening Blinkit Supplier Quality team lo. blinkit_products lo app lo ippudu live ga unna prathi product, danini stock chese supplier_id tho patu list avutundi, mariyu blinkit_quality_flags lo e supplier complaint kosam flag ainappudu prathi sari oka row log avutundi. Mudu suppliers concrete reasons kosam flag ayyaru — packaging damage, delivery delays, stale inventory — kaani oka complaint app feedback form dwara anonymous ga vachindi, evaraina danini specific supplier ki trace cheyakamunde, so aa flag row ki supplier_id = NULL. Idi genuine ga 'ippudu e supplier ani teleedu' ani, 'supplier e ledu' ani kaadu, adi inka table lo resolve avvadaniki wait chestundi. Procurement ki e complaint e raani supplier prathi product list kavali, aa suppliers ni manual review lekunda tarvatha reorder cycle ki auto-approve cheyadaniki."
+      },
+      "question": {
+        "en": "Return the product_name of every product in blinkit_products whose supplier_id has never appeared in blinkit_quality_flags — meaning that supplier has zero quality complaints on record. Use a NOT IN subquery against blinkit_quality_flags, and make sure the unresolved anonymous complaint (supplier_id IS NULL) doesn't wrongly disqualify every supplier. Sort by product_name.",
+        "ta": "blinkit_products-la, adhoda supplier_id blinkit_quality_flags-la ondrum varaadha ella product-oda-yum product_name-a return pannunga — atharkiya andha supplier-kku zero quality complaints record-la irukkanum. blinkit_quality_flags-a vachu NOT IN subquery-a use pannunga, matrum resolve aagaadha anonymous complaint (supplier_id IS NULL) thappa ella supplier-a-yum disqualify pannaadhu-nu confirm pannunga. product_name-la sort pannunga.",
+        "hi": "blinkit_products mein har us product ka product_name return karo jiska supplier_id blinkit_quality_flags mein kabhi nahi aaya — matlab us supplier ke record mein zero quality complaints hain. blinkit_quality_flags ke against NOT IN subquery use karo, aur confirm karo ki resolve na hua anonymous complaint (supplier_id IS NULL) galti se har supplier ko disqualify na kar de. product_name ke hisaab se sort karo.",
+        "te": "blinkit_products lo, dani supplier_id blinkit_quality_flags lo eppudu raani prathi product ki product_name ni return cheyandi — ante aa supplier ki record lo zero quality complaints unnayi ani. blinkit_quality_flags ki vyathirekam ga NOT IN subquery vadandi, mariyu resolve avvani anonymous complaint (supplier_id IS NULL) tappuga prathi supplier ni disqualify cheyakunda chudandi. product_name prakaram sort cheyandi."
+      },
+      "schemas": [
+        {
+          "name": "blinkit_products",
+          "cols": [
+            {
+              "n": "product_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "product_name",
+              "t": "TEXT",
+              "e": "Amul Milk 1L"
+            },
+            {
+              "n": "category",
+              "t": "TEXT",
+              "e": "Dairy"
+            },
+            {
+              "n": "supplier_id",
+              "t": "INTEGER",
+              "e": "101"
+            }
+          ]
+        },
+        {
+          "name": "blinkit_quality_flags",
+          "cols": [
+            {
+              "n": "flag_id",
+              "t": "INTEGER",
+              "e": "1"
+            },
+            {
+              "n": "supplier_id",
+              "t": "INTEGER",
+              "e": "104"
+            },
+            {
+              "n": "reason",
+              "t": "TEXT",
+              "e": "Packaging damage complaints"
+            }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "See how products line up against flagged suppliers",
+            "ta": "Products, flag aana suppliers-oda eppadi line-up aaguthunu paarunga",
+            "hi": "Dekho products flag hue suppliers ke saath kaise line up hote hain",
+            "te": "Products, flag ayina suppliers tho ela line-up avutunnayo chudandi"
+          },
+          "sql": "SELECT p.product_name, p.supplier_id, f.reason\nFROM blinkit_products p\nLEFT JOIN blinkit_quality_flags f ON f.supplier_id = p.supplier_id\nORDER BY p.product_id;",
+          "explain": {
+            "en": [
+              "blinkit_products has 8 rows across 6 distinct supplier_ids (101 through 106), and this LEFT JOIN pulls in the flag reason for whichever supplier stocks each product, if one exists.",
+              "Lays Chips and Fortune Oil share supplier_id 103, and Real Juice (104) and Nescafe Coffee (105) each have their own flagged supplier — reason shows up for all four of these rows, everything else shows NULL.",
+              "Supplier 106 was blacklisted after a past recall but doesn't currently supply any live product, so it never shows up in this result at all — it's a flagged supplier, just not one attached to anything in blinkit_products right now.",
+              "blinkit_quality_flags actually has a fifth row too — an anonymous complaint with supplier_id = NULL — but NULL can never equal p.supplier_id for any product, so it's completely invisible here. That row hasn't gone away; it's just waiting in the next step to cause trouble."
+            ],
+            "ta": [
+              "blinkit_products-la 6 vidhamaana supplier_ids (101 to 106) kizhe 8 rows irukku, indha LEFT JOIN, ovvoru product-a-yum stock pannura supplier-kku flag reason irundha adha kondu varum.",
+              "Lays Chips matrum Fortune Oil supplier_id 103-a share pannuranga, matrum Real Juice (104) matrum Nescafe Coffee (105) thani thaniya flag aana supplier vachirukanga — indha naanku rows-kkum reason varum, marradhu ella NULL-a irukkum.",
+              "Supplier 106, past recall-kku appuram blacklist aaidichu, aana ippo edhavadhu live product-a supply pannala, so idhu indha result-la eppa-vum varaadhu — idhu flag aana supplier, aana ippo blinkit_products-la edhukkum attach aagala.",
+              "blinkit_quality_flags-la anju-vadhu row-um irukku — supplier_id = NULL vachirukkura oru anonymous complaint — aana NULL edhavadhu product-oda p.supplier_id-oda equal aagave mudiyadhu, so idhu inga completely invisible-a irukkum. Andha row poyidala; adhu adutha step-la problem create panna wait pannudhu."
+            ],
+            "hi": [
+              "blinkit_products mein 6 alag supplier_ids (101 se 106) mein 8 rows hain, yeh LEFT JOIN har product ko stock karne wale supplier ka flag reason le aata hai, agar koi ho.",
+              "Lays Chips aur Fortune Oil supplier_id 103 share karte hain, aur Real Juice (104) aur Nescafe Coffee (105) ka apna-apna flag hua supplier hai — in chaaron rows ke liye reason dikhta hai, baaki sab NULL dikhte hain.",
+              "Supplier 106 past recall ke baad blacklist ho gaya tha, lekin abhi kisi bhi live product ko supply nahi karta, isliye yeh is result mein kabhi nahi dikhta — yeh flag hua supplier hai, bas abhi blinkit_products mein kisi se juda nahi hai.",
+              "blinkit_quality_flags mein ek paanchvi row bhi hai — supplier_id = NULL wali ek anonymous complaint — lekin NULL kabhi kisi product ke p.supplier_id ke barabar nahi ho sakta, isliye yeh yahan bilkul invisible hai. Woh row gayi nahi hai; woh bas agle step mein problem create karne ka intezaar kar rahi hai."
+            ],
+            "te": [
+              "blinkit_products lo 6 veru veru supplier_ids (101 nunchi 106 varaku) lo 8 rows unnayi, ee LEFT JOIN prathi product ni stock chese supplier ki flag reason unte danini techindi.",
+              "Lays Chips mariyu Fortune Oil supplier_id 103 ni share chestayi, mariyu Real Juice (104) mariyu Nescafe Coffee (105) ki vaati sontanga flag ayina supplier undi — ee nalugu rows ki reason kanipistundi, migatha anni NULL ga untayi.",
+              "Supplier 106, past recall tarvatha blacklist ayyindi, kaani ippudu e live product ni kuda supply cheyadu, so idi ee result lo eppudu kanipinchadu — idi flag ayina supplier, kaani ippudu blinkit_products lo edaniki kuda attach avvaledu.",
+              "blinkit_quality_flags lo ainduvo row kuda undi — supplier_id = NULL unna oka anonymous complaint — kaani NULL e product p.supplier_id ki equal avvadu, so idi ikkada completely invisible ga untundi. Aa row povvaledu; adi tarvatha step lo problem create cheyadaniki wait chestundi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "See the trap: NOT IN returns nothing at all",
+            "ta": "Trap-a paarunga: NOT IN edhuvum return pannaadhu",
+            "hi": "Trap dekho: NOT IN kuch bhi return nahi karta",
+            "te": "Trap ni chudandi: NOT IN emi return cheyadu"
+          },
+          "sql": "SELECT product_name\nFROM blinkit_products\nWHERE supplier_id NOT IN (SELECT supplier_id FROM blinkit_quality_flags)\nORDER BY product_name;",
+          "explain": {
+            "en": [
+              "This query returns zero rows — not just the four genuinely flagged products, every single product in blinkit_products disappears, including Amul Milk 1L and Britannia Bread whose suppliers have never been flagged for anything.",
+              "The subquery's result list is {104, NULL, 105, 103, 106}, and NOT IN checks a value against every item in that list using AND logic underneath: supplier_id <> 104 AND supplier_id <> NULL AND supplier_id <> 105 AND so on.",
+              "supplier_id <> NULL never evaluates to TRUE for any value, real or not — it evaluates to NULL, or 'unknown,' every single time. Since one leg of that AND chain is always NULL, the whole condition can never be TRUE, no matter what the other legs say.",
+              "This is exactly why the anonymous flag mattered even though it showed nothing in step 1 — a single NULL anywhere in a NOT IN subquery's result set is enough to silently zero out the entire outer query, with no error message warning anyone it happened."
+            ],
+            "ta": [
+              "Idhu zero rows-a return pannudhu — genuine-a flag aana naanku products mattum illa, blinkit_products-la irukkura ella product-um maayaam aayidum, Amul Milk 1L matrum Britannia Bread kooda sernthu, avanga supplier edhukkum flag aagave illa.",
+              "Subquery-oda result list {104, NULL, 105, 103, 106} — NOT IN, andha list-la irukkura ovvoru item-oda-yum AND logic vachu check pannum: supplier_id <> 104 AND supplier_id <> NULL AND supplier_id <> 105 AND ippadi.",
+              "supplier_id <> NULL edhavadhu value-kkum TRUE-a evaluate aagave aagadhu, real-a irundhaalum illainaalum — adhu NULL-a, 'therila'-nu, ovvoru murai-yum evaluate aagum. Andha AND chain-la oru leg endrume NULL-a irukkuradhaala, marra legs enna sonnaalum, andha whole condition TRUE-a aagave mudiyaadhu.",
+              "Step 1-la edhuvum kaanbikkaadha andha anonymous flag, idhukku exact-a idhaan reason — NOT IN subquery-oda result set-la engaiyaavadhu oru NULL irundha, adhu entire outer query-a silent-a zero pannidum, edhuvum error message-um evaruku-um warning kodukaadhu."
+            ],
+            "hi": [
+              "Yeh query zero rows return karti hai — sirf genuinely flag hue chaar products hi nahi, blinkit_products ka har ek product gayab ho jaata hai, Amul Milk 1L aur Britannia Bread bhi shaamil, jinke supplier kabhi kisi cheez ke liye flag hi nahi hue.",
+              "Subquery ki result list hai {104, NULL, 105, 103, 106}, aur NOT IN us list ke har item ke against value ko andar hi andar AND logic se check karta hai: supplier_id <> 104 AND supplier_id <> NULL AND supplier_id <> 105 AND aise hi aage.",
+              "supplier_id <> NULL kabhi bhi kisi value ke liye TRUE evaluate nahi hota, chahe real ho ya na ho — yeh har baar NULL, ya 'unknown' evaluate hota hai. Us AND chain ka ek leg hamesha NULL hai isliye, baaki legs kuch bhi kahen, poora condition kabhi TRUE nahi ho sakta.",
+              "Yehi wajah hai ki anonymous flag mahatvapurn tha, chahe step 1 mein kuch dikha na ho — NOT IN subquery ke result set mein kahin bhi ek akela NULL poori outer query ko chupchaap zero kar dene ke liye kaafi hai, bina kisi error message ke jo kisi ko bataaye ki yeh hua."
+            ],
+            "te": [
+              "Ee query zero rows return chestundi — genuine ga flag ayina nalugu products matrame kaadu, blinkit_products lo prathi product marayipotundi, Amul Milk 1L mariyu Britannia Bread kuda, vaalla supplier eppudu e vishayaniki flag avvaledu.",
+              "Subquery result list {104, NULL, 105, 103, 106} — NOT IN, aa list lo prathi item ni AND logic tho lopala check chestundi: supplier_id <> 104 AND supplier_id <> NULL AND supplier_id <> 105 AND ila.",
+              "supplier_id <> NULL e value ki kuda TRUE ga evaluate avvadu, real aina kaakapoina — adi prathi sari NULL ga, ante 'teleedu' ani evaluate avutundi. Aa AND chain lo oka leg eppudu NULL ga unnanduku, migatha legs em cheppina, whole condition eppudu TRUE avvadu.",
+              "Step 1 lo emi kanipinchani aa anonymous flag mukhyam ayyindi exact ga idi ki karanam ne — NOT IN subquery result set lo ekkadaina oka NULL unte, adi entire outer query ni silent ga zero chesestundi, evariki kuda idi jariginattu warning ivvakunda."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: filter out the NULL before NOT IN ever sees it",
+            "ta": "Fix pannunga: NOT IN paakkura munnadiyae NULL-a filter pannunga",
+            "hi": "Fix karo: NOT IN dekhe usse pehle hi NULL ko filter kar do",
+            "te": "Fix cheyandi: NOT IN chudakamunde NULL ni filter cheyandi"
+          },
+          "sql": "SELECT product_name\nFROM blinkit_products\nWHERE supplier_id NOT IN (SELECT supplier_id FROM blinkit_quality_flags WHERE supplier_id IS NOT NULL)\nORDER BY product_name;",
+          "explain": {
+            "en": [
+              "Adding WHERE supplier_id IS NOT NULL inside the subquery drops the anonymous complaint before it ever reaches the outer NOT IN, shrinking the list to a clean {103, 104, 105, 106} with no NULL left to poison anything.",
+              "Four products come back — Amul Milk 1L, Britannia Bread, Maggi Noodles, and Parle-G Biscuits — exactly the products whose suppliers (101 and 102) never appear in blinkit_quality_flags for any reason, resolved or not.",
+              "The unresolved anonymous complaint isn't lost, it's just correctly excluded from this particular check — once compliance traces it to a real supplier_id, that supplier's products will start disappearing from this list on their own, no query change needed.",
+              "The general lesson: EXISTS / NOT EXISTS never has this problem because a correlated subquery compares row by row instead of building one list with AND, but if NOT IN is what you reach for, always guard the subquery's column with IS NOT NULL first."
+            ],
+            "ta": [
+              "Subquery-kkulla WHERE supplier_id IS NOT NULL add panna, outer NOT IN-a reach panna munnadiyae andha anonymous complaint-a drop pannidum, list-a clean-a {103, 104, 105, 106}-a shrink pannidum, poison panna edhuvum NULL illama.",
+              "Naanku products thirumbi varum — Amul Milk 1L, Britannia Bread, Maggi Noodles, matrum Parle-G Biscuits — avangaloda suppliers (101 matrum 102) blinkit_quality_flags-la edhukkaagavum, resolve aana illainaalum, varaadha exact products.",
+              "Resolve aagaadha anonymous complaint pogala, idhu indha particular check-la mattum correct-a exclude pannirukku — compliance adha real supplier_id-kku trace pannina odane, andha supplier-oda products indha list-la irundhu thani-a maaya aaga aarambichidum, query maatra vendaam.",
+              "General lesson: EXISTS / NOT EXISTS-kku idhu problem-e illa, ention correlated subquery, AND vachu oru list build pannradhukku pathila row by row compare pannum, aana NOT IN-a-thaan use panna vendumnu iruntha, subquery-oda column-a IS NOT NULL vachu munnadiyae guard pannunga."
+            ],
+            "hi": [
+              "Subquery ke andar WHERE supplier_id IS NOT NULL add karne se woh anonymous complaint outer NOT IN tak pahunchne se pehle hi hat jaati hai, list clean hokar {103, 104, 105, 106} ban jaati hai, koi NULL bacha nahi jo kuch bhi zeher kare.",
+              "Chaar products wapas aate hain — Amul Milk 1L, Britannia Bread, Maggi Noodles, aur Parle-G Biscuits — bilkul wo products jinke suppliers (101 aur 102) blinkit_quality_flags mein kisi bhi wajah se kabhi nahi aate, resolve hua ho ya nahi.",
+              "Resolve na hui anonymous complaint kho nahi jaati, wo sirf is particular check se sahi tarike se bahar rakhi gayi hai — jaise hi compliance use kisi asli supplier_id tak trace karti hai, us supplier ke products apne aap is list se gayab hone lagenge, kisi query change ki zaroorat nahi.",
+              "General lesson: EXISTS / NOT EXISTS mein yeh problem kabhi nahi hoti kyunki correlated subquery AND se ek list banane ke bajaye row by row compare karta hai, lekin agar NOT IN hi use karna hai to subquery ke column ko pehle hamesha IS NOT NULL se guard karo."
+            ],
+            "te": [
+              "Subquery lopala WHERE supplier_id IS NOT NULL add cheyadam valla, outer NOT IN ki cherukamunde aa anonymous complaint drop avutundi, list clean ga {103, 104, 105, 106} ki shrink avutundi, edaniki poison cheyadaniki NULL migaledu.",
+              "Nalugu products tirigi vastayi — Amul Milk 1L, Britannia Bread, Maggi Noodles, mariyu Parle-G Biscuits — vaalla suppliers (101 mariyu 102) blinkit_quality_flags lo e karananiki kuda, resolve aina kaakapoina, eppudu raani exact products.",
+              "Resolve avvani anonymous complaint poyindi kaadu, idi ee particular check nunchi correct ga matrame exclude ayyindi — compliance danini oka real supplier_id ki trace chesaka, aa supplier products ee list nunchi tanantaniga marayipovadam start avutundi, query maarchalsina avasaram ledu.",
+              "General lesson: EXISTS / NOT EXISTS ki ee problem eppudu undadu, endukante correlated subquery, AND tho oka list build cheyadaniki badulu row by row compare chestundi, kaani NOT IN ne vadali ante, subquery column ni eppudu mundu IS NOT NULL tho guard cheyandi."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
