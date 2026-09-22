@@ -194,5 +194,12 @@
       "sub": "Cross-Sell Policy Analysis",
       "c": "#1e3a8a",
       "difficulty": "hard"
+    },
+    {
+      "id": "practo",
+      "name": "Practo",
+      "sub": "Doctor Registry Reconciliation",
+      "c": "#0d9488",
+      "difficulty": "hard"
     }
   ]

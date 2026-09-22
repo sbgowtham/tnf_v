@@ -1,0 +1,155 @@
+{
+  "setup": "CREATE TABLE doctors(doctor_id INTEGER,name TEXT,specialty TEXT,city TEXT);\nCREATE TABLE appointments(appointment_id INTEGER,doctor_id INTEGER,patient_name TEXT,appt_date TEXT,status TEXT);\nINSERT INTO doctors VALUES\n (1,'Dr. Ananya Rao','Cardiology','Bangalore'),\n (2,'Dr. Vikram Shah','Dermatology','Mumbai'),\n (3,'Dr. Meera Iyer','Pediatrics','Chennai'),\n (4,'Dr. Farhan Ali','Orthopedics','Delhi'),\n (5,'Dr. Priya Nair','ENT','Hyderabad'),\n (6,'Dr. Sanjay Gupta','General Medicine','Pune');\nINSERT INTO appointments VALUES\n (101,1,'Rahul K','2026-09-01','completed'),\n (102,1,'Sneha P','2026-09-03','completed'),\n (103,2,'Arjun M','2026-09-02','cancelled'),\n (104,3,'Divya S','2026-09-05','completed'),\n (105,4,'Karthik R','2026-09-04','completed'),\n (106,7,'Neha T','2026-09-06','pending'),\n (107,5,'Amit J','2026-09-07','completed'),\n (108,9,'Pooja V','2026-09-08','pending'),\n (109,2,'Ravi K','2026-09-09','completed'),\n (110,NULL,'Walk-in Patient A','2026-09-10','unassigned'),\n (111,NULL,'Walk-in Patient B','2026-09-11','unassigned');",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "hard",
+      "cc": [
+        "FULL OUTER JOIN",
+        "COALESCE",
+        "GROUP BY",
+        "COUNT"
+      ],
+      "story": {
+        "en": "Tuesday afternoon at Practo's Data Platform team. A compliance audit flagged that the doctors table and the appointments table have drifted apart after a messy migration last quarter, and leadership wants a single reconciled view before the auditors show up on Friday. Some doctors — like Dr. Sanjay Gupta, who just onboarded — genuinely have zero appointments yet, and that's not a bug, it's just a brand-new profile. A handful of appointment rows reference a doctor_id that doesn't exist anywhere in the doctors table anymore, which is exactly the kind of orphaned reference the audit is worried about. And separately, a couple of walk-in appointment requests were logged with doctor_id left NULL on purpose, because the patient hadn't been assigned a doctor yet when the front desk created the booking — that NULL is legitimate business data, not corruption, and it needs to be told apart from the orphaned numeric IDs.",
+        "ta": "Tuesday afternoon Practo-oda Data Platform team-la. Last quarter nadandha messy migration-kku apparam doctors table matrum appointments table rendum vera vera-a drift aagirukkunu oru compliance audit flag pannirukku, so Friday-kku auditors varradhukku munnadi leadership-ku oru single reconciled view venum. Konjo doctors — example-ku, ippozhudhu-thaan onboard aana Dr. Sanjay Gupta — genuine-a innum zero appointments-thaan irukku, idhu bug illa, idhu just innum onboard aana brand-new profile thaan. Konjo appointment rows, doctors table-la ippozhudhu edhuvum illaadha oru doctor_id-a refer pannuranga, idhu exact-a audit fear padura orphaned reference type. Adhoda vera-a, rendu walk-in appointment requests-la doctor_id specially-a NULL vachi log panniruken, ention front desk booking create panna neram patient-kku innum doctor assign pannala — andha NULL legitimate business data, corruption illa, adha orphaned numeric IDs-la irundhu vera-a therinjukanum.",
+        "hi": "Tuesday dopahar Practo ki Data Platform team mein. Pichhle quarter hui ek messy migration ke baad doctors table aur appointments table ek dusre se drift ho gaye hain, yeh ek compliance audit ne flag kiya hai, aur Friday ko auditors aane se pehle leadership ko ek single reconciled view chahiye. Kuch doctors — jaise Dr. Sanjay Gupta, jo abhi-abhi onboard hue hain — genuinely abhi zero appointments rakhte hain, aur yeh koi bug nahi hai, bas ek bilkul naya profile hai. Kuch appointment rows ek aise doctor_id ko refer karte hain jo doctors table mein ab kahin exist hi nahi karta, aur yahi exactly wo orphaned reference hai jiski audit ko chinta hai. Isse alag, do walk-in appointment requests mein doctor_id jaan-bujhkar NULL rakha gaya tha, kyunki booking banate waqt front desk ne patient ko abhi tak koi doctor assign nahi kiya tha — wo NULL legitimate business data hai, corruption nahi, aur use orphaned numeric IDs se alag pehchana jaana chahiye.",
+        "te": "Tuesday madhyahnam Practo Data Platform team lo. Last quarter jarigina messy migration tarvata doctors table mariyu appointments table rendu okatiki okati drift ayyayani oka compliance audit flag chesindi, so Friday ki auditors vachede lopu leadership ki oka single reconciled view kavali. Konni doctors — example ki, ippude onboard ayina Dr. Sanjay Gupta — genuine ga inka zero appointments matrame unnayi, idi bug kaadu, idi just inka onboard ayina brand-new profile matrame. Konni appointment rows, doctors table lo ippudu ekkada leni oka doctor_id ni refer chestunnayi, idi exact ga audit bhayapadutunna orphaned reference type. Danito patu, rendu walk-in appointment requests lo doctor_id ni specific ga NULL tho log chesaru, endukante front desk booking create chesetappudu patient ki inka doctor assign avvaledu — aa NULL legitimate business data, corruption kaadu, danini orphaned numeric IDs nunchi veru ga guruthu pattali."
+      },
+      "question": {
+        "en": "Reconcile the doctors table with the appointments table so every doctor_id that shows up in either table gets exactly one row in the result — not just the ones that match. For each row, return the combined doctor_id, the doctor's name (or 'UNKNOWN DOCTOR' when no matching row exists in doctors), and appointment_count, the number of appointments tied to that doctor_id. A doctor with no appointments should show appointment_count = 0, not disappear from the result. Use FULL OUTER JOIN with COALESCE to build one unified doctor_id per group, then GROUP BY that combined key. Order by doctor_id ascending.",
+        "ta": "doctors table-a appointments table-oda reconcile pannunga, edhu doctor_id rendu table-lyum irundhaalum — match aagura ones mattum illama — result-la exact-a oru row varanum. Ovvoru row-kkum, combined doctor_id, doctor-oda name (doctors-la match aagura row illana 'UNKNOWN DOCTOR'), matrum andha doctor_id-oda link aana appointments count-a appointment_count-a return pannunga. Appointments illaadha doctor appointment_count = 0-a kaattanum, result-la irundhu disappear aagakoodadhu. Oru unified doctor_id per group build panna FULL OUTER JOIN-a COALESCE-oda use pannunga, appuram andha combined key-a GROUP BY pannunga. doctor_id ascending-a order pannunga.",
+        "hi": "doctors table ko appointments table ke saath reconcile karo taaki jo bhi doctor_id kisi bhi table mein dikhe — sirf match hone wale nahi — use result mein exactly ek row mile. Har row ke liye, combined doctor_id, doctor ka name (agar doctors mein koi matching row nahi hai to 'UNKNOWN DOCTOR'), aur appointment_count return karo, jo us doctor_id se judi appointments ki ginti hai. Jis doctor ke paas koi appointment nahi hai use appointment_count = 0 dikhana chahiye, result se gayab nahi hona chahiye. Ek unified doctor_id per group banane ke liye FULL OUTER JOIN ko COALESCE ke saath use karo, phir us combined key par GROUP BY karo. doctor_id ke ascending order mein sort karo.",
+        "te": "doctors table ni appointments table tho reconcile cheyandi, edaina doctor_id rendu table lo unna — match ayye vi matrame kaadu — result lo exact ga oka row vachela. Prathi row ki, combined doctor_id, doctor peru (doctors lo match ayye row lekapothe 'UNKNOWN DOCTOR'), mariyu aa doctor_id ki link ayina appointments count ni appointment_count ga return cheyandi. Appointments leni doctor appointment_count = 0 ga kanipinchali, result nunchi disappear avvakudadu. Oka unified doctor_id per group build cheyadaniki FULL OUTER JOIN ni COALESCE tho vadandi, tarvata aa combined key meeda GROUP BY cheyandi. doctor_id ni ascending order lo sort cheyandi."
+      },
+      "schemas": [
+        {
+          "name": "doctors",
+          "cols": [
+            { "n": "doctor_id", "t": "INTEGER", "e": "1" },
+            { "n": "name", "t": "TEXT", "e": "Dr. Ananya Rao" },
+            { "n": "specialty", "t": "TEXT", "e": "Cardiology" },
+            { "n": "city", "t": "TEXT", "e": "Bangalore" }
+          ]
+        },
+        {
+          "name": "appointments",
+          "cols": [
+            { "n": "appointment_id", "t": "INTEGER", "e": "101" },
+            { "n": "doctor_id", "t": "INTEGER", "e": "1" },
+            { "n": "patient_name", "t": "TEXT", "e": "Rahul K" },
+            { "n": "appt_date", "t": "TEXT", "e": "2026-09-01" },
+            { "n": "status", "t": "TEXT", "e": "completed" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at doctors next to their appointments with a LEFT JOIN",
+            "ta": "LEFT JOIN vachi doctors-a avanga appointments-oda paakkunga",
+            "hi": "LEFT JOIN se doctors ko unke appointments ke saath dekho",
+            "te": "LEFT JOIN tho doctors ni vaalla appointments tho chudandi"
+          },
+          "sql": "SELECT d.doctor_id, d.name, a.appointment_id, a.doctor_id AS appt_doctor_id, a.status\nFROM doctors d\nLEFT JOIN appointments a ON a.doctor_id = d.doctor_id\nORDER BY d.doctor_id, a.appointment_id;",
+          "explain": {
+            "en": [
+              "LEFT JOIN keeps every doctor row even when nothing in appointments matches it — Dr. Sanjay Gupta (doctor_id 6) shows up with NULL for appointment_id and status, because he genuinely has zero rows in appointments, not because anything went wrong.",
+              "Every other doctor shows one row per appointment they're linked to — Dr. Ananya Rao (doctor_id 1) and Dr. Vikram Shah (doctor_id 2) each have two, everyone else has one.",
+              "This view is anchored on doctors, so it can only ever show appointments whose doctor_id matches a real row in doctors — the four appointment rows with doctor_id 7, 9, or NULL simply never appear here, no matter how the JOIN condition is written, because a LEFT JOIN starting from doctors has no way to surface a row that doctors doesn't have.",
+              "That's the gap the rest of this question exists to close — a doctor-centric view can prove which doctors are quiet, but it's structurally blind to appointments pointing at doctor_ids that don't exist."
+            ],
+            "ta": [
+              "LEFT JOIN, appointments-la edhuvum match aagaadha ponalum ella doctor row-a-yum vachirukkum — Dr. Sanjay Gupta (doctor_id 6) appointment_id matrum status-kku NULL-oda varuvaru, ention avarukku appointments-la genuine-a zero rows-thaan irukku, edhuvum thappa nadanthadhunala illa.",
+              "Vera ella doctor-um avangaloda link aana appointment-kku oru row-a kaattum — Dr. Ananya Rao (doctor_id 1) matrum Dr. Vikram Shah (doctor_id 2) ovvoruthar-kkum rendu rows irukku, meedhi ella doctor-kkum oru row-thaan.",
+              "Indha view doctors-a base panni irukku, so doctors-la real row match aagura doctor_id irukkura appointments-a mattum-thaan idhu kaatta mudiyum — doctor_id 7, 9, alladhu NULL irukkura andha naalu appointment rows JOIN condition eppadi eludinaalum inga varave varaadhu, ention doctors-la irundhu start aagura LEFT JOIN-kku, doctors-la illaadha oru row-a surface panna vazhi-ye illa.",
+              "Idhu-thaan indha question-oda meedhi part close pannnradhukku irukkura gap — doctor-centric view edhu doctor quiet-a irukkanu proof pannum, aana exist-e aagaadha doctor_ids-a point pannura appointments-a paakka idhu structurally-a blind."
+            ],
+            "hi": [
+              "LEFT JOIN har doctor row ko rakhta hai chahe appointments mein kuch bhi match na ho — Dr. Sanjay Gupta (doctor_id 6) appointment_id aur status ke liye NULL ke saath dikhte hain, kyunki unke paas appointments mein genuinely zero rows hain, kisi galti ki wajah se nahi.",
+              "Baaki har doctor apne linked appointment ke liye ek row dikhata hai — Dr. Ananya Rao (doctor_id 1) aur Dr. Vikram Shah (doctor_id 2) dono ke paas do-do rows hain, baaki sabke paas ek-ek.",
+              "Yeh view doctors par anchored hai, isliye yeh sirf un appointments ko dikha sakta hai jinka doctor_id doctors mein kisi real row se match karta hai — doctor_id 7, 9, ya NULL wali chaar appointment rows chahe JOIN condition kaise bhi likha jaaye, yahan kabhi nahi dikhengi, kyunki doctors se shuru hone wale LEFT JOIN ke paas aisa koi tareeka nahi hai jisse wo ek row dikha sake jo doctors mein hai hi nahi.",
+              "Yahi wo gap hai jise is question ka baaki hissa band karne ke liye hai — doctor-centric view yeh prove kar sakta hai ki kaun se doctors quiet hain, lekin un appointments ke liye yeh structurally blind hai jo un doctor_ids ko point karte hain jo exist hi nahi karte."
+            ],
+            "te": [
+              "LEFT JOIN prathi doctor row ni unchutundi appointments lo emi match avvakapoyina — Dr. Sanjay Gupta (doctor_id 6) appointment_id mariyu status ki NULL tho kanipistaru, endukante ayana ki appointments lo genuine ga zero rows unnayi, edaina tappu jariginanduku kaadu.",
+              "Migatha prathi doctor tanaku link ayina prathi appointment ki oka row chupistaru — Dr. Ananya Rao (doctor_id 1) mariyu Dr. Vikram Shah (doctor_id 2) iddariki rendu rows unnayi, migatha andarki oka row matrame.",
+              "Ee view doctors meeda anchor ayi undi, so doctors lo real row match ayye doctor_id unna appointments ni matrame idi chupinchagaladu — doctor_id 7, 9, leda NULL unna aa nalugu appointment rows JOIN condition ela raasina ikkada eppudu kanipinchavu, endukante doctors nunchi start ayye LEFT JOIN ki, doctors lo leni row ni chupinche vidhanam ledu.",
+              "Idi ee question migatha bhagam close cheyadaniki unna gap — doctor-centric view e doctors quiet ga unnaro prove cheyagaladu, kani exist avvani doctor_ids ni point chese appointments ki idi structurally blind."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "The trap: INNER JOIN looks like a full reconciliation but isn't",
+            "ta": "Trap: INNER JOIN full reconciliation madhiri theriyum, aana illa",
+            "hi": "Trap: INNER JOIN dekhne mein poori reconciliation lagta hai, lekin hai nahi",
+            "te": "Trap: INNER JOIN full reconciliation la kanipistundi, kani kaadu"
+          },
+          "sql": "SELECT d.doctor_id, d.name, COUNT(a.appointment_id) AS appointment_count\nFROM doctors d\nJOIN appointments a ON a.doctor_id = d.doctor_id\nGROUP BY d.doctor_id, d.name\nORDER BY d.doctor_id;",
+          "explain": {
+            "en": [
+              "This reads like a clean reconciliation — group appointments by doctor, count them — and it runs without error, which is exactly what makes it dangerous.",
+              "Dr. Sanjay Gupta (doctor_id 6) is gone from the result entirely, not shown with appointment_count = 0 — an INNER JOIN only keeps rows where both sides match, so a doctor with zero appointments has nothing to match against and is silently dropped.",
+              "The four problem appointments — two pointing at doctor_id 7 and 9, which don't exist in doctors, and two logged with doctor_id NULL — never make it into this result either, for the same reason: there's no doctors row for them to join to.",
+              "An auditor reading this output would conclude every doctor has at least one appointment and every appointment belongs to a real doctor — both conclusions are false, and the query gave no error or warning to say so."
+            ],
+            "ta": [
+              "Idhu clean reconciliation madhiri padikkum — appointments-a doctor vaari group panni, count pannradhu — matrum idhu edhuvum error illama run aagum, adhu-thaan idha dangerous-a aakkuradhu.",
+              "Dr. Sanjay Gupta (doctor_id 6) result-la irundhu completely-a maayamaayidraru, appointment_count = 0-oda kooda kaattala — INNER JOIN rendu side-um match aagura rows-a mattum-thaan vachirukkum, so zero appointments irukkura doctor-kku match panna edhuvum illa, adhanaala silent-a drop aagiduvaru.",
+              "Andha naalu problem appointments — doctors-la exist pannaadha doctor_id 7 matrum 9-a point pannura rendu, matrum doctor_id NULL-oda log aana rendu — idhula-yum varave varaadhu, same reason-thaan: avangaloda join panna doctors-la oru row-e illa.",
+              "Indha output-a padikkura oru auditor, ella doctor-kkum kammasa oru appointment irukku, ella appointment-um real doctor-kku sondham nu mudivu pannuvaru — rendu conclusion-um thappu, matrum query edhu error alladhu warning-um kaattala."
+            ],
+            "hi": [
+              "Yeh ek clean reconciliation jaisa lagta hai — appointments ko doctor ke hisaab se group karke count karo — aur yeh bina kisi error ke chal jaata hai, yahi cheez ise dangerous banati hai.",
+              "Dr. Sanjay Gupta (doctor_id 6) result se poori tarah gayab hain, appointment_count = 0 ke saath bhi nahi dikhe — INNER JOIN sirf un rows ko rakhta hai jahan dono taraf match ho, isliye zero appointments wale doctor ke paas match karne ko kuch nahi hota aur wo chup-chaap drop ho jaate hain.",
+              "Wo chaar problem appointments — doctor_id 7 aur 9 ko point karne wale do, jo doctors mein exist hi nahi karte, aur doctor_id NULL ke saath log hue do — yeh bhi is result mein kabhi nahi aate, wajah wahi hai: inke join karne ke liye koi doctors row hai hi nahi.",
+              "Is output ko padhne wala koi auditor yeh maan lega ki har doctor ke paas kam se kam ek appointment hai aur har appointment kisi real doctor ki hai — dono conclusions galat hain, aur query ne isko batane ke liye koi error ya warning nahi diya."
+            ],
+            "te": [
+              "Idi clean reconciliation la kanipistundi — appointments ni doctor prakaram group chesi, count cheyadam — mariyu idi e error lekunda run avutundi, adi ne idi dangerous ga chestundi.",
+              "Dr. Sanjay Gupta (doctor_id 6) result nunchi pooriga maayamaipoyaru, appointment_count = 0 tho kuda kanipinchaledu — INNER JOIN rendu vaipu match ayye rows ni matrame unchutundi, so zero appointments unna doctor ki match cheyadaniki emi undadu, so silent ga drop avutaru.",
+              "Aa nalugu problem appointments — doctors lo exist avvani doctor_id 7 mariyu 9 ni point chese rendu, mariyu doctor_id NULL tho log ayina rendu — ivi kuda ee result lo eppudu radu, same reason: vaatiki join avvadaniki doctors lo e row ledu.",
+              "Ee output chadive oka auditor prathi doctor ki kanisam oka appointment undi, prathi appointment oka real doctor di ani anukuntaru — rendu conclusions tappu, mariyu query dini cheppadaniki e error leda warning ivvaledu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: FULL OUTER JOIN with COALESCE keeps both sides",
+            "ta": "Fix pannunga: FULL OUTER JOIN, COALESCE-oda rendu side-um vachirukkum",
+            "hi": "Fix karo: FULL OUTER JOIN, COALESCE ke saath dono taraf ko rakhta hai",
+            "te": "Fix cheyandi: FULL OUTER JOIN, COALESCE tho rendu vaipulu unchutundi"
+          },
+          "sql": "SELECT COALESCE(d.doctor_id, a.doctor_id) AS doctor_id,\n       COALESCE(d.name, 'UNKNOWN DOCTOR') AS doctor_name,\n       COUNT(a.appointment_id) AS appointment_count\nFROM doctors d\nFULL OUTER JOIN appointments a ON a.doctor_id = d.doctor_id\nGROUP BY COALESCE(d.doctor_id, a.doctor_id), COALESCE(d.name, 'UNKNOWN DOCTOR')\nORDER BY doctor_id;",
+          "explain": {
+            "en": [
+              "FULL OUTER JOIN keeps a row for every doctor with no match in appointments AND every appointment with no match in doctors, at the same time — it's a LEFT JOIN and a RIGHT JOIN combined, so Dr. Sanjay Gupta and the four problem appointments all survive in the same result.",
+              "For an unmatched doctor, a.doctor_id is NULL; for an unmatched appointment, d.doctor_id is NULL — COALESCE(d.doctor_id, a.doctor_id) picks whichever side actually has a value, so every row still gets one real doctor_id to group and sort by, instead of a mix of two half-empty columns.",
+              "The two walk-in appointments with a genuinely NULL doctor_id in the source data collapse into a single 'UNKNOWN DOCTOR' row with appointment_count = 2 — GROUP BY treats all NULLs in a column as one group — while doctor_id 7 and doctor_id 9 stay as two separate 'UNKNOWN DOCTOR' rows with appointment_count = 1 each, because 7 and 9 are actual distinct values, not NULL, even though neither matches a real doctor.",
+              "Dr. Sanjay Gupta now appears correctly with appointment_count = 0 instead of vanishing, because COUNT(a.appointment_id) counts only non-NULL appointment_id values, and an unmatched doctor's a.appointment_id is NULL — nine rows come back in total: six real doctors, plus three groups for doctor_ids that never matched anyone."
+            ],
+            "ta": [
+              "FULL OUTER JOIN, appointments-la match illaadha ella doctor-kkum, appointments-la match illaadha ella appointment-kkum ondre neram-la oru row-a vachirukkum — idhu LEFT JOIN matrum RIGHT JOIN combine pannirukkura maadhiri, so Dr. Sanjay Gupta-vum naalu problem appointments-um ella-vum indha same result-la survive pannum.",
+              "Match aagaadha doctor-kku, a.doctor_id NULL-a irukkum; match aagaadha appointment-kku, d.doctor_id NULL-a irukkum — COALESCE(d.doctor_id, a.doctor_id), edhu side-la actual-a value irukko adha pick pannum, so ovvoru row-kkum group panna matrum sort panna oru real doctor_id kidaikkum, rendu half-empty columns-oda mix-a irukkradhukku pathila.",
+              "Source data-la genuine-a NULL doctor_id irukkura rendu walk-in appointments, appointment_count = 2-oda oru 'UNKNOWN DOCTOR' row-a collapse aagum — GROUP BY, oru column-la irukkura ella NULL-a-yum oru group-a treat pannum — aana doctor_id 7 matrum doctor_id 9, appointment_count = 1 veetham-oda rendu vera vera 'UNKNOWN DOCTOR' rows-a irundhuduvanga, ention 7 matrum 9 real doctor-oda match aagaviyum, avai NULL illa, avai actual-a vera vera values.",
+              "Dr. Sanjay Gupta ippo maayaamal appointment_count = 0-oda correct-a varuvaru, ention COUNT(a.appointment_id), NULL illaadha appointment_id values-a mattum-thaan count pannum, matrum match aagaadha doctor-oda a.appointment_id NULL-a irukkum — total-a onbadhu rows thirumbi varum: aaru real doctors, plus yaarukkum match aagaadha doctor_ids-kku moondru groups."
+            ],
+            "hi": [
+              "FULL OUTER JOIN, appointments mein match na hone wale har doctor, AUR doctors mein match na hone wale har appointment — dono ke liye ek row ek saath rakhta hai — yeh LEFT JOIN aur RIGHT JOIN ka combo hai, isliye Dr. Sanjay Gupta aur chaaron problem appointments sab isi result mein survive karte hain.",
+              "Jo doctor match nahi hua uske liye a.doctor_id NULL hota hai; jo appointment match nahi hua uske liye d.doctor_id NULL hota hai — COALESCE(d.doctor_id, a.doctor_id) jis side mein bhi asal value hai use pick karta hai, isliye har row ko group aur sort karne ke liye ek real doctor_id mil jaata hai, do half-empty columns ke mix ki jagah.",
+              "Source data mein genuinely NULL doctor_id wale do walk-in appointments, appointment_count = 2 ke saath ek single 'UNKNOWN DOCTOR' row mein collapse ho jaate hain — GROUP BY ek column ke saare NULLs ko ek hi group maanta hai — jabki doctor_id 7 aur doctor_id 9, appointment_count = 1-1 ke saath do alag-alag 'UNKNOWN DOCTOR' rows bane rehte hain, kyunki 7 aur 9 asal mein alag-alag values hain, NULL nahi, chahe dono mein se koi bhi kisi real doctor se match nahi karta.",
+              "Ab Dr. Sanjay Gupta gayab hone ke bajaye appointment_count = 0 ke saath sahi tarike se dikhte hain, kyunki COUNT(a.appointment_id) sirf non-NULL appointment_id values ko count karta hai, aur match na hone wale doctor ka a.appointment_id NULL hota hai — total mein nau rows wapas aati hain: chhah real doctors, aur teen groups un doctor_ids ke liye jo kisi se bhi match nahi hue."
+            ],
+            "te": [
+              "FULL OUTER JOIN, appointments lo match kaani prathi doctor ki, appointments lo match kaani prathi appointment ki okesari row unchutundi — idi LEFT JOIN mariyu RIGHT JOIN kalipina la untundi, so Dr. Sanjay Gupta mariyu nalugu problem appointments anni ee same result lo survive avutayi.",
+              "Match avvani doctor ki, a.doctor_id NULL untundi; match avvani appointment ki, d.doctor_id NULL untundi — COALESCE(d.doctor_id, a.doctor_id) e vaipu lo actual ga value undo dani ni pick chestundi, so prathi row ki group cheyadaniki mariyu sort cheyadaniki oka real doctor_id vastundi, rendu half-empty columns mix ki badulu.",
+              "Source data lo genuine ga NULL doctor_id unna rendu walk-in appointments, appointment_count = 2 tho oka single 'UNKNOWN DOCTOR' row ga collapse avutayi — GROUP BY oka column lo unna anni NULLs ni oka group ga treat chestundi — kani doctor_id 7 mariyu doctor_id 9, appointment_count = 1 chosi rendu vere vere 'UNKNOWN DOCTOR' rows ga untayi, endukante 7 mariyu 9 actual ga vere vere values, NULL kaadu, rendu e real doctor tho match avvakapoyina.",
+              "Ippudu Dr. Sanjay Gupta maayapokunda appointment_count = 0 tho correct ga kanipistaru, endukante COUNT(a.appointment_id) NULL kaani appointment_id values ni matrame count chestundi, mariyu match avvani doctor a.appointment_id NULL ga untundi — motham tommidi rows tirigi vastayi: aaru real doctors, mariyu evariki match avvani doctor_ids ki mudu groups."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
