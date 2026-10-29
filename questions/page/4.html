@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SQL Practice Questions — Page 4 of 4 | TableNotFound</title>
-<meta name="description" content="Browse SQL practice questions 31–34 of 34 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 4 of 4.">
+<meta name="description" content="Browse SQL practice questions 31–37 of 37 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 4 of 4.">
 <link rel="canonical" href="https://www.tablenotfound.com/questions/page/4.html">
 <link rel="prev" href="https://www.tablenotfound.com/questions/page/3.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -321,7 +321,7 @@ td{padding:14px 16px;vertical-align:middle}
   <!-- QUESTION TABLE -->
   <div class="panel">
     <div class="toolbar">
-      <span class="toolbar-stat" id="tstat">4 questions</span>
+      <span class="toolbar-stat" id="tstat">7 questions</span>
       <div class="toolbar-gap"></div>
       <div class="filters">
         <button class="fb on" onclick="filt('all',this)">All</button>
@@ -343,8 +343,35 @@ td{padding:14px 16px;vertical-align:middle}
           </tr>
         </thead>
         <tbody id="tbody">
-      <tr onclick="openQ('youtube',1)">
+      <tr onclick="openQ('urbancompany',1)">
         <td class="td-num">31</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/urbancompany-every-service-using-only-jobs-actually-finished.html" onclick="event.preventDefault();event.stopPropagation();openQ('urbancompany',1);"><div class="q-text">For every service, using only jobs that have actually finished (completed_at IS NOT NULL), return service, completed_jobs (how many finished jobs it has) and avg_hours — the average time from scheduled_at to completed_at in hours, computed with julianday() and rounded to 2 decimals. Order by avg_hours descending.</div><div class="q-concepts">julianday · Date Arithmetic · AVG</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#7c3aed 13%,white);color:color-mix(in srgb,#7c3aed 90%,black)">Urban Company</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('urbancompany',2)">
+        <td class="td-num">32</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/urbancompany-partnername-return-totaljobs-completedjobs-cancell.html" onclick="event.preventDefault();event.stopPropagation();openQ('urbancompany',2);"><div class="q-text">For each partner_name, return total_jobs, completed_jobs, cancelled_jobs, unrated_jobs (completed jobs whose rating IS NULL) and avg_rating (average of the ratings that exist, rounded to 2 decimals). Use the aggregate FILTER (WHERE ...) clause for the conditional counts so that a partner with no matching rows gets 0, not NULL. Order by partner_name.</div><div class="q-concepts">FILTER · Conditional Aggregation · COUNT</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#7c3aed 13%,white);color:color-mix(in srgb,#7c3aed 90%,black)">Urban Company</span></td>
+        <td class="td-diff"><span class="diff-mid">mid</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('urbancompany',3)">
+        <td class="td-num">33</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/urbancompany-ignoring-cancelled-bookings-return-one-row-custome.html" onclick="event.preventDefault();event.stopPropagation();openQ('urbancompany',3);"><div class="q-text">Ignoring cancelled bookings, return one row per customer_name with first_service (the service of their earliest booking by booked_at) and second_service (the service of their second booking), using NTH_VALUE(service, 2). Customers with only one non-cancelled booking must show second_service as NULL. Order by customer_name.</div><div class="q-concepts">NTH_VALUE · WINDOW clause · ROWS BETWEEN</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#7c3aed 13%,white);color:color-mix(in srgb,#7c3aed 90%,black)">Urban Company</span></td>
+        <td class="td-diff"><span class="diff-hard">hard</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('youtube',1)">
+        <td class="td-num">34</td>
         <td class="td-q">
           <a class="q-link" href="/questions/youtube-video-calculate-percentage-viewers-watched-until.html" onclick="event.preventDefault();event.stopPropagation();openQ('youtube',1);"><div class="q-text">For each video, calculate the percentage of viewers who watched until the end out of all viewers who started the video. Round the result to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE · GROUP BY</div></a>
         </td>
@@ -353,7 +380,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('zepto',1)">
-        <td class="td-num">32</td>
+        <td class="td-num">35</td>
         <td class="td-q">
           <a class="q-link" href="/questions/zepto-store-zeptodailysales-excluding-any-row-where.html" onclick="event.preventDefault();event.stopPropagation();openQ('zepto',1);"><div class="q-text">For each store in zepto_daily_sales, excluding any row where revenue is NULL (the store was closed, not a zero-revenue day), compute a 3-day moving average of revenue ordered by sale_date — the average of the current trading day and the two trading days immediately before it (fewer days if not enough history exists yet). Return store_name, sale_date, revenue, and moving_avg_3day rounded to 2 decimal places, sorted by store_name and sale_date.</div><div class="q-concepts">ROWS BETWEEN · Window Functions · PARTITION BY</div></a>
         </td>
@@ -362,7 +389,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('zerodha',1)">
-        <td class="td-num">33</td>
+        <td class="td-num">36</td>
         <td class="td-q">
           <a class="q-link" href="/questions/zerodha-account-zerodhaclients-where-accounttype-corporate.html" onclick="event.preventDefault();event.stopPropagation();openQ('zerodha',1);"><div class="q-text">For each account in zerodha_clients where account_type is 'corporate', return client_name and email for accounts that either use a personal email domain (gmail.com, yahoo.com, or hotmail.com) or have no email on file at all. Sort by client_name.</div><div class="q-concepts">LIKE · WHERE · IS NULL</div></a>
         </td>
@@ -371,7 +398,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('zomato',1)">
-        <td class="td-num">34</td>
+        <td class="td-num">37</td>
         <td class="td-q">
           <a class="q-link" href="/questions/zomato-every-restaurant-never-had-cancelled-order-meaning.html" onclick="event.preventDefault();event.stopPropagation();openQ('zomato',1);"><div class="q-text">Find every restaurant that has never had a cancelled order — meaning it has zero orders with status = 'cancelled'. This includes restaurants with no orders at all, since they trivially satisfy 'never cancelled.' Use EXISTS or NOT EXISTS with a correlated subquery rather than aggregating and filtering afterward. Return restaurant_name and city, sorted alphabetically by restaurant_name.</div><div class="q-concepts">EXISTS · NOT EXISTS · Correlated Subquery</div></a>
         </td>
@@ -402,7 +429,7 @@ let UM = []; // loaded dynamically from /questions/index.json
 /* PAGE_QUESTIONS: the exact {uid,qid} pairs pre-rendered into THIS page's tbody, in order.
    Written by scripts/generate-question-pages.js — boot() only ever fetches and renders
    these, so pagination can't be silently undone once JS loads. */
-let PAGE_QUESTIONS = [{"uid":"youtube","qid":1},{"uid":"zepto","qid":1},{"uid":"zerodha","qid":1},{"uid":"zomato","qid":1}];
+let PAGE_QUESTIONS = [{"uid":"urbancompany","qid":1},{"uid":"urbancompany","qid":2},{"uid":"urbancompany","qid":3},{"uid":"youtube","qid":1},{"uid":"zepto","qid":1},{"uid":"zerodha","qid":1},{"uid":"zomato","qid":1}];
 /* START_INDEX: 0-based rank of this page's first question among all questions.
    Written by scripts/generate-question-pages.js — keeps the "S.No" column in sync
    with the server-rendered numbering once renderTable() takes over after boot(). */

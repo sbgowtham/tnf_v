@@ -215,5 +215,12 @@
       "sub": "Home Services Ops Analytics",
       "c": "#7c3aed",
       "difficulty": "hard"
+    },
+    {
+      "id": "rapido",
+      "name": "Rapido",
+      "sub": "Captain Streaks & Earnings",
+      "c": "#ca8a04",
+      "difficulty": "hard"
     }
   ]

@@ -1,0 +1,428 @@
+{
+  "setup": "CREATE TABLE rapido_shifts(captain_name TEXT,city TEXT,shift_date TEXT,rides INTEGER,earnings INTEGER);\nINSERT INTO rapido_shifts VALUES\n ('Arun','Bengaluru','2026-04-01',12,1450),\n ('Arun','Bengaluru','2026-04-02',10,1200),\n ('Arun','Bengaluru','2026-04-03',9,NULL),\n ('Arun','Bengaluru','2026-04-04',11,1320),\n ('Arun','Bengaluru','2026-04-05',0,0),\n ('Arun','Bengaluru','2026-04-06',8,980),\n ('Arun','Bengaluru','2026-04-07',10,1210),\n ('Bhavana','Bengaluru','2026-04-01',9,1900),\n ('Bhavana','Bengaluru','2026-04-03',9,1100),\n ('Bhavana','Bengaluru','2026-04-04',8,960),\n ('Bhavana','Bengaluru','2026-04-05',10,1250),\n ('Bhavana','Bengaluru','2026-04-06',6,NULL),\n ('Bhavana','Bengaluru','2026-04-08',9,1080),\n ('Chetan','Bengaluru','2026-04-02',5,600),\n ('Chetan','Bengaluru','2026-04-03',6,720),\n ('Chetan','Bengaluru','2026-04-04',0,0),\n ('Chetan','Bengaluru','2026-04-05',7,850),\n ('Deepa','Hyderabad','2026-04-01',11,1300),\n ('Deepa','Hyderabad','2026-04-02',12,1420),\n ('Deepa','Hyderabad','2026-04-03',10,1180),\n ('Deepa','Hyderabad','2026-04-04',9,1050),\n ('Deepa','Hyderabad','2026-04-05',11,1290),\n ('Imran','Hyderabad','2026-04-01',6,700),\n ('Imran','Hyderabad','2026-04-04',8,NULL),\n ('Imran','Hyderabad','2026-04-05',7,820),\n ('Imran','Hyderabad','2026-04-06',9,1010),\n ('Jaya','Hyderabad','2026-04-06',5,NULL),\n ('Jaya','Hyderabad','2026-04-07',6,NULL),\n ('Jaya','Hyderabad','2026-04-08',4,NULL);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "hard",
+      "cc": [
+        "Gaps and Islands",
+        "ROW_NUMBER",
+        "date() modifiers",
+        "CTE"
+      ],
+      "story": {
+        "en": "Rapido is launching a 'Streak Star' badge for bike-taxi captains who ride on many consecutive days. The shifts table has one row per day a captain logged in: rides is how many trips they completed that day (0 means they were online but got no trips), and earnings is that day's payout. Payouts settle a day or two late, so a day with real rides can still have earnings = NULL — meaning 'payout not settled yet', not 'earned nothing'. Days a captain didn't log in at all simply have no row. The badge team needs each captain's longest run of consecutive calendar days with at least one ride.",
+        "ta": "Rapido, neraya consecutive days ride pannura bike-taxi captains-kku oru 'Streak Star' badge launch pannudhu. Shifts table-la oru captain login panna ovvoru naalukkum oru row irukku: rides andha naal avanga mudicha trips count (0 na online-a irundhaanga aana trip kidaikkala), earnings andha naaloda payout. Payouts oru rendu naal late-a settle aagum, so real rides irukkura oru naal-kku kooda earnings = NULL irukkalaam — adhoda artham 'payout innum settle aagala', 'onnum sambaadhikkala' illa. Captain login pannave illaadha naatkalukku row-e irukkaadhu. Badge team-kku ovvoru captain-oda kurainjadhu oru ride irukkura longest consecutive calendar days run venum.",
+        "hi": "Rapido un bike-taxi captains ke liye ek 'Streak Star' badge launch kar raha hai jo lagaataar kai dino tak ride karte hain. Shifts table mein har us din ki ek row hai jis din captain ne login kiya: rides us din poore kiye gaye trips ki ginti hai (0 matlab online the lekin koi trip nahi mili), aur earnings us din ka payout hai. Payouts ek-do din der se settle hote hain, isliye asli rides wale din par bhi earnings = NULL ho sakta hai — matlab 'payout abhi settle nahi hua', na ki 'kuch nahi kamaya'. Jis din captain ne login hi nahi kiya, uski koi row hi nahi hai. Badge team ko har captain ka sabse lamba lagaataar calendar days ka run chahiye jismein kam se kam ek ride ho.",
+        "te": "Rapido chaala consecutive days ride chese bike-taxi captains kosam oka 'Streak Star' badge launch chestondi. Shifts table lo captain login ayina prathi roju ki oka row undi: rides aa roju vaallu complete chesina trips count (0 ante online lo unnaru kani trip raaledu), earnings aa roju payout. Payouts oka rendu rojulu late ga settle avutayi, kabatti real rides unna roju ki kuda earnings = NULL undochu — daani artham 'payout inka settle avvaledu', 'emi sampaadinchaledu' kaadu. Captain asalu login avvani rojulaki row e undadu. Badge team ki prathi captain kanisam oka ride unna longest consecutive calendar days run kavali."
+      },
+      "question": {
+        "en": "Treat a day as active when rides > 0 (regardless of whether earnings has settled). For every captain, find the longest streak of consecutive calendar days that are all active, using the gaps-and-islands technique: date(shift_date, '-' || ROW_NUMBER() ... || ' days') gives every day in the same unbroken run the same island key. Return captain_name and longest_streak, ordered by longest_streak descending, then captain_name.",
+        "ta": "rides > 0 irundhaa oru naal active nu eduthukkonga (earnings settle aanaalum aagaatti-naalum). Ovvoru captain-kkum, ellam active-a irukkura longest consecutive calendar days streak-a gaps-and-islands technique use panni kandupidinga: date(shift_date, '-' || ROW_NUMBER() ... || ' days') udaiyaadha same run-la irukkura ovvoru naalukkum same island key tharum. captain_name matrum longest_streak return pannunga, longest_streak descending, apparam captain_name vaari order pannunga.",
+        "hi": "Ek din ko active maano jab rides > 0 ho (chahe earnings settle hua ho ya nahi). Har captain ke liye, gaps-and-islands technique se lagaataar calendar days ki sabse lambi streak dhoondho jismein saare din active hon: date(shift_date, '-' || ROW_NUMBER() ... || ' days') ek hi bina toote run ke har din ko same island key deta hai. captain_name aur longest_streak return karo, longest_streak descending, phir captain_name ke hisaab se sort karo.",
+        "te": "rides > 0 unte oka roju active ani teeskondi (earnings settle ayina avvakapoyina). Prathi captain ki, anni active ga unna longest consecutive calendar days streak ni gaps-and-islands technique tho kanukkondi: date(shift_date, '-' || ROW_NUMBER() ... || ' days') vidiponi oke run lo unna prathi roju ki same island key istundi. captain_name mariyu longest_streak return cheyandi, longest_streak descending, tarvata captain_name prakaram sort cheyandi."
+      },
+      "schemas": [
+        {
+          "name": "rapido_shifts",
+          "cols": [
+            { "n": "captain_name", "t": "TEXT", "e": "Arun" },
+            { "n": "city", "t": "TEXT", "e": "Bengaluru" },
+            { "n": "shift_date", "t": "TEXT", "e": "2026-04-01" },
+            { "n": "rides", "t": "INTEGER", "e": "12" },
+            { "n": "earnings", "t": "INTEGER", "e": "1450" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at every captain's shifts day by day",
+            "ta": "Ovvoru captain-oda shifts-a naal vaari paakkunga",
+            "hi": "Har captain ki shifts ko din-ba-din dekho",
+            "te": "Prathi captain shifts ni roju vaariga chudandi"
+          },
+          "sql": "SELECT captain_name, shift_date, rides, earnings\nFROM rapido_shifts\nORDER BY captain_name, shift_date;",
+          "explain": {
+            "en": [
+              "29 rows across 6 captains; a missing date means the captain never logged in — Bhavana has no row for 04-02 or 04-07, and Imran has none for 04-02 or 04-03 — so a streak can break on a day that simply isn't in the table.",
+              "Two rows have rides = 0 (Arun on 04-05, Chetan on 04-04): they logged in but got no trips, so those days are in the table yet are not active, and they also break a streak.",
+              "Six rows have earnings = NULL with real rides — Arun 04-03, Bhavana 04-06, Imran 04-04, and all three of Jaya's days — because those payouts haven't settled yet; Jaya is a new captain and none of her payouts have come through.",
+              "That gives three different reasons a row can look 'empty': no row at all (logged out), rides = 0 (online, no trips) and earnings NULL (rides happened, money pending) — only the first two should break a streak."
+            ],
+            "ta": [
+              "6 captains-la 29 rows; oru date missing-a irundhaa captain login pannave illa nu artham — Bhavana-kku 04-02, 04-07-kku row illa, Imran-kku 04-02, 04-03-kku illa — so table-la illaadha oru naal-la kooda streak udaiyalaam.",
+              "Rendu rows-la rides = 0 (Arun 04-05, Chetan 04-04): login pannaanga aana trips kidaikkala, so andha naatkal table-la irundhaalum active illa, avanga streak-a-yum udaikkum.",
+              "Aaru rows-la real rides irundhum earnings = NULL — Arun 04-03, Bhavana 04-06, Imran 04-04, matrum Jaya-oda moonu naalum — ennaa andha payouts innum settle aagala; Jaya oru pudhu captain, avanga payouts edhuvum innum varala.",
+              "Appo oru row 'empty'-a theriya moonu vera vera kaaranam irukku: row-e illa (logout), rides = 0 (online, trips illa) matrum earnings NULL (rides nadandhuchu, panam pending) — mudhal rendu mattum thaan streak-a udaikkanum."
+            ],
+            "hi": [
+              "6 captains mein 29 rows; koi date missing hai matlab captain ne login hi nahi kiya — Bhavana ki 04-02 aur 04-07 ki row nahi hai, aur Imran ki 04-02 aur 04-03 ki nahi — isliye streak us din bhi toot sakti hai jo table mein hai hi nahi.",
+              "Do rows mein rides = 0 hai (Arun 04-05, Chetan 04-04): unhone login kiya lekin trips nahi mili, isliye woh din table mein hain phir bhi active nahi hain, aur streak tod dete hain.",
+              "Chhe rows mein asli rides hone ke bawajood earnings = NULL hai — Arun 04-03, Bhavana 04-06, Imran 04-04, aur Jaya ke teeno din — kyunki woh payouts abhi settle nahi hue; Jaya nayi captain hai aur unka koi payout abhi tak nahi aaya.",
+              "Yaani ek row 'khaali' dikhne ke teen alag kaaran hain: row hi nahi (logout), rides = 0 (online, trips nahi) aur earnings NULL (rides hui, paisa pending) — sirf pehle do hi streak todne chahiye."
+            ],
+            "te": [
+              "6 captains lo 29 rows; oka date missing ante captain asalu login avvaledu — Bhavana ki 04-02, 04-07 row ledu, Imran ki 04-02, 04-03 ledu — kabatti table lo leni oka roju kuda streak ni break cheyochu.",
+              "Rendu rows lo rides = 0 (Arun 04-05, Chetan 04-04): login ayyaru kani trips raaledu, kabatti aa rojulu table lo unnappatiki active kaavu, avi streak ni kuda break chestayi.",
+              "Aaru rows lo real rides unnappatiki earnings = NULL — Arun 04-03, Bhavana 04-06, Imran 04-04, mariyu Jaya mudu rojulu — endukante aa payouts inka settle avvaledu; Jaya kotha captain, aame payouts emi inka raaledu.",
+              "Ante oka row 'empty' ga kanipinchadaniki mudu vere vere kaaranalu unnayi: row e ledu (logout), rides = 0 (online, trips levu) mariyu earnings NULL (rides jarigayi, dabbu pending) — modati rendu matrame streak ni break cheyyali."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "The trap: defining 'active' as earnings > 0",
+            "ta": "Trap: 'active'-a earnings > 0 nu define panradhu",
+            "hi": "Trap: 'active' ko earnings > 0 se define karna",
+            "te": "Trap: 'active' ni earnings > 0 ga define cheyyadam"
+          },
+          "sql": "WITH active AS (\n  SELECT captain_name, shift_date,\n         date(shift_date, '-' || ROW_NUMBER() OVER (PARTITION BY captain_name ORDER BY shift_date) || ' days') AS island_key\n  FROM rapido_shifts\n  WHERE earnings > 0\n),\nstreaks AS (\n  SELECT captain_name, island_key, COUNT(*) AS streak_days\n  FROM active\n  GROUP BY captain_name, island_key\n)\nSELECT captain_name, MAX(streak_days) AS longest_streak\nFROM streaks\nGROUP BY captain_name\nORDER BY longest_streak DESC, captain_name;",
+          "explain": {
+            "en": [
+              "The island trick: ROW_NUMBER counts 1, 2, 3... over a captain's active days, and subtracting that many days from each date gives a constant while the dates are consecutive (04-01 minus 1, 04-02 minus 2 and 04-03 minus 3 all land on 03-31) and jumps to a new value right after a gap.",
+              "The logic is correct, but the filter is not: earnings > 0 is NULL for an unsettled day, and WHERE keeps only rows that are TRUE, so every pending payout day drops out and is treated as if the captain had stayed home.",
+              "Arun's real four-day run (04-01 to 04-04) is cut in two by his NULL on 04-03, so he shows 2 instead of 4; Bhavana drops from 4 to 3 and Imran from 3 to 2 for the same reason.",
+              "Jaya disappears from the result completely — all three of her days are NULL, so not a single row survives the filter — and a captain who rode three days straight gets no badge at all, simply because her money is still in transit."
+            ],
+            "ta": [
+              "Island trick: ROW_NUMBER oru captain-oda active days mela 1, 2, 3... count pannum, ovvoru date-la irundhum adhe alavu days-a kazhicha dates consecutive-a irukkura varaikkum oru constant kidaikkum (04-01 minus 1, 04-02 minus 2, 04-03 minus 3 ellam 03-31-la land aagum), oru gap-kku apparam pudhu value-kku jump aagum.",
+              "Logic correct thaan, aana filter correct illa: settle aagaadha naal-kku earnings > 0 NULL aagum, WHERE TRUE rows-a mattum vachukkum, so ovvoru pending payout naalum drop aagi, captain veetla irundha madhiri treat aagudhu.",
+              "Arun-oda real naalu naal run (04-01 to 04-04) avaroda 04-03 NULL-aala rendaa udaiyudhu, so 4-kku pathila 2 kaattudhu; adhe kaaranathaala Bhavana 4-la irundhu 3-kku, Imran 3-la irundhu 2-kku iranguraanga.",
+              "Jaya result-la irundhu completely kaanaama poraanga — avanga moonu naalum NULL, so filter-a oru row kooda thaandala — thodarndhu moonu naal ride panna oru captain-kku badge-e kidaikkala, avanga panam innum transit-la irukkuradhaala mattum."
+            ],
+            "hi": [
+              "Island trick: ROW_NUMBER captain ke active days par 1, 2, 3... ginta hai, aur har date se utne din ghatane par jab tak dates lagaataar hain ek constant milta hai (04-01 minus 1, 04-02 minus 2 aur 04-03 minus 3 sab 03-31 par aate hain), aur gap ke turant baad naye value par jump karta hai.",
+              "Logic sahi hai, lekin filter nahi: unsettled din ke liye earnings > 0 NULL hota hai, aur WHERE sirf TRUE rows rakhta hai, isliye har pending payout wala din drop ho jaata hai aur aise treat hota hai jaise captain ghar par raha.",
+              "Arun ka asli chaar din ka run (04-01 se 04-04) unke 04-03 ke NULL se do tukdon mein toot jaata hai, isliye 4 ki jagah 2 dikhta hai; isi wajah se Bhavana 4 se 3 aur Imran 3 se 2 par aa jaate hain.",
+              "Jaya result se poori tarah gayab ho jaati hain — unke teeno din NULL hain, isliye ek bhi row filter paar nahi karti — aur lagaataar teen din ride karne wali captain ko koi badge nahi milta, sirf isliye ki unka paisa abhi transit mein hai."
+            ],
+            "te": [
+              "Island trick: ROW_NUMBER oka captain active days meeda 1, 2, 3... count chestundi, prathi date nundi anni rojulu teesesthe dates consecutive ga unnantha varaku oka constant vastundi (04-01 minus 1, 04-02 minus 2, 04-03 minus 3 anni 03-31 lo land avutayi), oka gap tarvata kotha value ki jump avutundi.",
+              "Logic correct e, kani filter correct kaadu: settle avvani roju ki earnings > 0 NULL avutundi, WHERE TRUE rows ni matrame unchutundi, kabatti prathi pending payout roju drop ayyi, captain intlo unnatlu treat avutundi.",
+              "Arun real naalugu rojula run (04-01 to 04-04) ayana 04-03 NULL valla rendu mukkaluga break avutundi, kabatti 4 ki badulu 2 chupistundi; ade kaaranam valla Bhavana 4 nundi 3 ki, Imran 3 nundi 2 ki digutaru.",
+              "Jaya result nundi pooriga maayamavutaru — aame mudu rojulu NULL, kabatti okka row kuda filter ni daatadu — varusaga mudu rojulu ride chesina oka captain ki badge e raadu, aame dabbu inka transit lo undadam valla matrame."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: define active by rides > 0 and measure each island",
+            "ta": "Fix pannunga: active-a rides > 0-aala define panni ovvoru island-a-yum measure pannunga",
+            "hi": "Fix karo: active ko rides > 0 se define karo aur har island naapo",
+            "te": "Fix cheyandi: active ni rides > 0 tho define chesi prathi island ni measure cheyandi"
+          },
+          "sql": "WITH active AS (\n  SELECT captain_name, shift_date,\n         date(shift_date, '-' || ROW_NUMBER() OVER (PARTITION BY captain_name ORDER BY shift_date) || ' days') AS island_key\n  FROM rapido_shifts\n  WHERE rides > 0\n),\nstreaks AS (\n  SELECT captain_name, island_key, COUNT(*) AS streak_days\n  FROM active\n  GROUP BY captain_name, island_key\n)\nSELECT captain_name, MAX(streak_days) AS longest_streak\nFROM streaks\nGROUP BY captain_name\nORDER BY longest_streak DESC, captain_name;",
+          "explain": {
+            "en": [
+              "rides is never NULL, so WHERE rides > 0 removes exactly the two zero-ride days and nothing else — the unsettled-payout days stay in, because whether money has arrived has nothing to do with whether the captain worked.",
+              "date(shift_date, '-' || n || ' days') builds the modifier text like '-3 days' on the fly; the zero-ride day and the logged-out days are both missing from the active set, so each one shifts the island key and starts a new run, exactly as a real break should.",
+              "Result: Deepa 5, Arun 4, Bhavana 4, Imran 3, Jaya 3, Chetan 2 — Arun's 04-01 to 04-04 run is whole again, and Jaya is back with a genuine 3-day streak.",
+              "Grouping by captain_name and island_key turns each island into one row with its length, and the outer MAX picks the longest per captain; Arun has two islands (4 days, then 2 days after his zero-ride 04-05) and only the 4 is reported."
+            ],
+            "ta": [
+              "rides eppovume NULL illa, so WHERE rides > 0 rendu zero-ride days-a mattum exact-a remove pannum, vera onnum illa — unsettled-payout days ulla irukku, ennaa panam vandhuchaa illaiyaa-ngradhukkum captain velai senjaangalaa-ngradhukkum sambandham illa.",
+              "date(shift_date, '-' || n || ' days') '-3 days' madhiri modifier text-a appove build pannum; zero-ride naal-um logout naatkalum active set-la illa, so ovvonnum island key-a shift panni pudhu run aarambikkum, real break-la nadakkanum-nu exact-a appadiye.",
+              "Result: Deepa 5, Arun 4, Bhavana 4, Imran 3, Jaya 3, Chetan 2 — Arun-oda 04-01 to 04-04 run thirumba muzhusaa aachu, Jaya-um genuine 3-day streak-oda thirumba vandhuttaanga.",
+              "captain_name matrum island_key vaari group panna ovvoru island-um adhoda length-oda oru row aagum, outer MAX ovvoru captain-kkum longest-a edukkum; Arun-kku rendu islands (4 days, apparam avaroda zero-ride 04-05-kku apparam 2 days), 4 mattum thaan report aagum."
+            ],
+            "hi": [
+              "rides kabhi NULL nahi hota, isliye WHERE rides > 0 theek do zero-ride days ko hataata hai aur kuch nahi — unsettled-payout wale din andar rehte hain, kyunki paisa aaya ya nahi iska captain ne kaam kiya ya nahi se koi lena-dena nahi.",
+              "date(shift_date, '-' || n || ' days') '-3 days' jaisa modifier text turant banata hai; zero-ride wala din aur logout wale din dono active set mein nahi hain, isliye har ek island key ko shift karke naya run shuru karta hai, bilkul jaise asli break mein hona chahiye.",
+              "Result: Deepa 5, Arun 4, Bhavana 4, Imran 3, Jaya 3, Chetan 2 — Arun ka 04-01 se 04-04 ka run phir se poora hai, aur Jaya ek genuine 3-day streak ke saath wapas aa gayi.",
+              "captain_name aur island_key se group karne par har island apni length ke saath ek row ban jaata hai, aur bahar ka MAX har captain ka sabse lamba chunta hai; Arun ke do islands hain (4 din, phir unke zero-ride 04-05 ke baad 2 din) aur sirf 4 report hota hai."
+            ],
+            "te": [
+              "rides eppudu NULL kaadu, kabatti WHERE rides > 0 exact ga rendu zero-ride days ni matrame remove chestundi, inkemi kaadu — unsettled-payout days lopale untayi, endukante dabbu vachinda leda anedi captain pani chesara leda anedaniki sambandham ledu.",
+              "date(shift_date, '-' || n || ' days') '-3 days' lanti modifier text ni appatikappude build chestundi; zero-ride roju mariyu logout rojulu rendu active set lo levu, kabatti prathi okkati island key ni shift chesi kotha run start chestundi, real break lo jaragalsinatte.",
+              "Result: Deepa 5, Arun 4, Bhavana 4, Imran 3, Jaya 3, Chetan 2 — Arun 04-01 to 04-04 run malli poorti ga undi, Jaya kuda genuine 3-day streak tho tirigi vacharu.",
+              "captain_name mariyu island_key prakaram group cheste prathi island daani length tho oka row avutundi, outer MAX prathi captain ki longest ni teeskuntundi; Arun ki rendu islands (4 days, tarvata ayana zero-ride 04-05 tarvata 2 days), 4 matrame report avutundi."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "diff": "hard",
+      "cc": [
+        "RANGE BETWEEN",
+        "Window Frame",
+        "SUM OVER",
+        "CTE"
+      ],
+      "story": {
+        "en": "Rapido's weekend-surge planners want to know each captain's best 3-day earning stretch, to set realistic incentive targets. 'Three days' here means three calendar days — the current day plus the two days before it — not 'the last three shifts', because a captain who took a day off didn't earn anything that day. The obvious window function uses ROWS BETWEEN 2 PRECEDING AND CURRENT ROW, which quietly reaches back across days off. Earnings that haven't settled yet are NULL, and SUM skips them; a captain with nothing settled in any window should come out as NULL ('no settled earnings yet'), not 0.",
+        "ta": "Rapido-oda weekend-surge planners, realistic incentive targets set panna ovvoru captain-oda best 3-day earning stretch-a therinjukka virumbuthu. Inga 'moonu naal' na moonu calendar days — current naal-um adhukku munnadi irukkura rendu naal-um — 'last moonu shifts' illa, ennaa oru naal leave eduthha captain andha naal edhuvum sambaadhikkala. Obvious window function ROWS BETWEEN 2 PRECEDING AND CURRENT ROW use pannum, adhu amaidhi-a leave naatkalai thaandi pinnaadi poyidum. Innum settle aagaadha earnings NULL, SUM avanga-a skip pannum; endha window-la-yum edhuvum settle aagaadha captain NULL-a ('innum settled earnings illa') varanum, 0-a illa.",
+        "hi": "Rapido ke weekend-surge planners realistic incentive targets set karne ke liye har captain ka best 3-day earning stretch jaanna chahte hain. Yahan 'teen din' matlab teen calendar days — aaj ka din aur usse pehle ke do din — na ki 'aakhri teen shifts', kyunki jis captain ne ek din chhutti li usne us din kuch nahi kamaya. Obvious window function ROWS BETWEEN 2 PRECEDING AND CURRENT ROW use karta hai, jo chup-chaap chhutti ke dino ke paar peeche chala jaata hai. Jo earnings abhi settle nahi hui woh NULL hain, aur SUM unhe skip karta hai; jis captain ka kisi bhi window mein kuch settle nahi hua woh NULL ('abhi koi settled earnings nahi') aana chahiye, 0 nahi.",
+        "te": "Rapido weekend-surge planners realistic incentive targets set cheyyadaniki prathi captain best 3-day earning stretch ni telusukovalani anukuntunnaru. Ikkada 'mudu rojulu' ante mudu calendar days — current roju mariyu daaniki mundu rendu rojulu — 'last mudu shifts' kaadu, endukante oka roju leave teesukunna captain aa roju emi sampaadinchaledu. Obvious window function ROWS BETWEEN 2 PRECEDING AND CURRENT ROW use chestundi, adi silent ga leave rojulani daati venakki veltundi. Inka settle avvani earnings NULL, SUM vaatini skip chestundi; e window lo kuda emi settle avvani captain NULL ga ('inka settled earnings levu') raavali, 0 ga kaadu."
+      },
+      "question": {
+        "en": "For every row, compute earnings_3day = the sum of settled earnings over that day and the two calendar days before it, using SUM(earnings) OVER (PARTITION BY captain_name ORDER BY julianday(shift_date) RANGE BETWEEN 2 PRECEDING AND CURRENT ROW). Then return captain_name and best_3day_earnings (the MAX of earnings_3day) per captain, ordered by best_3day_earnings descending. A captain with no settled earnings at all should show NULL.",
+        "ta": "Ovvoru row-kkum, earnings_3day = andha naal matrum adhukku munnadi irukkura rendu calendar days-oda settled earnings sum-a, SUM(earnings) OVER (PARTITION BY captain_name ORDER BY julianday(shift_date) RANGE BETWEEN 2 PRECEDING AND CURRENT ROW) use panni compute pannunga. Apparam ovvoru captain-kkum captain_name matrum best_3day_earnings (earnings_3day-oda MAX) return pannunga, best_3day_earnings descending order-la. Settled earnings edhuvum illaadha captain NULL kaattanum.",
+        "hi": "Har row ke liye earnings_3day = us din aur usse pehle ke do calendar days ki settled earnings ka sum, SUM(earnings) OVER (PARTITION BY captain_name ORDER BY julianday(shift_date) RANGE BETWEEN 2 PRECEDING AND CURRENT ROW) se compute karo. Phir har captain ke liye captain_name aur best_3day_earnings (earnings_3day ka MAX) return karo, best_3day_earnings descending order mein. Jis captain ki koi bhi settled earnings nahi hai use NULL dikhana chahiye.",
+        "te": "Prathi row ki, earnings_3day = aa roju mariyu daaniki mundu rendu calendar days settled earnings sum ni, SUM(earnings) OVER (PARTITION BY captain_name ORDER BY julianday(shift_date) RANGE BETWEEN 2 PRECEDING AND CURRENT ROW) tho compute cheyandi. Tarvata prathi captain ki captain_name mariyu best_3day_earnings (earnings_3day MAX) return cheyandi, best_3day_earnings descending order lo. Settled earnings emi leni captain NULL chupinchali."
+      },
+      "schemas": [
+        {
+          "name": "rapido_shifts",
+          "cols": [
+            { "n": "captain_name", "t": "TEXT", "e": "Arun" },
+            { "n": "city", "t": "TEXT", "e": "Bengaluru" },
+            { "n": "shift_date", "t": "TEXT", "e": "2026-04-01" },
+            { "n": "rides", "t": "INTEGER", "e": "12" },
+            { "n": "earnings", "t": "INTEGER", "e": "1450" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "See each captain's daily earnings and the gaps between shifts",
+            "ta": "Ovvoru captain-oda daily earnings-a-yum shifts naduvula irukkura gaps-a-yum paakkunga",
+            "hi": "Har captain ki daily earnings aur shifts ke beech ke gaps dekho",
+            "te": "Prathi captain daily earnings ni mariyu shifts madhya unna gaps ni chudandi"
+          },
+          "sql": "SELECT captain_name, shift_date, earnings\nFROM rapido_shifts\nORDER BY captain_name, shift_date;",
+          "explain": {
+            "en": [
+              "Bhavana's dates go 04-01, then 04-03 — she took 04-02 off — and later skip 04-07; Imran jumps from 04-01 straight to 04-04, a two-day gap; those gaps are where 'last 3 rows' and 'last 3 days' stop meaning the same thing.",
+              "Bhavana's 04-01 shift paid 1900, the biggest single day in the table (a run of long airport trips), which makes it very visible when a window wrongly drags that day into a stretch it doesn't belong to.",
+              "Imran's 04-04 earnings is NULL (payout pending), and all three of Jaya's days are NULL — so some 3-day windows will contain no settled money at all.",
+              "Deepa worked five days straight with no gaps and no NULLs, so for her every possible window definition gives the same answer; she's the control case to compare the others against."
+            ],
+            "ta": [
+              "Bhavana-oda dates 04-01, apparam 04-03 — 04-02 leave eduthaanga — apparam 04-07-a skip pannuraanga; Imran 04-01-la irundhu direct-a 04-04-kku jump pannuraaru, oru rendu naal gap; indha gaps-la thaan 'last 3 rows'-um 'last 3 days'-um same artham tharradhu nirkkudhu.",
+              "Bhavana-oda 04-01 shift 1900 kuduthuchu, table-la irukkura biggest single day (neraya long airport trips), so oru window andha naal-a sondham illaadha oru stretch-kulla thappa izhuthaa adhu romba theliva theriyum.",
+              "Imran-oda 04-04 earnings NULL (payout pending), Jaya-oda moonu naalum NULL — so sila 3-day windows-la settled panam edhuvume irukkaadhu.",
+              "Deepa gaps-um NULLs-um illama thodarndhu anju naal velai senjaanga, so avangaluku endha window definition-um same answer tharum; matha captains-a compare panna avanga thaan control case."
+            ],
+            "hi": [
+              "Bhavana ki dates 04-01, phir 04-03 hain — unhone 04-02 ko chhutti li — aur baad mein 04-07 skip hota hai; Imran 04-01 se seedha 04-04 par jump karte hain, do din ka gap; inhi gaps par 'aakhri 3 rows' aur 'aakhri 3 din' ka matlab ek jaisa hona band ho jaata hai.",
+              "Bhavana ki 04-01 shift ne 1900 diye, table ka sabse bada single day (lambe airport trips ka run), isliye jab koi window galti se us din ko aise stretch mein kheench leti hai jahan woh nahi aata, to woh bahut saaf dikhta hai.",
+              "Imran ki 04-04 earnings NULL hai (payout pending), aur Jaya ke teeno din NULL hain — isliye kuch 3-day windows mein koi settled paisa hoga hi nahi.",
+              "Deepa ne bina kisi gap ya NULL ke lagaataar paanch din kaam kiya, isliye unke liye har window definition same jawab deti hai; baaki captains se compare karne ke liye woh control case hain."
+            ],
+            "te": [
+              "Bhavana dates 04-01, tarvata 04-03 — aame 04-02 leave teesukunnaru — tarvata 04-07 ni skip chestaru; Imran 04-01 nundi direct ga 04-04 ki jump chestaru, oka rendu rojula gap; ee gaps lone 'last 3 rows' mariyu 'last 3 days' same artham ivvadam aagipotundi.",
+              "Bhavana 04-01 shift 1900 ichindi, table lo unna biggest single day (chaala long airport trips), kabatti oka window aa roju ni daaniki sambandham leni oka stretch lopaliki tappuga laagite adi chaala spashtanga kanipistundi.",
+              "Imran 04-04 earnings NULL (payout pending), mariyu Jaya mudu rojulu NULL — kabatti konni 3-day windows lo settled dabbu emi undadu.",
+              "Deepa gaps mariyu NULLs lekunda varusaga aidu rojulu pani chesaru, kabatti aame ki e window definition aina same answer istundi; migata captains ni compare cheyyadaniki aame control case."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "The trap: ROWS counts shifts, not calendar days",
+            "ta": "Trap: ROWS shifts-a count pannum, calendar days-a illa",
+            "hi": "Trap: ROWS shifts ginta hai, calendar days nahi",
+            "te": "Trap: ROWS shifts ni count chestundi, calendar days ni kaadu"
+          },
+          "sql": "SELECT captain_name, shift_date, earnings,\n       SUM(earnings) OVER (PARTITION BY captain_name ORDER BY shift_date\n                           ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS rows_3day,\n       SUM(earnings) OVER (PARTITION BY captain_name ORDER BY julianday(shift_date)\n                           RANGE BETWEEN 2 PRECEDING AND CURRENT ROW) AS range_3day\nFROM rapido_shifts\nORDER BY captain_name, shift_date;",
+          "explain": {
+            "en": [
+              "On Bhavana's 04-04 row, rows_3day = 3960 because ROWS just takes the two previous rows (04-01 and 04-03), even though 04-01 is three days back; range_3day = 2060 because RANGE keeps only rows whose julianday is within 2 of the current day (04-02 to 04-04).",
+              "Imran on 04-04 shows the gap even more clearly: rows_3day = 700, money he earned on 04-01, while range_3day = NULL, because the only row in his real 3-day window is today's unsettled payout and SUM over only NULLs is NULL.",
+              "RANGE with a numeric offset needs a numeric ORDER BY — julianday(shift_date) turns '2026-04-04' into a day number so '2 PRECEDING' means two days; with ORDER BY shift_date on TEXT, SQLite runs without an error but the frame shrinks to just the current day, another silent wrong answer.",
+              "For Deepa and Arun the two columns match on every row because neither has a missing calendar day; ROWS and RANGE only disagree where there's a gap — which is exactly why this bug survives testing on 'clean' captains."
+            ],
+            "ta": [
+              "Bhavana-oda 04-04 row-la rows_3day = 3960, ennaa ROWS munnaadi irukkura rendu rows-a (04-01, 04-03) appadiye edukkum, 04-01 moonu naal pinnaadi irundhaalum; range_3day = 2060, ennaa RANGE current naal-la irundhu 2-kkulla julianday irukkura rows-a mattum vachukkum (04-02 to 04-04).",
+              "04-04-la Imran gap-a innum theliva kaattuvaaru: rows_3day = 700, avaru 04-01-la sambaadhicha panam, range_3day = NULL, ennaa avaroda real 3-day window-la irukkura ore row innaikku-oda unsettled payout, verum NULLs mela SUM NULL thaan.",
+              "Numeric offset-oda RANGE-kku numeric ORDER BY venum — julianday(shift_date) '2026-04-04'-a oru day number-a maathum, appo '2 PRECEDING' na rendu naal; TEXT-la ORDER BY shift_date pottaa SQLite error illama odum aana frame current naal mattum-a surungidum, innoru silent thappaana answer.",
+              "Deepa matrum Arun-kku ella row-la-yum rendu columns-um match aagum, ennaa yaarukkum missing calendar day illa; gap irukkura idathula mattum thaan ROWS-um RANGE-um disagree pannum — adhanaala thaan indha bug 'clean' captains mela testing-la thappichidudhu."
+            ],
+            "hi": [
+              "Bhavana ki 04-04 row par rows_3day = 3960 hai kyunki ROWS bas pichhli do rows (04-01 aur 04-03) le leta hai, bhale hi 04-01 teen din peeche hai; range_3day = 2060 hai kyunki RANGE sirf woh rows rakhta hai jinka julianday current din se 2 ke andar hai (04-02 se 04-04).",
+              "04-04 par Imran gap ko aur saaf dikhate hain: rows_3day = 700, jo unhone 04-01 ko kamaya, jabki range_3day = NULL, kyunki unki asli 3-day window mein sirf aaj ka unsettled payout hai aur sirf NULLs ka SUM NULL hota hai.",
+              "Numeric offset wale RANGE ko numeric ORDER BY chahiye — julianday(shift_date) '2026-04-04' ko day number bana deta hai taaki '2 PRECEDING' ka matlab do din ho; TEXT par ORDER BY shift_date se SQLite bina error ke chalta hai lekin frame sirf current din tak sikud jaata hai, ek aur silent galat jawab.",
+              "Deepa aur Arun ke liye dono columns har row par match karte hain kyunki kisi ka koi calendar day missing nahi; ROWS aur RANGE sirf gap par alag hote hain — isiliye yeh bug 'clean' captains par testing mein bach nikalta hai."
+            ],
+            "te": [
+              "Bhavana 04-04 row lo rows_3day = 3960, endukante ROWS mundu unna rendu rows ni (04-01, 04-03) alaage teeskuntundi, 04-01 mudu rojulu venaka unnappatiki; range_3day = 2060, endukante RANGE current roju nundi 2 lopala julianday unna rows ni matrame unchutundi (04-02 to 04-04).",
+              "04-04 lo Imran gap ni inka spashtanga chupistaru: rows_3day = 700, ayana 04-01 na sampaadinchina dabbu, range_3day = NULL, endukante ayana real 3-day window lo unna oke row ee roju unsettled payout, kevalam NULLs meeda SUM NULL e.",
+              "Numeric offset tho RANGE ki numeric ORDER BY kavali — julianday(shift_date) '2026-04-04' ni oka day number ga marustundi, appudu '2 PRECEDING' ante rendu rojulu; TEXT meeda ORDER BY shift_date to SQLite error lekunda run avutundi kani frame current roju ki matrame kudinchukuntundi, inko silent tappu answer.",
+              "Deepa mariyu Arun ki prathi row lo rendu columns match avutayi endukante evariki missing calendar day ledu; gap unna chote matrame ROWS mariyu RANGE disagree avutayi — andukane ee bug 'clean' captains meeda testing lo tappinchukuntundi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: RANGE over julianday, then each captain's best stretch",
+            "ta": "Fix pannunga: julianday mela RANGE, apparam ovvoru captain-oda best stretch",
+            "hi": "Fix karo: julianday par RANGE, phir har captain ka best stretch",
+            "te": "Fix cheyandi: julianday meeda RANGE, tarvata prathi captain best stretch"
+          },
+          "sql": "WITH rolling AS (\n  SELECT captain_name, shift_date,\n         SUM(earnings) OVER (PARTITION BY captain_name ORDER BY julianday(shift_date)\n                             RANGE BETWEEN 2 PRECEDING AND CURRENT ROW) AS earnings_3day\n  FROM rapido_shifts\n)\nSELECT captain_name, MAX(earnings_3day) AS best_3day_earnings\nFROM rolling\nGROUP BY captain_name\nORDER BY best_3day_earnings DESC;",
+          "explain": {
+            "en": [
+              "Result: Deepa 3900, Bhavana 3310, Arun 2650, Imran 1830, Chetan 1570, Jaya NULL — with ROWS instead of RANGE, Bhavana would wrongly lead with 3960, a 'three-day' total that actually spans four calendar days.",
+              "Bhavana's real best is 04-03 to 04-05 (1100 + 960 + 1250 = 3310), and Deepa's is 04-01 to 04-03 (1300 + 1420 + 1180 = 3900), so the honest leaderboard puts Deepa first.",
+              "The window function has to run inside the CTE first and MAX afterwards, because a window function can't be nested inside an aggregate in the same SELECT — the CTE gives each row its earnings_3day, then GROUP BY collapses them to one best value per captain.",
+              "Jaya's NULL is a true answer: MAX ignores NULLs, and every one of her windows is NULL, so the result is NULL — 'nothing settled yet'; wrapping it in COALESCE(..., 0) would claim she earned nothing in three days of riding."
+            ],
+            "ta": [
+              "Result: Deepa 3900, Bhavana 3310, Arun 2650, Imran 1830, Chetan 1570, Jaya NULL — RANGE-kku pathila ROWS pottaa, Bhavana 3960-oda thappa lead pannuvaanga, adhu actual-a naalu calendar days-a cover pannura oru 'moonu naal' total.",
+              "Bhavana-oda real best 04-03 to 04-05 (1100 + 960 + 1250 = 3310), Deepa-oda best 04-01 to 04-03 (1300 + 1420 + 1180 = 3900), so honest leaderboard Deepa-va first-la vaikkum.",
+              "Window function first CTE-kulla odanum, apparam thaan MAX, ennaa oru window function-a same SELECT-la oru aggregate-kulla nest panna mudiyaadhu — CTE ovvoru row-kkum earnings_3day kudukkum, apparam GROUP BY avanga-a ovvoru captain-kkum oru best value-a collapse pannum.",
+              "Jaya-oda NULL true answer: MAX NULLs-a ignore pannum, avanga ella window-um NULL, so result NULL — 'innum edhuvum settle aagala'; adha COALESCE(..., 0)-la wrap panna, moonu naal ride panniyum avanga edhuvum sambaadhikkala nu sollidum."
+            ],
+            "hi": [
+              "Result: Deepa 3900, Bhavana 3310, Arun 2650, Imran 1830, Chetan 1570, Jaya NULL — RANGE ki jagah ROWS hota to Bhavana galti se 3960 ke saath aage hoti, ek 'teen din' ka total jo asal mein chaar calendar days ka hai.",
+              "Bhavana ka asli best 04-03 se 04-05 hai (1100 + 960 + 1250 = 3310), aur Deepa ka 04-01 se 04-03 (1300 + 1420 + 1180 = 3900), isliye imaandaar leaderboard Deepa ko pehle rakhta hai.",
+              "Window function pehle CTE ke andar chalna chahiye aur MAX baad mein, kyunki ek hi SELECT mein window function ko aggregate ke andar nest nahi kar sakte — CTE har row ko uska earnings_3day deta hai, phir GROUP BY unhe har captain ki ek best value mein collapse karta hai.",
+              "Jaya ka NULL sahi jawab hai: MAX NULLs ignore karta hai, aur unki har window NULL hai, isliye result NULL hai — 'abhi kuch settle nahi hua'; ise COALESCE(..., 0) mein lapetna yeh daava karega ki teen din ride karke bhi unhone kuch nahi kamaya."
+            ],
+            "te": [
+              "Result: Deepa 3900, Bhavana 3310, Arun 2650, Imran 1830, Chetan 1570, Jaya NULL — RANGE ki badulu ROWS unte, Bhavana 3960 tho tappuga lead chestaru, adi actual ga naalugu calendar days ni cover chese oka 'mudu rojula' total.",
+              "Bhavana real best 04-03 to 04-05 (1100 + 960 + 1250 = 3310), Deepa best 04-01 to 04-03 (1300 + 1420 + 1180 = 3900), kabatti honest leaderboard Deepa ni first lo pedutundi.",
+              "Window function mundu CTE lopala run avvali, tarvata MAX, endukante oke SELECT lo oka window function ni aggregate lopala nest cheyyalemu — CTE prathi row ki daani earnings_3day istundi, tarvata GROUP BY vaatini prathi captain ki oka best value ga collapse chestundi.",
+              "Jaya NULL nijamaina answer: MAX NULLs ni ignore chestundi, aame prathi window NULL, kabatti result NULL — 'inka emi settle avvaledu'; daanni COALESCE(..., 0) lo wrap cheste, mudu rojulu ride chesina aame emi sampaadinchaledani cheptundi."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "diff": "mid",
+      "cc": [
+        "CUME_DIST",
+        "IIF",
+        "HAVING",
+        "CTE"
+      ],
+      "story": {
+        "en": "Rapido pays a weekly performance bonus to captains whose total settled earnings put them in the top 40% of the fleet. The analytics team uses CUME_DIST(), which tells you what fraction of captains earned the same or less than a given captain; anyone above 0.6 gets the bonus. The catch is Jaya, a new captain whose payouts are all still pending: her total is NULL — 'not settled yet', not zero — and she shouldn't be ranked at all this week. Leaving her in the ranking doesn't just affect her row; it quietly changes everyone else's percentile too.",
+        "ta": "Rapido, total settled earnings fleet-oda top 40%-la irukkura captains-kku oru weekly performance bonus kudukkudhu. Analytics team CUME_DIST() use pannudhu, adhu oru captain-a vida same alladhu kammiya sambaadhicha captains-oda fraction-a sollum; 0.6-kku mela irukkura ellarukkum bonus. Catch Jaya: avanga oru pudhu captain, avanga payouts ellam innum pending: avanga total NULL — 'innum settle aagala', zero illa — indha vaaram avanga-a rank pannave koodaadhu. Avanga-a ranking-la vittaa avanga row mattum illa; matha ellaroda percentile-um amaidhi-a maarum.",
+        "hi": "Rapido un captains ko weekly performance bonus deta hai jinki total settled earnings unhe fleet ke top 40% mein rakhti hai. Analytics team CUME_DIST() use karti hai, jo batata hai ki kitne fraction captains ne kisi captain ke barabar ya usse kam kamaya; 0.6 se upar walon ko bonus milta hai. Pench hai Jaya, ek nayi captain jinke saare payouts abhi pending hain: unka total NULL hai — 'abhi settle nahi hua', zero nahi — aur is hafte unhe rank hi nahi kiya jaana chahiye. Unhe ranking mein chhodna sirf unki row par asar nahi daalta; yeh chup-chaap baaki sabka percentile bhi badal deta hai.",
+        "te": "Rapido, total settled earnings fleet top 40% lo unna captains ki oka weekly performance bonus istundi. Analytics team CUME_DIST() use chestundi, adi oka captain kante same leda takkuva sampaadinchina captains fraction ni cheptundi; 0.6 kante paina unna andariki bonus. Catch Jaya: aame oka kotha captain, aame payouts anni inka pending: aame total NULL — 'inka settle avvaledu', zero kaadu — ee vaaram aame ni rank cheyyakudadu. Aame ni ranking lo vadilesthe aame row matrame kaadu; migata andari percentile kuda silent ga maarutundi."
+      },
+      "question": {
+        "en": "Compute each captain's total_earnings = SUM(earnings), keeping only captains whose total is not NULL (use HAVING). Then return captain_name, total_earnings, cume_dist = ROUND(CUME_DIST() OVER (ORDER BY total_earnings), 2), and bonus_tier = IIF(CUME_DIST() OVER (ORDER BY total_earnings) > 0.6, 'Bonus', 'No bonus'). Order by total_earnings descending.",
+        "ta": "Ovvoru captain-oda total_earnings = SUM(earnings) compute pannunga, total NULL illaadha captains-a mattum vachukkonga (HAVING use pannunga). Apparam captain_name, total_earnings, cume_dist = ROUND(CUME_DIST() OVER (ORDER BY total_earnings), 2), matrum bonus_tier = IIF(CUME_DIST() OVER (ORDER BY total_earnings) > 0.6, 'Bonus', 'No bonus') return pannunga. total_earnings descending order-la order pannunga.",
+        "hi": "Har captain ka total_earnings = SUM(earnings) compute karo, sirf un captains ko rakho jinka total NULL nahi hai (HAVING use karo). Phir captain_name, total_earnings, cume_dist = ROUND(CUME_DIST() OVER (ORDER BY total_earnings), 2), aur bonus_tier = IIF(CUME_DIST() OVER (ORDER BY total_earnings) > 0.6, 'Bonus', 'No bonus') return karo. total_earnings ke descending order mein sort karo.",
+        "te": "Prathi captain total_earnings = SUM(earnings) compute cheyandi, total NULL kaani captains ni matrame unchandi (HAVING use cheyandi). Tarvata captain_name, total_earnings, cume_dist = ROUND(CUME_DIST() OVER (ORDER BY total_earnings), 2), mariyu bonus_tier = IIF(CUME_DIST() OVER (ORDER BY total_earnings) > 0.6, 'Bonus', 'No bonus') return cheyandi. total_earnings descending order lo sort cheyandi."
+      },
+      "schemas": [
+        {
+          "name": "rapido_shifts",
+          "cols": [
+            { "n": "captain_name", "t": "TEXT", "e": "Arun" },
+            { "n": "city", "t": "TEXT", "e": "Bengaluru" },
+            { "n": "shift_date", "t": "TEXT", "e": "2026-04-01" },
+            { "n": "rides", "t": "INTEGER", "e": "12" },
+            { "n": "earnings", "t": "INTEGER", "e": "1450" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Total up each captain's settled earnings",
+            "ta": "Ovvoru captain-oda settled earnings-a total pannunga",
+            "hi": "Har captain ki settled earnings ka total nikaalo",
+            "te": "Prathi captain settled earnings ni total cheyandi"
+          },
+          "sql": "SELECT captain_name,\n       COUNT(*) AS shifts,\n       COUNT(earnings) AS settled_shifts,\n       SUM(earnings) AS total_earnings\nFROM rapido_shifts\nGROUP BY captain_name\nORDER BY total_earnings DESC;",
+          "explain": {
+            "en": [
+              "Bhavana leads with 6290, then Deepa 6240 and Arun 6160 — three captains within 130 of each other, so a small change in how percentiles are computed can move someone across the bonus line.",
+              "COUNT(*) vs COUNT(earnings) shows how many shifts are still unsettled: Arun 7 vs 6, Bhavana 6 vs 5, Imran 4 vs 3 — their SUM covers only settled days, which is what a 'settled earnings' bonus should use.",
+              "Jaya has 3 shifts but 0 settled, so SUM(earnings) is NULL — SUM over only NULLs returns NULL, not 0 — and that NULL honestly means 'we don't know her total yet'.",
+              "ORDER BY total_earnings DESC puts Jaya's NULL last here, because SQLite sorts NULL as smaller than every number; the CUME_DIST in the next step sorts ascending, which puts that same NULL first."
+            ],
+            "ta": [
+              "Bhavana 6290-oda lead pannuraanga, apparam Deepa 6240, Arun 6160 — moonu captains 130-kkulla irukkaanga, so percentiles compute panra vidhathula oru chinna maatram kooda yaaraiyaavadhu bonus line-a thaandi nagarthalaam.",
+              "COUNT(*) vs COUNT(earnings) innum evlo shifts unsettled-a irukku nu kaattum: Arun 7 vs 6, Bhavana 6 vs 5, Imran 4 vs 3 — avanga SUM settled days-a mattum cover pannum, 'settled earnings' bonus-kku adhu thaan sari.",
+              "Jaya-kku 3 shifts aana 0 settled, so SUM(earnings) NULL — verum NULLs mela SUM NULL return pannum, 0 illa — andha NULL-oda honest artham 'avanga total innum theriyaadhu'.",
+              "ORDER BY total_earnings DESC inga Jaya-oda NULL-a last-la podudhu, ennaa SQLite NULL-a ella number-a vida chinnadhaa sort pannum; next step-la CUME_DIST ascending-a sort pannum, adhe NULL-a first-la podum."
+            ],
+            "hi": [
+              "Bhavana 6290 ke saath aage hain, phir Deepa 6240 aur Arun 6160 — teen captains ek doosre se 130 ke andar, isliye percentiles compute karne ke tareeke mein chhota sa badlaav bhi kisi ko bonus line ke paar le ja sakta hai.",
+              "COUNT(*) vs COUNT(earnings) dikhata hai ki kitni shifts abhi unsettled hain: Arun 7 vs 6, Bhavana 6 vs 5, Imran 4 vs 3 — unka SUM sirf settled days cover karta hai, jo ek 'settled earnings' bonus ko use karna chahiye.",
+              "Jaya ki 3 shifts hain lekin 0 settled, isliye SUM(earnings) NULL hai — sirf NULLs ka SUM NULL return karta hai, 0 nahi — aur woh NULL imaandaari se kehta hai 'unka total abhi pata nahi'.",
+              "ORDER BY total_earnings DESC yahan Jaya ke NULL ko aakhir mein rakhta hai, kyunki SQLite NULL ko har number se chhota maan kar sort karta hai; agle step ka CUME_DIST ascending sort karta hai, jo usi NULL ko sabse pehle rakhta hai."
+            ],
+            "te": [
+              "Bhavana 6290 tho lead chestunnaru, tarvata Deepa 6240, Arun 6160 — mugguru captains 130 lopala unnaru, kabatti percentiles compute chese vidhanam lo chinna maarpu kuda evarinaina bonus line daati jarupagaladu.",
+              "COUNT(*) vs COUNT(earnings) inka enni shifts unsettled ga unnayo chupistundi: Arun 7 vs 6, Bhavana 6 vs 5, Imran 4 vs 3 — vaalla SUM settled days ni matrame cover chestundi, 'settled earnings' bonus ki adi sari.",
+              "Jaya ki 3 shifts kani 0 settled, kabatti SUM(earnings) NULL — kevalam NULLs meeda SUM NULL return chestundi, 0 kaadu — aa NULL honest artham 'aame total inka teliyadu'.",
+              "ORDER BY total_earnings DESC ikkada Jaya NULL ni last lo pedutundi, endukante SQLite NULL ni prathi number kante chinnadi ga sort chestundi; next step lo CUME_DIST ascending ga sort chestundi, ade NULL ni first lo pedutundi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "The trap: ranking with the NULL total still in the set",
+            "ta": "Trap: NULL total innum set-la irukkum bodhu ranking panradhu",
+            "hi": "Trap: NULL total ko set mein rakh kar ranking karna",
+            "te": "Trap: NULL total inka set lo undaga ranking cheyyadam"
+          },
+          "sql": "WITH totals AS (\n  SELECT captain_name, SUM(earnings) AS total_earnings\n  FROM rapido_shifts\n  GROUP BY captain_name\n)\nSELECT captain_name, total_earnings,\n       ROUND(CUME_DIST() OVER (ORDER BY total_earnings), 2) AS cume_dist,\n       IIF(CUME_DIST() OVER (ORDER BY total_earnings) > 0.6, 'Bonus', 'No bonus') AS bonus_tier\nFROM totals\nORDER BY total_earnings DESC;",
+          "explain": {
+            "en": [
+              "CUME_DIST() = (number of rows with a value less than or equal to this row's) / (total rows in the window); with 6 captains the possible values are 0.17, 0.33, 0.5, 0.67, 0.83 and 1.",
+              "In ascending order NULL comes first, so Jaya is treated as the lowest earner and gets 0.17 — the query ranks a captain whose earnings are unknown as if they were known to be the smallest.",
+              "Worse, she fills a seat in the denominator and pushes everyone up one notch: Arun lands on 4/6 = 0.67, which is above 0.6, so he gets 'Bonus' — three captains out of five real ones, 60% of the fleet, in a 'top 40%' bonus.",
+              "IIF(condition, a, b) is SQLite's shorthand for CASE WHEN condition THEN a ELSE b END; it isn't causing the bug — it faithfully applies the 0.6 rule to a cume_dist that's already wrong."
+            ],
+            "ta": [
+              "CUME_DIST() = (indha row-oda value-kku samamaana alladhu kammiyaana value irukkura rows count) / (window-la irukkura total rows); 6 captains-oda possible values 0.17, 0.33, 0.5, 0.67, 0.83 matrum 1.",
+              "Ascending order-la NULL first varum, so Jaya-va lowest earner-a treat panni 0.17 kudukkudhu — earnings theriyaadha oru captain-a, smallest nu therinja madhiri query rank pannudhu.",
+              "Innum mosam, avanga denominator-la oru seat-a nirappi ellaraiyum oru padi mela thallraanga: Arun 4/6 = 0.67-la land aagudhu, adhu 0.6-kku mela, so avarukku 'Bonus' — anju real captains-la moonu peru, fleet-oda 60%, oru 'top 40%' bonus-la.",
+              "IIF(condition, a, b) SQLite-oda CASE WHEN condition THEN a ELSE b END-kku shorthand; adhu bug-a undaakkala — already thappaana oru cume_dist mela 0.6 rule-a faithful-a apply pannudhu."
+            ],
+            "hi": [
+              "CUME_DIST() = (un rows ki ginti jinki value is row ki value ke barabar ya kam hai) / (window ki total rows); 6 captains ke saath possible values 0.17, 0.33, 0.5, 0.67, 0.83 aur 1 hain.",
+              "Ascending order mein NULL pehle aata hai, isliye Jaya ko sabse kam kamaane wali maan kar 0.17 milta hai — query ek aise captain ko rank karti hai jiski earnings pata hi nahi, jaise pata ho ki woh sabse kam hain.",
+              "Usse bhi bura, woh denominator mein ek seat bhar deti hain aur sabko ek notch upar dhakel deti hain: Arun 4/6 = 0.67 par aate hain, jo 0.6 se upar hai, isliye unhe 'Bonus' milta hai — paanch asli captains mein se teen, fleet ka 60%, ek 'top 40%' bonus mein.",
+              "IIF(condition, a, b) SQLite ka CASE WHEN condition THEN a ELSE b END ka shorthand hai; bug iski wajah se nahi hai — yeh bas ek pehle se galat cume_dist par 0.6 ka rule imaandaari se lagata hai."
+            ],
+            "te": [
+              "CUME_DIST() = (ee row value ki samanamaina leda takkuva value unna rows count) / (window lo total rows); 6 captains tho possible values 0.17, 0.33, 0.5, 0.67, 0.83 mariyu 1.",
+              "Ascending order lo NULL first vastundi, kabatti Jaya ni lowest earner ga treat chesi 0.17 istundi — earnings teliyani oka captain ni, smallest ani telisinatlu query rank chestundi.",
+              "Inka gorram, aame denominator lo oka seat ni nimpi andarini oka mettu paiki nettestaru: Arun 4/6 = 0.67 lo land avutaru, adi 0.6 kante paina, kabatti ayana ki 'Bonus' — aidu real captains lo mugguru, fleet lo 60%, oka 'top 40%' bonus lo.",
+              "IIF(condition, a, b) SQLite lo CASE WHEN condition THEN a ELSE b END ki shorthand; bug idi valla kaadu — already tappu ayina oka cume_dist meeda 0.6 rule ni faithful ga apply chestundi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: drop the NULL total with HAVING before ranking",
+            "ta": "Fix pannunga: ranking-kku munnadi HAVING-aala NULL total-a drop pannunga",
+            "hi": "Fix karo: ranking se pehle HAVING se NULL total hatao",
+            "te": "Fix cheyandi: ranking ki mundu HAVING tho NULL total ni drop cheyandi"
+          },
+          "sql": "WITH totals AS (\n  SELECT captain_name, SUM(earnings) AS total_earnings\n  FROM rapido_shifts\n  GROUP BY captain_name\n  HAVING SUM(earnings) IS NOT NULL\n)\nSELECT captain_name, total_earnings,\n       ROUND(CUME_DIST() OVER (ORDER BY total_earnings), 2) AS cume_dist,\n       IIF(CUME_DIST() OVER (ORDER BY total_earnings) > 0.6, 'Bonus', 'No bonus') AS bonus_tier\nFROM totals\nORDER BY total_earnings DESC;",
+          "explain": {
+            "en": [
+              "HAVING SUM(earnings) IS NOT NULL removes Jaya after grouping — it has to be HAVING, not WHERE, because the NULL we're filtering is the group's total, which doesn't exist until GROUP BY has run.",
+              "With 5 captains the steps become 0.2, 0.4, 0.6, 0.8 and 1: Bhavana 1.0 and Deepa 0.8 get 'Bonus', while Arun lands on exactly 0.6, and since the rule is > 0.6, not >= 0.6, he correctly misses the top-40% line.",
+              "Two out of five is exactly 40%, so the bonus list now matches the policy; in the trap version one extra captain was paid only because of a row that should never have been ranked.",
+              "COALESCE(SUM(earnings), 0) would not fix this: Jaya would still occupy a seat in the denominator (now as 0 instead of NULL), Arun would still get 0.67 and the bonus — the only correct fix is to leave the unknown total out of the ranking entirely."
+            ],
+            "ta": [
+              "HAVING SUM(earnings) IS NOT NULL grouping-kku apparam Jaya-va remove pannum — idhu HAVING-a thaan irukkanum, WHERE illa, ennaa naama filter panra NULL group-oda total, adhu GROUP BY odra varaikkum irukkave irukkaadhu.",
+              "5 captains-oda steps 0.2, 0.4, 0.6, 0.8 matrum 1 aagum: Bhavana 1.0, Deepa 0.8 'Bonus' vaanguraanga, Arun exact-a 0.6-la land aagudhu, rule > 0.6, >= 0.6 illa, so avaru correct-a top-40% line-a miss pannuraaru.",
+              "Anju-la rendu exact-a 40%, so bonus list ippo policy-oda match aagudhu; trap version-la, rank pannave koodaadha oru row-naala mattum oru extra captain-kku panam kuduthaanga.",
+              "COALESCE(SUM(earnings), 0) idha fix pannaadhu: Jaya innum denominator-la oru seat-a pidichiruppaanga (NULL-kku pathila 0-a), Arun-kku innum 0.67-um bonus-um kidaikkum — theriyaadha total-a ranking-la irundhu completely veliya vaikkuradhu thaan ore correct fix."
+            ],
+            "hi": [
+              "HAVING SUM(earnings) IS NOT NULL grouping ke baad Jaya ko hataata hai — yeh HAVING hi hona chahiye, WHERE nahi, kyunki jo NULL hum filter kar rahe hain woh group ka total hai, jo GROUP BY chalne tak maujood hi nahi hota.",
+              "5 captains ke saath steps 0.2, 0.4, 0.6, 0.8 aur 1 ho jaate hain: Bhavana 1.0 aur Deepa 0.8 ko 'Bonus' milta hai, jabki Arun theek 0.6 par aate hain, aur rule > 0.6 hai, >= 0.6 nahi, isliye woh sahi taur par top-40% line se chook jaate hain.",
+              "Paanch mein se do theek 40% hai, isliye bonus list ab policy se match karti hai; trap version mein ek extra captain ko sirf us row ki wajah se paisa mila jise kabhi rank hi nahi kiya jaana chahiye tha.",
+              "COALESCE(SUM(earnings), 0) ise fix nahi karega: Jaya ab bhi denominator mein ek seat ghere rahengi (NULL ki jagah 0 ban kar), Arun ko ab bhi 0.67 aur bonus milega — ekmaatra sahi fix yahi hai ki anjaane total ko ranking se poori tarah bahar rakha jaaye."
+            ],
+            "te": [
+              "HAVING SUM(earnings) IS NOT NULL grouping tarvata Jaya ni remove chestundi — idi HAVING e undali, WHERE kaadu, endukante manam filter chestunna NULL group total, adi GROUP BY run ayye varaku asalu undadu.",
+              "5 captains tho steps 0.2, 0.4, 0.6, 0.8 mariyu 1 avutayi: Bhavana 1.0 mariyu Deepa 0.8 'Bonus' pondutaru, Arun exact ga 0.6 lo land avutaru, rule > 0.6, >= 0.6 kaadu, kabatti ayana correct ga top-40% line ni miss avutaru.",
+              "Aidu lo rendu exact ga 40%, kabatti bonus list ippudu policy tho match avutundi; trap version lo, asalu rank cheyyakudani oka row valla matrame oka extra captain ki dabbu ichharu.",
+              "COALESCE(SUM(earnings), 0) idi fix cheyyadu: Jaya inka denominator lo oka seat ni aakraminchi untaru (NULL ki badulu 0 ga), Arun ki inka 0.67 mariyu bonus vastayi — teliyani total ni ranking nundi pooriga bayata unchadame oke correct fix."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

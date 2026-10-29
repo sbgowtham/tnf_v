@@ -32,5 +32,8 @@
   "freshworks:1": "freshworks-leads-valid-wellformed-email-address-one-actually",
   "urbancompany:1": "urbancompany-every-service-using-only-jobs-actually-finished",
   "urbancompany:2": "urbancompany-partnername-return-totaljobs-completedjobs-cancell",
-  "urbancompany:3": "urbancompany-ignoring-cancelled-bookings-return-one-row-custome"
+  "urbancompany:3": "urbancompany-ignoring-cancelled-bookings-return-one-row-custome",
+  "rapido:1": "rapido-treat-day-active-when-rides-0-regardless-whether",
+  "rapido:2": "rapido-every-row-compute-earnings3day-sum-settled-earning",
+  "rapido:3": "rapido-compute-captains-totalearnings-sumearnings-keeping"
 }
