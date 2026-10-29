@@ -201,5 +201,19 @@
       "sub": "Doctor Registry Reconciliation",
       "c": "#0d9488",
       "difficulty": "hard"
+    },
+    {
+      "id": "freshworks",
+      "name": "Freshworks",
+      "sub": "Lead Email Domain Parsing",
+      "c": "#475569",
+      "difficulty": "hard"
+    },
+    {
+      "id": "urbancompany",
+      "name": "Urban Company",
+      "sub": "Home Services Ops Analytics",
+      "c": "#7c3aed",
+      "difficulty": "hard"
     }
   ]

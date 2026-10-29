@@ -5,8 +5,8 @@
      crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TableNotFound — SQL Practice (Page 1 of 3)</title>
-<meta name="description" content="Practice SQL for free in your browser with real-world questions modeled on Flipkart, Uber, Netflix, and more — no signup, no setup, instant feedback. Page 1 of 3.">
+<title>TableNotFound — SQL Practice (Page 1 of 4)</title>
+<meta name="description" content="Practice SQL for free in your browser with real-world questions modeled on Flipkart, Uber, Netflix, and more — no signup, no setup, instant feedback. Page 1 of 4.">
 <link rel="canonical" href="https://www.tablenotfound.com/">
 <link rel="next" href="https://www.tablenotfound.com/questions/page/2.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -415,22 +415,22 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-diff"><span class="diff-mid">mid</span></td>
         <td class="td-st"></td>
       </tr>
-      <tr onclick="openQ('groww',1)">
+      <tr onclick="openQ('freshworks',1)">
         <td class="td-num">9</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/freshworks-leads-valid-wellformed-email-address-one-actually.html" onclick="event.preventDefault();event.stopPropagation();openQ('freshworks',1);"><div class="q-text">For leads that have a valid, well-formed email address (one that actually contains '@'), extract the domain — everything after the '@' — using SUBSTR and INSTR. Exclude leads with no email at all, exclude leads whose email has no '@' at all (INSTR returns 0 for those, and SUBSTR would otherwise silently treat the malformed string as its own domain), and exclude personal email providers ('gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'). Return domain and lead_count — the number of leads at that domain — grouped by domain, ordered alphabetically by domain.</div><div class="q-concepts">SUBSTR · INSTR · GROUP BY</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#475569 13%,white);color:color-mix(in srgb,#475569 90%,black)">Freshworks</span></td>
+        <td class="td-diff"><span class="diff-hard">hard</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('groww',1)">
+        <td class="td-num">10</td>
         <td class="td-q">
           <a class="q-link" href="/questions/groww-user-portfoliosnapshots-ignoring-any-row-where.html" onclick="event.preventDefault();event.stopPropagation();openQ('groww',1);"><div class="q-text">For each user in portfolio_snapshots, ignoring any row where portfolio_value is NULL, find their first_value (portfolio_value on their earliest snapshot_date) and last_value (portfolio_value on their most recent snapshot_date). Calculate growth_amount as last_value minus first_value, and growth_pct as that difference as a percentage of first_value, rounded to 2 decimal places. Return one row per user_name with first_value, last_value, growth_amount, and growth_pct, sorted by growth_pct in descending order.</div><div class="q-concepts">FIRST_VALUE · LAST_VALUE · Window Functions</div></a>
         </td>
         <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#00d09c 13%,white);color:color-mix(in srgb,#00d09c 90%,black)">Groww</span></td>
         <td class="td-diff"><span class="diff-mid">mid</span></td>
-        <td class="td-st"></td>
-      </tr>
-      <tr onclick="openQ('meesho',1)">
-        <td class="td-num">10</td>
-        <td class="td-q">
-          <a class="q-link" href="/questions/meesho-reseller-calculate-net-revenue-total-value-deliver.html" onclick="event.preventDefault();event.stopPropagation();openQ('meesho',1);"><div class="q-text">For each reseller, calculate net revenue as the total value of delivered orders minus the total value of RTO (returned) orders. Only include resellers with at least 5 total orders. Rank resellers within their product category by net revenue, using DENSE_RANK so tied resellers share a rank. Also calculate the running total of net revenue within each category, ordered by rank (and by reseller name to break ties consistently). Return reseller_name, category, total_orders, net_revenue, category_rank, and running_net_revenue, sorted by category, then rank, then reseller name.</div><div class="q-concepts">JOIN · CASE WHEN · GROUP BY</div></a>
-        </td>
-        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#f43397 13%,white);color:color-mix(in srgb,#f43397 90%,black)">Meesho</span></td>
-        <td class="td-diff"><span class="diff-hard">hard</span></td>
         <td class="td-st"></td>
       </tr>
     </tbody>
@@ -440,8 +440,9 @@ td{padding:14px 16px;vertical-align:middle}
       <span class="page-link current" aria-current="page">1</span>
       <a class="page-link" href="/questions/page/2.html">2</a>
       <a class="page-link" href="/questions/page/3.html">3</a>
+      <a class="page-link" href="/questions/page/4.html">4</a>
       <a class="page-link page-next" href="/questions/page/2.html" rel="next">Next →</a>
-      <div class="page-info">Page 1 of 3</div>
+      <div class="page-info">Page 1 of 4</div>
     </nav>
   </div>
 
@@ -455,7 +456,7 @@ let UM = []; // loaded dynamically from /questions/index.json
 /* PAGE_QUESTIONS: the exact {uid,qid} pairs pre-rendered into THIS page's tbody, in order.
    Written by scripts/generate-question-pages.js — boot() only ever fetches and renders
    these, so pagination can't be silently undone once JS loads. */
-let PAGE_QUESTIONS = [{"uid":"airbnb","qid":1},{"uid":"amazon","qid":1},{"uid":"blinkit","qid":1},{"uid":"bookmyshow","qid":1},{"uid":"cars24","qid":1},{"uid":"cred","qid":1},{"uid":"duolingo","qid":1},{"uid":"flipkart","qid":1},{"uid":"groww","qid":1},{"uid":"meesho","qid":1}];
+let PAGE_QUESTIONS = [{"uid":"airbnb","qid":1},{"uid":"amazon","qid":1},{"uid":"blinkit","qid":1},{"uid":"bookmyshow","qid":1},{"uid":"cars24","qid":1},{"uid":"cred","qid":1},{"uid":"duolingo","qid":1},{"uid":"flipkart","qid":1},{"uid":"freshworks","qid":1},{"uid":"groww","qid":1}];
 /* START_INDEX: 0-based rank of this page's first question among all questions.
    Written by scripts/generate-question-pages.js — keeps the "S.No" column in sync
    with the server-rendered numbering once renderTable() takes over after boot(). */

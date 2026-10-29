@@ -28,5 +28,9 @@
   "blinkit:1": "blinkit-productname-every-product-blinkitproducts-supplier",
   "cars24:1": "cars24-carmodel-price-number-aliased-every-listing-cars24",
   "policybazaar:1": "policybazaar-customername-policybazaarpurchases-count-number",
-  "practo:1": "practo-reconcile-doctors-table-appointments-so-every"
+  "practo:1": "practo-reconcile-doctors-table-appointments-so-every",
+  "freshworks:1": "freshworks-leads-valid-wellformed-email-address-one-actually",
+  "urbancompany:1": "urbancompany-every-service-using-only-jobs-actually-finished",
+  "urbancompany:2": "urbancompany-partnername-return-totaljobs-completedjobs-cancell",
+  "urbancompany:3": "urbancompany-ignoring-cancelled-bookings-return-one-row-custome"
 }

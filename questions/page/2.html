@@ -5,8 +5,8 @@
      crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SQL Practice Questions — Page 2 of 3 | TableNotFound</title>
-<meta name="description" content="Browse SQL practice questions 11–20 of 30 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 2 of 3.">
+<title>SQL Practice Questions — Page 2 of 4 | TableNotFound</title>
+<meta name="description" content="Browse SQL practice questions 11–20 of 34 on TableNotFound — free, in-browser SQL practice with real company scenarios. Page 2 of 4.">
 <link rel="canonical" href="https://www.tablenotfound.com/questions/page/2.html">
 <link rel="prev" href="https://www.tablenotfound.com/">
 <link rel="next" href="https://www.tablenotfound.com/questions/page/3.html">
@@ -344,8 +344,17 @@ td{padding:14px 16px;vertical-align:middle}
           </tr>
         </thead>
         <tbody id="tbody">
-      <tr onclick="openQ('myntra',1)">
+      <tr onclick="openQ('meesho',1)">
         <td class="td-num">11</td>
+        <td class="td-q">
+          <a class="q-link" href="/questions/meesho-reseller-calculate-net-revenue-total-value-deliver.html" onclick="event.preventDefault();event.stopPropagation();openQ('meesho',1);"><div class="q-text">For each reseller, calculate net revenue as the total value of delivered orders minus the total value of RTO (returned) orders. Only include resellers with at least 5 total orders. Rank resellers within their product category by net revenue, using DENSE_RANK so tied resellers share a rank. Also calculate the running total of net revenue within each category, ordered by rank (and by reseller name to break ties consistently). Return reseller_name, category, total_orders, net_revenue, category_rank, and running_net_revenue, sorted by category, then rank, then reseller name.</div><div class="q-concepts">JOIN · CASE WHEN · GROUP BY</div></a>
+        </td>
+        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#f43397 13%,white);color:color-mix(in srgb,#f43397 90%,black)">Meesho</span></td>
+        <td class="td-diff"><span class="diff-hard">hard</span></td>
+        <td class="td-st"></td>
+      </tr>
+      <tr onclick="openQ('myntra',1)">
+        <td class="td-num">12</td>
         <td class="td-q">
           <a class="q-link" href="/questions/myntra-products-total-sales-quantity-greater-average.html" onclick="event.preventDefault();event.stopPropagation();openQ('myntra',1);"><div class="q-text">Find products whose total sales quantity is greater than the average total sales quantity of products from the same brand. Return the product name, brand and total sales quantity. Sort the result by brand and total sales quantity in descending order.</div><div class="q-concepts">JOIN · GROUP BY · SUM</div></a>
         </td>
@@ -354,7 +363,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('netflix',1)">
-        <td class="td-num">12</td>
+        <td class="td-num">13</td>
         <td class="td-q">
           <a class="q-link" href="/questions/netflix-tv-show-calculate-completion-percentage-users.html" onclick="event.preventDefault();event.stopPropagation();openQ('netflix',1);"><div class="q-text">For each TV show, calculate the completion percentage based on users who started Episode 1 versus users who watched the final episode. Round the result to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE IN · GROUP BY</div></a>
         </td>
@@ -363,7 +372,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('notion',1)">
-        <td class="td-num">13</td>
+        <td class="td-num">14</td>
         <td class="td-q">
           <a class="q-link" href="/questions/notion-habit-morning-meditation-build-full-calendar-seven.html" onclick="event.preventDefault();event.stopPropagation();openQ('notion',1);"><div class="q-text">For the habit 'Morning Meditation', build a full calendar of all seven days from 2026-08-01 through 2026-08-07 using a recursive CTE, then LEFT JOIN it against habit_logs to find that habit's status on each day. Label each day's status as 'Completed' if completed = 1, 'Skipped' if completed = 0, and 'No Data' if there's no matching row in habit_logs at all for that day. Return day and status for all seven days, sorted by day.</div><div class="q-concepts">Recursive CTE · LEFT JOIN · CASE WHEN</div></a>
         </td>
@@ -372,7 +381,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('nykaa',1)">
-        <td class="td-num">14</td>
+        <td class="td-num">15</td>
         <td class="td-q">
           <a class="q-link" href="/questions/nykaa-rank-customers-four-loyalty-tiers-totalspend-using.html" onclick="event.preventDefault();event.stopPropagation();openQ('nykaa',1);"><div class="q-text">Rank customers into four loyalty tiers based on total_spend, using NTILE(4) ordered by total_spend descending, so the top-spending quarter becomes tier 1. Exclude any customer with a NULL total_spend entirely — they haven't made a purchase yet and shouldn't be tiered. Label tier 1 as 'Platinum', tier 2 as 'Gold', tier 3 as 'Silver', and tier 4 as 'Bronze'. Return customer_name, total_spend, and loyalty_tier, sorted by total_spend descending.</div><div class="q-concepts">NTILE · CASE WHEN · Window Functions</div></a>
         </td>
@@ -381,7 +390,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('ola',1)">
-        <td class="td-num">15</td>
+        <td class="td-num">16</td>
         <td class="td-q">
           <a class="q-link" href="/questions/ola-trips-table-sometimes-multiple-rows-tripid-logged.html" onclick="event.preventDefault();event.stopPropagation();openQ('ola',1);"><div class="q-text">The trips table sometimes has multiple rows for the same trip_id, logged because of app retries. For each trip_id, keep only the row with the most recent updated_at and discard the older duplicate rows. Return trip_id, driver_id, rider_id, fare, and updated_at for the deduplicated trips, sorted by trip_id.</div><div class="q-concepts">ROW_NUMBER · PARTITION BY · OVER</div></a>
         </td>
@@ -390,7 +399,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('policybazaar',1)">
-        <td class="td-num">16</td>
+        <td class="td-num">17</td>
         <td class="td-q">
           <a class="q-link" href="/questions/policybazaar-customername-policybazaarpurchases-count-number.html" onclick="event.preventDefault();event.stopPropagation();openQ('policybazaar',1);"><div class="q-text">For each customer_name in policybazaar_purchases, count the number of DISTINCT policy_category values they've purchased and sum their premium_amount (using 0 for a customer whose premiums are entirely unconfirmed, instead of NULL). Return only customers with at least 2 distinct categories — a customer with 2 purchases in the same category doesn't count as cross-sell. Return customer_name, distinct_categories, and total_premium, sorted by customer_name.</div><div class="q-concepts">HAVING · COUNT(DISTINCT) · GROUP BY</div></a>
         </td>
@@ -399,7 +408,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('practo',1)">
-        <td class="td-num">17</td>
+        <td class="td-num">18</td>
         <td class="td-q">
           <a class="q-link" href="/questions/practo-reconcile-doctors-table-appointments-so-every.html" onclick="event.preventDefault();event.stopPropagation();openQ('practo',1);"><div class="q-text">Reconcile the doctors table with the appointments table so every doctor_id that shows up in either table gets exactly one row in the result — not just the ones that match. For each row, return the combined doctor_id, the doctor's name (or 'UNKNOWN DOCTOR' when no matching row exists in doctors), and appointment_count, the number of appointments tied to that doctor_id. A doctor with no appointments should show appointment_count = 0, not disappear from the result. Use FULL OUTER JOIN with COALESCE to build one unified doctor_id per group, then GROUP BY that combined key. Order by doctor_id ascending.</div><div class="q-concepts">FULL OUTER JOIN · COALESCE · GROUP BY</div></a>
         </td>
@@ -408,7 +417,7 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('razorpay',1)">
-        <td class="td-num">18</td>
+        <td class="td-num">19</td>
         <td class="td-q">
           <a class="q-link" href="/questions/razorpay-merchantname-razorpaymerchanttxns-compute-avgfee.html" onclick="event.preventDefault();event.stopPropagation();openQ('razorpay',1);"><div class="q-text">For each merchant_name in razorpay_merchant_txns, compute avg_fee as the average gateway_fee across transactions where a fee genuinely applies — treating any gateway_fee of -1 as not a real fee — rounded to 2 decimal places, and total_refunded as the sum of refund_amount (treating merchants with no refunds at all as 0 instead of NULL). Return merchant_name, avg_fee, and total_refunded, sorted by merchant_name.</div><div class="q-concepts">NULLIF · AVG · SUM</div></a>
         </td>
@@ -417,20 +426,11 @@ td{padding:14px 16px;vertical-align:middle}
         <td class="td-st"></td>
       </tr>
       <tr onclick="openQ('snapchat',5)">
-        <td class="td-num">19</td>
+        <td class="td-num">20</td>
         <td class="td-q">
           <a class="q-link" href="/questions/snapchat-age-group-calculate-percentage-time-spent-sending.html" onclick="event.preventDefault();event.stopPropagation();openQ('snapchat',5);"><div class="q-text">For each age group, calculate the percentage of time spent sending snaps vs opening snaps out of total send+open time. Round to 2 decimal places.</div><div class="q-concepts">JOIN · WHERE IN · GROUP BY</div></a>
         </td>
         <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#f7b731 13%,white);color:color-mix(in srgb,#f7b731 90%,black)">Snapchat</span></td>
-        <td class="td-diff"><span class="diff-mid">mid</span></td>
-        <td class="td-st"></td>
-      </tr>
-      <tr onclick="openQ('spotify',1)">
-        <td class="td-num">20</td>
-        <td class="td-q">
-          <a class="q-link" href="/questions/spotify-user-month-listeningstats-use-lag-find-users-previ.html" onclick="event.preventDefault();event.stopPropagation();openQ('spotify',1);"><div class="q-text">For each user and month in listening_stats, use LAG() to find that same user's previous month minutes_streamed (ordered by month). Treat a NULL minutes_streamed as 0 when comparing. Flag a row as churn_risk = 1 if minutes dropped by more than 50% compared to the previous month, otherwise churn_risk = 0. A user's first month in the data has no previous month to compare against, so churn_risk should be 0 for that row. Return user_name, month, minutes_streamed, previous_month_minutes, and churn_risk, sorted by user_name and month.</div><div class="q-concepts">LAG · PARTITION BY · COALESCE</div></a>
-        </td>
-        <td class="td-co"><span class="co-tag" style="background:color-mix(in srgb,#1db954 13%,white);color:color-mix(in srgb,#1db954 90%,black)">Spotify</span></td>
         <td class="td-diff"><span class="diff-mid">mid</span></td>
         <td class="td-st"></td>
       </tr>
@@ -442,8 +442,9 @@ td{padding:14px 16px;vertical-align:middle}
       <a class="page-link" href="/">1</a>
       <span class="page-link current" aria-current="page">2</span>
       <a class="page-link" href="/questions/page/3.html">3</a>
+      <a class="page-link" href="/questions/page/4.html">4</a>
       <a class="page-link page-next" href="/questions/page/3.html" rel="next">Next →</a>
-      <div class="page-info">Page 2 of 3</div>
+      <div class="page-info">Page 2 of 4</div>
     </nav>
   </div>
 
@@ -457,7 +458,7 @@ let UM = []; // loaded dynamically from /questions/index.json
 /* PAGE_QUESTIONS: the exact {uid,qid} pairs pre-rendered into THIS page's tbody, in order.
    Written by scripts/generate-question-pages.js — boot() only ever fetches and renders
    these, so pagination can't be silently undone once JS loads. */
-let PAGE_QUESTIONS = [{"uid":"myntra","qid":1},{"uid":"netflix","qid":1},{"uid":"notion","qid":1},{"uid":"nykaa","qid":1},{"uid":"ola","qid":1},{"uid":"policybazaar","qid":1},{"uid":"practo","qid":1},{"uid":"razorpay","qid":1},{"uid":"snapchat","qid":5},{"uid":"spotify","qid":1}];
+let PAGE_QUESTIONS = [{"uid":"meesho","qid":1},{"uid":"myntra","qid":1},{"uid":"netflix","qid":1},{"uid":"notion","qid":1},{"uid":"nykaa","qid":1},{"uid":"ola","qid":1},{"uid":"policybazaar","qid":1},{"uid":"practo","qid":1},{"uid":"razorpay","qid":1},{"uid":"snapchat","qid":5}];
 /* START_INDEX: 0-based rank of this page's first question among all questions.
    Written by scripts/generate-question-pages.js — keeps the "S.No" column in sync
    with the server-rendered numbering once renderTable() takes over after boot(). */
