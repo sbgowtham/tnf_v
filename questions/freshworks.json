@@ -1,0 +1,146 @@
+{
+  "setup": "CREATE TABLE leads(lead_id INTEGER,name TEXT,email TEXT,phone TEXT,source TEXT);\nINSERT INTO leads VALUES\n (1,'Priya Sharma','priya.sharma@freshdesk.io','9876543210','Signup Form'),\n (2,'Arjun Mehta','arjun@gmail.com','9876500000','Signup Form'),\n (3,'Neha Verma','neha.verma@zylker.com','9876511111','Referral'),\n (4,'Karthik Iyer',NULL,'9876522222','Cold Call'),\n (5,'Divya Rao','divya@yahoo.com','9876533333','Signup Form'),\n (6,'Rohan Malhotra','rohanmalhotracorp.com','9876544444','Trade Show'),\n (7,'Simran Kaur','simran@techflow.io','9876555555','Referral'),\n (8,'Aditya Nair','aditya@gmail.com','9876566666','Cold Call');",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "hard",
+      "cc": [
+        "SUBSTR",
+        "INSTR",
+        "GROUP BY",
+        "COUNT"
+      ],
+      "story": {
+        "en": "Freshworks' Sales Ops team, ahead of a board review, needs a report of \"business leads by company email domain\" — but the leads table doubles as a catch-all for every inbound channel: cold calls where only a phone number was captured (email genuinely NULL, not yet collected), and a trade-show badge-scanner that occasionally mangles an email during OCR, dropping the '@' entirely and leaving something that looks like a domain but isn't a real email at all. Personal-provider addresses (gmail.com, yahoo.com, etc.) don't count as a \"company\" for this report either — leadership only wants to see actual business domains that sales could plausibly qualify.",
+        "ta": "Freshworks-oda Sales Ops team-la, board review varradhukku munnadi, 'company email domain vaari business leads' report venum — aana leads table ella inbound channel-kkum catch-all-a irukku: cold call-la phone number mattum kudutha (email genuine-a innum edhuvum kudukkala, ippozhudhu-varaikkum collect pannala), matrum trade-show badge-scanner sila neram OCR-la email-a mangle pannitu, '@'-a completely drop pannitu, domain madhiri theriyura aana real email illaadha edho onnu vachiruvaan. Personal-provider addresses (gmail.com, yahoo.com, etc.) indha report-kku 'company' nu count aagaadhu-nu-um — leadership, sales qualify panna mudiyura real business domains mattum-thaan paakka virumburanga.",
+        "hi": "Freshworks ki Sales Ops team ko, board review se pehle, 'company email domain ke hisaab se business leads' ki report chahiye — lekin leads table har inbound channel ke liye ek catch-all hai: cold calls jahan sirf phone number liya gaya (email genuinely abhi tak nahi diya gaya, abhi tak collect nahi hua), aur ek trade-show badge-scanner jo kabhi-kabhi OCR mein email ko mangle kar deta hai, '@' ko poori tarah drop kar deta hai, aur kuch aisa chhod deta hai jo domain jaisa dikhta hai lekin asal email hai hi nahi. Personal-provider addresses (gmail.com, yahoo.com, waghera) bhi is report ke liye 'company' nahi maane jaate — leadership sirf un asal business domains ko dekhna chahti hai jinhe sales qualify kar sake.",
+        "te": "Freshworks Sales Ops team ki, board review mundu, 'company email domain prakaram business leads' report kavali — kani leads table prathi inbound channel ki catch-all ga untundi: cold calls lo phone number matrame icharu (email genuine ga inka evaru ivvaledu, ippativaraku collect avvaledu), mariyu oka trade-show badge-scanner konni sarlu OCR lo email ni mangle chestundi, '@' ni pooriga drop chestundi, domain la kanipinche kani real email kaani dani vidichi pedatundi. Personal-provider addresses (gmail.com, yahoo.com, ithara) kuda ee report ki 'company' ga count avvavu — leadership sales qualify cheyagalige real business domains ni matrame chudalani anukuntunnaru."
+      },
+      "question": {
+        "en": "For leads that have a valid, well-formed email address (one that actually contains '@'), extract the domain — everything after the '@' — using SUBSTR and INSTR. Exclude leads with no email at all, exclude leads whose email has no '@' at all (INSTR returns 0 for those, and SUBSTR would otherwise silently treat the malformed string as its own domain), and exclude personal email providers ('gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'). Return domain and lead_count — the number of leads at that domain — grouped by domain, ordered alphabetically by domain.",
+        "ta": "Valid-a, well-formed email address irukkura leads-kku (adhula '@' actual-a irukkanum), SUBSTR matrum INSTR use panni domain-a — '@'-kku apparam irukkura ella-vum — extract pannunga. Edhavadhu email-e illaadha leads-a exclude pannunga, '@' edhuvum illaadha email irukkura leads-a-yum exclude pannunga (avangaluku INSTR 0 return pannum, illaana SUBSTR andha malformed string-a adhoda own domain-a silent-a treat pannidum), matrum personal email providers-a ('gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com') exclude pannunga. domain matrum lead_count-a return pannunga — andha domain-la irukkura leads-oda count — domain vaari group panni, domain alphabetical order-la order pannunga.",
+        "hi": "Jin leads ke paas valid, well-formed email address hai (jismein asal mein '@' ho), unke liye SUBSTR aur INSTR use karke domain — '@' ke baad ka sab kuch — extract karo. Aise leads ko exclude karo jinke paas koi email hi nahi hai, aise leads ko bhi exclude karo jinke email mein '@' hi nahi hai (unke liye INSTR 0 return karta hai, warna SUBSTR us malformed string ko chup-chaap apna hi domain maan lega), aur personal email providers ('gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com') ko exclude karo. domain aur lead_count return karo — us domain par jitne leads hain unki ginti — domain ke hisaab se group karke, domain ke alphabetical order mein sort karo.",
+        "te": "Valid, well-formed email address unna leads ki (danilo actual ga '@' undali), SUBSTR mariyu INSTR upayoginchi domain ni — '@' tarvata unna anni — extract cheyandi. E email e leni leads ni exclude cheyandi, '@' e lenna email unna leads ni kuda exclude cheyandi (vaalliki INSTR 0 return chestundi, ledante SUBSTR aa malformed string ni dani own domain ga silent ga treat chestundi), mariyu personal email providers ('gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com') ni exclude cheyandi. domain mariyu lead_count ni return cheyandi — aa domain lo unna leads count — domain prakaram group chesi, domain alphabetical order lo sort cheyandi."
+      },
+      "schemas": [
+        {
+          "name": "leads",
+          "cols": [
+            { "n": "lead_id", "t": "INTEGER", "e": "1" },
+            { "n": "name", "t": "TEXT", "e": "Priya Sharma" },
+            { "n": "email", "t": "TEXT", "e": "priya.sharma@freshdesk.io" },
+            { "n": "phone", "t": "TEXT", "e": "9876543210" },
+            { "n": "source", "t": "TEXT", "e": "Signup Form" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at every lead's email and where '@' sits in it",
+            "ta": "Ovvoru lead-oda email-a-yum, adhula '@' engaya irukkunu-yum paakkunga",
+            "hi": "Har lead ke email ko aur usmein '@' kahan hai use dekho",
+            "te": "Prathi lead email ni mariyu danilo '@' ekkada undo chudandi"
+          },
+          "sql": "SELECT lead_id, name, email, INSTR(email, '@') AS at_position, phone\nFROM leads\nORDER BY lead_id;",
+          "explain": {
+            "en": [
+              "INSTR(email, '@') returns the 1-based position of '@' inside the string — Priya's email has '@' at position 13, Divya's at position 6, and so on; this is the building block the rest of the query relies on.",
+              "Karthik Iyer (lead_id 4) has a genuinely NULL email — he came in through a cold call and only gave a phone number, so INSTR(NULL, '@') itself returns NULL, not 0 or an error.",
+              "Rohan Malhotra's (lead_id 6) email is 'rohanmalhotracorp.com' — a trade-show badge scan mangled it and dropped the '@' entirely — so INSTR returns 0, not NULL; 0 and NULL are two different signals for two different problems and need to be handled differently.",
+              "Nothing is extracted or filtered yet — this step exists purely to see, row by row, which leads have a real '@', which have none, and which have no email at all."
+            ],
+            "ta": [
+              "INSTR(email, '@'), string-la '@' irukkura 1-based position-a return pannum — Priya-oda email-la '@' position 13-la irukku, Divya-oda 6-la irukku, ipdi; idhu-thaan meedhi query relying pannura building block.",
+              "Karthik Iyer-kku (lead_id 4) genuine-a NULL email irukku — avaru cold call-la varunga, phone number mattum kudutharu, so INSTR(NULL, '@') adhuve NULL return pannum, 0 alladhu error illa.",
+              "Rohan Malhotra-oda (lead_id 6) email 'rohanmalhotracorp.com' — trade-show badge scan adha mangle pannitu, '@'-a completely drop pannitu — so INSTR 0 return pannum, NULL illa; 0 matrum NULL rendu vera vera problem-kku rendu vera vera signal, avanga-a vera vera-a handle pannanum.",
+              "Innum edhuvum extract alladhu filter pannala — indha step, row row-a, evanga-kku real '@' irukku, evanga-kku illa, matrum evanga-kku email-e illa nu paakkuradhu-kku mattum-thaan."
+            ],
+            "hi": [
+              "INSTR(email, '@') string ke andar '@' ki 1-based position return karta hai — Priya ke email mein '@' position 13 par hai, Divya ke mein 6 par, aise hi; yahi wo building block hai jis par baaki query depend karti hai.",
+              "Karthik Iyer (lead_id 4) ka email genuinely NULL hai — wo cold call se aaye the aur sirf phone number diya tha, isliye INSTR(NULL, '@') khud NULL return karta hai, 0 ya error nahi.",
+              "Rohan Malhotra (lead_id 6) ka email 'rohanmalhotracorp.com' hai — ek trade-show badge scan ne ise mangle kar diya aur '@' ko poori tarah drop kar diya — isliye INSTR 0 return karta hai, NULL nahi; 0 aur NULL do alag problems ke liye do alag signals hain aur inhe alag tarike se handle karna padta hai.",
+              "Abhi kuch bhi extract ya filter nahi hua — yeh step sirf yeh dekhne ke liye hai, row by row, kis lead ke paas real '@' hai, kiske paas nahi hai, aur kiske paas email hi nahi hai."
+            ],
+            "te": [
+              "INSTR(email, '@') string lo '@' unna 1-based position ni return chestundi — Priya email lo '@' position 13 lo undi, Divya di 6 lo undi, ila; idi ne migatha query depend ayye building block.",
+              "Karthik Iyer ki (lead_id 4) genuine ga NULL email undi — ayana cold call dwara vacharu, phone number matrame icharu, so INSTR(NULL, '@') adi ne NULL return chestundi, 0 leda error kaadu.",
+              "Rohan Malhotra (lead_id 6) email 'rohanmalhotracorp.com' — oka trade-show badge scan dani mangle chesi, '@' ni pooriga drop chesindi — so INSTR 0 return chestundi, NULL kaadu; 0 mariyu NULL rendu vere vere problems ki rendu vere vere signals, vaatini vere vere ga handle cheyali.",
+              "Inka emi extract cheyaledu leda filter cheyaledu — ee step row row ga, evariki real '@' undo, evariki ledo, mariyu evariki email e ledo chudadaniki matrame."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "The trap: filtering NULL isn't enough",
+            "ta": "Trap: NULL mattum filter pannradhu podhaadhu",
+            "hi": "Trap: sirf NULL filter karna kaafi nahi hai",
+            "te": "Trap: NULL matrame filter cheyadam saripodu"
+          },
+          "sql": "SELECT SUBSTR(email, INSTR(email,'@')+1) AS domain, COUNT(*) AS lead_count\nFROM leads\nWHERE email IS NOT NULL\nGROUP BY domain\nORDER BY lead_count DESC, domain;",
+          "explain": {
+            "en": [
+              "WHERE email IS NOT NULL correctly drops Karthik Iyer's row, so that part of the fix looks solid at a glance.",
+              "Rohan Malhotra's row survives the filter, because his email isn't NULL — it's just malformed — and INSTR('rohanmalhotracorp.com', '@') returns 0, not NULL.",
+              "SUBSTR(email, 0+1) is SUBSTR(email, 1), which returns the entire original string starting from its first character — so Rohan's whole mangled email becomes its own fake 'domain,' sitting in the results as if it were a real company.",
+              "gmail.com shows up with a count of 2, mixed in right alongside genuine business domains like freshdesk.io and zylker.com — this query never asked whether a domain belongs to a personal provider, so it can't tell them apart yet."
+            ],
+            "ta": [
+              "WHERE email IS NOT NULL, Karthik Iyer-oda row-a correct-a drop pannum, so andha fix part first look-la solid-a theriyum.",
+              "Rohan Malhotra-oda row filter-a survive pannum, ention avaroda email NULL illa — adhu just malformed — matrum INSTR('rohanmalhotracorp.com', '@') 0 return pannum, NULL illa.",
+              "SUBSTR(email, 0+1) ippodhu SUBSTR(email, 1)-a irukkum, adhu original string-a mudhal character-la irundhu full-a return pannum — so Rohan-oda mulukka mangled email adhoda own fake 'domain'-a maarikkum, real company madhiri results-la sit pannikittu irukkum.",
+              "gmail.com count 2-oda varum, freshdesk.io matrum zylker.com madhiri genuine business domains-oda kalandhu — indha query domain personal provider-kku sondhamaa nu edhuvum kekkave illa, so idhu avatha innum vera pannave mudiyaadhu."
+            ],
+            "hi": [
+              "WHERE email IS NOT NULL Karthik Iyer ki row ko sahi tarike se drop karta hai, isliye fix ka wo hissa pehli nazar mein theek lagta hai.",
+              "Rohan Malhotra ki row filter se bach jaati hai, kyunki unka email NULL nahi hai — wo bas malformed hai — aur INSTR('rohanmalhotracorp.com', '@') 0 return karta hai, NULL nahi.",
+              "SUBSTR(email, 0+1) asal mein SUBSTR(email, 1) hai, jo poori original string ko uske pehle character se return karta hai — isliye Rohan ka poora mangled email khud apna fake 'domain' ban jaata hai, results mein aise baitha rehta hai jaise wo koi asli company ho.",
+              "gmail.com count 2 ke saath dikhta hai, freshdesk.io aur zylker.com jaise genuine business domains ke sath mila hua — is query ne kabhi yeh nahi poocha ki koi domain personal provider ka hai ya nahi, isliye yeh abhi unhe alag nahi kar sakta."
+            ],
+            "te": [
+              "WHERE email IS NOT NULL, Karthik Iyer row ni correct ga drop chestundi, so aa fix part first look lo solid ga kanipistundi.",
+              "Rohan Malhotra row filter nunchi survive avutundi, endukante ayana email NULL kaadu — adi just malformed — mariyu INSTR('rohanmalhotracorp.com', '@') 0 return chestundi, NULL kaadu.",
+              "SUBSTR(email, 0+1) ante SUBSTR(email, 1), adi original string ni dani modati character nunchi full ga return chestundi — so Rohan mottham mangled email dani own fake 'domain' ga maripotundi, results lo real company la kuchuni untundi.",
+              "gmail.com count 2 tho vastundi, freshdesk.io mariyu zylker.com la genuine business domains tho kalisi — ee query domain personal provider di aa ani eppudu adagaledu, so idi vaatini inka vere cheyalenu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: guard against INSTR = 0 and drop personal domains",
+            "ta": "Fix pannunga: INSTR = 0-kku guard vachi, personal domains-a drop pannunga",
+            "hi": "Fix karo: INSTR = 0 se guard lagao aur personal domains ko drop karo",
+            "te": "Fix cheyandi: INSTR = 0 ki guard pettandi, personal domains ni drop cheyandi"
+          },
+          "sql": "SELECT SUBSTR(email, INSTR(email,'@')+1) AS domain, COUNT(*) AS lead_count\nFROM leads\nWHERE email IS NOT NULL\n  AND INSTR(email,'@') > 0\n  AND SUBSTR(email, INSTR(email,'@')+1) NOT IN ('gmail.com','yahoo.com','hotmail.com','outlook.com')\nGROUP BY domain\nORDER BY domain;",
+          "explain": {
+            "en": [
+              "AND INSTR(email,'@') > 0 is the fix step 2 was missing — it explicitly rejects Rohan Malhotra's malformed email, because a 0 means 'no @ found at all,' not 'found one at the very start.'",
+              "WHERE email IS NOT NULL and INSTR(email,'@') > 0 together cover both failure modes from step 1: a lead with no email address at all, and a lead with an email string that isn't shaped like one.",
+              "The NOT IN list removes gmail.com and yahoo.com, so Arjun, Divya, and Aditya's personal-provider leads drop out of the count entirely, leaving only domains that plausibly belong to an actual company.",
+              "Three domains survive: freshdesk.io, techflow.io, and zylker.com, each with lead_count = 1 — a small, clean result that's the direct payoff of stacking three separate filters instead of trusting any single one of them alone."
+            ],
+            "ta": [
+              "AND INSTR(email,'@') > 0-thaan step 2-la missing-a irundha fix — idhu Rohan Malhotra-oda malformed email-a explicit-a reject pannum, ention 0 nu solradhu 'edhavadhu @ kandupidikave illa' nu artham, 'romba first-la kandupidichom' nu illa.",
+              "WHERE email IS NOT NULL matrum INSTR(email,'@') > 0 serndhu step 1-la irundha rendu failure modes-a-yum cover pannum: edhavadhu email-e illaadha lead, matrum email madhiri illaadha oru email string irukkura lead.",
+              "NOT IN list gmail.com matrum yahoo.com-a remove pannum, so Arjun, Divya, matrum Aditya-oda personal-provider leads count-la irundhu completely-a drop aagum, mudhula real company-kku sondhamaa irukkura domains mattum-thaan meedhi irukkum.",
+              "Moondru domains survive aaguthu: freshdesk.io, techflow.io, matrum zylker.com, ovvoruthar-kkum lead_count = 1 — moondru vera vera filters-a stack panradhula irundhu kidaikkura oru small, clean result, oru filter mattum nambradhukku pathila."
+            ],
+            "hi": [
+              "AND INSTR(email,'@') > 0 hi wo fix hai jo step 2 mein missing tha — yeh Rohan Malhotra ke malformed email ko explicitly reject karta hai, kyunki 0 ka matlab hai 'bilkul koi @ nahi mila,' na ki 'bilkul shuru mein mil gaya.'",
+              "WHERE email IS NOT NULL aur INSTR(email,'@') > 0 milkar step 1 ke dono failure modes ko cover karte hain: aisa lead jiska koi email hi nahi hai, aur aisa lead jiska email string email jaisa dikhta hi nahi.",
+              "NOT IN list gmail.com aur yahoo.com ko remove karti hai, isliye Arjun, Divya, aur Aditya ke personal-provider leads count se poori tarah drop ho jaate hain, sirf wahi domains bachte hain jo asal mein kisi company ke ho sakte hain.",
+              "Teen domains bach jaate hain: freshdesk.io, techflow.io, aur zylker.com, har ek ka lead_count = 1 — ek chhota, saaf result jo teen alag-alag filters ko ek saath stack karne ka seedha fayda hai, sirf ek filter par bharosa karne ke bajaye."
+            ],
+            "te": [
+              "AND INSTR(email,'@') > 0 ne step 2 lo missing ayina fix — idi Rohan Malhotra malformed email ni explicit ga reject chestundi, endukante 0 ante 'e @ e dorakaledu' ani ardham, 'chala modatlo dorikindi' ani kaadu.",
+              "WHERE email IS NOT NULL mariyu INSTR(email,'@') > 0 kalisi step 1 lo unna rendu failure modes ni cover chestayi: e email e leni lead, mariyu email la kanipinchani email string unna lead.",
+              "NOT IN list gmail.com mariyu yahoo.com ni remove chestundi, so Arjun, Divya, mariyu Aditya personal-provider leads count nunchi pooriga drop avutayi, migilindi real company di ani anipinche domains matrame.",
+              "Mudu domains survive avutayi: freshdesk.io, techflow.io, mariyu zylker.com, prathi okkati lead_count = 1 tho — mudu vere vere filters ni stack chesinanduku vachina oka small, clean result, oka filter ni matrame nammakunda."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

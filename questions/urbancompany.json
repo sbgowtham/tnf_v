@@ -1,0 +1,440 @@
+{
+  "setup": "CREATE TABLE uc_bookings(booking_id INTEGER,customer_name TEXT,partner_name TEXT,service TEXT,booked_at TEXT,scheduled_at TEXT,completed_at TEXT,status TEXT,rating INTEGER);\nINSERT INTO uc_bookings VALUES\n (1,'Ananya','Ravi','Home Cleaning','2026-03-01 09:15','2026-03-03 10:00','2026-03-03 13:30','completed',5),\n (2,'Farhan','Venkat','AC Repair','2026-03-01 11:40','2026-03-02 15:00','2026-03-02 16:45','completed',4),\n (3,'Ishita','Salma','Salon at Home','2026-03-02 08:05','2026-03-02 17:00','2026-03-02 18:30','completed',NULL),\n (4,'Ananya','Salma','Salon at Home','2026-03-04 19:20','2026-03-06 11:00','2026-03-06 12:15','completed',5),\n (5,'Kabir','Ravi','Home Cleaning','2026-03-05 07:50','2026-03-05 14:00',NULL,'cancelled',NULL),\n (6,'Kabir','Venkat','AC Repair','2026-03-06 10:10','2026-03-07 09:00','2026-03-07 12:20','completed',3),\n (7,'Lakshmi','Meena','Salon at Home','2026-03-07 12:00','2026-03-08 16:00','2026-03-08 17:40','completed',4),\n (8,'Farhan','Ravi','Home Cleaning','2026-03-08 09:30','2026-03-10 10:00','2026-03-10 14:00','completed',4),\n (9,'Manoj','Venkat','AC Repair','2026-03-09 14:25','2026-03-10 11:00',NULL,'in_progress',NULL),\n (10,'Lakshmi','Meena','Salon at Home','2026-03-10 18:00','2026-03-11 10:00',NULL,'cancelled',NULL),\n (11,'Ishita','Ravi','Home Cleaning','2026-03-11 08:00','2026-03-12 09:00','2026-03-12 11:45','completed',5),\n (12,'Manoj','Ravi','Home Cleaning','2026-03-12 16:30','2026-03-13 10:00',NULL,'in_progress',NULL),\n (13,'Farhan','Meena','Salon at Home','2026-03-12 20:00','2026-03-14 15:00','2026-03-14 16:00','completed',NULL),\n (14,'Ishita','Venkat','AC Repair','2026-03-13 09:00','2026-03-13 18:00','2026-03-13 19:30','completed',4),\n (15,'Neeraj','Salma','Salon at Home','2026-03-14 10:00','2026-03-14 16:00','2026-03-14 17:10','completed',3);",
+  "questions": [
+    {
+      "id": 1,
+      "diff": "mid",
+      "cc": [
+        "julianday",
+        "Date Arithmetic",
+        "AVG",
+        "GROUP BY"
+      ],
+      "story": {
+        "en": "Urban Company's operations team wants to publish an internal \"how long does a job actually take on-site\" benchmark per service, so the scheduling engine can block realistic time slots for its partners. The timestamps live as TEXT ('2026-03-03 10:00'), and a junior analyst's first attempt simply subtracted completed_at minus scheduled_at — which came back as a neat column of zeros for every single job. On top of that, the table also holds cancelled bookings and jobs that are still in progress, whose completed_at is genuinely NULL because the job hasn't finished yet, and those must not be counted as jobs in the benchmark.",
+        "ta": "Urban Company-oda operations team, ovvoru service-kkum 'oru job on-site-la actual-a evlo neram edukkudhu' nu oru internal benchmark publish panna virumbuthu, appo thaan scheduling engine partners-kku realistic time slots block panna mudiyum. Timestamps TEXT-a irukku ('2026-03-03 10:00'), oru junior analyst-oda first attempt-la completed_at minus scheduled_at-a simple-a subtract pannaanga — adhu ella job-kkum oru neat column of zeros-a vandhuchu. Adhoda, table-la cancelled bookings-um, innum progress-la irukkura jobs-um irukku, avangaloda completed_at genuine-a NULL ennaa job innum mudiyala, andha rows-a benchmark-la jobs-a count pannakoodaadhu.",
+        "hi": "Urban Company ki operations team har service ke liye ek internal 'ek job on-site par asal mein kitna time leta hai' benchmark publish karna chahti hai, taaki scheduling engine partners ke liye realistic time slots block kar sake. Timestamps TEXT mein store hain ('2026-03-03 10:00'), aur ek junior analyst ne pehli koshish mein seedha completed_at minus scheduled_at kar diya — jo har ek job ke liye ek saaf-suthra column of zeros lekar aaya. Upar se, table mein cancelled bookings aur abhi chal rahe jobs bhi hain, jinka completed_at genuinely NULL hai kyunki job abhi khatam hi nahi hua, aur unhe benchmark mein jobs ki tarah count nahi karna hai.",
+        "te": "Urban Company operations team prathi service ki 'oka job on-site lo actual ga entha time teesukuntundi' ane internal benchmark publish cheyyalani anukuntondi, appude scheduling engine partners ki realistic time slots block cheyagaladu. Timestamps TEXT ga unnayi ('2026-03-03 10:00'), oka junior analyst first attempt lo completed_at minus scheduled_at ni simple ga subtract chesaru — adi prathi job ki oka neat column of zeros ga vachindi. Daaniki thodu, table lo cancelled bookings mariyu inka progress lo unna jobs kuda unnayi, vaati completed_at genuine ga NULL endukante job inka ayipoledu, aa rows ni benchmark lo jobs ga count cheyyakudadu."
+      },
+      "question": {
+        "en": "For every service, using only jobs that have actually finished (completed_at IS NOT NULL), return service, completed_jobs (how many finished jobs it has) and avg_hours — the average time from scheduled_at to completed_at in hours, computed with julianday() and rounded to 2 decimals. Order by avg_hours descending.",
+        "ta": "Ovvoru service-kkum, actual-a mudinja jobs-a mattum use panni (completed_at IS NOT NULL), service, completed_jobs (adhula evlo jobs mudinjirukku) matrum avg_hours — scheduled_at-la irundhu completed_at varaikkum average time hours-la, julianday() use panni compute panni, 2 decimals-kku round pannunga — return pannunga. avg_hours descending order-la order pannunga.",
+        "hi": "Har service ke liye, sirf un jobs ko use karke jo asal mein khatam ho chuke hain (completed_at IS NOT NULL), service, completed_jobs (kitne jobs khatam hue) aur avg_hours — scheduled_at se completed_at tak ka average time hours mein, julianday() se compute karke 2 decimals tak round kiya hua — return karo. avg_hours ke descending order mein sort karo.",
+        "te": "Prathi service ki, actual ga ayipoyina jobs ni matrame use chesi (completed_at IS NOT NULL), service, completed_jobs (enni jobs ayipoyayi) mariyu avg_hours — scheduled_at nundi completed_at varaku average time hours lo, julianday() tho compute chesi 2 decimals ki round chesinadi — return cheyandi. avg_hours descending order lo sort cheyandi."
+      },
+      "schemas": [
+        {
+          "name": "uc_bookings",
+          "cols": [
+            { "n": "booking_id", "t": "INTEGER", "e": "1" },
+            { "n": "customer_name", "t": "TEXT", "e": "Ananya" },
+            { "n": "partner_name", "t": "TEXT", "e": "Ravi" },
+            { "n": "service", "t": "TEXT", "e": "Home Cleaning" },
+            { "n": "booked_at", "t": "TEXT", "e": "2026-03-01 09:15" },
+            { "n": "scheduled_at", "t": "TEXT", "e": "2026-03-03 10:00" },
+            { "n": "completed_at", "t": "TEXT", "e": "2026-03-03 13:30" },
+            { "n": "status", "t": "TEXT", "e": "completed" },
+            { "n": "rating", "t": "INTEGER", "e": "5" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "Look at every job's scheduled and completed timestamps",
+            "ta": "Ovvoru job-oda scheduled matrum completed timestamps-a paakkunga",
+            "hi": "Har job ke scheduled aur completed timestamps dekho",
+            "te": "Prathi job scheduled mariyu completed timestamps ni chudandi"
+          },
+          "sql": "SELECT booking_id, service, scheduled_at, completed_at, status\nFROM uc_bookings\nORDER BY service, booking_id;",
+          "explain": {
+            "en": [
+              "All 15 bookings come back, grouped visually by service — 4 AC Repair, 5 Home Cleaning and 6 Salon at Home rows — so you can see exactly which rows will feed each service's average.",
+              "Both timestamp columns are TEXT in 'YYYY-MM-DD HH:MM' form; SQLite has no separate DATETIME storage type, so to SQL these are just strings until a date function interprets them.",
+              "Four rows have completed_at = NULL: bookings 5 and 10 were cancelled, and bookings 9 and 12 are still in_progress — the NULL genuinely means 'this job has no finish time yet', not 'finished in zero time'.",
+              "Some jobs cross into a different hour and minute (booking 8 runs 10:00 to 14:00, booking 11 runs 09:00 to 11:45), so any correct method has to read minutes as well as hours, not just the date part."
+            ],
+            "ta": [
+              "Ella 15 bookings-um varuthu, service vaari visual-a group aagi — 4 AC Repair, 5 Home Cleaning matrum 6 Salon at Home rows — so ovvoru service-oda average-kku endha rows feed aagudhu nu exact-a paakkalaam.",
+              "Rendu timestamp columns-um 'YYYY-MM-DD HH:MM' form-la TEXT-a irukku; SQLite-la thaniyaa DATETIME storage type illa, so oru date function interpret pannra varaikkum SQL-kku idhu verum strings thaan.",
+              "Naalu rows-la completed_at = NULL: bookings 5 matrum 10 cancelled aachu, bookings 9 matrum 12 innum in_progress — indha NULL-oda genuine artham 'indha job-kku innum finish time illa', 'zero time-la mudinjiduchu' illa.",
+              "Sila jobs vera hour matrum minute-kku cross aagudhu (booking 8 10:00-la irundhu 14:00 varaikkum, booking 11 09:00-la irundhu 11:45 varaikkum), so correct-aana endha method-um date part mattum illama hours-um minutes-um read pannanum."
+            ],
+            "hi": [
+              "Saari 15 bookings aati hain, service ke hisaab se visually grouped — 4 AC Repair, 5 Home Cleaning aur 6 Salon at Home rows — taaki saaf dikhe ki har service ke average mein kaunsi rows jaayengi.",
+              "Dono timestamp columns 'YYYY-MM-DD HH:MM' form mein TEXT hain; SQLite mein alag se koi DATETIME storage type nahi hota, isliye jab tak koi date function inhe interpret na kare, SQL ke liye yeh sirf strings hain.",
+              "Chaar rows mein completed_at = NULL hai: bookings 5 aur 10 cancel ho gayi, aur bookings 9 aur 12 abhi in_progress hain — yeh NULL genuinely 'is job ka abhi koi finish time nahi hai' batata hai, 'zero time mein khatam ho gaya' nahi.",
+              "Kuch jobs alag hour aur minute tak jaate hain (booking 8 10:00 se 14:00 tak, booking 11 09:00 se 11:45 tak), isliye koi bhi sahi method sirf date part nahi, hours aur minutes dono padhega."
+            ],
+            "te": [
+              "Anni 15 bookings vastayi, service prakaram visual ga group ayyi — 4 AC Repair, 5 Home Cleaning mariyu 6 Salon at Home rows — kabatti prathi service average ki e rows feed avutayo exact ga chudochu.",
+              "Rendu timestamp columns 'YYYY-MM-DD HH:MM' form lo TEXT ga unnayi; SQLite lo separate DATETIME storage type ledu, kabatti oka date function interpret chese varaku SQL ki ivi kevalam strings matrame.",
+              "Naalugu rows lo completed_at = NULL: bookings 5 mariyu 10 cancel ayyayi, bookings 9 mariyu 12 inka in_progress lo unnayi — ee NULL genuine ga 'ee job ki inka finish time ledu' ani artham, 'zero time lo ayipoyindi' kaadu.",
+              "Konni jobs vere hour mariyu minute ki cross avutayi (booking 8 10:00 nundi 14:00 varaku, booking 11 09:00 nundi 11:45 varaku), kabatti correct ayina e method aina date part matrame kaakunda hours mariyu minutes rendu read cheyyali."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "The trap: subtracting TEXT timestamps directly",
+            "ta": "Trap: TEXT timestamps-a direct-a subtract panradhu",
+            "hi": "Trap: TEXT timestamps ko seedha subtract karna",
+            "te": "Trap: TEXT timestamps ni direct ga subtract cheyyadam"
+          },
+          "sql": "SELECT booking_id, service,\n       completed_at - scheduled_at AS naive_diff,\n       status\nFROM uc_bookings\nORDER BY service, booking_id;",
+          "explain": {
+            "en": [
+              "Every finished job shows naive_diff = 0, even booking 8 which clearly ran four hours — the query raises no error and no warning, it just quietly returns a wrong number.",
+              "The minus operator forces both strings into numbers, and SQLite converts a string by reading only its leading numeric prefix: '2026-03-10 14:00' becomes 2026, and so does '2026-03-10 10:00', so 2026 - 2026 = 0.",
+              "The four NULL-completed_at rows (5, 9, 10, 12) return NULL rather than 0, because any arithmetic with NULL is NULL — so even in the broken version, the unfinished jobs are the only rows that are honestly 'unknown'.",
+              "Averaging this column per service would produce a benchmark of 0 hours for every service, which looks like a suspiciously perfect result but would let the scheduler pack jobs back to back with no on-site time at all."
+            ],
+            "ta": [
+              "Mudinja ella job-um naive_diff = 0 nu kaattudhu, booking 8 clear-a naalu mani neram odinaalum — query edhum error-um tharala, warning-um tharala, amaidhi-a oru thappaana number-a return pannudhu.",
+              "Minus operator rendu strings-a-yum numbers-a force pannudhu, SQLite oru string-a convert pannum bodhu adhoda leading numeric prefix-a mattum read pannum: '2026-03-10 14:00' 2026 aagudhu, '2026-03-10 10:00'-um 2026 thaan, so 2026 - 2026 = 0.",
+              "NULL completed_at irukkura naalu rows (5, 9, 10, 12) 0 illama NULL return pannudhu, ennaa NULL-oda endha arithmetic-um NULL thaan — so broken version-la kooda, mudiyaadha jobs mattum thaan honest-a 'unknown'-a irukku.",
+              "Indha column-a service vaari average panna, ella service-kkum 0 hours benchmark kidaikkum, adhu suspicious-a perfect result madhiri theriyum aana scheduler jobs-a on-site time-e illama back to back-a pack panniduvaan."
+            ],
+            "hi": [
+              "Har khatam hua job naive_diff = 0 dikhata hai, booking 8 bhi jo saaf taur par chaar ghante chala — query na koi error deti hai na warning, bas chup-chaap ek galat number return kar deti hai.",
+              "Minus operator dono strings ko numbers mein force karta hai, aur SQLite string ko convert karte waqt sirf uska leading numeric prefix padhta hai: '2026-03-10 14:00' 2026 ban jaata hai, aur '2026-03-10 10:00' bhi 2026, isliye 2026 - 2026 = 0.",
+              "NULL completed_at wali chaar rows (5, 9, 10, 12) 0 nahi balki NULL return karti hain, kyunki NULL ke saath koi bhi arithmetic NULL hi hota hai — yaani broken version mein bhi sirf adhoore jobs hi imaandaari se 'unknown' hain.",
+              "Is column ka service-wise average nikaalne par har service ka benchmark 0 hours aata, jo suspicious tarah se perfect dikhta lekin scheduler jobs ko bina kisi on-site time ke back to back pack kar deta."
+            ],
+            "te": [
+              "Ayipoyina prathi job naive_diff = 0 chupistundi, booking 8 clear ga naalugu gantalu nadichina kuda — query e error ivvadu, warning ivvadu, silent ga oka tappu number return chestundi.",
+              "Minus operator rendu strings ni numbers ga force chestundi, SQLite oka string ni convert chesetappudu daani leading numeric prefix ni matrame read chestundi: '2026-03-10 14:00' 2026 avutundi, '2026-03-10 10:00' kuda 2026, kabatti 2026 - 2026 = 0.",
+              "NULL completed_at unna naalugu rows (5, 9, 10, 12) 0 kaakunda NULL return chestayi, endukante NULL tho e arithmetic aina NULL e — kabatti broken version lo kuda, ayiponi jobs matrame honest ga 'unknown' ga unnayi.",
+              "Ee column ni service prakaram average cheste prathi service ki 0 hours benchmark vastundi, adi suspicious ga perfect result la kanipistundi kani scheduler jobs ni on-site time lekunda back to back pack chesestundi."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: julianday() for real time math, finished jobs only",
+            "ta": "Fix pannunga: real time math-kku julianday(), mudinja jobs mattum",
+            "hi": "Fix karo: asli time math ke liye julianday(), sirf khatam hue jobs",
+            "te": "Fix cheyandi: real time math ki julianday(), ayipoyina jobs matrame"
+          },
+          "sql": "SELECT service,\n       COUNT(*) AS completed_jobs,\n       ROUND(AVG((julianday(completed_at) - julianday(scheduled_at)) * 24), 2) AS avg_hours\nFROM uc_bookings\nWHERE completed_at IS NOT NULL\nGROUP BY service\nORDER BY avg_hours DESC;",
+          "explain": {
+            "en": [
+              "julianday() parses the full date-and-time string into a fractional day count, so the difference of two julianday values is in days (booking 8 gives 0.1667), and multiplying by 24 turns it into hours (4.0).",
+              "Result: Home Cleaning 3 jobs at 3.42 hours, AC Repair 3 jobs at 2.19 hours, Salon at Home 5 jobs at 1.32 hours — Home Cleaning tops the list because bookings 1, 8 and 11 each took between 2.75 and 4 hours.",
+              "Remove the WHERE completed_at IS NOT NULL line and avg_hours stays exactly the same (AVG already skips the NULL differences), but completed_jobs silently inflates to 5, 4 and 6 — the cancelled and in-progress bookings get counted as finished jobs.",
+              "That is why the filter belongs in WHERE rather than relying on AVG's NULL-skipping: COUNT(*) counts rows, not non-NULL values, so the NULL completed_at has to be removed before grouping for both columns to describe the same set of jobs."
+            ],
+            "ta": [
+              "julianday() full date-and-time string-a oru fractional day count-a parse pannudhu, so rendu julianday values-oda difference days-la varum (booking 8 0.1667 tharum), adha 24-aala multiply panna hours aagum (4.0).",
+              "Result: Home Cleaning 3 jobs 3.42 hours, AC Repair 3 jobs 2.19 hours, Salon at Home 5 jobs 1.32 hours — Home Cleaning top-la irukku ennaa bookings 1, 8 matrum 11 ovvonnum 2.75-la irundhu 4 hours varaikkum eduthuchu.",
+              "WHERE completed_at IS NOT NULL line-a remove panna avg_hours exact-a same-a irukkum (AVG already NULL differences-a skip pannum), aana completed_jobs amaidhi-a 5, 4 matrum 6-a inflate aagum — cancelled matrum in-progress bookings mudinja jobs-a count aagum.",
+              "Adhanaala thaan filter AVG-oda NULL-skipping-a nambaama WHERE-la irukkanum: COUNT(*) rows-a count pannum, non-NULL values-a illa, so rendu columns-um same set of jobs-a describe panna, grouping-kku munnadiye NULL completed_at-a remove pannanum."
+            ],
+            "hi": [
+              "julianday() poori date-and-time string ko ek fractional day count mein parse karta hai, isliye do julianday values ka difference days mein aata hai (booking 8 ka 0.1667), aur 24 se multiply karne par woh hours ban jaata hai (4.0).",
+              "Result: Home Cleaning 3 jobs 3.42 hours, AC Repair 3 jobs 2.19 hours, Salon at Home 5 jobs 1.32 hours — Home Cleaning top par hai kyunki bookings 1, 8 aur 11 mein har ek ne 2.75 se 4 hours liye.",
+              "WHERE completed_at IS NOT NULL wali line hata do to avg_hours bilkul same rehta hai (AVG pehle se NULL differences skip karta hai), lekin completed_jobs chup-chaap 5, 4 aur 6 ho jaata hai — cancelled aur in-progress bookings bhi khatam hue jobs ki tarah gin li jaati hain.",
+              "Isiliye filter ko AVG ke NULL-skipping par chhodne ke bajaye WHERE mein rakhna zaroori hai: COUNT(*) rows ginta hai, non-NULL values nahi, isliye dono columns ek hi set of jobs ko describe karein, iske liye grouping se pehle NULL completed_at hatana padta hai."
+            ],
+            "te": [
+              "julianday() full date-and-time string ni oka fractional day count ga parse chestundi, kabatti rendu julianday values difference days lo vastundi (booking 8 0.1667 istundi), daanni 24 tho multiply cheste hours avutundi (4.0).",
+              "Result: Home Cleaning 3 jobs 3.42 hours, AC Repair 3 jobs 2.19 hours, Salon at Home 5 jobs 1.32 hours — Home Cleaning top lo undi endukante bookings 1, 8 mariyu 11 prathi okkati 2.75 nundi 4 hours teesukunnayi.",
+              "WHERE completed_at IS NOT NULL line ni remove cheste avg_hours exact ga same untundi (AVG already NULL differences ni skip chestundi), kani completed_jobs silent ga 5, 4 mariyu 6 ki inflate avutundi — cancelled mariyu in-progress bookings ayipoyina jobs ga count avutayi.",
+              "Andukane filter AVG NULL-skipping meeda aadharapadakunda WHERE lo undali: COUNT(*) rows ni count chestundi, non-NULL values ni kaadu, kabatti rendu columns same set of jobs ni describe cheyyalante grouping ki munde NULL completed_at ni remove cheyyali."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "diff": "mid",
+      "cc": [
+        "FILTER",
+        "Conditional Aggregation",
+        "COUNT",
+        "AVG"
+      ],
+      "story": {
+        "en": "Every month Urban Company sends each service partner a one-line scorecard: how many jobs they were assigned, how many they completed, how many got cancelled, how many completed jobs the customer never rated, and their average rating. The current report uses SUM(CASE WHEN ... THEN 1 END) for the status counts, and the partner app has started showing a blank cancellation figure for the two partners with a spotless record — the app treats blank as 'data missing' and flags their accounts for review, when the real answer is a perfectly good zero. Ratings are optional, so a completed job with no rating has rating = NULL, meaning 'the customer never rated it', which is not the same as a zero-star review.",
+        "ta": "Ovvoru maasamum Urban Company ovvoru service partner-kkum oru one-line scorecard anuppudhu: avangaluku evlo jobs assign aachu, evlo complete pannaanga, evlo cancel aachu, customer rate pannave illaadha completed jobs evlo, matrum avanga average rating. Ippo irukkura report status counts-kku SUM(CASE WHEN ... THEN 1 END) use pannudhu, spotless record irukkura rendu partners-kku partner app blank cancellation figure kaatta aarambichiduchu — app blank-a 'data missing' nu treat panni avanga accounts-a review-kku flag pannudhu, real answer perfect-aana oru zero-a irundhaalum. Ratings optional, so rating illaadha completed job-kku rating = NULL, adhoda artham 'customer rate pannave illa', adhu zero-star review-um illa.",
+        "hi": "Har mahine Urban Company har service partner ko ek one-line scorecard bhejti hai: unhe kitne jobs assign hue, kitne complete kiye, kitne cancel hue, kitne completed jobs ko customer ne kabhi rate nahi kiya, aur unki average rating. Abhi ki report status counts ke liye SUM(CASE WHEN ... THEN 1 END) use karti hai, aur partner app ne un do partners ke liye blank cancellation figure dikhana shuru kar diya hai jinka record bilkul saaf hai — app blank ko 'data missing' maan kar unke accounts review ke liye flag kar deti hai, jabki asli jawab ek bilkul theek zero hai. Ratings optional hain, isliye bina rating wale completed job ka rating = NULL hai, matlab 'customer ne rate hi nahi kiya', jo zero-star review ke barabar nahi hai.",
+        "te": "Prathi nela Urban Company prathi service partner ki oka one-line scorecard pamputundi: vaalliki enni jobs assign ayyayi, enni complete chesaru, enni cancel ayyayi, customer asalu rate cheyyani completed jobs enni, mariyu vaalla average rating. Ippati report status counts ki SUM(CASE WHEN ... THEN 1 END) use chestundi, spotless record unna iddaru partners ki partner app blank cancellation figure chupinchadam modalupettindi — app blank ni 'data missing' ga treat chesi vaalla accounts ni review ki flag chestundi, real answer perfect ayina oka zero ayinappatiki. Ratings optional, kabatti rating leni completed job ki rating = NULL, daani artham 'customer asalu rate cheyyaledu', adi zero-star review kaadu."
+      },
+      "question": {
+        "en": "For each partner_name, return total_jobs, completed_jobs, cancelled_jobs, unrated_jobs (completed jobs whose rating IS NULL) and avg_rating (average of the ratings that exist, rounded to 2 decimals). Use the aggregate FILTER (WHERE ...) clause for the conditional counts so that a partner with no matching rows gets 0, not NULL. Order by partner_name.",
+        "ta": "Ovvoru partner_name-kkum, total_jobs, completed_jobs, cancelled_jobs, unrated_jobs (rating IS NULL-a irukkura completed jobs) matrum avg_rating (irukkura ratings-oda average, 2 decimals-kku round panni) return pannunga. Conditional counts-kku aggregate FILTER (WHERE ...) clause use pannunga, appo matching rows illaadha partner-kku NULL illama 0 kidaikkum. partner_name vaari order pannunga.",
+        "hi": "Har partner_name ke liye total_jobs, completed_jobs, cancelled_jobs, unrated_jobs (woh completed jobs jinka rating IS NULL hai) aur avg_rating (jo ratings maujood hain unka average, 2 decimals tak round) return karo. Conditional counts ke liye aggregate FILTER (WHERE ...) clause use karo taaki jis partner ki koi matching row nahi hai use NULL nahi, 0 mile. partner_name ke hisaab se sort karo.",
+        "te": "Prathi partner_name ki total_jobs, completed_jobs, cancelled_jobs, unrated_jobs (rating IS NULL ayina completed jobs) mariyu avg_rating (unna ratings average, 2 decimals ki round chesi) return cheyandi. Conditional counts ki aggregate FILTER (WHERE ...) clause use cheyandi, appudu matching rows leni partner ki NULL kaakunda 0 vastundi. partner_name prakaram sort cheyandi."
+      },
+      "schemas": [
+        {
+          "name": "uc_bookings",
+          "cols": [
+            { "n": "booking_id", "t": "INTEGER", "e": "1" },
+            { "n": "customer_name", "t": "TEXT", "e": "Ananya" },
+            { "n": "partner_name", "t": "TEXT", "e": "Ravi" },
+            { "n": "service", "t": "TEXT", "e": "Home Cleaning" },
+            { "n": "booked_at", "t": "TEXT", "e": "2026-03-01 09:15" },
+            { "n": "scheduled_at", "t": "TEXT", "e": "2026-03-03 10:00" },
+            { "n": "completed_at", "t": "TEXT", "e": "2026-03-03 13:30" },
+            { "n": "status", "t": "TEXT", "e": "completed" },
+            { "n": "rating", "t": "INTEGER", "e": "5" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "See each partner's jobs, statuses and ratings",
+            "ta": "Ovvoru partner-oda jobs, statuses matrum ratings-a paakkunga",
+            "hi": "Har partner ke jobs, statuses aur ratings dekho",
+            "te": "Prathi partner jobs, statuses mariyu ratings ni chudandi"
+          },
+          "sql": "SELECT partner_name, booking_id, status, rating\nFROM uc_bookings\nORDER BY partner_name, booking_id;",
+          "explain": {
+            "en": [
+              "Four partners share the 15 bookings: Meena has 3, Ravi 5, Salma 3 and Venkat 4 — these are the total_jobs numbers the final scorecard has to reproduce.",
+              "Salma and Venkat have no 'cancelled' row at all; their correct cancelled_jobs is 0, and this is exactly the group the CASE WHEN version is about to get wrong.",
+              "rating is NULL on every cancelled and in_progress row, which is expected, but also on two completed jobs (booking 3 for Salma and booking 13 for Meena) — those are the genuinely unrated jobs the report has to count.",
+              "Reading the raw rows first matters because conditional aggregation hides the rows behind it — once the numbers are collapsed, a NULL that should be a 0 is very hard to spot from the result alone."
+            ],
+            "ta": [
+              "Naalu partners 15 bookings-a share pannuraanga: Meena-kku 3, Ravi-kku 5, Salma-kku 3 matrum Venkat-kku 4 — final scorecard reproduce pannavendiya total_jobs numbers idhu thaan.",
+              "Salma matrum Venkat-kku 'cancelled' row onnu kooda illa; avangaloda correct cancelled_jobs 0, CASE WHEN version thappa poduradhu indha group-a thaan.",
+              "Ella cancelled matrum in_progress row-la-yum rating NULL, adhu expected thaan, aana rendu completed jobs-la-yum (Salma-oda booking 3, Meena-oda booking 13) NULL irukku — report count pannavendiya genuine unrated jobs avanga thaan.",
+              "Raw rows-a first paakuradhu mukkiyam ennaa conditional aggregation pinnaadi irukkura rows-a maraichidum — numbers collapse aanadhum, 0-a irukkavendiya oru NULL-a result-a mattum paathu kandupidikka romba kashtam."
+            ],
+            "hi": [
+              "Chaar partners 15 bookings share karte hain: Meena ke 3, Ravi ke 5, Salma ke 3 aur Venkat ke 4 — final scorecard ko yahi total_jobs numbers dobara laane hain.",
+              "Salma aur Venkat ki ek bhi 'cancelled' row nahi hai; unka sahi cancelled_jobs 0 hai, aur CASE WHEN version theek isi group ko galat karne wala hai.",
+              "Har cancelled aur in_progress row par rating NULL hai, jo expected hai, lekin do completed jobs par bhi (Salma ki booking 3 aur Meena ki booking 13) — yahi genuinely unrated jobs hain jinhe report ko ginna hai.",
+              "Pehle raw rows padhna zaroori hai kyunki conditional aggregation apne peeche ki rows chhupa deta hai — numbers collapse hone ke baad, jo NULL 0 hona chahiye tha use sirf result dekh kar pakadna bahut mushkil hai."
+            ],
+            "te": [
+              "Naalugu partners 15 bookings ni share chestunnaru: Meena ki 3, Ravi ki 5, Salma ki 3 mariyu Venkat ki 4 — final scorecard reproduce cheyyalsina total_jobs numbers ive.",
+              "Salma mariyu Venkat ki okka 'cancelled' row kuda ledu; vaalla correct cancelled_jobs 0, CASE WHEN version tappu cheyyabotunnadi exact ga ee group ne.",
+              "Prathi cancelled mariyu in_progress row lo rating NULL, adi expected e, kani rendu completed jobs lo kuda (Salma booking 3, Meena booking 13) NULL undi — report count cheyyalsina genuine unrated jobs ave.",
+              "Raw rows ni mundu chudadam mukhyam endukante conditional aggregation venaka unna rows ni daachestundi — numbers collapse ayyaka, 0 ga undalsina oka NULL ni result chusi matrame pattukovadam chala kashtam."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "The trap: SUM(CASE WHEN ... THEN 1 END) returns NULL, not 0",
+            "ta": "Trap: SUM(CASE WHEN ... THEN 1 END) 0 illama NULL return pannudhu",
+            "hi": "Trap: SUM(CASE WHEN ... THEN 1 END) 0 nahi, NULL return karta hai",
+            "te": "Trap: SUM(CASE WHEN ... THEN 1 END) 0 kaakunda NULL return chestundi"
+          },
+          "sql": "SELECT partner_name,\n       COUNT(*) AS total_jobs,\n       SUM(CASE WHEN status = 'completed' THEN 1 END) AS completed_jobs,\n       SUM(CASE WHEN status = 'cancelled' THEN 1 END) AS cancelled_jobs\nFROM uc_bookings\nGROUP BY partner_name\nORDER BY partner_name;",
+          "explain": {
+            "en": [
+              "Meena and Ravi correctly show cancelled_jobs = 1, but Salma and Venkat show NULL — the two partners with the best record are exactly the ones whose scorecard comes out blank.",
+              "A CASE WHEN with no ELSE yields NULL for every row that doesn't match, so for Salma every input to SUM is NULL, and SUM over only NULLs returns NULL — SQL treats it as 'nothing to add up', not 'added up to zero'.",
+              "completed_jobs looks fine here only because every partner happens to have at least one completed job; the same bug is sitting in that column and would show up for a new partner whose jobs are all still in progress.",
+              "The common patch is SUM(CASE WHEN ... THEN 1 ELSE 0 END), which works, but it puts the 'what do I count' logic inside a CASE expression; the FILTER clause in the next step says the same thing more directly and cannot forget the ELSE."
+            ],
+            "ta": [
+              "Meena matrum Ravi correct-a cancelled_jobs = 1 kaatturaanga, aana Salma matrum Venkat NULL kaatturaanga — best record irukkura rendu partners-oda scorecard thaan blank-a varudhu.",
+              "ELSE illaadha CASE WHEN match aagaadha ovvoru row-kkum NULL tharum, so Salma-kku SUM-oda ella input-um NULL, verum NULLs mela SUM NULL thaan return pannum — SQL adha 'add panna onnum illa' nu treat pannudhu, 'add panni zero vandhuchu' nu illa.",
+              "Inga completed_jobs sari-a theriyuradhu ovvoru partner-kkum kurainjadhu oru completed job irukkuradhaala mattum thaan; adhe bug andha column-la-yum irukku, ella jobs-um innum progress-la irukkura oru pudhu partner-kku adhu veliya varum.",
+              "Common patch SUM(CASE WHEN ... THEN 1 ELSE 0 END), adhu work aagum, aana 'edha count pannanum' logic-a oru CASE expression-kulla vaikkudhu; next step-la irukkura FILTER clause adhe vishayatha direct-a sollum, ELSE-a marakkavum mudiyaadhu."
+            ],
+            "hi": [
+              "Meena aur Ravi sahi taur par cancelled_jobs = 1 dikhate hain, lekin Salma aur Venkat NULL dikhate hain — jin do partners ka record sabse achha hai, unhi ka scorecard blank aata hai.",
+              "Bina ELSE wala CASE WHEN har non-matching row ke liye NULL deta hai, isliye Salma ke liye SUM ka har input NULL hai, aur sirf NULLs ka SUM NULL hi return karta hai — SQL ise 'jodne ko kuch nahi' maanta hai, 'jod kar zero aaya' nahi.",
+              "completed_jobs yahan sirf isliye theek dikhta hai kyunki har partner ka kam se kam ek completed job hai; wahi bug us column mein bhi baitha hai aur kisi naye partner ke liye dikhega jiske saare jobs abhi progress mein hain.",
+              "Common patch hai SUM(CASE WHEN ... THEN 1 ELSE 0 END), jo kaam karta hai, lekin 'kya ginna hai' wala logic ek CASE expression ke andar daal deta hai; agle step ka FILTER clause wahi baat zyada seedhe kehta hai aur ELSE bhool hi nahi sakta."
+            ],
+            "te": [
+              "Meena mariyu Ravi correct ga cancelled_jobs = 1 chupistaru, kani Salma mariyu Venkat NULL chupistaru — best record unna iddaru partners scorecard e blank ga vastundi.",
+              "ELSE leni CASE WHEN match kaani prathi row ki NULL istundi, kabatti Salma ki SUM prathi input NULL, kevalam NULLs meeda SUM NULL e return chestundi — SQL daanni 'add cheyyadaniki emi ledu' ga treat chestundi, 'add chesi zero vachindi' ga kaadu.",
+              "Ikkada completed_jobs sariga kanipinchedi prathi partner ki kanisam oka completed job undadam valle; ade bug aa column lo kuda undi, anni jobs inka progress lo unna oka kotha partner ki adi bayatapadutundi.",
+              "Common patch SUM(CASE WHEN ... THEN 1 ELSE 0 END), adi work avutundi, kani 'emi count cheyyali' logic ni oka CASE expression lopala pedutundi; next step lo FILTER clause ade vishayanni direct ga cheptundi, ELSE ni marchipovadam kuda kudaradu."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: COUNT(*) FILTER (WHERE ...) for every conditional count",
+            "ta": "Fix pannunga: ovvoru conditional count-kkum COUNT(*) FILTER (WHERE ...)",
+            "hi": "Fix karo: har conditional count ke liye COUNT(*) FILTER (WHERE ...)",
+            "te": "Fix cheyandi: prathi conditional count ki COUNT(*) FILTER (WHERE ...)"
+          },
+          "sql": "SELECT partner_name,\n       COUNT(*) AS total_jobs,\n       COUNT(*) FILTER (WHERE status = 'completed') AS completed_jobs,\n       COUNT(*) FILTER (WHERE status = 'cancelled') AS cancelled_jobs,\n       COUNT(*) FILTER (WHERE status = 'completed' AND rating IS NULL) AS unrated_jobs,\n       ROUND(AVG(rating), 2) AS avg_rating\nFROM uc_bookings\nGROUP BY partner_name\nORDER BY partner_name;",
+          "explain": {
+            "en": [
+              "FILTER (WHERE ...) is attached to one aggregate and decides which rows that single aggregate sees, while the rest of the SELECT still sees the whole group — so total_jobs, completed_jobs and cancelled_jobs are computed side by side in one pass over the table.",
+              "COUNT always returns a number, so when the filter lets zero rows through the answer is 0: Salma and Venkat now show cancelled_jobs = 0, and nothing downstream mistakes them for missing data.",
+              "unrated_jobs = COUNT(*) FILTER (WHERE status = 'completed' AND rating IS NULL) picks up booking 3 for Salma and booking 13 for Meena (1 each); Ravi and Venkat rated every completed job, so they get 0.",
+              "avg_rating uses plain AVG(rating), which skips the NULLs and averages only real ratings: Salma's (5 + 3) / 2 = 4.0, not (0 + 5 + 3) / 3 = 2.67 — treating 'never rated' as zero stars would wrongly punish her for a customer who simply didn't tap the rating screen."
+            ],
+            "ta": [
+              "FILTER (WHERE ...) oru aggregate-oda attach aagi, andha single aggregate endha rows-a paakkanum nu decide pannudhu, meedhi SELECT innum full group-a paakkudhu — so total_jobs, completed_jobs matrum cancelled_jobs table mela oru pass-la pakkathula pakkathula compute aagudhu.",
+              "COUNT eppovum oru number thaan return pannum, so filter zero rows-a anuppina answer 0: Salma matrum Venkat ippo cancelled_jobs = 0 kaatturaanga, downstream-la yaarum avanga-a missing data-nu thappa nenaikka maattaanga.",
+              "unrated_jobs = COUNT(*) FILTER (WHERE status = 'completed' AND rating IS NULL) Salma-oda booking 3-a-yum Meena-oda booking 13-a-yum pidikkudhu (ovvonnu-kkum 1); Ravi matrum Venkat ella completed job-kkum rating vaangittaanga, so avangaluku 0.",
+              "avg_rating plain AVG(rating) use pannudhu, adhu NULLs-a skip panni real ratings-a mattum average pannum: Salma-oda (5 + 3) / 2 = 4.0, (0 + 5 + 3) / 3 = 2.67 illa — 'rate pannave illa'-a zero stars-a treat panna, rating screen-a tap pannaadha oru customer-kkaaga avanga-a thappa punish pannuvom."
+            ],
+            "hi": [
+              "FILTER (WHERE ...) ek aggregate se juda hota hai aur tay karta hai ki sirf woh aggregate kaunsi rows dekhega, jabki baaki SELECT ab bhi poora group dekhta hai — isliye total_jobs, completed_jobs aur cancelled_jobs table par ek hi pass mein saath-saath compute hote hain.",
+              "COUNT hamesha ek number return karta hai, isliye jab filter zero rows aage jaane deta hai to jawab 0 hota hai: Salma aur Venkat ab cancelled_jobs = 0 dikhate hain, aur downstream koi unhe missing data nahi samjhega.",
+              "unrated_jobs = COUNT(*) FILTER (WHERE status = 'completed' AND rating IS NULL) Salma ki booking 3 aur Meena ki booking 13 ko pakadta hai (dono ka 1); Ravi aur Venkat ke har completed job ko rating mili, isliye unka 0.",
+              "avg_rating plain AVG(rating) use karta hai, jo NULLs skip karke sirf asli ratings ka average leta hai: Salma ka (5 + 3) / 2 = 4.0, na ki (0 + 5 + 3) / 3 = 2.67 — 'kabhi rate nahi kiya' ko zero stars maanna use us customer ki wajah se galat saza deta jisne bas rating screen tap nahi ki."
+            ],
+            "te": [
+              "FILTER (WHERE ...) oka aggregate ki attach ayyi, aa single aggregate e rows ni chudalo decide chestundi, migata SELECT inka full group ni chustundi — kabatti total_jobs, completed_jobs mariyu cancelled_jobs table meeda oke pass lo pakkapakkana compute avutayi.",
+              "COUNT eppudu oka number e return chestundi, kabatti filter zero rows ni pampinappudu answer 0: Salma mariyu Venkat ippudu cancelled_jobs = 0 chupistaru, downstream lo evaru vaallani missing data ga tappuga anukoru.",
+              "unrated_jobs = COUNT(*) FILTER (WHERE status = 'completed' AND rating IS NULL) Salma booking 3 ni mariyu Meena booking 13 ni pattukuntundi (prathi okkariki 1); Ravi mariyu Venkat prathi completed job ki rating pondaru, kabatti vaalliki 0.",
+              "avg_rating plain AVG(rating) use chestundi, adi NULLs ni skip chesi real ratings ni matrame average chestundi: Salma (5 + 3) / 2 = 4.0, (0 + 5 + 3) / 3 = 2.67 kaadu — 'asalu rate cheyyaledu' ni zero stars ga treat cheste, rating screen tap cheyyani oka customer kosam aame ni tappuga punish chestam."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "diff": "hard",
+      "cc": [
+        "NTH_VALUE",
+        "WINDOW clause",
+        "ROWS BETWEEN",
+        "PARTITION BY"
+      ],
+      "story": {
+        "en": "Urban Company's growth team is designing cross-sell nudges: if most people who start with AC Repair come back for Home Cleaning, the app should suggest Home Cleaning right after an AC Repair job. To find these paths they need, for every customer, the first service they booked and the second service they booked. A cancelled booking is not a real purchase, so it must be ignored when deciding what was 'first' and 'second'. Customers who have booked only one real service so far should still appear, with second_service = NULL — meaning 'hasn't come back yet', which is exactly the group the nudge campaign is meant to target.",
+        "ta": "Urban Company-oda growth team cross-sell nudges design pannudhu: AC Repair-la aarambikkura perumbaalaanavanga Home Cleaning-kku thirumba vandhaa, AC Repair job mudinjadhum app Home Cleaning-a suggest pannanum. Indha paths-a kandupidikka, ovvoru customer-kkum avanga book panna first service-um second service-um venum. Cancelled booking real purchase illa, so 'first' 'second' edhu nu decide pannum bodhu adha ignore pannanum. Ippo varaikkum oru real service mattum book panna customers-um second_service = NULL-oda varanum — adhoda artham 'innum thirumba varala', nudge campaign target panna virumbura group exact-a adhu thaan.",
+        "hi": "Urban Company ki growth team cross-sell nudges design kar rahi hai: agar AC Repair se shuru karne wale zyadatar log Home Cleaning ke liye wapas aate hain, to app ko AC Repair job ke turant baad Home Cleaning suggest karna chahiye. In paths ko dhoondhne ke liye unhe har customer ki pehli booked service aur doosri booked service chahiye. Cancelled booking asli purchase nahi hai, isliye 'pehli' aur 'doosri' tay karte waqt use ignore karna hai. Jin customers ne ab tak sirf ek asli service book ki hai, woh bhi second_service = NULL ke saath dikhne chahiye — matlab 'abhi tak wapas nahi aaye', aur nudge campaign theek isi group ko target karna chahta hai.",
+        "te": "Urban Company growth team cross-sell nudges design chestondi: AC Repair tho start chese chaalamandi Home Cleaning kosam tirigi vaste, AC Repair job ayyaka app Home Cleaning ni suggest cheyyali. Ee paths ni kanukkovadaniki, prathi customer ki vaallu book chesina first service mariyu second service kavali. Cancelled booking real purchase kaadu, kabatti 'first' 'second' edi ani decide chesetappudu daanni ignore cheyyali. Ippativaraku okka real service matrame book chesina customers kuda second_service = NULL tho raavali — daani artham 'inka tirigi raaledu', nudge campaign target cheyyalanukune group exact ga ade."
+      },
+      "question": {
+        "en": "Ignoring cancelled bookings, return one row per customer_name with first_service (the service of their earliest booking by booked_at) and second_service (the service of their second booking), using NTH_VALUE(service, 2). Customers with only one non-cancelled booking must show second_service as NULL. Order by customer_name.",
+        "ta": "Cancelled bookings-a ignore panni, ovvoru customer_name-kkum oru row return pannunga, adhula first_service (booked_at vaari avanga earliest booking-oda service) matrum second_service (avanga second booking-oda service), NTH_VALUE(service, 2) use panni. Oru non-cancelled booking mattum irukkura customers second_service-a NULL-a kaattanum. customer_name vaari order pannunga.",
+        "hi": "Cancelled bookings ko ignore karke, har customer_name ke liye ek row return karo jismein first_service (booked_at ke hisaab se unki sabse pehli booking ki service) aur second_service (unki doosri booking ki service) ho, NTH_VALUE(service, 2) use karke. Jin customers ki sirf ek non-cancelled booking hai, unka second_service NULL dikhna chahiye. customer_name ke hisaab se sort karo.",
+        "te": "Cancelled bookings ni ignore chesi, prathi customer_name ki oka row return cheyandi, danilo first_service (booked_at prakaram vaalla earliest booking service) mariyu second_service (vaalla second booking service), NTH_VALUE(service, 2) use chesi. Okka non-cancelled booking matrame unna customers second_service ni NULL ga chupinchali. customer_name prakaram sort cheyandi."
+      },
+      "schemas": [
+        {
+          "name": "uc_bookings",
+          "cols": [
+            { "n": "booking_id", "t": "INTEGER", "e": "1" },
+            { "n": "customer_name", "t": "TEXT", "e": "Ananya" },
+            { "n": "partner_name", "t": "TEXT", "e": "Ravi" },
+            { "n": "service", "t": "TEXT", "e": "Home Cleaning" },
+            { "n": "booked_at", "t": "TEXT", "e": "2026-03-01 09:15" },
+            { "n": "scheduled_at", "t": "TEXT", "e": "2026-03-03 10:00" },
+            { "n": "completed_at", "t": "TEXT", "e": "2026-03-03 13:30" },
+            { "n": "status", "t": "TEXT", "e": "completed" },
+            { "n": "rating", "t": "INTEGER", "e": "5" }
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "en": "List each customer's real (non-cancelled) bookings in order",
+            "ta": "Ovvoru customer-oda real (non-cancelled) bookings-a order-la list pannunga",
+            "hi": "Har customer ki asli (non-cancelled) bookings ko order mein list karo",
+            "te": "Prathi customer real (non-cancelled) bookings ni order lo list cheyandi"
+          },
+          "sql": "SELECT customer_name, booking_id, service, booked_at, status\nFROM uc_bookings\nWHERE status <> 'cancelled'\nORDER BY customer_name, booked_at;",
+          "explain": {
+            "en": [
+              "WHERE status <> 'cancelled' removes bookings 5 and 10, leaving 13 rows across 7 customers; in_progress bookings stay in, because Manoj has genuinely bought both his services even though neither job has finished.",
+              "Kabir's very first booking (5, Home Cleaning) was cancelled, so after filtering his only real booking is AC Repair — without the filter his 'first service' would wrongly be a service he never actually received.",
+              "Lakshmi is the mirror case: her second booking (10) was the cancelled one, so she has a single real booking left, and Neeraj simply booked once — all three should end up with second_service = NULL.",
+              "Ordering by customer_name, booked_at here is only for reading; the window function in the next steps defines its own order with ORDER BY booked_at inside OVER, independent of the outer ORDER BY."
+            ],
+            "ta": [
+              "WHERE status <> 'cancelled' bookings 5 matrum 10-a remove pannudhu, 7 customers-la 13 rows meedhi irukku; in_progress bookings ulla irukku, ennaa Manoj rendu services-um genuine-a vaangirukkaaru, rendu job-um innum mudiyalainaalum.",
+              "Kabir-oda romba first booking (5, Home Cleaning) cancel aachu, so filter pannina apparam avaroda oru real booking AC Repair thaan — filter illana avaroda 'first service' avaru actual-a vaangave illaadha oru service-a thappa varum.",
+              "Lakshmi mirror case: avanga second booking (10) thaan cancel aachu, so avangaluku oru real booking mattum meedhi, Neeraj oru thadava mattum book pannaaru — moonu perum second_service = NULL-oda mudiyanum.",
+              "Inga customer_name, booked_at vaari order panradhu padikkiradhukku mattum thaan; next steps-la window function OVER-kulla ORDER BY booked_at-oda thanakku-nu oru order define pannum, outer ORDER BY-a saaraama."
+            ],
+            "hi": [
+              "WHERE status <> 'cancelled' bookings 5 aur 10 ko hata deta hai, 7 customers mein 13 rows bachti hain; in_progress bookings andar rehti hain, kyunki Manoj ne apni dono services genuinely khareedi hain, bhale hi koi job abhi khatam nahi hua.",
+              "Kabir ki sabse pehli booking (5, Home Cleaning) cancel hui thi, isliye filter ke baad unki ek hi asli booking AC Repair hai — filter ke bina unki 'first service' galti se woh service ban jaati jo unhe kabhi mili hi nahi.",
+              "Lakshmi ulta case hai: unki doosri booking (10) cancel hui, isliye unke paas ek hi asli booking bachi, aur Neeraj ne bas ek baar book kiya — teeno ka second_service = NULL aana chahiye.",
+              "Yahan customer_name, booked_at se sort karna sirf padhne ke liye hai; agle steps mein window function OVER ke andar ORDER BY booked_at se apna khud ka order define karta hai, bahar wale ORDER BY se alag."
+            ],
+            "te": [
+              "WHERE status <> 'cancelled' bookings 5 mariyu 10 ni remove chestundi, 7 customers lo 13 rows migulutayi; in_progress bookings lopale untayi, endukante Manoj tana rendu services ni genuine ga konnaru, e job inka ayipokapoyina.",
+              "Kabir modati booking (5, Home Cleaning) cancel ayyindi, kabatti filter tarvata ayana okka real booking AC Repair matrame — filter lekapothe ayana 'first service' ayana actual ga pondani oka service ga tappuga vastundi.",
+              "Lakshmi mirror case: aame second booking (10) cancel ayyindi, kabatti aame ki okka real booking matrame migilindi, Neeraj okkasari matrame book chesaru — mugguriki second_service = NULL raavali.",
+              "Ikkada customer_name, booked_at prakaram sort cheyyadam chadavadaniki matrame; next steps lo window function OVER lopala ORDER BY booked_at tho tana own order ni define chestundi, outer ORDER BY tho sambandham lekunda."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "The trap: NTH_VALUE with the default window frame",
+            "ta": "Trap: default window frame-oda NTH_VALUE",
+            "hi": "Trap: default window frame ke saath NTH_VALUE",
+            "te": "Trap: default window frame tho NTH_VALUE"
+          },
+          "sql": "SELECT customer_name, booked_at, service,\n       NTH_VALUE(service, 2) OVER (PARTITION BY customer_name ORDER BY booked_at) AS second_service\nFROM uc_bookings\nWHERE status <> 'cancelled'\nORDER BY customer_name, booked_at;",
+          "explain": {
+            "en": [
+              "On every customer's first row second_service is NULL — Ananya's 09:15 Home Cleaning row says NULL even though she clearly has a second booking — and only from the second row onward does the real value appear.",
+              "With ORDER BY inside OVER and no explicit frame, the default frame is RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW, so on row 1 the frame holds just one row and there is no 2nd value to return yet.",
+              "That creates two kinds of NULL that look identical: a frame NULL (Ananya, Farhan, Ishita and Manoj on their first rows, where a second booking does exist) and a genuine NULL (Kabir, Lakshmi and Neeraj, who really have no second booking).",
+              "Picking 'the first row per customer' from this output would label all 7 customers as never having returned — the exact opposite of what the growth team needs, and with no error to warn anyone."
+            ],
+            "ta": [
+              "Ovvoru customer-oda first row-la-yum second_service NULL — Ananya-oda 09:15 Home Cleaning row NULL nu solludhu, avangaluku clear-a second booking irundhaalum — second row-la irundhu thaan real value varudhu.",
+              "OVER-kulla ORDER BY irundhu explicit frame illana, default frame RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW, so row 1-la frame-la oru row mattum thaan irukku, return panna 2nd value innum illa.",
+              "Idhu paakka same-a irukkura rendu vagai NULL-a undaakkudhu: oru frame NULL (Ananya, Farhan, Ishita matrum Manoj avangaloda first rows-la, second booking irundhaalum) matrum oru genuine NULL (Kabir, Lakshmi matrum Neeraj, avangaluku nijamaave second booking illa).",
+              "Indha output-la irundhu 'ovvoru customer-oda first row'-a eduthaa, ella 7 customers-um thirumba varave illa nu label aagum — growth team-kku venumnadhukku exact opposite, yaarukkum warn panna oru error kooda illama."
+            ],
+            "hi": [
+              "Har customer ki pehli row par second_service NULL hai — Ananya ki 09:15 wali Home Cleaning row NULL kehti hai jabki unki saaf taur par doosri booking hai — aur asli value sirf doosri row se dikhni shuru hoti hai.",
+              "OVER ke andar ORDER BY ho aur koi explicit frame na ho, to default frame RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW hota hai, isliye row 1 par frame mein sirf ek row hoti hai aur return karne ke liye abhi koi 2nd value hai hi nahi.",
+              "Isse do tarah ke NULL bante hain jo bilkul ek jaise dikhte hain: frame NULL (Ananya, Farhan, Ishita aur Manoj ki pehli rows par, jahan doosri booking maujood hai) aur genuine NULL (Kabir, Lakshmi aur Neeraj, jinki sach mein koi doosri booking nahi hai).",
+              "Is output se 'har customer ki pehli row' uthane par saare 7 customers aise label ho jaate jaise koi wapas nahi aaya — growth team ki zaroorat ka bilkul ulta, aur kisi ko warn karne ke liye koi error bhi nahi."
+            ],
+            "te": [
+              "Prathi customer first row lo second_service NULL — Ananya 09:15 Home Cleaning row NULL ani cheptundi, aame ki clear ga second booking unnappatiki — second row nundi matrame real value kanipistundi.",
+              "OVER lopala ORDER BY undi explicit frame lekapothe, default frame RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW, kabatti row 1 lo frame lo okka row matrame untundi, return cheyyadaniki 2nd value inka ledu.",
+              "Idi chudadaniki same ga unde rendu rakala NULL ni create chestundi: oka frame NULL (Ananya, Farhan, Ishita mariyu Manoj vaalla first rows lo, second booking unnappatiki) mariyu oka genuine NULL (Kabir, Lakshmi mariyu Neeraj, vaalliki nijamga second booking ledu).",
+              "Ee output nundi 'prathi customer first row' ni teeskunte, anni 7 customers tirigi raaledani label avutaru — growth team ki kavalsinadaniki exact opposite, evarini warn cheyyadaniki oka error kuda lekunda."
+            ]
+          }
+        },
+        {
+          "title": {
+            "en": "Fix it: a full-partition frame, then one row per customer",
+            "ta": "Fix pannunga: full-partition frame, apparam ovvoru customer-kkum oru row",
+            "hi": "Fix karo: full-partition frame, phir har customer ke liye ek row",
+            "te": "Fix cheyandi: full-partition frame, tarvata prathi customer ki oka row"
+          },
+          "sql": "SELECT DISTINCT customer_name,\n       FIRST_VALUE(service) OVER w AS first_service,\n       NTH_VALUE(service, 2) OVER w AS second_service\nFROM uc_bookings\nWHERE status <> 'cancelled'\nWINDOW w AS (PARTITION BY customer_name ORDER BY booked_at\n             ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)\nORDER BY customer_name;",
+          "explain": {
+            "en": [
+              "ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING makes every row's frame the customer's entire booking history, so NTH_VALUE(service, 2) returns the same answer on every row of that customer — the frame NULLs from step 2 are gone.",
+              "The named WINDOW w clause defines the partition, order and frame once and lets FIRST_VALUE and NTH_VALUE share it, which keeps the two columns guaranteed to use the identical ordering instead of two copies that could drift apart.",
+              "Because every row of a customer now carries identical values, SELECT DISTINCT collapses them to one row each: Ananya goes Home Cleaning then Salon at Home, Farhan and Manoj both go AC Repair then Home Cleaning, Ishita goes Salon at Home then Home Cleaning.",
+              "Kabir, Lakshmi and Neeraj keep second_service = NULL, and this time it is honest — NTH_VALUE returns NULL when the frame has fewer than 2 rows — so these three are exactly the 'hasn't come back yet' audience for the nudge campaign."
+            ],
+            "ta": [
+              "ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING ovvoru row-oda frame-a-yum customer-oda full booking history-a aakkudhu, so NTH_VALUE(service, 2) andha customer-oda ella row-la-yum same answer tharum — step 2-la irundha frame NULLs poyiduchu.",
+              "Named WINDOW w clause partition, order matrum frame-a oru thadava define panni FIRST_VALUE-um NTH_VALUE-um adha share panna vidudhu, appo rendu columns-um vilagi poga koodiya rendu copies illama, exact-a same ordering use pannum nu guarantee.",
+              "Ippo oru customer-oda ella row-um same values-a vachirukkuradhaala, SELECT DISTINCT avanga-a ovvoruthar-kkum oru row-a collapse pannudhu: Ananya Home Cleaning apparam Salon at Home, Farhan matrum Manoj rendu perum AC Repair apparam Home Cleaning, Ishita Salon at Home apparam Home Cleaning.",
+              "Kabir, Lakshmi matrum Neeraj second_service = NULL-a vachukkuraanga, indha thadava adhu honest — frame-la 2 rows-kku kammiya irundhaa NTH_VALUE NULL return pannum — so indha moonu perum thaan nudge campaign-oda 'innum thirumba varala' audience."
+            ],
+            "hi": [
+              "ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING har row ke frame ko customer ki poori booking history bana deta hai, isliye NTH_VALUE(service, 2) us customer ki har row par same jawab deta hai — step 2 ke frame NULLs gayab ho gaye.",
+              "Named WINDOW w clause partition, order aur frame ko ek baar define karta hai aur FIRST_VALUE aur NTH_VALUE dono ko use share karne deta hai, jisse dono columns ka bilkul same ordering use karna guaranteed rehta hai, na ki do copies jo alag ho sakti hain.",
+              "Ab ek customer ki har row mein same values hain, isliye SELECT DISTINCT unhe ek-ek row mein collapse kar deta hai: Ananya pehle Home Cleaning phir Salon at Home, Farhan aur Manoj dono pehle AC Repair phir Home Cleaning, Ishita pehle Salon at Home phir Home Cleaning.",
+              "Kabir, Lakshmi aur Neeraj ka second_service = NULL rehta hai, aur is baar woh imaandaar hai — frame mein 2 se kam rows hon to NTH_VALUE NULL return karta hai — isliye yahi teen nudge campaign ki 'abhi tak wapas nahi aaye' audience hain."
+            ],
+            "te": [
+              "ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING prathi row frame ni customer full booking history ga chestundi, kabatti NTH_VALUE(service, 2) aa customer prathi row lo same answer istundi — step 2 lo unna frame NULLs poyayi.",
+              "Named WINDOW w clause partition, order mariyu frame ni okkasari define chesi FIRST_VALUE mariyu NTH_VALUE rendu daanni share chesukune la chestundi, appudu rendu columns vidipoye rendu copies kaakunda exact ga same ordering use chestayani guarantee.",
+              "Ippudu oka customer prathi row lo same values unnayi kabatti, SELECT DISTINCT vaallani prathi okkariki oka row ga collapse chestundi: Ananya Home Cleaning tarvata Salon at Home, Farhan mariyu Manoj iddaru AC Repair tarvata Home Cleaning, Ishita Salon at Home tarvata Home Cleaning.",
+              "Kabir, Lakshmi mariyu Neeraj second_service = NULL ni unchukuntaru, ee sari adi honest — frame lo 2 rows kante takkuva unte NTH_VALUE NULL return chestundi — kabatti ee mugguru e nudge campaign 'inka tirigi raaledu' audience."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
